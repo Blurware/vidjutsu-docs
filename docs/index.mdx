@@ -1,0 +1,62 @@
+---
+title: "Introduction"
+description: "Launch fully managed shortform campaigns. Give your agent powers."
+---
+
+VidJutsu is an API and CLI for launching managed shortform campaigns end-to-end. Top up credits, order accounts, generate content, schedule posts, and drive traffic to any link — all from a single interface.
+
+## Base URL
+
+```
+https://api.vidjutsu.ai
+```
+
+## What you can do
+
+<CardGroup cols={2}>
+  <Card title="Order accounts" icon="user-plus" href="/guides/manage-accounts">
+    Provision managed TikTok and Instagram accounts that warm up automatically.
+  </Card>
+  <Card title="Generate content" icon="video" href="/guides/generate-videos">
+    Create videos, images, and music with a single API call. Every asset is campaign-ready.
+  </Card>
+  <Card title="Schedule posts" icon="calendar" href="/guides/schedule-posts">
+    Schedule posts across your network of accounts. Set it and let your agent run it.
+  </Card>
+  <Card title="Launch campaigns" icon="rocket" href="/guides/launch-a-campaign">
+    Combine accounts, content, and scheduling into an end-to-end campaign.
+  </Card>
+</CardGroup>
+
+## How it works
+
+1. **Top up credits** — `POST /v1/api_keys` with your email. Pay with any card via Stripe.
+2. **Get your API key** — Poll `GET /v1/api_keys/status` after payment. Your key is returned in the response.
+3. **Make requests** — Pass your API key in the `X-Api-Key` header with every request.
+4. **Poll for results** — Generation endpoints return `202 Accepted` with a job ID. Use list endpoints to check status.
+
+## Pricing
+
+**$99/month membership** includes 50 credits. Additional credits are **$0.75 each**. Max 3 managed accounts per user.
+
+| Operation | Credits | Cost ($0.75/credit) |
+|-----------|---------|------|
+| Video generation | 6 | $4.50 |
+| Image generation | 4 | $3.00 |
+| Music generation | 3 | $2.25 |
+| Account creation | 32 | $24.00 |
+| Post scheduling | 3 | $2.25 |
+| Media analysis | 1 | $0.75 |
+| Scraping | 1 | $0.75 |
+| Overlay | 1 | $0.75 |
+
+## Choose your interface
+
+<CardGroup cols={2}>
+  <Card title="REST API" icon="code" href="/api-reference/introduction">
+    Direct HTTP calls to `api.vidjutsu.ai`. Works from any language or agent.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/cli/index">
+    Install the `vidjutsu` CLI and run campaigns from your terminal.
+  </Card>
+</CardGroup>

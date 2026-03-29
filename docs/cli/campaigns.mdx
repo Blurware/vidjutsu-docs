@@ -1,0 +1,38 @@
+---
+title: "vidjutsu campaign"
+description: "Create, execute, and manage campaigns"
+---
+
+## Create a campaign
+
+```bash
+vidjutsu campaign create --config campaign.json
+```
+
+The config file specifies the campaign parameters:
+
+```json
+{
+  "platform": "tiktok",
+  "accountCount": 3,
+  "postsPerAccount": 2,
+  "name": "NYC Summer",
+  "niche": "street fashion"
+}
+```
+
+Returns the campaign ID, cost breakdown, and placeholder account/post IDs.
+
+## List campaigns
+
+```bash
+vidjutsu campaign list
+```
+
+## Get campaign details
+
+```bash
+vidjutsu campaign get cmp_abc123
+```
+
+Returns the campaign with all accounts and posts progress.

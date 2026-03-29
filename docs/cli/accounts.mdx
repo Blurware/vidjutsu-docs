@@ -1,0 +1,47 @@
+---
+title: "vidjutsu account"
+description: "Create and manage managed accounts"
+---
+
+## Create an account
+
+Provision a managed TikTok or Instagram account.
+
+```bash
+vidjutsu account create --platform tiktok --name "nyc_streetstyle"
+```
+
+### Options
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--platform` | string | `tiktok` or `instagram` (required) |
+| `--name` | string | Account name (required) |
+
+**Cost:** 10 credits.
+
+<Warning>
+Account warming can take **up to 7 days**. Wait for `"active"` status before scheduling posts.
+</Warning>
+
+## List accounts
+
+```bash
+vidjutsu account list
+```
+
+## Get account details
+
+```bash
+vidjutsu account get acc_8k2x
+```
+
+## Delete an account
+
+```bash
+vidjutsu account delete acc_8k2x
+```
+
+<Warning>
+Deleting an account is permanent and cancels all scheduled posts.
+</Warning>

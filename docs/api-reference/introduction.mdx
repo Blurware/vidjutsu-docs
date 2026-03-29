@@ -1,0 +1,76 @@
+---
+title: "API Reference"
+description: "Complete reference for the VidJutsu API"
+---
+
+## Base URL
+
+```
+https://api.vidjutsu.ai
+```
+
+## Authentication
+
+Most endpoints require an API key passed in the `X-Api-Key` header:
+
+```bash
+curl https://api.vidjutsu.ai/v1/videos \
+  -H "X-Api-Key: vj_live_your_key_here"
+```
+
+Get your API key by [purchasing credits](/authentication) with any card via Stripe.
+
+<Info>
+**MPP x402 support coming soon.** Native USDC payments per-request — no checkout flow required.
+</Info>
+
+## Response codes
+
+| Code | Description |
+|------|-------------|
+| `200` | Success (read operations) |
+| `201` | Created (campaigns) |
+| `202` | Accepted (async generation started) |
+| `400` | Missing or invalid parameters |
+| `401` | Missing or invalid API key |
+| `402` | Insufficient credits |
+
+## Error format
+
+All errors return a consistent JSON structure:
+
+```json
+{
+  "error": "insufficient_credits",
+  "message": "This operation requires 6 credits but you have 2",
+  "setup": "/v1/api_keys"
+}
+```
+
+The `setup` field is included on `402` errors to help agents self-recover by initiating a top-up.
+
+## Async operations
+
+Generation endpoints (`/v1/videos/generate`, `/v1/images/generate`, `/v1/music/generate`) and account creation return `202 Accepted` with a job ID:
+
+```json
+{
+  "id": "vid_abc123",
+  "status": "pending",
+  "creditsCharged": 6
+}
+```
+
+Poll the corresponding list endpoint (`GET /v1/videos`, etc.) until `status` changes to `"completed"`.
+
+## CORS
+
+The API allows cross-origin requests from any origin. Allowed headers: `Content-Type`, `X-Api-Key`, `Authorization`.
+
+## Versioning
+
+Responses include the `VidJutsu-Version` header (`2026-03-25`) indicating the current API version.
+
+## Rate limits
+
+No rate limits are enforced during beta. Fair use applies.

@@ -1,0 +1,87 @@
+---
+title: "Authentication"
+description: "How to get and use your API key"
+---
+
+## Getting an API key
+
+VidJutsu uses a credit-based system with Stripe checkout. No sign-up form — just pay and get your key.
+
+### 1. Start checkout
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/api_keys \
+  -H "Content-Type: application/json" \
+  -d '{
+    "credits": 100,
+    "email": "you@example.com"
+  }'
+```
+
+This returns a Stripe checkout URL. Open it in your browser and pay with **any credit or debit card**.
+
+### 2. Get your API key
+
+After payment, poll the status endpoint with your session ID:
+
+```bash
+curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
+```
+
+```json
+{
+  "status": "completed",
+  "apiKey": "vj_live_abc123...",
+  "clientId": "cl_xyz789",
+  "balance": 100
+}
+```
+
+<Warning>
+Store your API key securely. It is shown **once** in this response. If you lose it, use `/v1/api_keys/recover` to get a recovery email, or rotate it with `/v1/api_keys/rotate`.
+</Warning>
+
+## Using your API key
+
+Pass the key in the `X-Api-Key` header on every request:
+
+```bash
+curl https://api.vidjutsu.ai/v1/balance \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+## Rotating your key
+
+If your key is compromised, rotate it. The old key is immediately invalidated.
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/api_keys/rotate \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+```json
+{
+  "apiKey": "vj_live_new_key...",
+  "clientId": "cl_xyz789",
+  "message": "API key rotated successfully. Old key is now invalid."
+}
+```
+
+## Recovering your key
+
+Lost your key? Request a recovery email:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/api_keys/recover \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "you@example.com" }'
+```
+
+## Payment methods
+
+**Available now:**
+- Any credit or debit card via Stripe (Visa, Mastercard, Amex, etc.)
+
+<Info>
+**Coming soon: MPP x402 protocol.** Native USDC payments directly from your agent — no checkout flow, no card required. Pay per-request with stablecoins.
+</Info>

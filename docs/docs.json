@@ -1,0 +1,186 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "sequoia",
+  "name": "VidJutsu",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1D4ED8"
+  },
+  "favicon": "/favicon.svg",
+  "api": {
+    "baseUrl": "https://api.vidjutsu.ai",
+    "auth": {
+      "method": "key",
+      "name": "X-Api-Key"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "quickstart",
+              "authentication",
+              "credits-and-billing"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "guides/launch-a-campaign",
+              "guides/manage-accounts",
+              "guides/schedule-posts"
+            ]
+          },
+          {
+            "group": "Content Generation",
+            "pages": [
+              "guides/generate-videos",
+              "guides/generate-images",
+              "guides/generate-music"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "API Keys",
+            "pages": [
+              "api-reference/api-keys/create",
+              "api-reference/api-keys/status",
+              "api-reference/api-keys/rotate",
+              "api-reference/api-keys/recover",
+              "api-reference/api-keys/balance",
+              "api-reference/api-keys/pricing"
+            ]
+          },
+          {
+            "group": "Videos",
+            "pages": [
+              "api-reference/videos/generate",
+              "api-reference/videos/list"
+            ]
+          },
+          {
+            "group": "Images",
+            "pages": [
+              "api-reference/images/generate",
+              "api-reference/images/list"
+            ]
+          },
+          {
+            "group": "Music",
+            "pages": [
+              "api-reference/music/generate",
+              "api-reference/music/list"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "pages": [
+              "api-reference/accounts/create",
+              "api-reference/accounts/list"
+            ]
+          },
+          {
+            "group": "Posts",
+            "pages": [
+              "api-reference/posts/create",
+              "api-reference/posts/list"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api-reference/campaigns/create",
+              "api-reference/campaigns/list",
+              "api-reference/campaigns/execute",
+              "api-reference/campaigns/cancel",
+              "api-reference/campaigns/estimate"
+            ]
+          },
+          {
+            "group": "Analysis",
+            "pages": [
+              "api-reference/analyze/analyze"
+            ]
+          },
+          {
+            "group": "Overlay",
+            "pages": [
+              "api-reference/overlay/overlay"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI Reference",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/index",
+              "cli/install",
+              "cli/auth",
+              "cli/generate",
+              "cli/accounts",
+              "cli/posts",
+              "cli/campaigns",
+              "cli/balance"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/tfcbot/vidjutsu-cli",
+          "icon": "github"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "Get API Key",
+      "href": "https://vidjutsu.ai"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/tfcbot/vidjutsu-cli"
+    }
+  }
+}

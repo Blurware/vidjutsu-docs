@@ -1,0 +1,105 @@
+---
+title: "Schedule Posts"
+description: "Schedule and manage posts across your managed accounts"
+---
+
+Once you have an [active account](/guides/manage-accounts) and generated content, schedule posts to publish automatically.
+
+## Schedule a post
+
+<CodeGroup>
+```bash CLI
+vidjutsu post schedule --account acc_8k2x --video vid_q9f3 --caption "Summer fits"
+```
+
+```bash API
+curl -X POST https://api.vidjutsu.ai/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "accountId": "acc_8k2x",
+    "videoId": "vid_q9f3",
+    "caption": "Summer fits"
+  }'
+```
+</CodeGroup>
+
+**Cost:** 3 credits per post.
+
+```json
+{
+  "id": "post_m2v1",
+  "status": "scheduled",
+  "creditsCharged": 3
+}
+```
+
+## Schedule for a specific time
+
+Pass a Unix timestamp to schedule for a future time:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "accountId": "acc_8k2x",
+    "videoId": "vid_q9f3",
+    "caption": "Summer fits",
+    "scheduledAt": "1711641600"
+  }'
+```
+
+If `scheduledAt` is not provided, the post is published as soon as possible.
+
+## List posts
+
+<CodeGroup>
+```bash CLI
+vidjutsu post list
+```
+
+```bash API
+curl https://api.vidjutsu.ai/v1/posts \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+</CodeGroup>
+
+```json
+{
+  "data": [
+    {
+      "postId": "post_m2v1",
+      "status": "scheduled",
+      "accountId": "acc_8k2x",
+      "videoId": "vid_q9f3",
+      "caption": "Summer fits"
+    }
+  ]
+}
+```
+
+## Post statuses
+
+| Status | Description |
+|--------|-------------|
+| `scheduled` | Queued for publishing |
+| `publishing` | Currently being posted |
+| `published` | Successfully posted |
+| `failed` | Post failed (check account status) |
+| `cancelled` | Post was cancelled |
+
+## Cancel a post
+
+<CodeGroup>
+```bash CLI
+vidjutsu post cancel post_m2v1
+```
+
+```bash API
+curl -X DELETE https://api.vidjutsu.ai/v1/posts/post_m2v1 \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+</CodeGroup>
+
+Only posts with `"scheduled"` status can be cancelled.

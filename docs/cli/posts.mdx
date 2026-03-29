@@ -1,0 +1,40 @@
+---
+title: "vidjutsu post"
+description: "Schedule and manage posts across your accounts"
+---
+
+## Schedule a post
+
+```bash
+vidjutsu post schedule --account acc_8k2x --video vid_q9f3 --caption "Summer fits"
+```
+
+### Options
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--account` | string | Account ID (required) |
+| `--video` | string | Video ID |
+| `--caption` | string | Post caption |
+
+**Cost:** 3 credits.
+
+## List posts
+
+```bash
+vidjutsu post list
+```
+
+## Get post status
+
+```bash
+vidjutsu post get post_m2v1
+```
+
+## Cancel a post
+
+```bash
+vidjutsu post cancel post_m2v1
+```
+
+Only posts with `"scheduled"` status can be cancelled.

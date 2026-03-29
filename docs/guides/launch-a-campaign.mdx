@@ -1,0 +1,146 @@
+---
+title: "Launch a Campaign"
+description: "End-to-end guide: create a campaign, order accounts, and start driving traffic"
+---
+
+A campaign provisions multiple managed accounts on TikTok or Instagram, each with video slots for posting. You create the campaign, review the cost, then execute it. VidJutsu handles account creation, warming, and provisioning via TokPortal.
+
+## Prerequisites
+
+- [Install the CLI](/cli/install) or use the API directly
+- [Authenticate](/authentication) with your API key
+- Sufficient credits (use the estimate endpoint to check)
+
+## Step 1: Estimate cost
+
+Preview how many credits a campaign will cost before committing:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/campaigns/estimate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "platform": "tiktok",
+    "accountCount": 5,
+    "postsPerAccount": 3
+  }'
+```
+
+```json
+{
+  "credits": 190,
+  "breakdown": [
+    { "label": "5 tiktok accounts", "amount": 160 },
+    { "label": "15 video slots", "amount": 30 }
+  ]
+}
+```
+
+### Credit costs
+
+| Item | Credits |
+|------|---------|
+| TikTok account | 32 (25 base + 7 niche warming) |
+| Instagram account | 72 (25 base + 7 niche + 40 deep warming) |
+| Video slot | 2 per post |
+| Edit slot (add-on) | 3 per post |
+| Comment moderation (add-on) | 25 per account |
+
+## Step 2: Create the campaign
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/campaigns \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "platform": "tiktok",
+    "accountCount": 3,
+    "postsPerAccount": 2,
+    "name": "NYC Summer",
+    "niche": "street fashion",
+    "accountProfiles": [
+      { "username": "style_nyc", "biography": "NYC street style", "linkInBio": "https://myshop.com" },
+      { "username": "fits_daily", "biography": "Daily outfit inspo" },
+      { "username": "drip_la", "biography": "LA drip" }
+    ]
+  }'
+```
+
+```json
+{
+  "id": "cmp_abc123",
+  "status": "draft",
+  "creditsCost": 108,
+  "breakdown": [
+    { "label": "3 tiktok accounts", "amount": 96 },
+    { "label": "6 video slots", "amount": 12 }
+  ],
+  "accounts": ["acc_xxx1", "acc_xxx2", "acc_xxx3"],
+  "posts": ["post_xxx1", "post_xxx2", "post_xxx3", "post_xxx4", "post_xxx5", "post_xxx6"]
+}
+```
+
+At this point the campaign is in `draft` status. Credits are reserved but accounts are not yet ordered. You can cancel to get a full refund.
+
+## Step 3: Execute the campaign
+
+When you're ready, execute the campaign to start provisioning accounts:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/campaigns/execute \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{ "campaignId": "cmp_abc123" }'
+```
+
+```json
+{
+  "campaignId": "cmp_abc123",
+  "status": "executing"
+}
+```
+
+## Step 4: Monitor progress
+
+Poll the campaign to see account and post statuses:
+
+```bash
+curl "https://api.vidjutsu.ai/v1/campaigns?id=cmp_abc123" \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+The response includes the campaign status plus all accounts and posts with their current states.
+
+## Campaign lifecycle
+
+| Status | What's happening |
+|--------|-----------------|
+| `draft` | Campaign created, credits reserved. Can be cancelled for full refund. |
+| `executing` | Ordering accounts from TokPortal. |
+| `provisioning` | Accounts are being set up on the platform. |
+| `warming` | Accounts exist and are warming up with organic activity. |
+| `ready` | All accounts are active and ready to post. |
+| `failed` | Something went wrong. Check `errorMessage`. |
+| `cancelled` | Campaign was cancelled, credits refunded. |
+
+<Warning>
+Account warming can take **up to 7 days**. The campaign will stay in `provisioning` or `warming` status during this period.
+</Warning>
+
+## Cancel a campaign
+
+Cancel a `draft` or `executing` campaign to get a full credit refund:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/campaigns/cancel \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{ "campaignId": "cmp_abc123" }'
+```
+
+```json
+{
+  "campaignId": "cmp_abc123",
+  "status": "cancelled",
+  "creditsRefunded": 108
+}
+```

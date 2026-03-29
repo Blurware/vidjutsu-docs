@@ -1,0 +1,950 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "VidJutsu API",
+    "version": "2026-03-25",
+    "description": "API for launching managed shortform campaigns on TikTok and Instagram."
+  },
+  "servers": [
+    { "url": "https://api.vidjutsu.ai" }
+  ],
+  "security": [
+    { "apiKey": [] }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" },
+          "message": { "type": "string" },
+          "setup": { "type": "string" }
+        },
+        "required": ["error", "message"]
+      }
+    }
+  },
+  "paths": {
+    "/v1/api_keys": {
+      "post": {
+        "operationId": "createApiKey",
+        "summary": "Create API key",
+        "description": "Start a Stripe checkout session to purchase credits with any card.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "credits": { "type": "integer", "default": 100, "description": "Number of credits to purchase. Each credit costs $0.10." },
+                  "email": { "type": "string", "description": "Email for receipt and key recovery." },
+                  "successUrl": { "type": "string", "description": "URL to redirect to after payment." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": { "type": "string", "description": "Stripe checkout URL." },
+                    "sessionId": { "type": "string", "description": "Session ID for polling /v1/api_keys/status." },
+                    "credits": { "type": "integer" },
+                    "amount": { "type": "integer", "description": "Total in cents (USD)." }
+                  },
+                  "required": ["url", "sessionId", "credits", "amount"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api_keys/status": {
+      "get": {
+        "operationId": "getApiKeyStatus",
+        "summary": "Check API key status",
+        "description": "Poll for checkout completion and API key.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "session",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Stripe session ID from /v1/auth/setup."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session status. When completed, returns the API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "enum": ["pending", "completed"] },
+                    "apiKey": { "type": "string", "description": "Your API key. Store it securely." },
+                    "clientId": { "type": "string" },
+                    "balance": { "type": "integer" },
+                    "isNew": { "type": "boolean" }
+                  },
+                  "required": ["status"]
+                }
+              }
+            }
+          },
+          "400": { "description": "Missing session parameter" }
+        }
+      }
+    },
+    "/v1/api_keys/rotate": {
+      "post": {
+        "operationId": "rotateApiKey",
+        "summary": "Rotate API key",
+        "description": "Invalidate current key and get a new one.",
+        "responses": {
+          "200": {
+            "description": "New key issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiKey": { "type": "string" },
+                    "clientId": { "type": "string" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["apiKey", "clientId", "message"]
+                }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid API key" }
+        }
+      }
+    },
+    "/v1/api_keys/recover": {
+      "post": {
+        "operationId": "recoverApiKey",
+        "summary": "Recover API key",
+        "description": "Request a recovery email.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recovery initiated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/balance": {
+      "get": {
+        "operationId": "getBalance",
+        "summary": "Get credit balance",
+        "responses": {
+          "200": {
+            "description": "Current balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "credits": { "type": "integer" },
+                    "clientId": { "type": "string" }
+                  },
+                  "required": ["credits", "clientId"]
+                }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid API key" }
+        }
+      }
+    },
+    "/v1/pricing": {
+      "get": {
+        "operationId": "getPricing",
+        "summary": "Get pricing",
+        "description": "Returns credit costs for all operations.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Pricing info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pricePerCredit": { "type": "string" },
+                    "costs": {
+                      "type": "object",
+                      "properties": {
+                        "videos.generate": { "type": "integer" },
+                        "images.generate": { "type": "integer" },
+                        "music.generate": { "type": "integer" },
+                        "accounts.create": { "type": "integer" },
+                        "posts.create": { "type": "integer" },
+                        "analyze": { "type": "integer" },
+                        "scrape": { "type": "integer" },
+                        "overlay": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/generate": {
+      "post": {
+        "operationId": "generateVideo",
+        "summary": "Generate video",
+        "description": "Generate a video from a text prompt or image. Costs 6 credits.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": { "type": "string", "description": "Text description of the video." },
+                  "model": { "type": "string", "enum": ["veo-3.1", "veo-3.1-fast"], "default": "veo-3.1" },
+                  "imageUrl": { "type": "string", "description": "Image URL for image-to-video mode." },
+                  "aspectRatio": { "type": "string", "description": "Aspect ratio (16:9, 9:16, 1:1)." },
+                  "duration": { "type": "integer", "description": "Duration in seconds." }
+                },
+                "required": ["prompt"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Generation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["pending"] },
+                    "model": { "type": "string" },
+                    "mode": { "type": "string", "enum": ["text-to-video", "image-to-video"] },
+                    "creditsCharged": { "type": "integer" }
+                  },
+                  "required": ["id", "status", "model", "mode", "creditsCharged"]
+                }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid API key" },
+          "402": { "description": "Insufficient credits" }
+        }
+      }
+    },
+    "/v1/videos": {
+      "get": {
+        "operationId": "listVideos",
+        "summary": "List videos",
+        "description": "List all videos for the authenticated client.",
+        "responses": {
+          "200": {
+            "description": "Video list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "videoId": { "type": "string" },
+                          "prompt": { "type": "string" },
+                          "model": { "type": "string" },
+                          "mode": { "type": "string" },
+                          "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+                          "resultUrl": { "type": "string" },
+                          "errorMessage": { "type": "string" },
+                          "creditsCharged": { "type": "integer" },
+                          "createdAt": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/images/generate": {
+      "post": {
+        "operationId": "generateImage",
+        "summary": "Generate image",
+        "description": "Generate an image from a text prompt. Costs 4 credits.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": { "type": "string", "description": "Text description of the image." },
+                  "imageInput": { "type": "string", "description": "Reference image URL for style transfer." },
+                  "aspectRatio": { "type": "string" },
+                  "resolution": { "type": "string", "enum": ["1K", "2K", "4K"], "default": "1K" },
+                  "outputFormat": { "type": "string", "enum": ["png", "jpg"], "default": "png" }
+                },
+                "required": ["prompt"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Generation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["pending"] },
+                    "model": { "type": "string", "enum": ["nano-banana-2"] },
+                    "creditsCharged": { "type": "integer" }
+                  },
+                  "required": ["id", "status", "model", "creditsCharged"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/images": {
+      "get": {
+        "operationId": "listImages",
+        "summary": "List images",
+        "responses": {
+          "200": {
+            "description": "Image list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "imageId": { "type": "string" },
+                          "prompt": { "type": "string" },
+                          "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+                          "resultUrls": { "type": "array", "items": { "type": "string" } },
+                          "createdAt": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/music/generate": {
+      "post": {
+        "operationId": "generateMusic",
+        "summary": "Generate music",
+        "description": "Generate a music track from a text prompt. Costs 3 credits.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": { "type": "string", "description": "Text description of the music." },
+                  "instrumental": { "type": "boolean", "default": true, "description": "Instrumental only (no vocals)." },
+                  "title": { "type": "string", "description": "Song title (custom mode)." },
+                  "style": { "type": "string", "description": "Style tags (custom mode)." }
+                },
+                "required": ["prompt"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Generation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["pending"] },
+                    "model": { "type": "string", "enum": ["V5"] },
+                    "creditsCharged": { "type": "integer" }
+                  },
+                  "required": ["id", "status", "model", "creditsCharged"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/music": {
+      "get": {
+        "operationId": "listMusic",
+        "summary": "List music",
+        "responses": {
+          "200": {
+            "description": "Music list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "trackId": { "type": "string" },
+                          "prompt": { "type": "string" },
+                          "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+                          "audioUrl": { "type": "string" },
+                          "imageUrl": { "type": "string" },
+                          "durationSeconds": { "type": "number" },
+                          "createdAt": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/analyze": {
+      "post": {
+        "operationId": "analyzeMedia",
+        "summary": "Analyze media",
+        "description": "Analyze media in critic, verify, or breakdown mode. Costs 1 credit.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mode": { "type": "string", "enum": ["critic", "verify", "breakdown"], "description": "Analysis mode." },
+                  "mediaUrl": { "type": "string", "description": "URL of media to analyze." },
+                  "mediaType": { "type": "string", "description": "Media type (for critic/verify modes)." },
+                  "context": { "type": "string", "description": "Additional context (critic mode)." },
+                  "description": { "type": "string", "description": "Expected description (verify mode)." },
+                  "keyframeDescriptions": { "type": "array", "items": { "type": "string" }, "description": "Keyframe descriptions (verify mode)." },
+                  "prompt": { "type": "string", "description": "Analysis prompt (breakdown mode)." }
+                },
+                "required": ["mode", "mediaUrl"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Analysis result (critic/verify modes)" },
+          "202": {
+            "description": "Analysis started (breakdown mode)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["pending"] },
+                    "creditsCharged": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid mode" }
+        }
+      }
+    },
+    "/v1/scrape": {
+      "post": {
+        "operationId": "scrape",
+        "summary": "Scrape creator data",
+        "description": "Scrape creator data from social platforms. Costs 1 credit.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "platform": { "type": "string", "description": "Platform (tiktok, instagram, youtube)." },
+                  "action": { "type": "string", "description": "Scrape action to perform." },
+                  "params": { "type": "object", "default": {}, "description": "Action-specific parameters." }
+                },
+                "required": ["platform", "action"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Scrape result" }
+        }
+      }
+    },
+    "/v1/overlay": {
+      "post": {
+        "operationId": "applyOverlay",
+        "summary": "Apply text overlay",
+        "description": "Apply a text overlay to a video. Costs 1 credit.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "videoUrl": { "type": "string", "description": "URL of the video." },
+                  "text": { "type": "string", "description": "Overlay text." },
+                  "position": { "type": "string", "description": "Text position." },
+                  "fontSize": { "type": "number", "description": "Font size." },
+                  "strokeThickness": { "type": "number", "description": "Stroke thickness." }
+                },
+                "required": ["videoUrl", "text"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Overlay result" },
+          "400": { "description": "Missing videoUrl or text" }
+        }
+      }
+    },
+    "/v1/accounts": {
+      "post": {
+        "operationId": "createAccount",
+        "summary": "Create account",
+        "description": "Create a managed account on TikTok or Instagram. Costs 10 credits. Warming takes up to 7 days.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "platform": { "type": "string", "enum": ["tiktok", "instagram"], "description": "Platform." },
+                  "name": { "type": "string", "description": "Account name." }
+                },
+                "required": ["platform", "name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Account creation started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["creating"] },
+                    "creditsCharged": { "type": "integer" }
+                  },
+                  "required": ["id", "status", "creditsCharged"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listAccounts",
+        "summary": "List accounts",
+        "responses": {
+          "200": {
+            "description": "Account list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "accountId": { "type": "string" },
+                          "platform": { "type": "string" },
+                          "name": { "type": "string" },
+                          "status": { "type": "string", "enum": ["creating", "active", "suspended", "deleted"] },
+                          "createdAt": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/posts": {
+      "post": {
+        "operationId": "createPost",
+        "summary": "Create post",
+        "description": "Schedule a post to a managed account. Costs 3 credits.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountId": { "type": "string", "description": "Account ID to post to." },
+                  "videoId": { "type": "string", "description": "Video ID to post." },
+                  "caption": { "type": "string", "description": "Post caption." },
+                  "scheduledAt": { "type": "number", "description": "Unix timestamp. If omitted, posts ASAP." }
+                },
+                "required": ["accountId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Post scheduled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["scheduled"] },
+                    "creditsCharged": { "type": "integer" }
+                  },
+                  "required": ["id", "status", "creditsCharged"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listPosts",
+        "summary": "List posts",
+        "responses": {
+          "200": {
+            "description": "Post list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "postId": { "type": "string" },
+                          "accountId": { "type": "string" },
+                          "videoId": { "type": "string" },
+                          "caption": { "type": "string" },
+                          "scheduledAt": { "type": "number" },
+                          "status": { "type": "string", "enum": ["scheduled", "posting", "posted", "failed", "cancelled"] },
+                          "createdAt": { "type": "number" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/campaigns": {
+      "post": {
+        "operationId": "createCampaign",
+        "summary": "Create campaign",
+        "description": "Create a campaign in draft status. Reserves credits upfront based on account count, posts per account, platform, and add-ons. Creates placeholder accounts and posts.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "platform": { "type": "string", "enum": ["tiktok", "instagram"], "description": "Target platform." },
+                  "accountCount": { "type": "integer", "minimum": 1, "maximum": 50, "description": "Number of accounts to provision." },
+                  "postsPerAccount": { "type": "integer", "minimum": 1, "maximum": 20, "description": "Video slots per account." },
+                  "name": { "type": "string", "description": "Campaign name." },
+                  "niche": { "type": "string", "description": "Niche for account warming." },
+                  "country": { "type": "string", "description": "Country code (default: US)." },
+                  "accountProfiles": {
+                    "type": "array",
+                    "description": "Profile config per account (index-matched to accounts).",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "username": { "type": "string" },
+                        "visibleName": { "type": "string" },
+                        "biography": { "type": "string" },
+                        "profilePictureUrl": { "type": "string" },
+                        "linkInBio": { "type": "string" }
+                      }
+                    }
+                  },
+                  "addOns": {
+                    "type": "object",
+                    "properties": {
+                      "editSlots": { "type": "boolean", "description": "Add edit slots (3 credits/post)." },
+                      "commentModeration": { "type": "boolean", "description": "Add comment moderation (25 credits/account)." }
+                    }
+                  }
+                },
+                "required": ["platform", "accountCount", "postsPerAccount"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Campaign created in draft status with cost breakdown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "status": { "type": "string", "enum": ["draft"] },
+                    "creditsCost": { "type": "integer" },
+                    "breakdown": { "type": "array", "items": { "type": "object", "properties": { "label": { "type": "string" }, "amount": { "type": "integer" } } } },
+                    "accounts": { "type": "array", "items": { "type": "string" }, "description": "Placeholder account IDs." },
+                    "posts": { "type": "array", "items": { "type": "string" }, "description": "Placeholder post IDs." }
+                  },
+                  "required": ["id", "status", "creditsCost", "breakdown", "accounts", "posts"]
+                }
+              }
+            }
+          },
+          "402": { "description": "Insufficient credits. Response includes required amount and cost breakdown." }
+        }
+      },
+      "get": {
+        "operationId": "listOrGetCampaign",
+        "summary": "List campaigns or get single campaign",
+        "description": "Without ?id param: list all campaigns. With ?id=cmp_xxx: get single campaign with accounts and posts progress.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Campaign ID. If provided, returns single campaign with full progress."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign list or single campaign with progress",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array", "description": "Campaign list (when no ?id param)." },
+                    "campaign": { "type": "object", "description": "Single campaign (when ?id is provided)." },
+                    "accounts": { "type": "array", "description": "Campaign accounts (when ?id is provided)." },
+                    "posts": { "type": "array", "description": "Campaign posts (when ?id is provided)." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/campaigns/execute": {
+      "post": {
+        "operationId": "executeCampaign",
+        "summary": "Execute campaign",
+        "description": "Begin campaign execution. Transitions from draft to executing, starts TokPortal account ordering.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "campaignId": { "type": "string", "description": "Campaign ID to execute." }
+                },
+                "required": ["campaignId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Execution started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "campaignId": { "type": "string" },
+                    "status": { "type": "string", "enum": ["executing"] }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Campaign not in draft status" }
+        }
+      }
+    },
+    "/v1/campaigns/cancel": {
+      "post": {
+        "operationId": "cancelCampaign",
+        "summary": "Cancel campaign",
+        "description": "Cancel a campaign in draft or executing status. Refunds all reserved credits.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "campaignId": { "type": "string" }
+                },
+                "required": ["campaignId"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign cancelled and credits refunded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "campaignId": { "type": "string" },
+                    "status": { "type": "string", "enum": ["cancelled"] },
+                    "creditsRefunded": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/campaigns/estimate": {
+      "post": {
+        "operationId": "estimateCampaign",
+        "summary": "Estimate campaign cost",
+        "description": "Preview campaign credit cost without creating anything. No authentication required.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "platform": { "type": "string", "enum": ["tiktok", "instagram"] },
+                  "accountCount": { "type": "integer", "minimum": 1, "maximum": 50 },
+                  "postsPerAccount": { "type": "integer", "minimum": 1, "maximum": 20 },
+                  "addOns": {
+                    "type": "object",
+                    "properties": {
+                      "editSlots": { "type": "boolean" },
+                      "commentModeration": { "type": "boolean" }
+                    }
+                  }
+                },
+                "required": ["platform"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cost estimate with breakdown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "credits": { "type": "integer" },
+                    "breakdown": { "type": "array", "items": { "type": "object", "properties": { "label": { "type": "string" }, "amount": { "type": "integer" } } } }
+                  },
+                  "required": ["credits", "breakdown"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

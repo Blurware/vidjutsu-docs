@@ -1,0 +1,51 @@
+---
+title: "vidjutsu balance, topup & status"
+description: "Check balance, add credits, and look up any resource"
+---
+
+## Check balance
+
+```bash
+vidjutsu balance
+```
+
+```json
+{
+  "credits": 84,
+  "clientId": "cl_xyz789"
+}
+```
+
+## Top up
+
+Add credits to your account:
+
+```bash
+vidjutsu topup 500
+```
+
+This initiates a Stripe checkout. Pay with any credit or debit card.
+
+## Check any resource status
+
+Look up any resource by its ID prefix:
+
+```bash
+vidjutsu status vid_abc123
+vidjutsu status img_xyz789
+vidjutsu status trk_def456
+vidjutsu status acc_8k2x
+vidjutsu status post_m2v1
+vidjutsu status cmp_abc123
+```
+
+The `status` command auto-detects the resource type from the ID prefix and calls the appropriate endpoint.
+
+| Prefix | Resource |
+|--------|----------|
+| `vid_` | Video |
+| `img_` | Image |
+| `trk_` | Music track |
+| `acc_` | Account |
+| `post_` | Post |
+| `cmp_` | Campaign |

@@ -1,0 +1,122 @@
+---
+title: "Managed Accounts"
+description: "How managed accounts work on TikTok and Instagram"
+---
+
+VidJutsu provisions fully managed shortform accounts on TikTok and Instagram. You order accounts, we handle creation, warming, and maintenance.
+
+## What are managed accounts?
+
+Managed accounts are purpose-built social media profiles for campaigns:
+
+- **Theme pages** — Curated content around a niche (fashion, travel, fitness, tech)
+- **Fan accounts** — Fan pages for artists, athletes, shows, or brands
+- **Clip pages** — Compilation and highlight reels (sports clips, movie scenes, podcast cuts)
+- **Promo pages** — Dedicated accounts that drive traffic to your link, shop, or digital product
+
+You choose the platform and name. We provision the account, warm it up with organic-looking activity, and maintain it.
+
+## Supported platforms
+
+| Platform | Status |
+|----------|--------|
+| TikTok | Available |
+| Instagram | Available |
+
+## How warming works
+
+After an account is created, it goes through a warming period before it's ready to post. During warming, the account builds organic-looking activity to establish credibility on the platform.
+
+<Warning>
+**Warming can take up to 7 days.** Don't schedule posts until an account reaches `"active"` status. Posting during warmup can trigger platform flags.
+</Warning>
+
+## Account lifecycle
+
+| Status | Description |
+|--------|-------------|
+| `creating` | Account is being provisioned |
+| `active` | Ready to post — schedule content now |
+| `suspended` | Temporarily paused (platform action) |
+| `deleted` | Account has been removed |
+
+## Create an account
+
+The API accepts two fields: `platform` and `name`.
+
+<CodeGroup>
+```bash CLI
+vidjutsu account create --platform tiktok --name "nyc_streetstyle"
+```
+
+```bash API
+curl -X POST https://api.vidjutsu.ai/v1/accounts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "platform": "tiktok",
+    "name": "nyc_streetstyle"
+  }'
+```
+</CodeGroup>
+
+**Cost:** 10 credits per account.
+
+```json
+{
+  "id": "acc_8k2x",
+  "status": "creating",
+  "creditsCharged": 10
+}
+```
+
+## Build a network
+
+Most campaigns use multiple accounts to amplify reach:
+
+```bash
+vidjutsu account create --platform tiktok --name "style_la"
+vidjutsu account create --platform tiktok --name "fits_daily"
+vidjutsu account create --platform instagram --name "drip_atl"
+```
+
+Each account drives traffic to the same destination — your link, shop, or product.
+
+## List your accounts
+
+<CodeGroup>
+```bash CLI
+vidjutsu account list
+```
+
+```bash API
+curl https://api.vidjutsu.ai/v1/accounts \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+</CodeGroup>
+
+```json
+{
+  "data": [
+    {
+      "accountId": "acc_8k2x",
+      "platform": "tiktok",
+      "name": "nyc_streetstyle",
+      "status": "active"
+    },
+    {
+      "accountId": "acc_9m3y",
+      "platform": "instagram",
+      "name": "drip_atl",
+      "status": "creating"
+    }
+  ]
+}
+```
+
+## Best practices
+
+- **Order accounts early.** Warming takes up to 7 days, so provision accounts before you need them.
+- **Use descriptive names.** Account names help you identify which account is which when scheduling posts.
+- **Spread across platforms.** Use both TikTok and Instagram to maximize campaign reach.
+- **Wait for `active` status.** Never schedule posts to accounts that are still warming.

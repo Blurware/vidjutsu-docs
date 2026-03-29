@@ -1,0 +1,50 @@
+---
+title: "Generate Music"
+description: "Create music tracks for your video content"
+---
+
+Generate background music, full tracks, or instrumentals for your campaign videos.
+
+## Generate a track
+
+<CodeGroup>
+```bash CLI
+vidjutsu music generate --prompt "Upbeat lo-fi hip hop for a fashion montage"
+```
+
+```bash API
+curl -X POST https://api.vidjutsu.ai/v1/music/generate \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "prompt": "Upbeat lo-fi hip hop for a fashion montage",
+    "instrumental": true
+  }'
+```
+</CodeGroup>
+
+**Cost:** 3 credits.
+
+## Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `prompt` | string | required | Describe the music you want |
+| `instrumental` | boolean | `true` | Set `false` to include vocals |
+| `title` | string | — | Song title (custom mode) |
+| `style` | string | — | Style tags (custom mode) |
+
+## Check status
+
+<CodeGroup>
+```bash CLI
+vidjutsu music list
+```
+
+```bash API
+curl https://api.vidjutsu.ai/v1/music \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+</CodeGroup>
+
+When `status` is `"completed"`, `audioUrl` contains your track.

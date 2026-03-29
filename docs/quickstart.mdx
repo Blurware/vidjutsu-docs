@@ -1,0 +1,117 @@
+---
+title: "Quickstart"
+description: "Get your API key and launch your first campaign in minutes"
+---
+
+## Option A: Use the CLI
+
+The fastest way to get started. Install the CLI and authenticate in one step.
+
+```bash
+curl -fsSL https://vidjutsu.ai/install.sh | bash
+```
+
+Then authenticate with your card:
+
+```bash
+vidjutsu auth --card tok_live_your_card_token
+```
+
+Generate a video:
+
+```bash
+vidjutsu generate --prompt "Street style lookbook, NYC summer" --aspect 9:16
+```
+
+See the [CLI reference](/cli/index) for all commands.
+
+---
+
+## Option B: Use the API directly
+
+### 1. Top up credits
+
+Start a Stripe checkout session. Pay with any credit or debit card.
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/api_keys \
+  -H "Content-Type: application/json" \
+  -d '{
+    "credits": 100,
+    "email": "you@example.com"
+  }'
+```
+
+```json
+{
+  "url": "https://checkout.stripe.com/...",
+  "sessionId": "cs_...",
+  "credits": 100,
+  "amount": 1000
+}
+```
+
+Open the returned URL in your browser to complete payment.
+
+### 2. Get your API key
+
+After payment, poll the status endpoint:
+
+```bash
+curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
+```
+
+```json
+{
+  "status": "completed",
+  "apiKey": "vj_live_abc123...",
+  "clientId": "...",
+  "balance": 100
+}
+```
+
+<Warning>
+Store your API key securely — it is shown once in this response.
+</Warning>
+
+### 3. Generate a video
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/videos/generate \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "prompt": "A drone shot flying over a mountain lake at sunrise",
+    "model": "veo-3.1"
+  }'
+```
+
+```json
+{
+  "id": "vid_abc123",
+  "status": "pending",
+  "model": "veo-3.1",
+  "mode": "text-to-video",
+  "creditsCharged": 6
+}
+```
+
+### 4. Check the result
+
+```bash
+curl https://api.vidjutsu.ai/v1/videos \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+When `status` is `"completed"`, the `resultUrl` field contains your video.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Launch a campaign" icon="rocket" href="/guides/launch-a-campaign">
+    Order accounts, generate content, and schedule posts.
+  </Card>
+  <Card title="CLI reference" icon="terminal" href="/cli/index">
+    Full command reference for the VidJutsu CLI.
+  </Card>
+</CardGroup>

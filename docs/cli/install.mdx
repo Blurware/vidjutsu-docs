@@ -1,0 +1,65 @@
+---
+title: "Installation"
+description: "Install the VidJutsu CLI on macOS or Linux"
+---
+
+## One-line install
+
+```bash
+curl -fsSL https://vidjutsu.ai/install.sh | bash
+```
+
+The installer:
+- Detects your OS (macOS or Linux) and architecture (x64 or ARM64)
+- Installs prerequisites if missing (Node.js, Bun, TypeScript)
+- Downloads the latest VidJutsu binary from GitHub releases
+- Verifies the SHA-256 checksum
+- Installs to `/usr/local/bin` (or `~/.local/bin` as fallback)
+
+## Pin a specific version
+
+```bash
+VERSION=0.1.0 curl -fsSL https://vidjutsu.ai/install.sh | bash
+```
+
+## Manual install
+
+Download the binary for your platform from [GitHub releases](https://github.com/tfcbot/vidjutsu-cli/releases):
+
+| Platform | Binary |
+|----------|--------|
+| macOS ARM64 (Apple Silicon) | `vidjutsu-darwin-arm64` |
+| macOS x64 (Intel) | `vidjutsu-darwin-x64` |
+| Linux x64 | `vidjutsu-linux-x64` |
+| Linux ARM64 | `vidjutsu-linux-arm64` |
+
+```bash
+# Example: macOS Apple Silicon
+curl -fsSL https://github.com/tfcbot/vidjutsu-cli/releases/latest/download/vidjutsu-darwin-arm64 -o vidjutsu
+chmod +x vidjutsu
+sudo mv vidjutsu /usr/local/bin/
+```
+
+## Verify installation
+
+```bash
+vidjutsu --help
+```
+
+```
+Launch fully managed shortform channels. Give your agent powers. (vidjutsu v0.1.0)
+
+USAGE vidjutsu auth|generate|images|music|account|post|campaign|status|balance|topup|chat|info
+```
+
+## Requirements
+
+- **macOS** 12+ or **Linux** (Ubuntu 20.04+, Debian 11+, Fedora 36+, Arch)
+- The installer handles Node.js, Bun, and TypeScript automatically
+
+## Uninstall
+
+```bash
+sudo rm /usr/local/bin/vidjutsu
+rm -rf ~/.vidjutsu
+```

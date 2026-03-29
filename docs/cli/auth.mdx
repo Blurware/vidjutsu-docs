@@ -1,0 +1,50 @@
+---
+title: "vidjutsu auth"
+description: "Authenticate with your payment credential"
+---
+
+## Usage
+
+```bash
+vidjutsu auth [--card <token> | --wallet <address>]
+```
+
+## Authenticate with a card
+
+Pay with any credit or debit card via Stripe:
+
+```bash
+vidjutsu auth --card tok_live_xxxx
+```
+
+```
+Authenticated with card payment method.
+```
+
+Your credential is stored at `~/.vidjutsu/config.json` and sent as the `X-Payment` header on every request.
+
+## Authenticate with a wallet
+
+<Info>
+**Coming soon.** MPP x402 USDC payments are not yet available. This flag is reserved for future use.
+</Info>
+
+```bash
+vidjutsu auth --wallet 0xYourWalletAddress
+```
+
+## Check current auth
+
+Run without arguments to see your current authentication status:
+
+```bash
+vidjutsu auth
+```
+
+```
+Current auth: card:****
+```
+
+## Switching credentials
+
+Run `vidjutsu auth` again with a new credential to replace the existing one.

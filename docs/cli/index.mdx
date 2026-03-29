@@ -1,0 +1,63 @@
+---
+title: "CLI Overview"
+description: "The VidJutsu command-line interface"
+---
+
+The VidJutsu CLI lets you run campaigns from your terminal. It's a lightweight wrapper around the [REST API](/api-reference/introduction) — every CLI command maps to an API call to `api.vidjutsu.ai`.
+
+## Install
+
+```bash
+curl -fsSL https://vidjutsu.ai/install.sh | bash
+```
+
+See [installation](/cli/install) for details and manual install options.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`vidjutsu auth`](/cli/auth) | Authenticate with your payment credential |
+| [`vidjutsu generate`](/cli/generate) | Generate a video |
+| [`vidjutsu images`](/cli/generate#images) | Generate, list, or get images |
+| [`vidjutsu music`](/cli/generate#music) | Generate, list, or get music |
+| [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete accounts |
+| [`vidjutsu post`](/cli/posts) | Schedule, list, get, or cancel posts |
+| [`vidjutsu campaign`](/cli/campaigns) | Create, list, or get campaigns |
+| [`vidjutsu balance`](/cli/balance) | Check your credit balance |
+| [`vidjutsu topup`](/cli/balance#top-up) | Add credits to your balance |
+| [`vidjutsu status`](/cli/balance#status) | Check any resource status by ID |
+| `vidjutsu chat` | Chat with the VidJutsu AI agent |
+| `vidjutsu info` | Show API discovery info |
+
+## Quick example
+
+```bash
+# Authenticate
+vidjutsu auth --card tok_live_xxxx
+
+# Top up credits
+vidjutsu topup 100
+
+# Create an account
+vidjutsu account create --platform tiktok --name "style_la"
+
+# Generate a video
+vidjutsu generate --prompt "Street style lookbook" --aspect 9:16
+
+# Schedule a post
+vidjutsu post schedule --account acc_8k2x --video vid_q9f3
+```
+
+## Configuration
+
+The CLI stores its config at `~/.vidjutsu/config.json`:
+
+```json
+{
+  "apiUrl": "https://api.vidjutsu.ai",
+  "payment": "card:tok_live_xxxx"
+}
+```
+
+All output is JSON by default, making it easy to pipe into `jq` or other tools.
