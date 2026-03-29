@@ -3,7 +3,7 @@ const FEATURES = [
     title: "Managed accounts",
     desc: "Theme pages, fan accounts, clip pages on TikTok and Instagram. Warming takes up to 7 days.",
     endpoint: "POST /v1/accounts",
-    credits: "10 credits",
+    credits: "32 credits",
   },
   {
     title: "Video generation",
@@ -31,9 +31,9 @@ const FEATURES = [
   },
   {
     title: "Campaigns",
-    desc: "Group accounts, content, and posts into campaigns for tracking.",
+    desc: "Bundle accounts, content, and scheduling into an end-to-end campaign.",
     endpoint: "POST /v1/campaigns",
-    credits: "Free",
+    credits: "varies",
   },
 ];
 
