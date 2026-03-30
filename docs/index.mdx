@@ -3,7 +3,7 @@ title: "Introduction"
 description: "Launch fully managed shortform campaigns. Give your agent powers."
 ---
 
-VidJutsu is an API and CLI for launching managed shortform campaigns end-to-end. Top up credits, order accounts, generate content, schedule posts, and drive traffic to any link — all from a single interface.
+VidJutsu is an API and CLI for launching managed shortform campaigns end-to-end. Top up credits, order accounts, schedule posts, and drive traffic to any link — all from a single interface.
 
 ## Base URL
 
@@ -17,14 +17,14 @@ https://api.vidjutsu.ai
   <Card title="Order accounts" icon="user-plus" href="/guides/manage-accounts">
     Provision managed TikTok and Instagram accounts that warm up automatically.
   </Card>
-  <Card title="Generate content" icon="video" href="/guides/generate-videos">
-    Create videos, images, and music with a single API call. Every asset is campaign-ready.
-  </Card>
   <Card title="Schedule posts" icon="calendar" href="/guides/schedule-posts">
     Schedule posts across your network of accounts. Set it and let your agent run it.
   </Card>
   <Card title="Launch campaigns" icon="rocket" href="/guides/launch-a-campaign">
     Combine accounts, content, and scheduling into an end-to-end campaign.
+  </Card>
+  <Card title="Analyze content" icon="chart-line" href="/api-reference/analyze/analyze">
+    Analyze media performance and get actionable insights.
   </Card>
 </CardGroup>
 
@@ -33,7 +33,7 @@ https://api.vidjutsu.ai
 1. **Top up credits** — `POST /v1/api_keys` with your email. Pay with any card via Stripe.
 2. **Get your API key** — Poll `GET /v1/api_keys/status` after payment. Your key is returned in the response.
 3. **Make requests** — Pass your API key in the `X-Api-Key` header with every request.
-4. **Poll for results** — Generation endpoints return `202 Accepted` with a job ID. Use list endpoints to check status.
+4. **Poll for results** — Async endpoints return `202 Accepted` with a job ID. Use list endpoints to check status.
 
 ## Pricing
 
