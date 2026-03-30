@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Campaign Management Skill — VidJutsu",
   description:
-    "Agent skill for orchestrating multi-account campaigns across Instagram and TikTok via the VidJutsu API.",
+    "Agent skill for orchestrating multi-account campaigns across Instagram via the VidJutsu API.",
 };
 
 export default function CampaignManagement() {

@@ -3,7 +3,7 @@ title: "Launch a Campaign"
 description: "End-to-end guide: create a campaign, order accounts, and start driving traffic"
 ---
 
-A campaign provisions multiple managed accounts on TikTok or Instagram, each with video slots for posting. You create the campaign, review the cost, then execute it. VidJutsu handles account creation, warming, and provisioning via TokPortal.
+A campaign provisions multiple managed accounts on Instagram, each with video slots for posting. You create the campaign, review the cost, then execute it. VidJutsu handles account creation, warming, and provisioning via TokPortal.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ Preview how many credits a campaign will cost before committing:
 curl -X POST https://api.vidjutsu.ai/v1/campaigns/estimate \
   -H "Content-Type: application/json" \
   -d '{
-    "platform": "tiktok",
+    "platform": "instagram",
     "accountCount": 5,
     "postsPerAccount": 3
   }'
@@ -29,7 +29,7 @@ curl -X POST https://api.vidjutsu.ai/v1/campaigns/estimate \
 {
   "credits": 190,
   "breakdown": [
-    { "label": "5 tiktok accounts", "amount": 160 },
+    { "label": "5 instagram accounts", "amount": 160 },
     { "label": "15 video slots", "amount": 30 }
   ]
 }
@@ -39,7 +39,6 @@ curl -X POST https://api.vidjutsu.ai/v1/campaigns/estimate \
 
 | Item | Credits |
 |------|---------|
-| TikTok account | 32 (25 base + 7 niche warming) |
 | Instagram account | 72 (25 base + 7 niche + 40 deep warming) |
 | Video slot | 2 per post |
 | Edit slot (add-on) | 3 per post |
@@ -52,7 +51,7 @@ curl -X POST https://api.vidjutsu.ai/v1/campaigns \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "platform": "tiktok",
+    "platform": "instagram",
     "accountCount": 3,
     "postsPerAccount": 2,
     "name": "NYC Summer",
@@ -71,7 +70,7 @@ curl -X POST https://api.vidjutsu.ai/v1/campaigns \
   "status": "draft",
   "creditsCost": 108,
   "breakdown": [
-    { "label": "3 tiktok accounts", "amount": 96 },
+    { "label": "3 instagram accounts", "amount": 96 },
     { "label": "6 video slots", "amount": 12 }
   ],
   "accounts": ["acc_xxx1", "acc_xxx2", "acc_xxx3"],
