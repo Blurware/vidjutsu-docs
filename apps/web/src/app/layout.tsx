@@ -8,13 +8,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "VidJutsu — Managed Instagram Pages That Drive Traffic to Your Link",
+  title: "VidJutsu — Let Your Agent Earn Digital Income for You",
   description:
-    "Your agent posts twice a day, tracks what works, and sends traffic to your link. API key, niche, link — that's all it needs.",
+    "Your agent researches your niche, writes the creative brief, reviews every video, posts daily, and tells you what's working. $99 to start, $96/week to run.",
   openGraph: {
-    title: "VidJutsu — Managed Instagram Pages That Drive Traffic to Your Link",
+    title: "VidJutsu — Let Your Agent Earn Digital Income for You",
     description:
-      "Your agent posts twice a day, tracks what works, and sends traffic to your link. API key, niche, link — that's all it needs.",
+      "Your agent researches your niche, writes the creative brief, reviews every video, posts daily, and tells you what's working. $99 to start, $96/week to run.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",

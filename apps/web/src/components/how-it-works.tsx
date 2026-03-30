@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Drop your link",
-    desc: "Your store, community, booking page — wherever you want traffic.",
+    title: "Drop your offer link and brand guidelines",
+    desc: "Your Stan Store, Skool, Shopify, Calendly — plus your brand voice, colors, and audience. Your agent uses this to shape every brief.",
   },
   {
     num: "02",
-    title: "Pick a niche",
-    desc: "Choose your niche and video style. Your agent sets both via the API.",
+    title: "Account goes live, briefs land",
+    desc: "Your agent provisions a managed Instagram account and delivers your first round of 14 creative briefs tailored to your product.",
   },
   {
     num: "03",
-    title: "Agent runs the loop",
-    desc: "Research. Generate. Post twice a day. Track performance. Improve. Repeat.",
+    title: "Submit videos, agent adds captions and posts",
+    desc: "Upload your videos. Agent QAs them, writes captions, schedules daily posts, and tracks what drives clicks.",
   },
 ];
 
