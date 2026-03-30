@@ -18,18 +18,19 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Managed Instagram Pages
+            Agent-powered Instagram growth
           </p>
 
           <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-[-0.03em] mb-6">
-            Let your agent
+            Scale a new Instagram
             <br />
-            market for you
+            growth channel with your agent
           </h1>
 
-          <p className="text-ink-muted text-[15px] sm:text-base leading-relaxed max-w-md mx-auto mb-8">
-            Give your agent an API key and a niche. It posts twice a day to
-            Instagram, tracks what works, and sends traffic to your link.
+          <p className="text-ink-muted text-[15px] sm:text-base leading-relaxed max-w-lg mx-auto mb-8">
+            Drop your offer link and brand guidelines. Your agent researches
+            your niche, writes weekly briefs, reviews every video, posts daily,
+            and optimizes based on what drives clicks.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">

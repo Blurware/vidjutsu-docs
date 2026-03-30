@@ -3,10 +3,10 @@ export function CtaBanner() {
     <section className="px-5 sm:px-8 py-20 sm:py-28 border-t border-border">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-          Give your agent a page to run
+          Your agent is ready to earn
         </h2>
         <p className="text-ink-muted text-sm sm:text-base mb-8">
-          API key. Niche. Link. Your agent handles the rest.
+          $99 to start. First round of briefs included. Videos are on you — everything else is handled.
         </p>
 
         <div className="flex justify-center gap-3">

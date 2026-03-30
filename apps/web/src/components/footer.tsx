@@ -26,13 +26,10 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold mb-4">Skills</h4>
             <ul className="space-y-2.5">
-              <li><a href="/skills/video-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Video Generation</a></li>
-              <li><a href="/skills/image-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Image Generation</a></li>
-              <li><a href="/skills/music-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Music Generation</a></li>
               <li><a href="/skills/niche-research" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Niche Research</a></li>
+              <li><a href="/skills/media-analysis" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Media Analysis</a></li>
               <li><a href="/skills/account-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Account Management</a></li>
               <li><a href="/skills/campaign-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Campaign Management</a></li>
-              <li><a href="/skills/media-analysis" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Media Analysis</a></li>
               <li><a href="/skills/storefront" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Storefront</a></li>
               <li><a href="/skills/clipper" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Clipper</a></li>
               <li><a href="/skills/community" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Community</a></li>

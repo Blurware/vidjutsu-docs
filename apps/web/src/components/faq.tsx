@@ -4,32 +4,32 @@ import { useState } from "react";
 
 const FAQS = [
   {
+    q: "What's in a round?",
+    a: "14 researched creative briefs mapped to your product, video QA on every submission, 2 posts per day for 7 days, and a weekly performance reflection that shapes the next round.",
+  },
+  {
+    q: "Do I have to make the videos myself?",
+    a: "Yes — but your agent tells you exactly what to make. Each brief includes the hook, talking points, CTA, and visual setting. Use any tool you want: your phone, CapCut, Runway, Kling, whatever.",
+  },
+  {
+    q: "What if my video fails QA?",
+    a: "Your agent tells you what's wrong — weak hook, AI artifacts, wrong format. Fix it and resubmit. Nothing goes live until it passes.",
+  },
+  {
+    q: "How does billing work?",
+    a: "No subscription. $99 gets your account provisioned with your first round of briefs. After that, order rounds at $96/week whenever you're ready. Pause anytime.",
+  },
+  {
     q: "Does this work with my agent?",
-    a: "Yes. Any agent that can make HTTP requests can use VidJutsu. One API key gives access to accounts, content, posting, and analytics.",
+    a: "Yes. Any agent that can make HTTP requests can use VidJutsu. Claude, GPT, custom agents — one API key gives access to everything.",
   },
   {
-    q: "Is this for humans or agents?",
-    a: "Agents. VidJutsu is an API. Your agent provisions accounts, generates content, schedules posts, and tracks performance. There's no dashboard — your agent is the interface.",
-  },
-  {
-    q: "What type of videos get posted?",
-    a: "You pick a style — UGC, animation, or slideshows. Videos are short-form, 0-15 seconds, with editing and captioning included. You can also bring your own videos.",
+    q: "What analytics do I get?",
+    a: "Post-level views, clicks, and engagement. Your agent analyzes which awareness levels, hooks, and topics drove traffic to your link. You can query insights anytime, not just at the end of a round.",
   },
   {
     q: "How long before the page starts posting?",
-    a: "Accounts warm for up to 7 days first. No content goes out until the account is ready. If a shadow ban is detected, the agent replaces the account automatically.",
-  },
-  {
-    q: "What is the learning loop?",
-    a: "Research what works. Generate content to match. Post it. Track performance. Feed that data back into the next round. Every cycle makes the content better.",
-  },
-  {
-    q: "Will these accounts get banned?",
-    a: "Every order goes through an initial review to avoid creating accounts with a high chance of getting banned. Accounts are managed by real people, not bots. If an account does get banned, it gets replaced.",
-  },
-  {
-    q: "What does my agent need to get started?",
-    a: "An API key, a niche, and a link. The agent calls the account endpoint, warming starts, and posting begins when the account is ready.",
+    a: "Accounts warm for up to 7 days. Your first round of briefs is delivered immediately so you can start making videos while the account warms.",
   },
 ];
 

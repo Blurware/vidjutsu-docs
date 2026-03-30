@@ -7,48 +7,49 @@ const EXAMPLES = [
     label: "Stan Store",
     lines: [
       "researching digital product niches...",
-      "generating 8 videos for content bank...",
-      "posting to @creator_toolkit_daily...",
-      "analyzing post performance...",
-      "traffic to stan.store/yourproduct: 24 visits",
-      "posting to @creator_toolkit_daily...",
-      "traffic to stan.store/yourproduct: 47 visits",
+      "analyzing top 12 reels from this week...",
+      "writing 14 briefs across awareness levels...",
+      "brief ready — 3 unaware, 3 problem, 3 solution, 3 product, 2 direct",
+      "reviewing submitted video 1/14... passed",
+      "reviewing submitted video 2/14... hook too slow, rejected",
+      "scheduling 13 posts to @creator_toolkit_daily...",
+      "week 1 results: 18.2k views, 94 link clicks",
     ],
   },
   {
     label: "Skool",
     lines: [
       "researching fitness coaching niche...",
-      "generating 10 videos for content bank...",
-      "posting to @fit_coach_tips...",
-      "analyzing post performance...",
-      "traffic to skool.com/your-community: 31 visits",
-      "posting to @fit_coach_tips...",
-      "traffic to skool.com/your-community: 58 visits",
+      "analyzing top 10 reels from this week...",
+      "writing 14 briefs mapped to skool.com/your-community...",
+      "brief ready — hooks, talking points, CTAs per awareness level",
+      "reviewing 14 submitted videos... 12 passed, 2 rejected",
+      "scheduling 12 posts to @fit_coach_tips...",
+      "week 1 results: 24.1k views, 58 clicks, 6 new members",
     ],
   },
   {
     label: "Shopify",
     lines: [
       "researching streetwear niche...",
-      "generating 12 videos for content bank...",
-      "posting to @drip_drops_daily...",
-      "analyzing post performance...",
-      "traffic to yourstore.myshopify.com: 19 visits",
-      "posting to @drip_drops_daily...",
-      "traffic to yourstore.myshopify.com: 42 visits",
+      "analyzing top 15 reels from this week...",
+      "writing 14 briefs for yourstore.myshopify.com...",
+      "brief ready — product-aware posts lead with lifestyle hooks",
+      "reviewing 14 submitted videos... 14 passed",
+      "scheduling 14 posts to @drip_drops_daily...",
+      "week 1 results: 31.4k views, 142 clicks, 4 orders",
     ],
   },
   {
     label: "Calendly",
     lines: [
       "researching B2B consulting niche...",
-      "generating 6 videos for content bank...",
-      "posting to @scale_with_systems...",
-      "analyzing post performance...",
-      "traffic to calendly.com/book-a-call: 12 visits",
-      "posting to @scale_with_systems...",
-      "traffic to calendly.com/book-a-call: 29 visits",
+      "analyzing top 8 reels from this week...",
+      "writing 14 briefs for calendly.com/book-a-call...",
+      "brief ready — authority-building hooks for unaware segment",
+      "reviewing 14 submitted videos... 13 passed, 1 rejected",
+      "scheduling 13 posts to @scale_with_systems...",
+      "week 1 results: 12.8k views, 29 clicks, 7 bookings",
     ],
   },
 ];
@@ -91,58 +92,55 @@ export function TerminalDemo() {
 
   return (
     <section className="px-5 sm:px-8 py-16 sm:py-24">
-      <div className="max-w-6xl mx-auto">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
-              The learning loop
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-              Research. Post. Learn. Repeat.
-            </h2>
-            <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-              Your agent studies what works in your niche, generates content to
-              match, posts twice a day, and feeds performance data back into the
-              next cycle. Every round is better than the last.
-            </p>
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-10">
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+            Your agent every week
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
+            Research. Brief. Review. Post. Reflect.
+          </h2>
+          <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
+            Every round, your agent studies what's working, writes your briefs,
+            QAs your videos, posts daily, and feeds results into the next round.
+          </p>
+        </div>
+
+        <div>
+          <div className="flex justify-center gap-1 mb-3">
+            {EXAMPLES.map((ex, i) => (
+              <button
+                key={ex.label}
+                onClick={() => switchTo(i)}
+                className={`text-[11px] font-medium px-3 py-1.5 rounded transition-colors cursor-pointer ${
+                  i === exampleIdx
+                    ? "bg-ink text-surface"
+                    : "text-ink-muted hover:text-ink"
+                }`}
+              >
+                {ex.label}
+              </button>
+            ))}
           </div>
 
-          <div>
-            <div className="flex justify-center gap-1 mb-3">
-              {EXAMPLES.map((ex, i) => (
-                <button
-                  key={ex.label}
-                  onClick={() => switchTo(i)}
-                  className={`text-[11px] font-medium px-3 py-1.5 rounded transition-colors cursor-pointer ${
-                    i === exampleIdx
-                      ? "bg-ink text-surface"
-                      : "text-ink-muted hover:text-ink"
-                  }`}
-                >
-                  {ex.label}
-                </button>
-              ))}
+          <div className="rounded bg-surface-alt border border-border overflow-hidden">
+            <div className="px-4 py-2 border-b border-border">
+              <span className="text-[11px] font-mono text-ink-light">
+                vidjutsu agent — round 1
+              </span>
             </div>
-
-            <div className="rounded bg-surface-alt border border-border overflow-hidden">
-              <div className="px-4 py-2 border-b border-border">
-                <span className="text-[11px] font-mono text-ink-light">
-                  vidjutsu agent
-                </span>
-              </div>
-              <div className="p-4 sm:p-5 font-mono text-[12px] sm:text-[13px] leading-[1.9] min-h-[220px]">
-                {example.lines.slice(0, lineCount).map((line, i) => (
-                  <div key={`${exampleIdx}-${i}`} className="text-ink-muted">
-                    {line}
-                  </div>
-                ))}
-                {lineCount < example.lines.length && (
-                  <span
-                    className="inline-block w-[7px] h-[14px] bg-ink/30"
-                    style={{ animation: "blink 1s step-end infinite" }}
-                  />
-                )}
-              </div>
+            <div className="p-4 sm:p-5 font-mono text-[12px] sm:text-[13px] leading-[1.9] min-h-[220px]">
+              {example.lines.slice(0, lineCount).map((line, i) => (
+                <div key={`${exampleIdx}-${i}`} className="text-ink-muted">
+                  {line}
+                </div>
+              ))}
+              {lineCount < example.lines.length && (
+                <span
+                  className="inline-block w-[7px] h-[14px] bg-ink/30"
+                  style={{ animation: "blink 1s step-end infinite" }}
+                />
+              )}
             </div>
           </div>
         </div>
