@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Account Management Skill — VidJutsu",
   description:
-    "Agent skill for provisioning, warming, and managing Instagram and TikTok accounts via the VidJutsu API.",
+    "Agent skill for provisioning, warming, and managing Instagram accounts via the VidJutsu API.",
 };
 
 export default function AccountManagement() {
@@ -16,7 +16,7 @@ export default function AccountManagement() {
           Account Management
         </h1>
         <p className="text-ink-muted text-base mb-8">
-          Provision, warm, and manage Instagram and TikTok accounts. Real account managers, not bots.
+          Provision, warm, and manage Instagram accounts. Real account managers, not bots.
         </p>
 
         <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
@@ -27,7 +27,7 @@ export default function AccountManagement() {
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What the agent does</h2>
 
           <ul className="space-y-2">
-            <li>Provisions managed accounts on Instagram or TikTok</li>
+            <li>Provisions managed accounts on Instagram</li>
             <li>Monitors the 7-day warming period before posting begins</li>
             <li>Detects shadow bans and automatically replaces affected accounts</li>
             <li>Manages up to 3 accounts per user, each with different niches and links</li>

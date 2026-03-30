@@ -1,9 +1,9 @@
 ---
 title: "Managed Accounts"
-description: "How managed accounts work on TikTok and Instagram"
+description: "How managed accounts work on Instagram"
 ---
 
-VidJutsu provisions fully managed shortform accounts on TikTok and Instagram. You order accounts, we handle creation, warming, and maintenance.
+VidJutsu provisions fully managed shortform accounts on Instagram. You order accounts, we handle creation, warming, and maintenance.
 
 ## What are managed accounts?
 
@@ -20,7 +20,6 @@ You choose the platform and name. We provision the account, warm it up with orga
 
 | Platform | Status |
 |----------|--------|
-| TikTok | Available |
 | Instagram | Available |
 
 ## How warming works
@@ -46,7 +45,7 @@ The API accepts two fields: `platform` and `name`.
 
 <CodeGroup>
 ```bash CLI
-vidjutsu account create --platform tiktok --name "nyc_streetstyle"
+vidjutsu account create --platform instagram --name "nyc_streetstyle"
 ```
 
 ```bash API
@@ -54,7 +53,7 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "platform": "tiktok",
+    "platform": "instagram",
     "name": "nyc_streetstyle"
   }'
 ```
@@ -75,8 +74,8 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
 Most campaigns use multiple accounts to amplify reach:
 
 ```bash
-vidjutsu account create --platform tiktok --name "style_la"
-vidjutsu account create --platform tiktok --name "fits_daily"
+vidjutsu account create --platform instagram --name "style_la"
+vidjutsu account create --platform instagram --name "fits_daily"
 vidjutsu account create --platform instagram --name "drip_atl"
 ```
 
@@ -100,7 +99,7 @@ curl https://api.vidjutsu.ai/v1/accounts \
   "data": [
     {
       "accountId": "acc_8k2x",
-      "platform": "tiktok",
+      "platform": "instagram",
       "name": "nyc_streetstyle",
       "status": "active"
     },
@@ -118,5 +117,5 @@ curl https://api.vidjutsu.ai/v1/accounts \
 
 - **Order accounts early.** Warming takes up to 7 days, so provision accounts before you need them.
 - **Use descriptive names.** Account names help you identify which account is which when scheduling posts.
-- **Spread across platforms.** Use both TikTok and Instagram to maximize campaign reach.
+- **Focus on Instagram — the primary platform for shortform sales content.
 - **Wait for `active` status.** Never schedule posts to accounts that are still warming.
