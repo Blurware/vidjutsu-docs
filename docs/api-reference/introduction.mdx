@@ -14,15 +14,11 @@ https://api.vidjutsu.ai
 Most endpoints require an API key passed in the `X-Api-Key` header:
 
 ```bash
-curl https://api.vidjutsu.ai/v1/videos \
+curl https://api.vidjutsu.ai/v1/accounts \
   -H "X-Api-Key: vj_live_your_key_here"
 ```
 
 Get your API key by [purchasing credits](/authentication) with any card via Stripe.
-
-<Info>
-**MPP x402 support coming soon.** Native USDC payments per-request — no checkout flow required.
-</Info>
 
 ## Response codes
 
@@ -30,7 +26,7 @@ Get your API key by [purchasing credits](/authentication) with any card via Stri
 |------|-------------|
 | `200` | Success (read operations) |
 | `201` | Created (campaigns) |
-| `202` | Accepted (async generation started) |
+| `202` | Accepted (async operation started) |
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
 | `402` | Insufficient credits |
@@ -42,7 +38,7 @@ All errors return a consistent JSON structure:
 ```json
 {
   "error": "insufficient_credits",
-  "message": "This operation requires 6 credits but you have 2",
+  "message": "This operation requires 32 credits but you have 2",
   "setup": "/v1/api_keys"
 }
 ```
@@ -51,17 +47,17 @@ The `setup` field is included on `402` errors to help agents self-recover by ini
 
 ## Async operations
 
-Generation endpoints (`/v1/videos/generate`, `/v1/images/generate`, `/v1/music/generate`) and account creation return `202 Accepted` with a job ID:
+Account creation and campaign execution return `202 Accepted` with a job ID:
 
 ```json
 {
-  "id": "vid_abc123",
-  "status": "pending",
-  "creditsCharged": 6
+  "id": "acc_abc123",
+  "status": "creating",
+  "creditsCharged": 32
 }
 ```
 
-Poll the corresponding list endpoint (`GET /v1/videos`, etc.) until `status` changes to `"completed"`.
+Poll the corresponding list endpoint (`GET /v1/accounts`, etc.) until `status` changes to `"active"`.
 
 ## CORS
 

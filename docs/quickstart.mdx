@@ -17,10 +17,10 @@ Then authenticate with your card:
 vidjutsu auth --card tok_live_your_card_token
 ```
 
-Generate a video:
+Create a managed account:
 
 ```bash
-vidjutsu generate --prompt "Street style lookbook, NYC summer" --aspect 9:16
+vidjutsu account create --platform instagram --name "my_brand" --niche "fitness"
 ```
 
 See the [CLI reference](/cli/index) for all commands.
@@ -74,42 +74,47 @@ curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
 Store your API key securely — it is shown once in this response.
 </Warning>
 
-### 3. Generate a video
+### 3. Create a managed account
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/videos/generate \
+curl -X POST https://api.vidjutsu.ai/v1/accounts \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "prompt": "A drone shot flying over a mountain lake at sunrise",
-    "model": "veo-3.1"
+    "platform": "instagram",
+    "name": "my_brand",
+    "niche": "fitness"
   }'
 ```
 
 ```json
 {
-  "id": "vid_abc123",
-  "status": "pending",
-  "model": "veo-3.1",
-  "mode": "text-to-video",
-  "creditsCharged": 6
+  "id": "acc_abc123",
+  "status": "creating",
+  "creditsCharged": 32
 }
 ```
 
-### 4. Check the result
+### 4. Schedule a post
+
+Once the account is active, submit a video for posting:
 
 ```bash
-curl https://api.vidjutsu.ai/v1/videos \
-  -H "X-Api-Key: vj_live_abc123..."
+curl -X POST https://api.vidjutsu.ai/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "accountId": "acc_abc123",
+    "videoUrl": "https://your-video-url.com/video.mp4",
+    "caption": "Your caption here"
+  }'
 ```
-
-When `status` is `"completed"`, the `resultUrl` field contains your video.
 
 ## Next steps
 
 <CardGroup cols={2}>
   <Card title="Launch a campaign" icon="rocket" href="/guides/launch-a-campaign">
-    Order accounts, generate content, and schedule posts.
+    Order accounts and schedule posts at scale.
   </Card>
   <Card title="CLI reference" icon="terminal" href="/cli/index">
     Full command reference for the VidJutsu CLI.
