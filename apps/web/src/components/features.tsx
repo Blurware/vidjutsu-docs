@@ -1,72 +1,44 @@
 const FEATURES = [
   {
-    title: "Managed accounts",
-    desc: "Theme pages, fan accounts, clip pages on TikTok and Instagram. Warming takes up to 7 days.",
-    endpoint: "POST /v1/accounts",
-    credits: "32 credits",
+    title: "Niche research",
+    desc: "Your agent studies what's working in your niche — hooks, formats, topics. Every post is based on real data.",
   },
   {
-    title: "Video generation",
-    desc: "Text-to-video and image-to-video. Veo 3.1 and Veo 3.1 Fast models.",
-    endpoint: "POST /v1/videos/generate",
-    credits: "6 credits",
+    title: "2 posts a day",
+    desc: "Every day. Your page stays active and consistent without you doing anything.",
   },
   {
-    title: "Post scheduling",
-    desc: "Schedule posts to any managed account. Set a time or publish immediately.",
-    endpoint: "POST /v1/posts",
-    credits: "3 credits",
+    title: "Analytics",
+    desc: "Performance data feeds back into research. What gets clicks shapes what gets made next. The page improves every cycle.",
   },
   {
-    title: "Image generation",
-    desc: "Generate images for thumbnails and posts. Up to 4K resolution.",
-    endpoint: "POST /v1/images/generate",
-    credits: "4 credits",
-  },
-  {
-    title: "Music generation",
-    desc: "Background music and full tracks. Instrumental or with vocals.",
-    endpoint: "POST /v1/music/generate",
-    credits: "3 credits",
-  },
-  {
-    title: "Campaigns",
-    desc: "Bundle accounts, content, and scheduling into an end-to-end campaign.",
-    endpoint: "POST /v1/campaigns",
-    credits: "varies",
+    title: "Human account manager",
+    desc: "A US-based account manager creates and posts on the account. Real person, not a bot — less likely to get flagged.",
   },
 ];
 
 export function Features() {
   return (
-    <section className="px-5 sm:px-8 py-16 sm:py-24 bg-surface-alt border-t border-border">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-4">
-          Built for agents
-        </h2>
-        <p className="text-ink-muted text-center text-sm sm:text-base mb-12 sm:mb-16 max-w-md mx-auto">
-          Every capability is a REST endpoint. Pipe them together however you want.
+    <section id="features" className="px-5 sm:px-8 py-16 sm:py-24 bg-surface-alt">
+      <div className="max-w-6xl mx-auto">
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4 text-center">
+          What your agent gets
         </p>
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center">
+          Everything it needs to run your page
+        </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-10 max-w-3xl mx-auto">
           {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="p-5 sm:p-6 rounded-xl border border-border bg-surface hover:border-brand/25 transition-colors"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold text-[15px]">{f.title}</h3>
-                <span className="text-[11px] font-mono text-brand bg-brand/8 px-2 py-0.5 rounded-full">
-                  {f.credits}
-                </span>
-              </div>
-              <p className="text-ink-muted text-sm leading-relaxed mb-3">
+            <div key={f.title}>
+              <h3 className="text-[15px] font-semibold mb-2">{f.title}</h3>
+              <p className="text-ink-muted text-sm leading-relaxed">
                 {f.desc}
               </p>
-              <code className="text-ink/25 text-[11px] font-mono">{f.endpoint}</code>
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );

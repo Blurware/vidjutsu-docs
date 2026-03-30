@@ -1,13 +1,74 @@
 export function Footer() {
   return (
-    <footer className="border-t border-border px-5 sm:px-8 py-8">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span className="text-sm font-semibold text-ink/30">VidJutsu</span>
-        <nav className="flex gap-6">
-          <a href="https://docs.vidjutsu.ai" className="text-sm text-ink-muted hover:text-ink transition-colors">Docs</a>
-          <a href="https://github.com/tfcbot/vidjutsu-cli" className="text-sm text-ink-muted hover:text-ink transition-colors">GitHub</a>
-          <a href="https://docs.vidjutsu.ai/api-reference" className="text-sm text-ink-muted hover:text-ink transition-colors">API</a>
-        </nav>
+    <footer className="px-5 sm:px-8 py-12 sm:py-16 border-t border-border">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-8 sm:gap-12">
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Product</h4>
+            <ul className="space-y-2.5">
+              <li><a href="#how-it-works" className="text-[13px] text-ink-muted hover:text-ink transition-colors">How it works</a></li>
+              <li><a href="#features" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Features</a></li>
+              <li><a href="#pricing" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Pricing</a></li>
+              <li><a href="#faq" className="text-[13px] text-ink-muted hover:text-ink transition-colors">FAQ</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Developers</h4>
+            <ul className="space-y-2.5">
+              <li><a href="https://docs.vidjutsu.ai" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Docs</a></li>
+              <li><a href="https://docs.vidjutsu.ai/api-reference" className="text-[13px] text-ink-muted hover:text-ink transition-colors">API Reference</a></li>
+              <li><a href="https://docs.vidjutsu.ai/quickstart" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Quickstart</a></li>
+              <li><a href="https://github.com/tfcbot/vidjutsu-cli" className="text-[13px] text-ink-muted hover:text-ink transition-colors">GitHub</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Skills</h4>
+            <ul className="space-y-2.5">
+              <li><a href="/skills/video-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Video Generation</a></li>
+              <li><a href="/skills/image-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Image Generation</a></li>
+              <li><a href="/skills/music-generation" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Music Generation</a></li>
+              <li><a href="/skills/niche-research" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Niche Research</a></li>
+              <li><a href="/skills/account-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Account Management</a></li>
+              <li><a href="/skills/campaign-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Campaign Management</a></li>
+              <li><a href="/skills/media-analysis" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Media Analysis</a></li>
+              <li><a href="/skills/storefront" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Storefront</a></li>
+              <li><a href="/skills/clipper" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Clipper</a></li>
+              <li><a href="/skills/community" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Community</a></li>
+              <li><a href="/skills/courses" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Courses</a></li>
+              <li><a href="/skills/digital-products" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Digital Products</a></li>
+              <li><a href="/skills/booking" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Booking</a></li>
+              <li><a href="/skills/mobile-app" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Mobile App</a></li>
+              <li><a href="/skills/reflect" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Reflect</a></li>
+              <li><a href="/skills/vidjutsu-api" className="text-[13px] text-ink-muted hover:text-ink transition-colors">VidJutsu API</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Alternatives</h4>
+            <ul className="space-y-2.5">
+              <li><a href="/alternatives/building-with-agents" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Building with agents</a></li>
+              <li><a href="/alternatives/diy" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Doing it yourself</a></li>
+              <li><a href="/alternatives/hiring-a-va" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Hiring a VA</a></li>
+              <li><a href="/alternatives/social-media-agencies" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Social media agencies</a></li>
+              <li><a href="/alternatives/scheduling-tools" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Scheduling tools</a></li>
+              <li><a href="/alternatives/ai-content-tools" className="text-[13px] text-ink-muted hover:text-ink transition-colors">AI content tools</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Company</h4>
+            <ul className="space-y-2.5">
+              <li><a href="mailto:support@vidjutsu.ai" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-[13px] text-ink-light">VidJutsu</span>
+          <span className="text-[12px] text-ink-light">&copy; {new Date().getFullYear()} VidJutsu. All rights reserved.</span>
+        </div>
       </div>
     </footer>
   );

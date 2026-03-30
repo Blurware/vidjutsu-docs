@@ -1,56 +1,99 @@
-const CREDIT_COSTS = [
-  { name: "Managed account (TikTok)", credits: 32, price: "$24.00" },
-  { name: "Managed account (Instagram)", credits: 72, price: "$54.00" },
-  { name: "Video generation", credits: 6, price: "$4.50" },
-  { name: "Image generation", credits: 4, price: "$3.00" },
-  { name: "Music generation", credits: 3, price: "$2.25" },
-  { name: "Post scheduling", credits: 3, price: "$2.25" },
-  { name: "Media analysis", credits: 1, price: "$0.75" },
-];
-
 export function Pricing() {
   return (
-    <section className="px-5 sm:px-8 py-16 sm:py-24 border-t border-border">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-center mb-4">
-          Simple pricing
-        </h2>
-        <p className="text-ink-muted text-center text-sm sm:text-base mb-12 max-w-md mx-auto">
-          $99/month membership. 50 credits included. Additional credits $0.75 each.
-        </p>
+    <section id="pricing" className="px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+            Pricing
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em]">
+            Transparent. Cancel anytime.
+          </h2>
+        </div>
 
-        {/* Membership card */}
-        <div className="border border-brand/20 bg-brand/[0.02] rounded-xl p-6 sm:p-8 mb-8 text-center">
-          <div className="text-sm font-medium text-brand mb-2">Membership</div>
-          <div className="text-4xl font-bold mb-1">$99<span className="text-lg font-normal text-ink-muted">/mo</span></div>
-          <p className="text-ink-muted text-sm mb-4">50 credits included each month</p>
-          <div className="flex justify-center gap-4 text-xs text-ink-muted">
-            <span>Up to 3 managed accounts</span>
-            <span>All API endpoints</span>
-            <span>$0.75/credit overage</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Starter */}
+          <div className="flex flex-col p-6 sm:p-8 border border-border rounded">
+            <div className="text-sm font-medium text-ink-muted mb-3">
+              Starter
+            </div>
+            <div className="text-[2.5rem] font-bold tracking-[-0.03em] leading-none mb-1">
+              $297
+              <span className="text-base font-normal text-ink-muted">/mo</span>
+            </div>
+            <p className="text-ink-muted text-sm mb-8">
+              1 managed Instagram page
+            </p>
+            <ul className="space-y-2.5 text-sm mb-auto">
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>2 posts per day, every day</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Niche research + content generation</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Link in bio tracking</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Learning loop</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Bring your own content</span>
+              </li>
+            </ul>
+            <a
+              href="https://docs.vidjutsu.ai/quickstart"
+              className="block text-center mt-8 px-5 py-2.5 border border-border text-sm font-medium rounded hover:border-ink/30 transition-colors"
+            >
+              Get Started
+            </a>
+          </div>
+
+          {/* Scale */}
+          <div className="flex flex-col p-6 sm:p-8 border-2 border-brand rounded relative shadow-[0_0_24px_-4px_rgba(37,99,235,0.3)]">
+            <div className="absolute -top-3 left-6 px-2 py-0.5 bg-brand text-white text-[10px] font-medium tracking-[0.1em] uppercase rounded-sm">
+              Most popular
+            </div>
+            <div className="text-sm font-medium text-ink-muted mb-3">
+              Scale
+            </div>
+            <div className="text-[2.5rem] font-bold tracking-[-0.03em] leading-none mb-1">
+              $697
+              <span className="text-base font-normal text-ink-muted">/mo</span>
+            </div>
+            <p className="text-ink-muted text-sm mb-8">
+              3 managed Instagram pages
+            </p>
+            <ul className="space-y-2.5 text-sm mb-auto">
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Everything in Starter</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>3 managed Instagram pages</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="text-ink-light mt-0.5 text-xs">+</span>
+                <span>Different link per page (optional)</span>
+              </li>
+            </ul>
+            <a
+              href="https://docs.vidjutsu.ai/quickstart"
+              className="block text-center mt-8 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded hover:bg-brand-hover transition-colors"
+            >
+              Get Started
+            </a>
           </div>
         </div>
 
-        {/* Credit costs table */}
-        <div className="border border-border rounded-xl overflow-hidden">
-          <div className="px-5 py-3 bg-surface-alt border-b border-border">
-            <h3 className="text-sm font-semibold">Credit costs</h3>
-          </div>
-          <div className="divide-y divide-border">
-            {CREDIT_COSTS.map((item) => (
-              <div key={item.name} className="px-5 py-3 flex items-center justify-between">
-                <span className="text-sm">{item.name}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-ink-muted font-mono">{item.credits} credits</span>
-                  <span className="text-sm font-medium w-16 text-right">{item.price}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <p className="text-center text-ink-muted text-xs mt-4">
-          Campaign pricing varies by configuration. Use the estimate endpoint to preview costs.
+        <p className="text-ink-muted text-xs mt-6 text-center">
+          Need more than 3 pages? Email us for custom pricing.
         </p>
       </div>
     </section>

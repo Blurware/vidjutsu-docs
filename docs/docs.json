@@ -25,6 +25,7 @@
             "pages": [
               "index",
               "quickstart",
+              "features",
               "authentication",
               "credits-and-billing"
             ]

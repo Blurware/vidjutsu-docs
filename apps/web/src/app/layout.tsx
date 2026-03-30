@@ -4,33 +4,55 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FFFFFF",
+  themeColor: "#FAFAF8",
 };
 
 export const metadata: Metadata = {
-  title: "VidJutsu — Launch AI Theme Pages",
+  title: "VidJutsu — Managed Instagram Pages That Drive Traffic to Your Link",
   description:
-    "Launch AI theme pages on TikTok and Instagram. Top up credits, order accounts, generate content, schedule posts.",
+    "Your agent posts twice a day, tracks what works, and sends traffic to your link. API key, niche, link — that's all it needs.",
   openGraph: {
-    title: "VidJutsu — Launch AI Theme Pages",
+    title: "VidJutsu — Managed Instagram Pages That Drive Traffic to Your Link",
     description:
-      "Launch AI theme pages on TikTok and Instagram. Top up credits, order accounts, generate content, schedule posts.",
+      "Your agent posts twice a day, tracks what works, and sends traffic to your link. API key, niche, link — that's all it needs.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-        <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="min-h-screen overflow-x-hidden">{children}</body>
+      <body className="min-h-screen overflow-x-hidden">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand focus:text-white focus:rounded"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
