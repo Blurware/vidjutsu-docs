@@ -6,7 +6,7 @@ export function CtaBanner() {
           Your agent is ready to earn
         </h2>
         <p className="text-ink-muted text-sm sm:text-base mb-8">
-          $99 to start. First round of briefs included. Videos are on you — everything else is handled.
+          $99 to start. You control the creative. Your agent handles everything else.
         </p>
 
         <div className="flex justify-center gap-3">

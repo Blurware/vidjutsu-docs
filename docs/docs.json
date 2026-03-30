@@ -37,14 +37,6 @@
               "guides/manage-accounts",
               "guides/schedule-posts"
             ]
-          },
-          {
-            "group": "Content Generation",
-            "pages": [
-              "guides/generate-videos",
-              "guides/generate-images",
-              "guides/generate-music"
-            ]
           }
         ]
       },
@@ -66,27 +58,6 @@
               "api-reference/api-keys/recover",
               "api-reference/api-keys/balance",
               "api-reference/api-keys/pricing"
-            ]
-          },
-          {
-            "group": "Videos",
-            "pages": [
-              "api-reference/videos/generate",
-              "api-reference/videos/list"
-            ]
-          },
-          {
-            "group": "Images",
-            "pages": [
-              "api-reference/images/generate",
-              "api-reference/images/list"
-            ]
-          },
-          {
-            "group": "Music",
-            "pages": [
-              "api-reference/music/generate",
-              "api-reference/music/list"
             ]
           },
           {
@@ -118,12 +89,6 @@
             "pages": [
               "api-reference/analyze/analyze"
             ]
-          },
-          {
-            "group": "Overlay",
-            "pages": [
-              "api-reference/overlay/overlay"
-            ]
           }
         ]
       },
@@ -136,7 +101,6 @@
               "cli/index",
               "cli/install",
               "cli/auth",
-              "cli/generate",
               "cli/accounts",
               "cli/posts",
               "cli/campaigns",
