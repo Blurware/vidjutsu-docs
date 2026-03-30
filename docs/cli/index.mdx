@@ -18,12 +18,10 @@ See [installation](/cli/install) for details and manual install options.
 | Command | Description |
 |---------|-------------|
 | [`vidjutsu auth`](/cli/auth) | Authenticate with your payment credential |
-| [`vidjutsu generate`](/cli/generate) | Generate a video |
-| [`vidjutsu images`](/cli/generate#images) | Generate, list, or get images |
-| [`vidjutsu music`](/cli/generate#music) | Generate, list, or get music |
 | [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete accounts |
 | [`vidjutsu post`](/cli/posts) | Schedule, list, get, or cancel posts |
 | [`vidjutsu campaign`](/cli/campaigns) | Create, list, or get campaigns |
+| [`vidjutsu analytics`](/cli/accounts#analytics) | Get account analytics and video stats |
 | [`vidjutsu balance`](/cli/balance) | Check your credit balance |
 | [`vidjutsu topup`](/cli/balance#top-up) | Add credits to your balance |
 | [`vidjutsu status`](/cli/balance#status) | Check any resource status by ID |
@@ -40,13 +38,13 @@ vidjutsu auth --card tok_live_xxxx
 vidjutsu topup 100
 
 # Create an account
-vidjutsu account create --platform tiktok --name "style_la"
-
-# Generate a video
-vidjutsu generate --prompt "Street style lookbook" --aspect 9:16
+vidjutsu account create --platform instagram --name "style_la" --niche "fashion"
 
 # Schedule a post
-vidjutsu post schedule --account acc_8k2x --video vid_q9f3
+vidjutsu post schedule --account acc_8k2x --video-url "https://your-video.com/v.mp4"
+
+# Check analytics
+vidjutsu analytics get acc_8k2x
 ```
 
 ## Configuration

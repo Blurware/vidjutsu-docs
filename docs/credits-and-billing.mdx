@@ -1,42 +1,30 @@
 ---
 title: "Credits & Billing"
-description: "Membership, credits, and pricing"
+description: "Account pricing and usage-based billing"
 ---
 
-## Membership
+## Pricing model
 
-VidJutsu requires a **$99/month membership** for platform access. The membership includes:
-
-- **50 credits/month** — included with your membership, reset each billing cycle
-- Access to all API endpoints
-- Up to **3 managed accounts** per user
-
-Additional credits are **$0.75 each**, purchased on-demand.
-
-Subscribe via `POST /v1/subscriptions` to get a Stripe checkout URL.
+**$99 per managed Instagram account** (one-time). Usage-based pricing for all other operations. No subscription required.
 
 ## How credits work
 
-Every API operation costs a fixed number of credits. Credits are deducted immediately when a request is accepted. Included credits (from your membership) are used first, then purchased credits.
+Every API operation costs a fixed number of credits at $0.75 each. Credits are deducted immediately when a request is accepted.
 
 ## Credit costs
 
-| Operation | Endpoint | Credits | Cost ($0.75/credit) |
+| Operation | Endpoint | Credits | Cost |
 |-----------|----------|---------|------|
-| Video generation | `POST /v1/videos/generate` | 6 | $4.50 |
-| Image generation | `POST /v1/images/generate` | 4 | $3.00 |
-| Music generation | `POST /v1/music/generate` | 3 | $2.25 |
 | Account creation | `POST /v1/accounts` | 32 | $24.00 |
 | Post scheduling | `POST /v1/posts` | 3 | $2.25 |
 | Media analysis | `POST /v1/analyze` | 1 | $0.75 |
 | Scraping | `POST /v1/scrape` | 1 | $0.75 |
-| Text overlay | `POST /v1/overlay` | 1 | $0.75 |
 
-**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, campaign estimates.
+**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, campaign estimates, analytics.
 
 ## Account limit
 
-Each user can create a maximum of **3 managed accounts** (TikTok or Instagram). This limit applies to both individual account creation and campaigns.
+Each user can create a maximum of **3 managed accounts**. This limit applies to both individual account creation and campaigns.
 
 ## Campaign pricing
 
@@ -44,13 +32,10 @@ Campaigns bundle account creation and video slots:
 
 | Item | Credits | Cost |
 |------|---------|------|
-| TikTok account | 32 | $24.00 |
 | Instagram account | 72 | $54.00 |
 | Video slot (per post) | 2 | $1.50 |
 | Edit slot (add-on, per post) | 3 | $2.25 |
 | Comment moderation (add-on, per account) | 25 | $18.75 |
-
-**Example:** 3 TikTok accounts with 5 posts each = `3×32 + 15×2 = 126 credits` ($94.50).
 
 Use `POST /v1/campaigns/estimate` to preview costs before creating a campaign.
 
@@ -68,7 +53,7 @@ curl https://api.vidjutsu.ai/v1/balance \
 }
 ```
 
-## Buying additional credits
+## Buying credits
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/api_keys \
@@ -86,17 +71,11 @@ curl https://api.vidjutsu.ai/v1/pricing
 
 ```json
 {
-  "membership": {
-    "price": "$99/mo",
-    "includedCredits": 50
-  },
-  "pricePerCredit": "$0.75",
-  "maxAccounts": 3,
   "costs": {
-    "videos.generate": 6,
-    "images.generate": 4,
     "accounts.create": 32,
-    "posts.create": 3
+    "posts.create": 3,
+    "analyze": 1,
+    "scrape": 1
   }
 }
 ```
