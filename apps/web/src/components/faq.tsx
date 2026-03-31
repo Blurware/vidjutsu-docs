@@ -4,32 +4,24 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What's in a round?",
-    a: "14 researched creative briefs mapped to your product, video QA on every submission, 2 posts per day for 7 days, and a weekly performance reflection that shapes the next round.",
+    q: "What is VidJutsu?",
+    a: "An API your Claude agent calls to manage Instagram pages. Account provisioning, posting, QA, analytics, and comment moderation — you never need to log into a UI.",
   },
   {
-    q: "Do I have to make the videos myself?",
-    a: "Yes — but your agent tells you exactly what to make. Each brief includes the hook, talking points, CTA, and visual setting. Use any tool you want: your phone, CapCut, Runway, Kling, whatever.",
-  },
-  {
-    q: "What if my video fails QA?",
-    a: "Your agent tells you what's wrong — weak hook, AI artifacts, wrong format. Fix it and resubmit. Nothing goes live until it passes.",
+    q: "Do I need to make the videos?",
+    a: 'Yes — or use free VidJutsu skills (github.com/tfcbot/vidjutsu-skills) that let your agent generate videos with providers like Wavespeed or KIE. You bring the API key, the skill handles the rest.',
   },
   {
     q: "How does billing work?",
-    a: "No subscription. $99 gets your account provisioned with your first round of briefs. After that, order rounds at $96/week whenever you're ready. Pause anytime.",
-  },
-  {
-    q: "Does this work with my agent?",
-    a: "Yes. Any agent that can make HTTP requests can use VidJutsu. Claude, GPT, custom agents — one API key gives access to everything.",
-  },
-  {
-    q: "What analytics do I get?",
-    a: "Post-level views, clicks, and engagement. Your agent analyzes which awareness levels, hooks, and topics drove traffic to your link. You can query insights anytime, not just at the end of a round.",
+    a: "$59/mo subscription for API access (includes 100 credits). Buy more credits at $0.10 each. Your agent spends credits on accounts, posts, QA, and scraping.",
   },
   {
     q: "How long before the page starts posting?",
-    a: "Accounts warm for up to 7 days. Your first round of briefs is delivered immediately so you can start making videos while the account warms.",
+    a: "Accounts warm for up to 7 days. Your agent can start drafting posts immediately while the account warms.",
+  },
+  {
+    q: "What about banned accounts?",
+    a: "Accounts are managed by real US-based account managers. Shadow ban detection is built in. Flagged accounts are replaced automatically.",
   },
 ];
 

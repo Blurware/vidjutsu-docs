@@ -1,19 +1,19 @@
 const FEATURES = [
   {
-    title: "Weekly creative briefs",
-    desc: "14 talking points mapped to your product across every level of buyer awareness. Your agent writes the brief, you make the videos.",
+    title: "Post management",
+    desc: "Your agent schedules posts, writes captions, manages comments, and posts up to twice a day. You just supply the videos.",
   },
   {
     title: "Video QA",
     desc: "Every video you submit goes through quality review before posting. Bad hooks, AI artifacts, weak CTAs — caught before they go live.",
   },
   {
-    title: "Managed account + daily posting",
-    desc: "A real US-based account manager runs the Instagram page. Your agent schedules 2 posts a day, every day.",
+    title: "Managed account",
+    desc: "A real US-based account manager provisions and operates the Instagram page. Niche warming, shadow ban detection, auto-replacement.",
   },
   {
-    title: "Analytics and weekly reflection",
-    desc: "Post-level performance data. What drove clicks, what flopped, and why. Your agent uses it to write a sharper brief next round.",
+    title: "Analytics",
+    desc: "Post-level views and engagement data. Your agent tracks what performs and uses it to improve.",
   },
 ];
 
@@ -25,7 +25,7 @@ export function Features() {
           What your agent does
         </p>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center">
-          Your creative director that never sleeps
+          Everything your agent needs to grow your page
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-10 max-w-3xl mx-auto">

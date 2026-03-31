@@ -18,20 +18,12 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Agent-powered Instagram growth
+            Built for Claude users
           </p>
 
-          <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-[-0.03em] mb-6">
-            Scale a new Instagram
-            <br />
-            growth channel with your agent
+          <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-8 max-w-2xl mx-auto">
+            A managed Instagram page that posts your videos daily and drives traffic to your product — live in 7 days.
           </h1>
-
-          <p className="text-ink-muted text-[15px] sm:text-base leading-relaxed max-w-lg mx-auto mb-8">
-            Drop your offer link and brand guidelines. Your agent researches
-            your niche, writes weekly briefs, reviews every video, posts daily,
-            and optimizes based on what drives clicks.
-          </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
             <a

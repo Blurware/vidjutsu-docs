@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Drop your offer link and brand guidelines",
-    desc: "Your Stan Store, Skool, Shopify, Calendly — plus your brand voice, colors, and audience. Your agent uses this to shape every brief.",
+    title: "Upgrade your Claude agent with VidJutsu",
+    desc: "Install the CLI and skills. Your agent gets the ability to manage Instagram pages, post content, and track performance.",
   },
   {
     num: "02",
-    title: "Account goes live, briefs land",
-    desc: "Your agent provisions a managed Instagram account and delivers your first round of 14 creative briefs tailored to your product.",
+    title: "Account warms up",
+    desc: "Your agent provisions a managed Instagram account. It warms into your niche for up to 7 days before any content goes live.",
   },
   {
     num: "03",
-    title: "Submit videos, agent adds captions and posts",
-    desc: "Upload your videos. Agent QAs them, writes captions, schedules daily posts, and tracks what drives clicks.",
+    title: "Schedule your videos",
+    desc: "Submit your videos. Your agent QAs them, writes captions, posts up to twice a day, and manages comments.",
   },
 ];
 
