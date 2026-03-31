@@ -1,7 +1,7 @@
 const STEPS = [
   {
     num: "01",
-    title: "Upgrade your Claude agent with VidJutsu",
+    title: "Upgrade your agent with VidJutsu",
     desc: "Install the CLI and skills. Your agent gets the ability to manage Instagram pages, post content, and track performance.",
   },
   {

@@ -3,7 +3,7 @@ export function CtaBanner() {
     <section className="px-5 sm:px-8 py-20 sm:py-28 border-t border-border">
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-          Give your Claude agent Instagram superpowers
+          Give your agent Instagram superpowers
         </h2>
         <p className="text-ink-muted text-sm sm:text-base mb-8">
           Install the CLI. Subscribe. Your agent manages the rest.

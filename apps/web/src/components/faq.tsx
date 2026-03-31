@@ -5,7 +5,7 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What is VidJutsu?",
-    a: "An API your Claude agent calls to manage Instagram pages. Account provisioning, posting, QA, analytics, and comment moderation — you never need to log into a UI.",
+    a: "An API your agent calls to manage Instagram pages. Account provisioning, posting, QA, analytics, and comment moderation — you never need to log into a UI.",
   },
   {
     q: "Do I need to make the videos?",

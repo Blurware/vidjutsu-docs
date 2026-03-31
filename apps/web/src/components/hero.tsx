@@ -18,7 +18,7 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Built for Claude users
+            Built for agents
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-8 max-w-2xl mx-auto">
