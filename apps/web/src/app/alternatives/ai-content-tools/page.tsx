@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu vs AI Content Tools (Opus Clip, Pictory, Descript)",
   description:
-    "AI content tools generate clips but you still have to post them. VidJutsu handles the full pipeline from research to posting through a single API.",
+    "AI content tools generate clips. VidJutsu gives your agent managed accounts, QA, posting, analytics, and comment moderation.",
 };
 
 export default function AiContentTools() {
@@ -18,43 +18,29 @@ export default function AiContentTools() {
 
         <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
           <p className="text-base">
-            Opus Clip, Pictory, Descript, and similar tools are good at one thing: turning long-form content into short-form clips. But they stop there. You still have to review the output, pick which clips to use, write captions, and post them manually.
+            Opus Clip, Pictory, and Descript are good at one thing: generating video clips. But they stop there. You still have to review output, write captions, manage accounts, and post manually.
           </p>
 
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">They solve generation, not distribution</h2>
 
           <p>
-            AI content tools generate assets. They don't manage accounts, don't warm them, don't schedule posts, and don't track attribution. The gap between "generated a clip" and "that clip is live on Instagram driving traffic to my link" is where all the real work lives.
+            AI content tools create assets. They don't manage Instagram accounts, don't warm them, don't schedule posts, don't QA content, and don't moderate comments. The gap between "generated a clip" and "that clip is driving traffic on Instagram" is where VidJutsu lives.
           </p>
 
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">No niche intelligence</h2>
+          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Use them together</h2>
 
           <p>
-            These tools don't know what's performing in your niche. They clip whatever content you feed them based on engagement signals within that video (pauses, hooks, captions). They're not studying the broader niche to inform what content should be made in the first place.
-          </p>
-
-          <p>
-            VidJutsu's research pipeline scrapes what's working across the niche — not just within your existing content. Generation is informed by external performance data, not just internal signals.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Still requires a human in the loop</h2>
-
-          <p>
-            With Opus Clip or Pictory, someone still needs to: upload source content, review generated clips, select the best ones, write captions, download the finals, open Instagram, and post them. That's a human workflow.
+            VidJutsu doesn't generate videos — you do, with whatever tool you want. Generate clips with Opus Clip, Wavespeed, KIE, or your phone. Then submit them to VidJutsu. Your agent QAs every video, writes captions, schedules posts, and tracks performance.
           </p>
 
           <p>
-            VidJutsu is an API. Your agent calls the endpoints. No human in the loop. Research, generate, post, track — all programmatic.
+            Generate anywhere. Distribute through VidJutsu.
           </p>
 
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Composable — use them together</h2>
+          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Built for agents</h2>
 
           <p>
-            VidJutsu is designed to work alongside these tools, not replace them. If your agent already generates clips with Opus Clip, Pictory, Fal, or Wavespeed — post them through VidJutsu. The post endpoint accepts any media URL. Use whatever generation tool you want. VidJutsu handles the account management, warming, posting, performance analysis, and tracking layer.
-          </p>
-
-          <p>
-            Generate anywhere. Distribute through VidJutsu. Every endpoint works independently — use the full stack or just the parts you need.
+            Content tools are designed for humans in a browser. VidJutsu is an API your agent calls. No uploads, no dashboards, no clicking. Your agent submits a video URL, VidJutsu handles the rest.
           </p>
 
           <div className="mt-12 p-6 rounded-xl border border-brand/20 bg-brand/[0.02]">

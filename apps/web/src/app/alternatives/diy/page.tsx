@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu vs Doing It Yourself",
   description:
-    "Why manually running an Instagram page doesn't scale — and how VidJutsu automates the entire pipeline through a single API.",
+    "Why manually running an Instagram page doesn't scale — and how VidJutsu gives your agent the tools to manage it for you.",
 };
 
 export default function Diy() {
@@ -18,43 +18,29 @@ export default function Diy() {
 
         <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
           <p className="text-base">
-            You know you should be posting on Instagram every day. Twice a day, ideally. That's 60 posts a month. Each one needs an idea, a video, a caption, and a scheduled publish time. Do the math on your time and it's 1-2 hours daily.
+            You know you should be posting on Instagram every day. That's 60 posts a month. Each one needs an idea, a video, a caption, and a scheduled publish time. Most people start, post for 2 weeks, get busy, and stop.
           </p>
 
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">The consistency problem</h2>
 
           <p>
-            Most people start a page, post for 2 weeks, get busy, and stop. The algorithm notices immediately. Reach drops. The page flatlines. Starting over means warming a dead account from scratch.
+            Consistency is the game on short-form platforms. Miss a few days and the algorithm buries you. Reach drops. The page flatlines. That's what humans are worst at when they have a day job.
           </p>
 
-          <p>
-            Consistency is the entire game on short-form platforms. Not creativity, not production quality — just showing up every day. That's exactly what humans are worst at when they have a day job.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">The research problem</h2>
+          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What your agent does differently</h2>
 
           <p>
-            Even if you post consistently, you're guessing at what works. Scrolling your niche, trying to spot patterns, copying formats you think are performing. You're doing qualitative research by feel instead of quantitative research at scale.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What agents do differently</h2>
-
-          <p>
-            An agent using VidJutsu doesn't get tired, doesn't get busy, and doesn't guess. It calls the scrape endpoint to study what's performing. It calls the generate endpoint to make content matched to those patterns. It calls the post endpoint twice a day, every day. It never misses.
-          </p>
-
-          <p>
-            Your time goes to building your business. The page runs on infrastructure, not willpower.
+            With VidJutsu, your agent manages a real Instagram account — provisioned, warmed, and operated by a US-based account manager. You supply the videos. Your agent QAs them, writes captions, schedules posts up to twice a day, and manages comments. It never misses a day.
           </p>
 
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">The numbers</h2>
 
           <p>
-            DIY at 1.5 hours/day = 45 hours/month. At any reasonable hourly rate, that's $1,000+ worth of your time for a task that an agent handles for $297/month through the API.
+            DIY at 1.5 hours/day = 45 hours/month. VidJutsu: $59/mo subscription + credits for posting. Your agent handles scheduling, QA, and analytics. You just make the videos when you have time.
           </p>
 
           <div className="mt-12 p-6 rounded-xl border border-brand/20 bg-brand/[0.02]">
-            <p className="text-ink font-medium mb-2">Let your agent handle it.</p>
+            <p className="text-ink font-medium mb-2">Let your agent handle the page.</p>
             <a href="https://docs.vidjutsu.ai/quickstart" className="text-brand text-sm font-semibold hover:underline">
               Get started &rarr;
             </a>

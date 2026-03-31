@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu vs Social Media Agencies",
   description:
-    "Why agencies charge $1,000-3,000/month for what an agent can do through VidJutsu's API for $297/month.",
+    "Agencies charge $1,000-3,000/month. VidJutsu gives your agent managed Instagram pages for $59/mo + credits.",
 };
 
 export default function SocialMediaAgencies() {
@@ -18,43 +18,29 @@ export default function SocialMediaAgencies() {
 
         <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
           <p className="text-base">
-            Social media agencies charge $1,000-3,000/month minimum. They're built for established brands with marketing budgets, content approval workflows, and quarterly strategy decks. If you're running a side hustle or an ecom store, that's the wrong tool for the job.
+            Agencies charge $1,000-3,000/month minimum with 3-6 month contracts. They're built for brands with marketing budgets and approval workflows. If you're running a side hustle or ecom store, that's the wrong tool.
           </p>
 
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What you're paying for</h2>
 
           <p>
-            Agency pricing covers account managers, content strategists, designers, and reporting. Most of that overhead exists to serve the approval process — the back-and-forth between the agency and the client on every piece of content.
-          </p>
-
-          <p>
-            If you don't need approvals, strategy decks, or a dedicated account manager, you're paying for services you'll never use.
+            Agency pricing covers account managers, content strategists, designers, and reporting. Most of that overhead exists to serve the approval process. If you don't need approvals and strategy decks, you're paying for services you'll never use.
           </p>
 
           <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Speed and volume</h2>
 
           <p>
-            Agencies typically deliver 15-30 posts per month. VidJutsu pages post 60 per month on Starter. The volume difference matters on short-form platforms where consistency drives reach.
+            Agencies deliver 15-30 posts per month. Your agent with VidJutsu posts up to 60. Agencies operate on weekly content calendars — by the time content is approved, the trend is dead.
           </p>
 
-          <p>
-            Agencies also operate on weekly or biweekly content calendars. By the time content is ideated, created, reviewed, revised, and approved, the trend it was based on is already dead. VidJutsu's research loop runs daily.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">The contract problem</h2>
+          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">VidJutsu's model</h2>
 
           <p>
-            Most agencies require 3-6 month contracts. VidJutsu is month-to-month. Cancel anytime. No lock-in, no early termination fees.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">When an agency makes sense</h2>
-
-          <p>
-            If you need custom creative direction, brand guidelines enforcement, multi-platform strategy, and human oversight on every post — hire an agency. If you need an Instagram page that posts daily and drives traffic to a link — that's what VidJutsu's API is for.
+            $59/mo subscription + credits. No contracts. Your agent manages the page via API — QA, captions, posting, analytics, comment moderation. You supply the videos. Account operated by a real US-based account manager.
           </p>
 
           <div className="mt-12 p-6 rounded-xl border border-brand/20 bg-brand/[0.02]">
-            <p className="text-ink font-medium mb-2">Agency results at API prices.</p>
+            <p className="text-ink font-medium mb-2">Agency-level management at API prices.</p>
             <a href="https://docs.vidjutsu.ai/quickstart" className="text-brand text-sm font-semibold hover:underline">
               Get started &rarr;
             </a>
