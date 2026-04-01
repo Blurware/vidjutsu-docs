@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "Talking Head Skill — VidJutsu",
@@ -6,56 +7,113 @@ export const metadata: Metadata = {
     "Agent skill for creating talking-head short-form videos for Instagram with recording guides, settings, and AI generation via Wavespeed.",
 };
 
+const RELATED = [
+  { name: "Podcast", href: "/skills/podcast" },
+  { name: "Clipper", href: "/skills/clipper" },
+  { name: "Media Analysis", href: "/skills/media-analysis" },
+];
+
 export default function TalkingHead() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Format Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           Talking Head
         </h1>
-        <p className="text-ink-muted text-base mb-8">
-          The most effective format for niche Instagram pages. One person speaking directly to camera.
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
+          The most effective format for niche Instagram pages. One person
+          speaking directly to camera. Record yourself or generate with AI.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill guides your agent through drafting talking-head video posts — with hooks, talking points, settings, and delivery notes. You record the videos, or generate them with Wavespeed and KIE.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What your agent does</h2>
-
-          <ul className="space-y-2">
-            <li>Drafts posts with specific hooks, talking points, and visual settings</li>
-            <li>Rotates settings across videos: car, living room, office, coffee shop, outdoor</li>
-            <li>Includes delivery notes for each video (lean forward, start mid-sentence)</li>
-            <li>Guides batch recording — 14 videos in one afternoon</li>
-            <li>QAs every video before posting</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">AI generation</h2>
-
-          <p>
-            Don't want to record? Your agent can generate starting images with KIE and animate them into videos with Wavespeed (Veo 3.1). You bring the API keys, the skill handles prompt crafting and QA.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/quickstart" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              Get started &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What the agent does
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Drafts posts with specific hooks and talking points",
+                detail:
+                  "Each post includes a hook, key points, and delivery notes.",
+              },
+              {
+                label: "Rotates settings across videos",
+                detail:
+                  "Car, living room, office, coffee shop, outdoor. Visual variety without re-scripting.",
+              },
+              {
+                label: "Includes delivery notes",
+                detail:
+                  "Lean forward, start mid-sentence, eye contact. Small cues that affect performance.",
+              },
+              {
+                label: "Guides batch recording",
+                detail:
+                  "14 videos in one afternoon. Your agent plans the batch, you record it.",
+              },
+              {
+                label: "QAs every video before posting",
+                detail:
+                  "Checks hooks, framing, and delivery quality.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            AI generation
+          </h2>
+          <p className="text-ink-muted text-sm leading-relaxed max-w-2xl">
+            Don&rsquo;t want to record? Your agent can generate starting images
+            with KIE and animate them into videos with Wavespeed (Veo 3.1). You
+            bring the API keys, the skill handles prompt crafting and QA.
+          </p>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }

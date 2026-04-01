@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "VidJutsu API Skill — VidJutsu",
@@ -6,52 +7,112 @@ export const metadata: Metadata = {
     "Agent skill with API endpoint reference and authentication for calling the VidJutsu API.",
 };
 
+const RELATED = [
+  { name: "Account Management", href: "/skills/account-management" },
+  { name: "Campaign Management", href: "/skills/campaign-management" },
+  { name: "Media Analysis", href: "/skills/media-analysis" },
+];
+
 export default function VidjutsuApi() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Infrastructure Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           VidJutsu API
         </h1>
-        <p className="text-ink-muted text-base mb-8">
-          API endpoint reference and authentication for agents calling VidJutsu.
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
+          Complete API endpoint reference and authentication for agents calling
+          VidJutsu. The foundation skill every agent needs.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill gives your agent a complete reference for every VidJutsu API endpoint. It covers authentication, credit costs, and all available operations.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What's included</h2>
-
-          <ul className="space-y-2">
-            <li>Authentication setup — API key creation via Stripe checkout</li>
-            <li>Video, image, and music generation endpoints</li>
-            <li>Account provisioning and management</li>
-            <li>Post scheduling and campaign orchestration</li>
-            <li>Niche research and content scraping</li>
-            <li>Media analysis (critic, verify, breakdown modes)</li>
-            <li>Balance and credit management</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/api-reference" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              API Reference &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What&rsquo;s included
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Authentication setup",
+                detail:
+                  "API key creation via Stripe checkout. Your agent knows how to authenticate.",
+              },
+              {
+                label: "Video, image, and music generation endpoints",
+                detail:
+                  "Submit generation requests and poll for results.",
+              },
+              {
+                label: "Account provisioning and management",
+                detail:
+                  "Create, warm, and monitor Instagram accounts.",
+              },
+              {
+                label: "Post scheduling and campaign orchestration",
+                detail:
+                  "Schedule posts, manage campaigns, track execution.",
+              },
+              {
+                label: "Niche research and content scraping",
+                detail:
+                  "Scrape top-performing accounts and content.",
+              },
+              {
+                label: "Media analysis",
+                detail:
+                  "Critic, verify, and breakdown modes for QA.",
+              },
+              {
+                label: "Balance and credit management",
+                detail:
+                  "Check balance, estimate costs, track usage.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }
