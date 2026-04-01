@@ -88,8 +88,7 @@ export default function CampaignManagement() {
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-2xl">
             Variable per campaign. Use the estimate endpoint to calculate cost
-            before creating. Add-ons available: edit slots and comment
-            moderation.
+            before creating.
           </p>
         </section>
 

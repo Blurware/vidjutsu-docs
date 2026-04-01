@@ -84,17 +84,6 @@ export default function Podcast() {
 
         <section className="mb-14">
           <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
-            AI generation
-          </h2>
-          <p className="text-ink-muted text-sm leading-relaxed max-w-2xl">
-            Your agent can generate podcast-style starting images with KIE (desk
-            + microphone scenes) and animate them with Wavespeed (Veo 3.1).
-            Useful for creating visual variety without recording new footage.
-          </p>
-        </section>
-
-        <section className="mb-14">
-          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
             Related skills
           </h2>
           <div className="flex flex-wrap gap-3">

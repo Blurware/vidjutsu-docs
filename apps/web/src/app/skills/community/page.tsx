@@ -61,9 +61,9 @@ export default function Community() {
                   "Value-first posts that give viewers a reason to join.",
               },
               {
-                label: "Tracks link clicks and engagement",
+                label: "Tracks post performance",
                 detail:
-                  "Post-level views, engagement, and taps to your community link.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

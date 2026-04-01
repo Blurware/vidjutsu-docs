@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "Talking Head Skill — VidJutsu",
   description:
-    "Agent skill for creating talking-head short-form videos for Instagram with recording guides, settings, and AI generation via Wavespeed.",
+    "Agent skill for creating talking-head short-form videos for Instagram with recording guides, settings, and QA.",
 };
 
 const RELATED = [
@@ -32,7 +32,7 @@ export default function TalkingHead() {
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
           The most effective format for niche Instagram pages. One person
-          speaking directly to camera. Record yourself or generate with AI.
+          speaking directly to camera. You record, your agent handles the rest.
         </p>
 
         <section className="mb-14">
@@ -80,17 +80,6 @@ export default function TalkingHead() {
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="mb-14">
-          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
-            AI generation
-          </h2>
-          <p className="text-ink-muted text-sm leading-relaxed max-w-2xl">
-            Don&rsquo;t want to record? Your agent can generate starting images
-            with KIE and animate them into videos with Wavespeed (Veo 3.1). You
-            bring the API keys, the skill handles prompt crafting and QA.
-          </p>
         </section>
 
         <section className="mb-14">

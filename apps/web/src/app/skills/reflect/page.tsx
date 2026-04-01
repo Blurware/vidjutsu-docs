@@ -45,12 +45,12 @@ export default function Reflect() {
               {
                 label: "Pulls performance data across all managed accounts",
                 detail:
-                  "Views, clicks, engagement — account-level and post-level.",
+                  "Followers, engagement rate, and video-level stats across all accounts.",
               },
               {
                 label: "Identifies top-performing posts",
                 detail:
-                  "Ranked by views, clicks, and engagement rate.",
+                  "Ranked by views, likes, and engagement rate.",
               },
               {
                 label: "Analyzes which content styles converted best",
