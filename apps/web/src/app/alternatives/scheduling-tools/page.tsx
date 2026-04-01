@@ -171,7 +171,7 @@ export default function SchedulingTools() {
           <p className="text-ink font-medium mb-4">
             Full account lifecycle, not just scheduling.
           </p>
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" className="mb-4" />
+          <CopyCommand command="npx skills add tfcbot/shortform-media-skills" className="mb-4" />
           <a
             href="https://docs.vidjutsu.ai"
             className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors"

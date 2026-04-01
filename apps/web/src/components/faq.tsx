@@ -9,7 +9,7 @@ const FAQS = [
   },
   {
     q: "Do I need to make the videos?",
-    a: 'Yes — or use free VidJutsu skills (github.com/tfcbot/vidjutsu-skills) that let your agent generate videos with providers like Wavespeed or KIE. You bring the API key, the skill handles the rest.',
+    a: 'Yes — or use free shortform media skills (github.com/tfcbot/shortform-media-skills) that let your agent generate videos with providers like Wavespeed or KIE. You bring the API key, the skill handles the rest.',
   },
   {
     q: "How does billing work?",

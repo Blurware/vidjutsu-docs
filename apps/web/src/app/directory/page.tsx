@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Browse all VidJutsu skills — campaign types, video formats, production tools, and infrastructure.",
 };
 
-const GITHUB_BASE = "https://github.com/tfcbot/vidjutsu-skills/tree/main/skills";
+const GITHUB_BASE = "https://github.com/tfcbot/shortform-media-skills/tree/main/skills";
 
 const INFRASTRUCTURE = [
   {
@@ -259,7 +259,7 @@ export default function Directory() {
             {totalSkills} skills with {totalFormats}+ video formats. Each skill is a markdown
             file your agent reads and follows. Browse the source on GitHub or install them all.
           </p>
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
+          <CopyCommand command="npx skills add tfcbot/shortform-media-skills" />
         </div>
 
         <Section

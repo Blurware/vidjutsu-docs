@@ -177,7 +177,7 @@ export default function BuildingWithAgents() {
           <p className="text-ink font-medium mb-4">
             Skip the infrastructure. Give your agent VidJutsu.
           </p>
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" className="mb-4" />
+          <CopyCommand command="npx skills add tfcbot/shortform-media-skills" className="mb-4" />
           <a
             href="https://docs.vidjutsu.ai"
             className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors"

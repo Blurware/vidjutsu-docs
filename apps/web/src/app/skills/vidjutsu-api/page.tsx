@@ -110,7 +110,7 @@ export default function VidjutsuApi() {
         </section>
 
         <div className="border-t border-border pt-10">
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
+          <CopyCommand command="npx skills add tfcbot/shortform-media-skills" />
         </div>
       </div>
     </main>

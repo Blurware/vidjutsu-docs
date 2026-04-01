@@ -2,27 +2,27 @@ const ALTERNATIVES = [
   {
     name: "Building it yourself with agents",
     summary:
-      "You wire up account provisioning, warming, content pipelines, posting, and recovery. VidJutsu is that system already built.",
-    gap: "Missing: account warming, shadow ban detection, performance-driven improvement.",
+      "You wire up account provisioning, warming, posting, and recovery. VidJutsu is that system already built.",
+    gap: "See the playbook →",
     href: "/alternatives/building-with-agents",
   },
   {
     name: "Doing it yourself",
     summary: "1-2 hours a day, every day. Most people stop in 2 weeks.",
-    gap: "Missing: consistency, niche research, performance tracking.",
+    gap: "See the playbook →",
     href: "/alternatives/diy",
   },
   {
     name: "Hiring a VA",
     summary:
-      "$300-500/mo plus your time managing them. They don't know your niche.",
-    gap: "Missing: niche intelligence, content generation, self-improving loop.",
+      "$300-500/mo plus your time managing them. An API doesn't need oversight.",
+    gap: "See the playbook →",
     href: "/alternatives/hiring-a-va",
   },
   {
     name: "Social media agencies",
     summary: "$1,000-3,000/mo with contracts. 15-30 posts/month.",
-    gap: "Missing: daily posting volume, real-time research, agent automation.",
+    gap: "See the playbook →",
     href: "/alternatives/social-media-agencies",
   },
 ];
