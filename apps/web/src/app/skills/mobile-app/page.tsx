@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "Mobile App Skill — VidJutsu",
@@ -6,50 +7,102 @@ export const metadata: Metadata = {
     "Agent skill for driving app downloads and signups via Instagram pages.",
 };
 
+const RELATED = [
+  { name: "Niche Research", href: "/skills/niche-research" },
+  { name: "Talking Head", href: "/skills/talking-head" },
+  { name: "Account Management", href: "/skills/account-management" },
+];
+
 export default function MobileApp() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Campaign Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           Mobile App
         </h1>
-        <p className="text-ink-muted text-base mb-8">
-          Drive app downloads and signups through Instagram.
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
+          Drive app downloads and signups through Instagram. Your agent runs the
+          page &mdash; you supply the videos.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill walks your agent through running Instagram pages that drive installs for your mobile app. It researches what app promo content performs and posts daily.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What the agent does</h2>
-
-          <ul className="space-y-2">
-            <li>Collects your app store URL, category, and target audience</li>
-            <li>Researches successful app promotion strategies on Instagram</li>
-            <li>Generates feature demos, use-case videos, and social proof content</li>
-            <li>Provisions managed Instagram pages</li>
-            <li>Tracks link clicks to your app store listing</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/quickstart" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              Get started &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What the agent does
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Collects your app details",
+                detail:
+                  "App store URL, category, and target audience.",
+              },
+              {
+                label: "Researches your niche",
+                detail:
+                  "Scrapes top-performing app promotion strategies on Instagram.",
+              },
+              {
+                label: "Provisions managed Instagram pages",
+                detail:
+                  "Real accounts operated by US-based account managers. 7-day warming before posting.",
+              },
+              {
+                label: "Drafts and schedules posts",
+                detail:
+                  "Feature demos, use-case videos, and social proof content. Up to 2 posts per day.",
+              },
+              {
+                label: "Tracks link clicks",
+                detail:
+                  "Views, engagement, and taps to your app store listing.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }

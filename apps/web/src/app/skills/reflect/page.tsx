@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "Reflect Skill — VidJutsu",
@@ -6,50 +7,98 @@ export const metadata: Metadata = {
     "Agent skill for reviewing campaign analytics and generating performance reports.",
 };
 
+const RELATED = [
+  { name: "Campaign Management", href: "/skills/campaign-management" },
+  { name: "Niche Research", href: "/skills/niche-research" },
+  { name: "Media Analysis", href: "/skills/media-analysis" },
+];
+
 export default function Reflect() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Infrastructure Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           Reflect
         </h1>
-        <p className="text-ink-muted text-base mb-8">
-          Review analytics and generate a performance report for your next content cycle.
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
+          Review analytics and generate a performance report for your next
+          content cycle. Your agent reads the numbers and summarizes what
+          worked.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill walks your agent through reviewing campaign analytics and post performance. It identifies what worked, what didn't, and generates recommendations for the next cycle.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What the agent does</h2>
-
-          <ul className="space-y-2">
-            <li>Pulls performance data across all managed accounts</li>
-            <li>Identifies top-performing posts by views, clicks, and engagement</li>
-            <li>Analyzes which content styles, hooks, and topics converted best</li>
-            <li>Generates a comprehensive report with specific recommendations</li>
-            <li>Feeds insights back into the next content generation cycle</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/quickstart" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              Get started &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What the agent does
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Pulls performance data across all managed accounts",
+                detail:
+                  "Views, clicks, engagement — account-level and post-level.",
+              },
+              {
+                label: "Identifies top-performing posts",
+                detail:
+                  "Ranked by views, clicks, and engagement rate.",
+              },
+              {
+                label: "Analyzes which content styles converted best",
+                detail:
+                  "Hooks, topics, and formats broken down by performance.",
+              },
+              {
+                label: "Generates a report with recommendations",
+                detail:
+                  "Specific, actionable notes for the next content cycle.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }

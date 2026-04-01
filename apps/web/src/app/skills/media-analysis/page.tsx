@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "Media Analysis Skill — VidJutsu",
@@ -6,60 +7,131 @@ export const metadata: Metadata = {
     "Agent skill for analyzing video and image content with critic, verify, and breakdown modes via the VidJutsu API.",
 };
 
+const RELATED = [
+  { name: "Niche Research", href: "/skills/niche-research" },
+  { name: "Talking Head", href: "/skills/talking-head" },
+  { name: "Campaign Management", href: "/skills/campaign-management" },
+];
+
 export default function MediaAnalysis() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Infrastructure Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           Media Analysis
         </h1>
-        <p className="text-ink-muted text-base mb-8">
-          Analyze content with critic, verify, and breakdown modes. Quality gate before posting.
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
+          Quality gate before posting. Analyze content with critic, verify, and
+          breakdown modes. 1 credit per analysis.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill walks your agent through analyzing media content via the VidJutsu API — quality checks before posting, claim verification, and frame-by-frame competitor analysis.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Three modes</h2>
-
-          <ul className="space-y-2">
-            <li><strong>Critic</strong> — Quality analysis of any video or image. Use before posting to catch issues.</li>
-            <li><strong>Verify</strong> — Fact-checking and claim verification. Essential for regulated niches.</li>
-            <li><strong>Breakdown</strong> — Frame-by-frame analysis powered by Gemini. Identifies hooks, transitions, and engagement patterns.</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What the agent does</h2>
-
-          <ul className="space-y-2">
-            <li>Runs critic on every generated video before presenting to the user</li>
-            <li>Flags unverifiable claims before posting</li>
-            <li>Analyzes competitor content to extract winning hooks and formats</li>
-            <li>Reviews own post performance to understand what worked</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Credits</h2>
-          <p>1 credit per analysis — cheap enough to analyze everything.</p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/api-reference/analyze/analyze" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              API Reference &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            Three modes
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Critic",
+                detail:
+                  "Quality analysis of any video or image. Catches bad hooks, AI artifacts, and weak CTAs before posting.",
+              },
+              {
+                label: "Verify",
+                detail:
+                  "Fact-checking and claim verification. Essential for regulated niches.",
+              },
+              {
+                label: "Breakdown",
+                detail:
+                  "Frame-by-frame analysis powered by Gemini. Identifies hooks, transitions, and engagement patterns in competitor content.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What the agent does
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Runs critic on every video before posting",
+                detail: "Nothing goes live without passing QA.",
+              },
+              {
+                label: "Flags unverifiable claims",
+                detail: "Catches claims that could get your account in trouble.",
+              },
+              {
+                label: "Analyzes competitor content",
+                detail:
+                  "Extracts winning hooks and formats from top performers in your niche.",
+              },
+              {
+                label: "Reviews own post performance",
+                detail: "Understands what worked and why.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }

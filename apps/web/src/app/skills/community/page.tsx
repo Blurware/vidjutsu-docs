@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
   title: "Community Skill — VidJutsu",
@@ -6,50 +7,101 @@ export const metadata: Metadata = {
     "Agent skill for growing Skool, Discord, or membership communities via Instagram pages.",
 };
 
+const RELATED = [
+  { name: "Talking Head", href: "/skills/talking-head" },
+  { name: "Niche Research", href: "/skills/niche-research" },
+  { name: "Campaign Management", href: "/skills/campaign-management" },
+];
+
 export default function Community() {
   return (
     <main className="px-5 sm:px-8 py-16 sm:py-24">
-      <article className="max-w-2xl mx-auto">
-        <a href="/" className="text-sm text-ink-muted hover:text-ink transition-colors mb-8 block">&larr; Back</a>
+      <div className="max-w-3xl mx-auto">
+        <a
+          href="/"
+          className="text-sm text-ink-muted hover:text-ink transition-colors mb-10 block"
+        >
+          &larr; Back
+        </a>
 
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          Campaign Skill
+        </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
           Community
         </h1>
-        <p className="text-ink-muted text-base mb-8">
+        <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
           Grow your Skool, Discord, or membership community through Instagram.
+          Your agent runs the page &mdash; you build the community.
         </p>
 
-        <div className="prose prose-sm text-ink-muted space-y-6 leading-relaxed">
-          <p>
-            This skill walks your agent through running Instagram pages that drive signups to your community. It researches what content converts viewers into members and posts daily.
-          </p>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">What the agent does</h2>
-
-          <ul className="space-y-2">
-            <li>Collects your community URL, niche, and content style</li>
-            <li>Researches accounts that successfully drive community growth</li>
-            <li>Generates content optimized for community signups</li>
-            <li>Provisions and manages Instagram pages</li>
-            <li>Tracks link clicks and optimizes for conversions</li>
-          </ul>
-
-          <h2 className="text-xl font-semibold text-ink mt-10 mb-3">Install</h2>
-
-          <pre className="bg-surface-alt border border-border rounded p-4 font-mono text-[13px] overflow-x-auto">
-            npx skills add tfcbot/vidjutsu-skills
-          </pre>
-
-          <div className="mt-12 flex flex-col sm:flex-row gap-4">
-            <a href="https://github.com/tfcbot/vidjutsu-skills" className="text-brand text-sm font-semibold hover:underline">
-              GitHub &rarr;
-            </a>
-            <a href="https://docs.vidjutsu.ai/quickstart" className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors">
-              Get started &rarr;
-            </a>
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
+            What the agent does
+          </h2>
+          <div className="space-y-4 max-w-2xl">
+            {[
+              {
+                label: "Collects your community details",
+                detail: "Community URL, niche, and content style preferences.",
+              },
+              {
+                label: "Researches community growth strategies",
+                detail:
+                  "Scrapes accounts that successfully drive community signups in your niche.",
+              },
+              {
+                label: "Provisions managed Instagram pages",
+                detail:
+                  "Real accounts operated by US-based account managers. 7-day warming before posting.",
+              },
+              {
+                label: "Drafts content optimized for signups",
+                detail:
+                  "Value-first posts that give viewers a reason to join.",
+              },
+              {
+                label: "Tracks link clicks and engagement",
+                detail:
+                  "Post-level views, engagement, and taps to your community link.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3">
+                <span className="text-ink-light text-sm leading-6 shrink-0">
+                  &mdash;
+                </span>
+                <div>
+                  <span className="text-ink text-sm font-medium">
+                    {item.label}.
+                  </span>{" "}
+                  <span className="text-ink-muted text-sm">{item.detail}</span>
+                </div>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section className="mb-14">
+          <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-4">
+            Related skills
+          </h2>
+          <div className="flex flex-wrap gap-3">
+            {RELATED.map((skill) => (
+              <a
+                key={skill.name}
+                href={skill.href}
+                className="text-sm text-ink-muted border border-border px-3 py-1.5 hover:border-ink/20 hover:text-ink transition-colors"
+              >
+                {skill.name}
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <div className="border-t border-border pt-10">
+          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
         </div>
-      </article>
+      </div>
     </main>
   );
 }
