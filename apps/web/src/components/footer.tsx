@@ -26,21 +26,13 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold mb-4">Skills</h4>
             <ul className="space-y-2.5">
+              <li><a href="/directory" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Browse all skills</a></li>
               <li><a href="/skills/talking-head" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Talking Head</a></li>
               <li><a href="/skills/podcast" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Podcast</a></li>
               <li><a href="/skills/clipper" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Clipper</a></li>
               <li><a href="/skills/storefront" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Storefront</a></li>
-              <li><a href="/skills/niche-research" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Niche Research</a></li>
-              <li><a href="/skills/media-analysis" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Media Analysis</a></li>
-              <li><a href="/skills/account-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Account Management</a></li>
-              <li><a href="/skills/campaign-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Campaign Management</a></li>
-              <li><a href="/skills/community" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Community</a></li>
-              <li><a href="/skills/courses" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Courses</a></li>
-              <li><a href="/skills/digital-products" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Digital Products</a></li>
-              <li><a href="/skills/booking" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Booking</a></li>
-              <li><a href="/skills/mobile-app" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Mobile App</a></li>
-              <li><a href="/skills/reflect" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Reflect</a></li>
-              <li><a href="/skills/vidjutsu-api" className="text-[13px] text-ink-muted hover:text-ink transition-colors">VidJutsu API</a></li>
+              <li><a href="/skills/campaign-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Campaigns</a></li>
+              <li><a href="/skills/vidjutsu-api" className="text-[13px] text-ink-muted hover:text-ink transition-colors">API Reference</a></li>
             </ul>
           </div>
 
