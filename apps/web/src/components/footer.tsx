@@ -27,12 +27,6 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Skills</h4>
             <ul className="space-y-2.5">
               <li><a href="/directory" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Browse all skills</a></li>
-              <li><a href="/skills/talking-head" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Talking Head</a></li>
-              <li><a href="/skills/podcast" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Podcast</a></li>
-              <li><a href="/skills/clipper" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Clipper</a></li>
-              <li><a href="/skills/storefront" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Storefront</a></li>
-              <li><a href="/skills/campaign-management" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Campaigns</a></li>
-              <li><a href="/skills/vidjutsu-api" className="text-[13px] text-ink-muted hover:text-ink transition-colors">API Reference</a></li>
             </ul>
           </div>
 
