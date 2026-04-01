@@ -52,19 +52,14 @@ export default function AccountManagement() {
                   "New accounts warm with organic activity before posting begins. Agent tracks status.",
               },
               {
-                label: "Detects shadow bans and auto-replaces",
-                detail:
-                  "Suppressed accounts are detected and replaced automatically.",
-              },
-              {
                 label: "Manages up to 3 accounts per user",
                 detail:
                   "Each account can target a different niche and link.",
               },
               {
-                label: "Tracks account health and engagement",
+                label: "Tracks engagement via analytics",
                 detail:
-                  "Health metrics available through the API.",
+                  "Followers, engagement rate, and video-level stats available through the API.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
@@ -87,7 +82,7 @@ export default function AccountManagement() {
             Credits
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-2xl">
-            32 credits per account. Covers provisioning, warming, and ongoing
+            990 credits per account. Covers provisioning, warming, and ongoing
             management by a US-based account manager.
           </p>
         </section>

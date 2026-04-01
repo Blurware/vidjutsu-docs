@@ -61,9 +61,9 @@ export default function Courses() {
                   "Content that demonstrates expertise and drives enrollment.",
               },
               {
-                label: "Tracks which content drives enrollments",
+                label: "Tracks post performance",
                 detail:
-                  "Post-level views, engagement, and link taps to your course page.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

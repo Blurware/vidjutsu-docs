@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "Niche Research Skill — VidJutsu",
   description:
-    "Agent skill for scraping and analyzing top-performing content across TikTok, Instagram, and YouTube.",
+    "Agent skill for scraping and analyzing top-performing content on Instagram.",
 };
 
 const RELATED = [
@@ -31,8 +31,8 @@ export default function NicheResearch() {
           Niche Research
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
-          Scrape and analyze what&rsquo;s working across TikTok, Instagram, and
-          YouTube. 1 credit per scrape request.
+          Scrape and analyze what&rsquo;s working on Instagram.
+          10 credits per scrape request.
         </p>
 
         <section className="mb-14">
@@ -42,29 +42,19 @@ export default function NicheResearch() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Searches for top-performing accounts",
+                label: "Scrapes top-performing accounts",
                 detail:
-                  "Across TikTok, Instagram, and YouTube in your niche.",
+                  "Finds what works in your niche on Instagram.",
               },
               {
-                label: "Runs frame-by-frame breakdown on top content",
+                label: "Analyzes top content with breakdown mode",
                 detail:
-                  "Identifies hooks, transitions, and engagement patterns.",
-              },
-              {
-                label: "Extracts YouTube transcripts",
-                detail:
-                  "Long-form analysis for content repurposing.",
+                  "Identifies hooks, transitions, and engagement patterns via the analyze endpoint.",
               },
               {
                 label: "Compiles a research brief",
                 detail:
                   "Winning hooks, formats, posting patterns, and content gaps in your niche.",
-              },
-              {
-                label: "Schedules periodic re-research",
-                detail:
-                  "Trends shift. Your agent re-runs research on a cadence you set.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

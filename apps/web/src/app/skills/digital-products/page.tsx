@@ -62,9 +62,9 @@ export default function DigitalProducts() {
                   "Content that shows the product in action and drives purchases.",
               },
               {
-                label: "Tracks clicks to your product page",
+                label: "Tracks post performance",
                 detail:
-                  "Post-level views, engagement, and link taps.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

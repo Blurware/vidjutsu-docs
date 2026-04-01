@@ -57,14 +57,14 @@ export default function MobileApp() {
                   "Real accounts operated by US-based account managers. 7-day warming before posting.",
               },
               {
-                label: "Drafts and schedules posts",
+                label: "Schedules your videos as posts",
                 detail:
-                  "Feature demos, use-case videos, and social proof content. Up to 2 posts per day.",
+                  "You supply the videos, your agent schedules and posts them. Up to 2 posts per day.",
               },
               {
-                label: "Tracks link clicks",
+                label: "Tracks post performance",
                 detail:
-                  "Views, engagement, and taps to your app store listing.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

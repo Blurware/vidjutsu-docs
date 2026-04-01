@@ -53,19 +53,14 @@ export default function Clipper() {
                   "Scrapes your niche to identify what clip styles drive the most engagement.",
               },
               {
-                label: "Creates clips in multiple formats",
-                detail:
-                  "Talking head clips, b-roll montages, tutorial snippets, and quote cards.",
-              },
-              {
                 label: "Provisions managed Instagram pages",
                 detail:
                   "Real accounts operated by US-based account managers. 7-day warming before posting.",
               },
               {
-                label: "Schedules 2 posts per day from your content bank",
+                label: "Schedules your clips as posts",
                 detail:
-                  "Pulls from your clip library and tracks which styles drive the most traffic.",
+                  "You upload the clips, your agent schedules them. Up to 2 posts per day.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

@@ -62,9 +62,9 @@ export default function Booking() {
                   "Case study, tip-based, and results-oriented posts that build trust.",
               },
               {
-                label: "Tracks clicks to your booking link",
+                label: "Tracks post performance",
                 detail:
-                  "Post-level views, engagement, and link taps.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

@@ -57,14 +57,14 @@ export default function Storefront() {
                   "Real accounts operated by US-based account managers. 7-day warming before posting.",
               },
               {
-                label: "Builds a content bank",
+                label: "Schedules your videos as posts",
                 detail:
-                  "AI-generated or user-supplied videos organized by content type.",
+                  "You upload videos, your agent schedules them with optimized captions. Up to 2 posts per day.",
               },
               {
-                label: "Drafts and schedules posts",
+                label: "Tracks post performance",
                 detail:
-                  "Optimized captions, up to 2 posts per day. Tracks performance each cycle.",
+                  "Views, likes, comments, and shares via analytics.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

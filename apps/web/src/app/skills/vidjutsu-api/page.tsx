@@ -47,14 +47,14 @@ export default function VidjutsuApi() {
                   "API key creation via Stripe checkout. Your agent knows how to authenticate.",
               },
               {
-                label: "Video, image, and music generation endpoints",
-                detail:
-                  "Submit generation requests and poll for results.",
-              },
-              {
                 label: "Account provisioning and management",
                 detail:
-                  "Create, warm, and monitor Instagram accounts.",
+                  "Create and manage Instagram accounts.",
+              },
+              {
+                label: "File upload",
+                detail:
+                  "Upload videos, images, and audio to the VidJutsu CDN.",
               },
               {
                 label: "Post scheduling and campaign orchestration",

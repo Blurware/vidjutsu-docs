@@ -32,7 +32,7 @@ export default function MediaAnalysis() {
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
           Quality gate before posting. Analyze content with critic, verify, and
-          breakdown modes. 1 credit per analysis.
+          breakdown modes. 10 credits per analysis.
         </p>
 
         <section className="mb-14">
