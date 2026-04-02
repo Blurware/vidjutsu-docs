@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of Hiring a VA — Playbook",
+  title: "VidJutsu vs Hiring a VA",
   description:
     "A VA for social media costs $300-500/month and still needs your management. Here's how to use VidJutsu instead.",
 };

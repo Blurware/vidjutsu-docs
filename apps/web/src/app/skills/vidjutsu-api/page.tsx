@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "VidJutsu API Skill — VidJutsu",
+  title: "VidJutsu API Skill",
   description:
     "Agent skill with API endpoint reference and authentication for calling the VidJutsu API.",
 };

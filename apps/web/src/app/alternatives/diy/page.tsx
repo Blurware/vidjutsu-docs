@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of Doing It Yourself — Playbook",
+  title: "VidJutsu vs DIY Instagram Posting",
   description:
     "Posting daily on Instagram is a full-time habit. Here's how to hand the page to your agent with VidJutsu.",
 };

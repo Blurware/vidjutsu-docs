@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Skills Directory — VidJutsu",
+  title: "Skills Directory",
   description:
     "Browse all VidJutsu skills — campaign types, video formats, production tools, and infrastructure.",
 };
