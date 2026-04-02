@@ -1,0 +1,19 @@
+name: Sync OpenAPI Spec
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Trigger Mintlify rebuild
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date -u > .last-spec-sync
+          git add .last-spec-sync
+          git commit -m "chore: trigger rebuild for updated OpenAPI spec"
+          git push
