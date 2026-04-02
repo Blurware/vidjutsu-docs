@@ -1,9 +1,9 @@
 ---
 title: "Managed Accounts"
-description: "How managed accounts work on Instagram"
+description: "Draft-first account creation: create for free, provision when ready"
 ---
 
-VidJutsu provisions fully managed shortform accounts on Instagram. You order accounts, we handle creation, warming, and maintenance.
+VidJutsu provisions fully managed shortform accounts on Instagram. Create draft accounts for free, configure their profiles, then provision when you're ready to pay.
 
 ## What are managed accounts?
 
@@ -22,26 +22,16 @@ You choose the platform and name. We provision the account, warm it up with orga
 |----------|--------|
 | Instagram | Available |
 
-## How warming works
+## Draft-first workflow
 
-After an account is created, it goes through a warming period before it's ready to post. During warming, the account builds organic-looking activity to establish credibility on the platform.
+Account creation is now a two-step process:
 
-<Warning>
-**Warming can take up to 7 days.** Don't schedule posts until an account reaches `"active"` status. Posting during warmup can trigger platform flags.
-</Warning>
+1. **Create a draft** (free) — Set up the account profile without spending credits.
+2. **Provision** (990 credits) — Charge credits and provision the account via TokPortal.
 
-## Account lifecycle
+This lets you build and review your account setup before committing any credits.
 
-| Status | Description |
-|--------|-------------|
-| `creating` | Account is being provisioned |
-| `active` | Ready to post — schedule content now |
-| `suspended` | Temporarily paused (platform action) |
-| `deleted` | Account has been removed |
-
-## Create an account
-
-The API accepts two fields: `platform` and `name`.
+## Step 1: Create a draft account
 
 <CodeGroup>
 ```bash CLI
@@ -54,29 +44,130 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
     "platform": "instagram",
-    "name": "nyc_streetstyle"
+    "name": "nyc_streetstyle",
+    "username": "nyc_streetstyle",
+    "bio": "NYC street style and fits",
+    "linkInBio": "https://myshop.com",
+    "tags": [
+      { "key": "campaign", "value": "summer-launch" },
+      { "key": "region", "value": "northeast" }
+    ]
   }'
 ```
 </CodeGroup>
 
-**Cost:** 10 credits per account.
+**Cost:** 0 credits (free).
+
+```json
+{
+  "id": "acc_8k2x",
+  "status": "draft",
+  "creditsCharged": 0
+}
+```
+
+## Step 2: Edit the draft (optional)
+
+Update a draft account's profile before provisioning:
+
+```bash
+curl -X PUT "https://api.vidjutsu.ai/v1/accounts?id=acc_8k2x" \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "bio": "Updated bio text",
+    "linkInBio": "https://newshop.com",
+    "tags": [
+      { "key": "campaign", "value": "summer-launch" },
+      { "key": "region", "value": "northeast" },
+      { "key": "priority", "value": "high" }
+    ]
+  }'
+```
+
+<Warning>
+PUT only works on accounts in `"draft"` status. Once provisioned, the account profile is managed by TokPortal.
+</Warning>
+
+## Step 3: Provision the account
+
+When you're ready, provision the account to start creation and warming:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/accounts/provision \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "accountId": "acc_8k2x",
+    "country": "US",
+    "niche": "street fashion"
+  }'
+```
+
+**Cost:** 990 credits ($99.00).
 
 ```json
 {
   "id": "acc_8k2x",
   "status": "creating",
-  "creditsCharged": 10
+  "creditsCharged": 990
 }
+```
+
+The response returns `202 Accepted`. The account will move through `creating` to `active` as it warms up.
+
+## How warming works
+
+After an account is provisioned, it goes through a warming period before it's ready to post. During warming, the account builds organic-looking activity to establish credibility on the platform.
+
+<Warning>
+**Warming can take up to 7 days.** Don't schedule posts until an account reaches `"active"` status. Posting during warmup can trigger platform flags.
+</Warning>
+
+## Account lifecycle
+
+| Status | Description |
+|--------|-------------|
+| `draft` | Profile created, no credits charged. Editable via PUT. |
+| `creating` | Account provisioned via TokPortal, credits charged |
+| `active` | Ready to post — schedule content now |
+| `suspended` | Temporarily paused (platform action) |
+| `deleted` | Account has been removed |
+
+## Tags
+
+Accounts support AWS-style key-value tags for organization:
+
+```json
+{
+  "tags": [
+    { "key": "campaign", "value": "summer-launch" },
+    { "key": "region", "value": "northeast" }
+  ]
+}
+```
+
+Tags are set at creation and updatable via PUT on drafts. Filter accounts by tag on the list endpoint:
+
+```bash
+curl "https://api.vidjutsu.ai/v1/accounts?tag.campaign=summer-launch" \
+  -H "X-Api-Key: vj_live_abc123..."
 ```
 
 ## Build a network
 
-Most campaigns use multiple accounts to amplify reach:
+Most campaigns use multiple accounts to amplify reach. Draft them all first, then provision:
 
 ```bash
+# Create drafts (free)
 vidjutsu account create --platform instagram --name "style_la"
 vidjutsu account create --platform instagram --name "fits_daily"
 vidjutsu account create --platform instagram --name "drip_atl"
+
+# Provision when ready (990 credits each)
+vidjutsu account provision acc_xxx1 --niche "street fashion" --country US
+vidjutsu account provision acc_xxx2 --niche "street fashion" --country US
+vidjutsu account provision acc_xxx3 --niche "street fashion" --country US
 ```
 
 Each account drives traffic to the same destination — your link, shop, or product.
@@ -101,13 +192,17 @@ curl https://api.vidjutsu.ai/v1/accounts \
       "accountId": "acc_8k2x",
       "platform": "instagram",
       "name": "nyc_streetstyle",
-      "status": "active"
+      "status": "active",
+      "tags": [
+        { "key": "campaign", "value": "summer-launch" }
+      ]
     },
     {
       "accountId": "acc_9m3y",
       "platform": "instagram",
       "name": "drip_atl",
-      "status": "creating"
+      "status": "draft",
+      "tags": []
     }
   ]
 }
@@ -115,7 +210,9 @@ curl https://api.vidjutsu.ai/v1/accounts \
 
 ## Best practices
 
+- **Draft early, provision later.** Set up all your accounts as drafts, review profiles, then provision when ready.
+- **Use tags for organization.** Tag accounts by campaign, region, or priority for easy filtering.
 - **Order accounts early.** Warming takes up to 7 days, so provision accounts before you need them.
 - **Use descriptive names.** Account names help you identify which account is which when scheduling posts.
-- **Focus on Instagram — the primary platform for shortform sales content.
+- **Focus on Instagram** — the primary platform for shortform sales content.
 - **Wait for `active` status.** Never schedule posts to accounts that are still warming.

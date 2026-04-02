@@ -1,41 +1,69 @@
 ---
 title: "Credits & Billing"
-description: "Account pricing and usage-based billing"
+description: "Draft-first pricing: create for free, pay when you commit"
 ---
 
 ## Pricing model
 
-**$99 per managed Instagram account** (one-time). Usage-based pricing for all other operations. Subscription required ($59/mo includes 100 credits).
+**Draft-first.** Creating resources (accounts, posts) is always free. Credits are only charged when you execute a command endpoint to provision or schedule.
+
+Subscription required ($59/mo includes 100 credits).
 
 ## How credits work
 
-Every API operation costs a fixed number of credits at $0.10 each. Credits are deducted immediately when a request is accepted.
+Every billable operation costs a fixed number of credits at $0.10 each. Credits are deducted only at command endpoints — never at creation time.
 
 ## Credit costs
 
 | Operation | Endpoint | Credits | Cost |
 |-----------|----------|---------|------|
-| Account creation | `POST /v1/accounts` | 990 | $99.00 |
-| Post scheduling | `POST /v1/posts` | 36 | $3.60 |
+| Create draft account | `POST /v1/accounts` | 0 | Free |
+| Provision account | `POST /v1/accounts/provision` | 990 | $99.00 |
+| Create draft post | `POST /v1/posts` | 0 | Free |
+| Schedule post | `POST /v1/posts/schedule` | 36 | $3.60 |
+| Edit draft account | `PUT /v1/accounts?id={id}` | 0 | Free |
+| Edit draft post | `PUT /v1/posts?id={id}` | 0 | Free |
 | Media analysis | `POST /v1/analyze` | 10 | $1.00 |
 | Scraping | `POST /v1/scrape` | 10 | $1.00 |
 
-**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, campaign estimates, analytics, drafts, uploads.
+**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, cost estimates, analytics, drafts, uploads, edits to drafts.
+
+## Estimate costs
+
+Use the stateless cost calculator before committing:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/estimate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "accounts": 3,
+    "posts": 6,
+    "platform": "instagram"
+  }'
+```
+
+```json
+{
+  "credits": 3186,
+  "breakdown": [
+    { "label": "3 instagram accounts", "amount": 2970 },
+    { "label": "6 post slots", "amount": 216 }
+  ]
+}
+```
 
 ## Account limit
 
-Each user can create a maximum of **3 managed accounts**. This limit applies to both individual account creation and campaigns.
+Each user can create a maximum of **3 managed accounts**. This limit applies to provisioned accounts (drafts do not count).
 
-## Campaign pricing
+## Campaign pricing (legacy)
 
-Campaigns bundle account creation and post slots:
+Campaigns bundle account creation and post slots. They still work but the recommended flow is draft resources + tags + command endpoints.
 
 | Item | Credits | Cost |
 |------|---------|------|
 | Instagram account | 990 | $99.00 |
 | Post slot (per post) | 36 | $3.60 |
-
-Use `POST /v1/campaigns/estimate` to preview costs before creating a campaign.
 
 ## Checking your balance
 
@@ -80,12 +108,12 @@ curl https://api.vidjutsu.ai/v1/pricing
 ```json
 {
   "costs": {
-    "accounts.create": 990,
-    "posts.create": 36,
+    "accounts.provision": 990,
+    "posts.schedule": 36,
+    "accounts.create": 0,
+    "posts.create": 0,
     "analyze": 10,
-    "scrape": 10,
-    "campaigns.instagram_account": 990,
-    "campaigns.video_slot": 36
+    "scrape": 10
   }
 }
 ```

@@ -20,13 +20,39 @@ curl https://api.vidjutsu.ai/v1/accounts \
 
 Get your API key by [purchasing credits](/authentication) with any card via Stripe.
 
+## Draft-first design
+
+All resource creation is free. `POST /v1/accounts` and `POST /v1/posts` create drafts that cost 0 credits. Credits are only charged at command endpoints:
+
+| Command | Endpoint | Credits |
+|---------|----------|---------|
+| Provision account | `POST /v1/accounts/provision` | 990 |
+| Schedule post | `POST /v1/posts/schedule` | 36 |
+
+Draft resources can be edited with `PUT /v1/accounts?id={id}` and `PUT /v1/posts?id={id}` before committing. Use `POST /v1/estimate` to preview costs.
+
+## Tags
+
+Accounts and posts support AWS-style key-value tags for organization and filtering:
+
+```json
+{
+  "tags": [
+    { "key": "campaign", "value": "summer-launch" },
+    { "key": "region", "value": "northeast" }
+  ]
+}
+```
+
+Filter on GET requests: `?tag.campaign=summer-launch`
+
 ## Response codes
 
 | Code | Description |
 |------|-------------|
-| `200` | Success (read operations) |
-| `201` | Created (campaigns) |
-| `202` | Accepted (async operation started) |
+| `200` | Success (read operations, edits) |
+| `201` | Created (drafts) |
+| `202` | Accepted (async operation started — provision, schedule) |
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
 | `402` | Insufficient credits |
@@ -38,7 +64,7 @@ All errors return a consistent JSON structure:
 ```json
 {
   "error": "insufficient_credits",
-  "message": "This operation requires 32 credits but you have 2",
+  "message": "This operation requires 990 credits but you have 2",
   "setup": "/v1/api_keys"
 }
 ```
@@ -47,13 +73,13 @@ The `setup` field is included on `402` errors to help agents self-recover by ini
 
 ## Async operations
 
-Account creation and campaign execution return `202 Accepted` with a job ID:
+Account provisioning and campaign execution return `202 Accepted`:
 
 ```json
 {
   "id": "acc_abc123",
   "status": "creating",
-  "creditsCharged": 32
+  "creditsCharged": 990
 }
 ```
 

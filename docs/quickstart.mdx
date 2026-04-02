@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Get your API key and launch your first campaign in minutes"
+description: "Get your API key and create your first draft account in minutes"
 ---
 
 ## Option A: Use the CLI
@@ -17,10 +17,16 @@ Then authenticate with your card:
 vidjutsu auth --card tok_live_your_card_token
 ```
 
-Create a managed account:
+Create a draft account (free):
 
 ```bash
 vidjutsu account create --platform instagram --name "my_brand" --niche "fitness"
+```
+
+Provision when ready (990 credits):
+
+```bash
+vidjutsu account provision acc_abc123 --niche "fitness" --country US
 ```
 
 See the [CLI reference](/cli/index) for all commands.
@@ -74,7 +80,7 @@ curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
 Store your API key securely — it is shown once in this response.
 </Warning>
 
-### 3. Create a managed account
+### 3. Create a draft account (free)
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/accounts \
@@ -83,6 +89,30 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
   -d '{
     "platform": "instagram",
     "name": "my_brand",
+    "niche": "fitness",
+    "tags": [
+      { "key": "campaign", "value": "my-first" }
+    ]
+  }'
+```
+
+```json
+{
+  "id": "acc_abc123",
+  "status": "draft",
+  "creditsCharged": 0
+}
+```
+
+### 4. Provision the account (990 credits)
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/accounts/provision \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "accountId": "acc_abc123",
+    "country": "US",
     "niche": "fitness"
   }'
 ```
@@ -91,13 +121,11 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
 {
   "id": "acc_abc123",
   "status": "creating",
-  "creditsCharged": 32
+  "creditsCharged": 990
 }
 ```
 
-### 4. Schedule a post
-
-Once the account is active, submit a video for posting:
+### 5. Create a draft post (free)
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/posts \
@@ -110,11 +138,30 @@ curl -X POST https://api.vidjutsu.ai/v1/posts \
   }'
 ```
 
+```json
+{
+  "id": "post_xyz789",
+  "status": "draft",
+  "creditsCharged": 0
+}
+```
+
+### 6. Schedule the post (36 credits)
+
+Once the account is active:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/posts/schedule \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{ "postId": "post_xyz789" }'
+```
+
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Launch a campaign" icon="rocket" href="/guides/launch-a-campaign">
-    Order accounts and schedule posts at scale.
+  <Card title="Manage accounts" icon="user-plus" href="/guides/manage-accounts">
+    Learn the full draft-first account workflow.
   </Card>
   <Card title="CLI reference" icon="terminal" href="/cli/index">
     Full command reference for the VidJutsu CLI.
