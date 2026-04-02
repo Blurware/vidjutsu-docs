@@ -5,22 +5,22 @@ description: "Account pricing and usage-based billing"
 
 ## Pricing model
 
-**$99 per managed Instagram account** (one-time). Usage-based pricing for all other operations. No subscription required.
+**$99 per managed Instagram account** (one-time). Usage-based pricing for all other operations. Subscription required ($59/mo includes 100 credits).
 
 ## How credits work
 
-Every API operation costs a fixed number of credits at $0.75 each. Credits are deducted immediately when a request is accepted.
+Every API operation costs a fixed number of credits at $0.10 each. Credits are deducted immediately when a request is accepted.
 
 ## Credit costs
 
 | Operation | Endpoint | Credits | Cost |
 |-----------|----------|---------|------|
-| Account creation | `POST /v1/accounts` | 32 | $24.00 |
-| Post scheduling | `POST /v1/posts` | 3 | $2.25 |
-| Media analysis | `POST /v1/analyze` | 1 | $0.75 |
-| Scraping | `POST /v1/scrape` | 1 | $0.75 |
+| Account creation | `POST /v1/accounts` | 990 | $99.00 |
+| Post scheduling | `POST /v1/posts` | 36 | $3.60 |
+| Media analysis | `POST /v1/analyze` | 10 | $1.00 |
+| Scraping | `POST /v1/scrape` | 10 | $1.00 |
 
-**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, campaign estimates, analytics.
+**Free operations** (0 credits): All list/read endpoints, pricing, balance checks, campaign estimates, analytics, drafts, uploads.
 
 ## Account limit
 
@@ -28,14 +28,12 @@ Each user can create a maximum of **3 managed accounts**. This limit applies to 
 
 ## Campaign pricing
 
-Campaigns bundle account creation and video slots:
+Campaigns bundle account creation and post slots:
 
 | Item | Credits | Cost |
 |------|---------|------|
-| Instagram account | 72 | $54.00 |
-| Video slot (per post) | 2 | $1.50 |
-| Edit slot (add-on, per post) | 3 | $2.25 |
-| Comment moderation (add-on, per account) | 25 | $18.75 |
+| Instagram account | 990 | $99.00 |
+| Post slot (per post) | 36 | $3.60 |
 
 Use `POST /v1/campaigns/estimate` to preview costs before creating a campaign.
 
@@ -43,13 +41,13 @@ Use `POST /v1/campaigns/estimate` to preview costs before creating a campaign.
 
 ```bash
 curl https://api.vidjutsu.ai/v1/balance \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "X-Api-Key: vj_prod_abc123..."
 ```
 
 ```json
 {
   "credits": 84,
-  "clientId": "cl_xyz789"
+  "clientId": "mc_xyz789"
 }
 ```
 
@@ -63,6 +61,16 @@ curl -X POST https://api.vidjutsu.ai/v1/api_keys \
 
 Pay with any card via Stripe. Credits are added immediately after payment.
 
+## Subscription
+
+$59/month includes 100 credits. Required for API access.
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/subscriptions \
+  -H "Content-Type: application/json" \
+  -d '{ "email": "you@example.com" }'
+```
+
 ## Getting pricing programmatically
 
 ```bash
@@ -72,10 +80,12 @@ curl https://api.vidjutsu.ai/v1/pricing
 ```json
 {
   "costs": {
-    "accounts.create": 32,
-    "posts.create": 3,
-    "analyze": 1,
-    "scrape": 1
+    "accounts.create": 990,
+    "posts.create": 36,
+    "analyze": 10,
+    "scrape": 10,
+    "campaigns.instagram_account": 990,
+    "campaigns.video_slot": 36
   }
 }
 ```

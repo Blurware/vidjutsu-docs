@@ -21,7 +21,7 @@ The config file specifies the campaign parameters:
 }
 ```
 
-Returns the campaign ID, cost breakdown, and placeholder account/post IDs.
+Returns the campaign ID, cost breakdown, and placeholder account/post IDs. Campaign is created in `draft` status with credits reserved.
 
 ## List campaigns
 
@@ -36,3 +36,23 @@ vidjutsu campaign get cmp_abc123
 ```
 
 Returns the campaign with all accounts and posts progress.
+
+## Execute a campaign
+
+Start provisioning accounts and warming:
+
+```bash
+vidjutsu campaign execute cmp_abc123
+```
+
+Transitions from `draft` to `executing`.
+
+## Cancel a campaign
+
+Cancel and refund reserved credits:
+
+```bash
+vidjutsu campaign cancel cmp_abc123
+```
+
+Only works for campaigns in `draft` or `executing` status.
