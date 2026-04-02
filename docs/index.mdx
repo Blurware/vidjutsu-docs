@@ -14,14 +14,14 @@ https://api.vidjutsu.ai
 ## What you can do
 
 <CardGroup cols={2}>
-  <Card title="Order accounts" icon="user-plus" href="/guides/manage-accounts">
-    Provision managed Instagram accounts that warm up automatically.
+  <Card title="Draft accounts" icon="user-plus" href="/guides/manage-accounts">
+    Create draft accounts for free, then provision when ready.
   </Card>
   <Card title="Schedule posts" icon="calendar" href="/guides/schedule-posts">
-    Schedule posts across your accounts. Set it and let your agent run it.
+    Draft posts for free, then schedule to active accounts.
   </Card>
-  <Card title="Launch campaigns" icon="rocket" href="/guides/launch-a-campaign">
-    Combine accounts and scheduling into an end-to-end campaign.
+  <Card title="Estimate costs" icon="calculator" href="/api-reference/estimate/estimate">
+    Preview credit costs before committing with the estimate endpoint.
   </Card>
   <Card title="Analyze content" icon="chart-line" href="/api-reference/analyze/analyze">
     Analyze media performance and get actionable insights.
@@ -32,19 +32,22 @@ https://api.vidjutsu.ai
 
 1. **Top up credits** — `POST /v1/api_keys` with your email. Pay with any card via Stripe.
 2. **Get your API key** — Poll `GET /v1/api_keys/status` after payment. Your key is returned in the response.
-3. **Make requests** — Pass your API key in the `X-Api-Key` header with every request.
-4. **Poll for results** — Async endpoints return `202 Accepted` with a job ID. Use list endpoints to check status.
+3. **Draft resources for free** — Create accounts and posts as drafts (0 credits). Edit them with PUT until ready.
+4. **Provision and schedule** — Use command endpoints (`/provision`, `/schedule`) to charge credits and go live.
+5. **Poll for results** — Async endpoints return `202 Accepted`. Use list endpoints to check status.
 
-## Pricing
+## Draft-first workflow
 
-**$99 per managed account** (one-time). Usage-based for everything else.
+All resource creation is free. Credits are only charged at command endpoints:
 
-| Operation | Cost |
-|-----------|------|
-| Managed Instagram account | $99.00 |
-| Post scheduling | $3.15 |
-| Media analysis / QA | $0.35 |
-| Niche scraping | $0.01 |
+| Action | Endpoint | Credits | Cost |
+|--------|----------|---------|------|
+| Create draft account | `POST /v1/accounts` | 0 | Free |
+| Provision account | `POST /v1/accounts/provision` | 990 | $99.00 |
+| Create draft post | `POST /v1/posts` | 0 | Free |
+| Schedule post | `POST /v1/posts/schedule` | 36 | $3.60 |
+
+Use `POST /v1/estimate` to preview costs before committing.
 
 ## Choose your interface
 

@@ -1,32 +1,48 @@
 ---
 title: "vidjutsu post"
-description: "Schedule and manage posts across your accounts"
+description: "Create, edit, and schedule posts across your accounts"
 ---
 
-## Schedule a post
+## Create a draft post
+
+Create a draft post for free (0 credits). The account ID is optional at draft time.
 
 ```bash
-vidjutsu post schedule --account acc_8k2x --video vid_q9f3 --caption "Summer fits"
+vidjutsu post create --video vid_q9f3 --caption "Summer fits"
 ```
 
 ### Options
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--account` | string | Account ID (required) |
+| `--account` | string | Account ID (optional at draft, required for scheduling) |
 | `--video` | string | Video ID |
 | `--video-url` | string | Video URL |
 | `--caption` | string | Post caption |
+| `--scheduled-at` | string | Unix timestamp for publish time |
+| `--tag` | string | Key-value tag, e.g. `campaign=summer-launch` (repeatable) |
 
-**Cost:** 36 credits ($3.60).
+**Cost:** 0 credits (free).
 
-## Create a draft
+## Edit a draft post
 
-Drafts don't require an account and are free (0 credits).
+Update a draft post's content before scheduling:
 
 ```bash
-vidjutsu post draft --video-url "https://..." --caption "Draft caption"
+vidjutsu post edit post_m2v1 --caption "Updated caption" --video-url "https://..."
 ```
+
+Only works on posts in `"draft"` status.
+
+## Schedule a post
+
+Charge 36 credits and queue the post for publishing. The post must have an account ID, and the account must be `"active"`.
+
+```bash
+vidjutsu post schedule post_m2v1
+```
+
+**Cost:** 36 credits ($3.60).
 
 ## Assign a draft to an account
 
@@ -46,6 +62,12 @@ vidjutsu post duplicate post_m2v1 --account acc_other
 vidjutsu post list
 ```
 
+Filter by tag:
+
+```bash
+vidjutsu post list --tag campaign=summer-launch
+```
+
 ## Get post status
 
 ```bash
@@ -58,4 +80,4 @@ vidjutsu post get post_m2v1
 vidjutsu post cancel post_m2v1
 ```
 
-Only posts with `"scheduled"` or `"draft"` status can be cancelled.
+Only posts with `"draft"` or `"scheduled"` status can be cancelled.

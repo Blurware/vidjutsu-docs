@@ -42,6 +42,7 @@
       },
       {
         "tab": "API Reference",
+        "openapi": "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json",
         "groups": [
           {
             "group": "Overview",
@@ -64,6 +65,8 @@
             "group": "Accounts",
             "pages": [
               "api-reference/accounts/create",
+              "api-reference/accounts/update",
+              "api-reference/accounts/provision",
               "api-reference/accounts/list"
             ]
           },
@@ -71,11 +74,19 @@
             "group": "Posts",
             "pages": [
               "api-reference/posts/create",
+              "api-reference/posts/update",
+              "api-reference/posts/schedule",
               "api-reference/posts/list"
             ]
           },
           {
-            "group": "Campaigns",
+            "group": "Estimate",
+            "pages": [
+              "api-reference/estimate/estimate"
+            ]
+          },
+          {
+            "group": "Campaigns (Legacy)",
             "pages": [
               "api-reference/campaigns/create",
               "api-reference/campaigns/list",

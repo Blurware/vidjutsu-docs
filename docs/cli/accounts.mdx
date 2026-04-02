@@ -1,11 +1,11 @@
 ---
 title: "vidjutsu account"
-description: "Create and manage managed accounts"
+description: "Create, edit, and provision managed accounts"
 ---
 
-## Create an account
+## Create a draft account
 
-Provision a managed Instagram account.
+Create a draft account for free (0 credits). No TokPortal call until you provision.
 
 ```bash
 vidjutsu account create --platform instagram --name "nyc_streetstyle"
@@ -17,12 +17,38 @@ vidjutsu account create --platform instagram --name "nyc_streetstyle"
 |------|------|-------------|
 | `--platform` | string | `instagram` (required) |
 | `--name` | string | Account name (required) |
-| `--niche` | string | Niche keyword for warming |
-| `--country` | string | Country code |
 | `--username` | string | Preferred Instagram handle |
 | `--bio` | string | Profile biography |
 | `--profile-pic` | string | Profile picture URL |
 | `--link` | string | Link in bio URL |
+| `--tag` | string | Key-value tag, e.g. `campaign=summer-launch` (repeatable) |
+
+**Cost:** 0 credits (free).
+
+## Edit a draft account
+
+Update a draft account's profile before provisioning:
+
+```bash
+vidjutsu account edit acc_8k2x --bio "Updated bio" --link "https://newshop.com"
+```
+
+Only works on accounts in `"draft"` status.
+
+## Provision an account
+
+Charge 990 credits and start account creation via TokPortal:
+
+```bash
+vidjutsu account provision acc_8k2x --niche "street fashion" --country US
+```
+
+### Options
+
+| Flag | Type | Description |
+|------|------|-------------|
+| `--niche` | string | Niche keyword for warming |
+| `--country` | string | Country code |
 
 **Cost:** 990 credits ($99).
 
@@ -34,6 +60,12 @@ Account warming can take **up to 7 days**. Wait for `"active"` status before sch
 
 ```bash
 vidjutsu account list
+```
+
+Filter by tag:
+
+```bash
+vidjutsu account list --tag campaign=summer-launch
 ```
 
 ## Get account details
