@@ -15,9 +15,30 @@ vidjutsu post schedule --account acc_8k2x --video vid_q9f3 --caption "Summer fit
 |------|------|-------------|
 | `--account` | string | Account ID (required) |
 | `--video` | string | Video ID |
+| `--video-url` | string | Video URL |
 | `--caption` | string | Post caption |
 
-**Cost:** 3 credits.
+**Cost:** 36 credits ($3.60).
+
+## Create a draft
+
+Drafts don't require an account and are free (0 credits).
+
+```bash
+vidjutsu post draft --video-url "https://..." --caption "Draft caption"
+```
+
+## Assign a draft to an account
+
+```bash
+vidjutsu post assign post_m2v1 --account acc_8k2x
+```
+
+## Duplicate a post
+
+```bash
+vidjutsu post duplicate post_m2v1 --account acc_other
+```
 
 ## List posts
 
@@ -37,4 +58,4 @@ vidjutsu post get post_m2v1
 vidjutsu post cancel post_m2v1
 ```
 
-Only posts with `"scheduled"` status can be cancelled.
+Only posts with `"scheduled"` or `"draft"` status can be cancelled.

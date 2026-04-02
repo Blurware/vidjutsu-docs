@@ -17,8 +17,14 @@ vidjutsu account create --platform instagram --name "nyc_streetstyle"
 |------|------|-------------|
 | `--platform` | string | `instagram` (required) |
 | `--name` | string | Account name (required) |
+| `--niche` | string | Niche keyword for warming |
+| `--country` | string | Country code |
+| `--username` | string | Preferred Instagram handle |
+| `--bio` | string | Profile biography |
+| `--profile-pic` | string | Profile picture URL |
+| `--link` | string | Link in bio URL |
 
-**Cost:** 10 credits.
+**Cost:** 990 credits ($99).
 
 <Warning>
 Account warming can take **up to 7 days**. Wait for `"active"` status before scheduling posts.
@@ -43,5 +49,5 @@ vidjutsu account delete acc_8k2x
 ```
 
 <Warning>
-Deleting an account is permanent and cancels all scheduled posts.
+Deleting an account sets its status to `deleted` and cancels all scheduled posts.
 </Warning>
