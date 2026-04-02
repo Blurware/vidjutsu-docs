@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of a Social Media Agency — Playbook",
+  title: "VidJutsu vs Social Media Agencies",
   description:
     "Agencies charge $1,000-3,000/month with contracts. Here's how to get managed Instagram pages for $59/mo + credits.",
 };

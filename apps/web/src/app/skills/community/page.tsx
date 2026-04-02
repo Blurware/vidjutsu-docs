@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Community Skill — VidJutsu",
+  title: "Community Skill",
   description:
     "Agent skill for growing Skool, Discord, or membership communities via Instagram pages.",
 };

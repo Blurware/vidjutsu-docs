@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Talking Head Skill — VidJutsu",
+  title: "Talking Head Skill",
   description:
     "Agent skill for creating talking-head short-form videos for Instagram with recording guides, settings, and QA.",
 };

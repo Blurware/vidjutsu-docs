@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of Scheduling Tools — Playbook",
+  title: "VidJutsu vs Scheduling Tools",
   description:
     "Later, Buffer, and Hootsuite queue content. VidJutsu manages the full account lifecycle through an API your agent calls.",
 };

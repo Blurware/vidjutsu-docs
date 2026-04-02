@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of AI Content Tools — Playbook",
+  title: "VidJutsu vs AI Content Tools",
   description:
     "AI content tools generate clips but stop there. Here's how to use VidJutsu skills to go from generated video to posted, tracked, and managed.",
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyCommand } from "@/components/copy-command";
 
 export const metadata: Metadata = {
-  title: "Using VidJutsu Instead of Building Your Own Agent Stack — Playbook",
+  title: "VidJutsu vs Building Your Own Agent Stack",
   description:
     "You have an agent. You could build your own Instagram pipeline. Here's why VidJutsu is faster and what skills to install.",
 };
