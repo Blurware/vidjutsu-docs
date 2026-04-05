@@ -87,6 +87,8 @@ function SuccessContent() {
         </div>
 
         <p className="text-center text-xs text-ink-light mt-8">
+          Your API key can only be retrieved once — save it somewhere safe.
+          <br />
           You can close this tab after copying the command above.
         </p>
       </div>
