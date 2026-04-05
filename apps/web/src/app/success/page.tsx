@@ -29,8 +29,8 @@ function SuccessContent() {
     : "Check my payment status";
 
   const cliCommand = sessionId
-    ? `vidjutsu status --session ${sessionId}`
-    : "vidjutsu status";
+    ? `vidjutsu session ${sessionId}`
+    : "vidjutsu session";
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
