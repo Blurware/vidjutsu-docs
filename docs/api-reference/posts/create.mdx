@@ -13,7 +13,7 @@ Create a post record in your content library. Posts are pure data records for tr
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `videoId` | string | No | ID of an uploaded video |
-| `videoUrl` | string | No | Public URL of the video |
+| `mediaUrl` | string | No | Public URL of the video |
 | `caption` | string | No | Post caption |
 | `brief` | string | No | Content brief or notes |
 | `accountId` | string | No | Link to an account record |
@@ -26,7 +26,7 @@ curl -X POST https://api.vidjutsu.ai/v1/posts \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "videoUrl": "https://cdn.example.com/video.mp4",
+    "mediaUrl": "https://cdn.example.com/video.mp4",
     "caption": "3 morning habits that changed my physique",
     "brief": "Fitness talking-head, 15 seconds, hook-first",
     "accountId": "acc_8k2x",
@@ -42,7 +42,7 @@ curl -X POST https://api.vidjutsu.ai/v1/posts \
 ```json
 {
   "id": "post_xyz789",
-  "videoUrl": "https://cdn.example.com/video.mp4",
+  "mediaUrl": "https://cdn.example.com/video.mp4",
   "caption": "3 morning habits that changed my physique",
   "brief": "Fitness talking-head, 15 seconds, hook-first",
   "accountId": "acc_8k2x",
