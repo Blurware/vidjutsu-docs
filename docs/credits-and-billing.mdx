@@ -5,15 +5,17 @@ description: "Simple, predictable pricing: intelligence calls cost credits, ever
 
 ## Pricing model
 
-Intelligence endpoints cost credits. Storage, CRUD, and billing endpoints are free.
+VidJutsu runs on a **$99/month subscription** that includes **1,000 credits**. Intelligence calls burn credits; everything else is free.
+
+Need more? Additional credits are available at **$0.10/credit** via Stripe checkout — buy as many as you need, any time.
 
 ## Credit costs
 
-| Operation | Endpoint | Credits | Cost |
-|-----------|----------|---------|------|
-| Critic | `POST /v1/critic` | 10 | $1.00 |
-| Breakdown | `POST /v1/breakdown` | 10 | $1.00 |
-| Score | `POST /v1/score` | 10 | $1.00 |
+| Operation | Endpoint | Credits |
+|-----------|----------|---------|
+| Critic | `POST /v1/critic` | 10 |
+| Breakdown | `POST /v1/breakdown` | 10 |
+| Score | `POST /v1/score` | 10 |
 
 **Free operations** (0 credits): accounts, posts, uploads, list/read endpoints, pricing, balance checks, breakdown polling.
 
@@ -31,7 +33,9 @@ curl https://api.vidjutsu.ai/v1/balance \
 }
 ```
 
-## Buying credits
+## Buying additional credits
+
+If you exhaust your included 1,000 credits, top up at $0.10/credit:
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/api_keys \
@@ -39,7 +43,7 @@ curl -X POST https://api.vidjutsu.ai/v1/api_keys \
   -d '{ "credits": 100, "email": "you@example.com" }'
 ```
 
-Pay with any card via Stripe. Credits are added immediately after payment.
+This opens a Stripe checkout session. Credits are added immediately after payment.
 
 ## Getting pricing programmatically
 

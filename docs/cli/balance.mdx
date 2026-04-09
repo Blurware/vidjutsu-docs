@@ -32,4 +32,20 @@ The `status` command auto-detects the resource type from the ID prefix and calls
 |--------|----------|
 | `acc_` | Account |
 | `post_` | Post |
-| `cmp_` | Campaign |
+| `va_` | Breakdown analysis |
+
+## Top up
+
+Add credits to your balance:
+
+```bash
+vidjutsu topup <amount>
+```
+
+Example:
+
+```bash
+vidjutsu topup 100
+```
+
+Opens a Stripe checkout session for the requested credit amount. Credits are added immediately after payment.
