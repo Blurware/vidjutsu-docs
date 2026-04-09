@@ -24,7 +24,7 @@ Create a post record in your content library. Posts are pure data records for tr
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/posts \
   -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
+  -H "Authorization: Bearer vj_live_abc123..." \
   -d '{
     "mediaUrl": "https://cdn.example.com/video.mp4",
     "caption": "3 morning habits that changed my physique",

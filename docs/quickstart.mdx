@@ -79,7 +79,7 @@ Store your API key securely — it is shown once in this response.
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/watch \
   -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
+  -H "Authorization: Bearer vj_live_abc123..." \
   -d '{
     "mediaUrl": "https://cdn.example.com/video.mp4",
     "prompt": "Is the hook strong enough for fitness TikTok?"
@@ -97,7 +97,7 @@ curl -X POST https://api.vidjutsu.ai/v1/watch \
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/extract \
   -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
+  -H "Authorization: Bearer vj_live_abc123..." \
   -d '{
     "mediaUrl": "https://cdn.example.com/video.mp4",
     "frames": "auto",
@@ -118,7 +118,7 @@ curl -X POST https://api.vidjutsu.ai/v1/extract \
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/transcribe \
   -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
+  -H "Authorization: Bearer vj_live_abc123..." \
   -d '{
     "mediaUrl": "https://cdn.example.com/video.mp4"
   }'

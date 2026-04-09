@@ -18,7 +18,7 @@ List all account records. Supports tag-based filtering.
 
 ```bash
 curl "https://api.vidjutsu.ai/v1/accounts" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ### Filtering by tag
@@ -28,11 +28,11 @@ Filter accounts using the `tag.` prefix on any key:
 ```bash
 # All accounts tagged with brand=acme
 curl "https://api.vidjutsu.ai/v1/accounts?tag.brand=acme" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 
 # Combine multiple tag filters
 curl "https://api.vidjutsu.ai/v1/accounts?tag.brand=acme&tag.region=northeast" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ### Example response

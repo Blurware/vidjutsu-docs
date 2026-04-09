@@ -26,7 +26,7 @@ Create an account record in your content library. Accounts are pure data records
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/accounts \
   -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
+  -H "Authorization: Bearer vj_live_abc123..." \
   -d '{
     "platform": "instagram",
     "name": "nyc_streetstyle",

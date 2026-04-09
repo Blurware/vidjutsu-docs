@@ -11,11 +11,11 @@ https://api.vidjutsu.ai
 
 ## Authentication
 
-Most endpoints require an API key passed in the `X-Api-Key` header:
+Most endpoints require an API key passed as a Bearer token in the `Authorization` header:
 
 ```bash
 curl https://api.vidjutsu.ai/v1/accounts \
-  -H "X-Api-Key: vj_live_your_key_here"
+  -H "Authorization: Bearer vj_live_your_key_here"
 ```
 
 Get your API key by [purchasing credits](/authentication) with any card via Stripe.
@@ -113,7 +113,7 @@ All intelligence endpoints (`/v1/watch`, `/v1/extract`, `/v1/transcribe`, `/v1/c
 
 ## CORS
 
-The API allows cross-origin requests from any origin. Allowed headers: `Content-Type`, `X-Api-Key`, `Authorization`.
+The API allows cross-origin requests from any origin. Allowed headers: `Content-Type`, `Authorization`.
 
 ## Versioning
 

@@ -19,14 +19,14 @@ List all post records. Supports filtering by account and tags.
 
 ```bash
 curl "https://api.vidjutsu.ai/v1/posts" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ### Filtering by account
 
 ```bash
 curl "https://api.vidjutsu.ai/v1/posts?accountId=acc_8k2x" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ### Filtering by tag
@@ -34,11 +34,11 @@ curl "https://api.vidjutsu.ai/v1/posts?accountId=acc_8k2x" \
 ```bash
 # All posts tagged with batch=week-12
 curl "https://api.vidjutsu.ai/v1/posts?tag.batch=week-12" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 
 # Combine filters
 curl "https://api.vidjutsu.ai/v1/posts?accountId=acc_8k2x&tag.format=talking-head" \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ### Example response
