@@ -6,7 +6,7 @@ export function CtaBanner() {
           Add the QA gate your pipeline is missing
         </h2>
         <p className="text-ink-muted text-sm sm:text-base mb-8">
-          Start scoring your videos. Free tier, no credit card.
+          Start scoring your videos. $99/mo includes 1,000 credits.
         </p>
 
         <div className="flex justify-center gap-3">
