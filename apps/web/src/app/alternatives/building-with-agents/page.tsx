@@ -28,8 +28,8 @@ export default function BuildingWithAgents() {
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-16">
           You&rsquo;re building a video production pipeline. You could wire up
           vision models, prompt engineer scoring logic, and maintain endpoints
-          yourself. Or you could make one API call and get a critic score, a
-          scene breakdown, or a viral prediction back in seconds.
+          yourself. Or you could make one API call and get video understanding,
+          frame extraction, transcription, or spec validation back in seconds.
         </p>
 
         {/* What you'd have to build */}
@@ -95,19 +95,24 @@ export default function BuildingWithAgents() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Critic",
+                label: "Watch",
                 detail:
-                  "Submit a video URL, get a structured quality score — hooks, pacing, artifacts, CTA strength. One call.",
+                  "Submit a video URL, get freeform video understanding — hooks, pacing, artifacts, CTA strength. One call.",
               },
               {
-                label: "Breakdown",
+                label: "Extract",
                 detail:
-                  "Scene-by-scene analysis with timestamps, visual descriptions, and quality flags. No vision model wrangling.",
+                  "Pull frames, audio, and metadata from any video. No vision model wrangling.",
               },
               {
-                label: "Viral Score",
+                label: "Transcribe",
                 detail:
-                  "Predict distribution potential before the video ships. Your agent decides what to publish based on the number.",
+                  "Speech-to-text for any video. Get accurate transcripts your agent can reason over.",
+              },
+              {
+                label: "Check",
+                detail:
+                  "Validate a video against a spec before it ships. Your agent decides what to publish based on pass/fail.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
@@ -130,8 +135,8 @@ export default function BuildingWithAgents() {
         {/* CTA */}
         <div className="border-t border-border pt-10">
           <p className="text-ink font-medium mb-4">
-            Skip the infrastructure. One API call &mdash; critic, breakdown, or
-            score. Done.
+            Skip the infrastructure. One API call &mdash; watch, extract,
+            transcribe, or check. Done.
           </p>
           <CopyCommand command="npx skills add tfcbot/shortform-distribution-skills" className="mb-4" />
           <a

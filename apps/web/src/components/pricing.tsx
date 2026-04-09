@@ -34,16 +34,20 @@ export function Pricing() {
                 <span className="font-medium text-ink">1,000/mo</span>
               </li>
               <li className="flex justify-between">
-                <span>Critic</span>
+                <span>Watch</span>
                 <span className="font-medium text-ink">10 credits/call</span>
               </li>
               <li className="flex justify-between">
-                <span>Breakdown</span>
+                <span>Extract</span>
+                <span className="font-medium text-ink">5 credits/call</span>
+              </li>
+              <li className="flex justify-between">
+                <span>Transcribe</span>
                 <span className="font-medium text-ink">10 credits/call</span>
               </li>
               <li className="flex justify-between">
-                <span>Viral Score</span>
-                <span className="font-medium text-ink">10 credits/call</span>
+                <span>Check</span>
+                <span className="font-medium text-ink">5 credits/call</span>
               </li>
               <li className="flex justify-between">
                 <span>Upload / accounts / posts</span>

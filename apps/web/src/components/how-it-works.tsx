@@ -7,7 +7,7 @@ const STEPS = [
   {
     num: "02",
     title: "VidJutsu analyzes it",
-    desc: "Run critic for quality scoring, breakdown for deep content analysis, or viral score for performance prediction.",
+    desc: "Run watch for freeform video understanding, extract for frames/audio/metadata, transcribe for speech-to-text, or check for spec validation.",
   },
   {
     num: "03",

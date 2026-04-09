@@ -26,7 +26,7 @@ const SKILLS = [
   {
     name: "VidJutsu API",
     href: "/skills/vidjutsu-api",
-    what: "Core API reference — critic, breakdown, viral score. Everything your agent calls.",
+    what: "Core API reference — watch, extract, transcribe, check. Everything your agent calls.",
   },
 ];
 
@@ -80,19 +80,19 @@ export default function AiContentTools() {
                   "Opus Clip, Pictory, Descript, Wavespeed, KIE, or your phone. VidJutsu doesn't generate video — you bring the content.",
               },
               {
-                step: "Submit video URLs to the Critic endpoint",
+                step: "Submit video URLs to the Watch endpoint",
                 detail:
-                  "Your agent sends a video URL. VidJutsu returns a structured quality score — hooks, pacing, artifacts, CTA strength.",
+                  "Your agent sends a video URL. VidJutsu returns freeform video understanding — hooks, pacing, artifacts, CTA strength.",
               },
               {
-                step: "Use Breakdown for scene-level analysis",
+                step: "Use Extract for frames, audio, and metadata",
                 detail:
-                  "Get timestamped, scene-by-scene quality flags. Know exactly where a video falls apart before you ship it.",
+                  "Pull the raw assets and metadata out of any video. Know exactly what you're working with before you ship it.",
               },
               {
-                step: "Score distribution potential with Viral Score",
+                step: "Validate specs with Check",
                 detail:
-                  "Predict which videos are worth distributing. Your agent prioritizes the ones most likely to perform.",
+                  "Run videos against your quality spec. Your agent publishes what passes and flags what doesn't.",
               },
             ].map((item, i) => (
               <li key={i} className="flex gap-4">
