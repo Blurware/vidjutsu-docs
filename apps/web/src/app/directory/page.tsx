@@ -123,7 +123,7 @@ const PRODUCTION = [
   {
     name: "Models Marketplace",
     slug: "models-marketplace",
-    description: "Configure video generation (KIE, Wavespeed, Fal, Replicate) and audio (ElevenLabs).",
+    description: "Configure video generation and audio providers.",
   },
   {
     name: "VidLang",

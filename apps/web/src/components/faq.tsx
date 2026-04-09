@@ -5,7 +5,7 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What does VidJutsu do?",
-    a: "Video intelligence API with four primitives. Watch uses Gemini to understand video from a freeform prompt. Extract pulls frames, audio, and metadata via server-side ffmpeg. Transcribe converts speech to text with word-level timing. Check validates specs against rules.",
+    a: "Video intelligence API with four primitives. Watch understands video from a freeform prompt. Extract pulls frames, audio, and metadata via server-side processing. Transcribe converts speech to text with word-level timing. Check validates specs against rules.",
   },
   {
     q: "Do I need VidJutsu to generate videos?",
@@ -13,11 +13,11 @@ const FAQS = [
   },
   {
     q: "What's the difference between watch and transcribe?",
-    a: "Watch sends the full video to Gemini with a freeform prompt — you can ask anything about the visual and audio content. Transcribe is speech-to-text only, returning word-level timestamps for what was said.",
+    a: "Watch analyzes the full video with a freeform prompt — you can ask anything about the visual and audio content. Transcribe is speech-to-text only, returning word-level timestamps for what was said.",
   },
   {
     q: "What can I do with extract?",
-    a: "Pull keyframes, audio tracks, and metadata from any video. Server-side ffmpeg — no local install needed. Use it to feed frames into other models, generate thumbnails, or get technical metadata like resolution and FPS.",
+    a: "Pull keyframes, audio tracks, and metadata from any video. Server-side processing — no local tools needed. Use it to feed frames into other models, generate thumbnails, or get technical metadata like resolution and FPS.",
   },
   {
     q: "How do credits work?",
