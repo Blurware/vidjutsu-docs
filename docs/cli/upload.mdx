@@ -1,0 +1,37 @@
+---
+title: "vidjutsu upload"
+description: "Upload media to VidJutsu CDN."
+---
+
+## Usage
+
+```bash
+# Upload a local file
+vidjutsu upload <file-path>
+
+# Upload from a URL
+vidjutsu upload --url <source-url>
+```
+
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `<file-path>` | Yes (unless --url) | Path to local video or image file |
+| `--url` | No | Upload from an external URL instead of a local file |
+
+## Examples
+
+```bash
+# Local file
+vidjutsu upload ./video.mp4
+Uploaded: https://cdn.vidjutsu.ai/uploads/mc_.../abc123.mp4
+
+# From URL
+vidjutsu upload --url https://example.com/video.mp4
+Uploaded: https://cdn.vidjutsu.ai/uploads/mc_.../def456.mp4
+```
+
+## Credits
+
+Free — 0 credits.

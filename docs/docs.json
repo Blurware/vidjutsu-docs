@@ -41,67 +41,6 @@
             "pages": [
               "api-reference/introduction"
             ]
-          },
-          {
-            "group": "API Keys",
-            "pages": [
-              "api-reference/api-keys/create",
-              "api-reference/api-keys/status",
-              "api-reference/api-keys/rotate",
-              "api-reference/api-keys/recover",
-              "api-reference/api-keys/balance",
-              "api-reference/api-keys/pricing"
-            ]
-          },
-          {
-            "group": "Critic",
-            "pages": [
-              "api-reference/critic/critic"
-            ]
-          },
-          {
-            "group": "Breakdown",
-            "pages": [
-              "api-reference/breakdown/create",
-              "api-reference/breakdown/get"
-            ]
-          },
-          {
-            "group": "Score",
-            "pages": [
-              "api-reference/score/score"
-            ]
-          },
-          {
-            "group": "Accounts",
-            "pages": [
-              "api-reference/accounts/create",
-              "api-reference/accounts/update",
-              "api-reference/accounts/list",
-              "api-reference/accounts/delete"
-            ]
-          },
-          {
-            "group": "Posts",
-            "pages": [
-              "api-reference/posts/create",
-              "api-reference/posts/update",
-              "api-reference/posts/list",
-              "api-reference/posts/delete"
-            ]
-          },
-          {
-            "group": "Upload",
-            "pages": [
-              "api-reference/upload/upload",
-              "api-reference/upload/upload-url"
-            ]
-          },
-          {
-            "group": "Analysis (Deprecated)",
-            "pages": [
-              "api-reference/analyze/analyze"
-            ]
           }
         ]
       },
@@ -114,8 +53,12 @@
               "cli/index",
               "cli/install",
               "cli/auth",
+              "cli/critic",
+              "cli/breakdown",
+              "cli/score",
               "cli/accounts",
               "cli/posts",
+              "cli/upload",
               "cli/balance"
             ]
           }
