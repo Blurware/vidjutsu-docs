@@ -11,8 +11,7 @@
   "api": {
     "baseUrl": "https://api.vidjutsu.ai",
     "auth": {
-      "method": "key",
-      "name": "X-Api-Key"
+      "method": "bearer"
     }
   },
   "navigation": {

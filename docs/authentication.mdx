@@ -43,11 +43,11 @@ Store your API key securely. It is shown **once** in this response. If you lose 
 
 ## Using your API key
 
-Pass the key in the `X-Api-Key` header on every request:
+Pass the key in the `Authorization` header as a Bearer token on every request:
 
 ```bash
 curl https://api.vidjutsu.ai/v1/balance \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ## Rotating your key
@@ -56,7 +56,7 @@ If your key is compromised, rotate it. The old key is immediately invalidated.
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/api_keys/rotate \
-  -H "X-Api-Key: vj_live_abc123..."
+  -H "Authorization: Bearer vj_live_abc123..."
 ```
 
 ```json
