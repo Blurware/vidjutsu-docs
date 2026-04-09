@@ -1,19 +1,19 @@
 const FEATURES = [
   {
-    title: "Critic",
-    desc: "Is this video production quality? Score face consistency, artifacts, motion, and audio. Pass/fail before anything posts.",
+    title: "Watch",
+    desc: "Gemini watches your video and answers what you ask. Freeform prompt — no rigid schema, just a question and an answer.",
   },
   {
-    title: "Breakdown",
-    desc: "What's in this video? Deep frame-level analysis. Hooks, transitions, pacing, tags.",
+    title: "Extract",
+    desc: "Pull frames, audio, metadata. Server-side ffmpeg — no local install. Auto-select keyframes or request specific counts.",
   },
   {
-    title: "Viral Score",
-    desc: "Will this perform? Score content against niche context. Hook strength, pacing, format match, engagement prediction.",
+    title: "Transcribe",
+    desc: "Speech-to-text with word-level timing. Know exactly what was said and when.",
   },
   {
-    title: "Agent-Native API",
-    desc: "Every response is structured JSON your agent acts on. No dashboards. No UI. Score in, decision out.",
+    title: "Check",
+    desc: "Validate specs against built-in rules and your own custom rules. Define rules once, run checks programmatically.",
   },
 ];
 
@@ -25,7 +25,7 @@ export function Features() {
           Capabilities
         </p>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center">
-          Everything your agent needs to evaluate video
+          Everything your agent needs to understand video
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16 gap-y-10 max-w-3xl mx-auto">

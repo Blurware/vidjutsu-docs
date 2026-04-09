@@ -13,11 +13,12 @@ Need more? Additional credits are available at **$0.10/credit** via Stripe check
 
 | Operation | Endpoint | Credits |
 |-----------|----------|---------|
-| Critic | `POST /v1/critic` | 10 |
-| Breakdown | `POST /v1/breakdown` | 10 |
-| Score | `POST /v1/score` | 10 |
+| Watch | `POST /v1/watch` | 10 |
+| Extract | `POST /v1/extract` | 5 |
+| Transcribe | `POST /v1/transcribe` | 10 |
+| Check | `POST /v1/check` | 5 |
 
-**Free operations** (0 credits): accounts, posts, uploads, list/read endpoints, pricing, balance checks, breakdown polling.
+**Free operations** (0 credits): accounts, posts, uploads, list/read endpoints, pricing, balance checks, check/rules management.
 
 ## Checking your balance
 
@@ -54,9 +55,10 @@ curl https://api.vidjutsu.ai/v1/pricing
 ```json
 {
   "costs": {
-    "critic": 10,
-    "breakdown": 10,
-    "score": 10,
+    "watch": 10,
+    "extract": 5,
+    "transcribe": 10,
+    "check": 5,
     "accounts.create": 0,
     "posts.create": 0,
     "upload": 0

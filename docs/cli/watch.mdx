@@ -1,0 +1,34 @@
+---
+title: "vidjutsu watch"
+description: "Gemini watches your video and answers what you ask."
+---
+
+## Usage
+
+```bash
+vidjutsu watch --video-url <url> --prompt "..."
+```
+
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--video-url` | Yes | URL of the video to analyze |
+| `--prompt` | Yes | Freeform prompt — ask anything about the video |
+
+## Example
+
+```bash
+vidjutsu watch --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4 --prompt "Is the hook strong enough for fitness TikTok?"
+
+Watching video...
+
+Response:
+  The hook lands in the first 1.2 seconds — direct address
+  to camera with a bold claim. Strong for fitness TikTok.
+  Consider adding a text overlay to reinforce for silent viewers.
+```
+
+## Credits
+
+10 credits per call.

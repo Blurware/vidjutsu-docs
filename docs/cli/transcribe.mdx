@@ -1,0 +1,39 @@
+---
+title: "vidjutsu transcribe"
+description: "Speech-to-text with word-level timing."
+---
+
+## Usage
+
+```bash
+vidjutsu transcribe --video-url <url>
+```
+
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--video-url` | Yes | URL of the video to transcribe |
+
+## Example
+
+```bash
+vidjutsu transcribe --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4
+
+Transcribing...
+
+Words: 47
+Duration: 14.2s
+
+[0.00 - 0.82]  "The"
+[0.82 - 1.10]  "one"
+[1.10 - 1.40]  "thing"
+[1.40 - 1.92]  "nobody"
+[1.92 - 2.30]  "tells"
+[2.30 - 2.60]  "you"
+...
+```
+
+## Credits
+
+10 credits per call.

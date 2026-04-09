@@ -3,17 +3,21 @@ title: Features
 description: Everything your agent gets with VidJutsu.
 ---
 
-## Critic — QA gate
+## Watch — Gemini video understanding
 
-Run every AI-generated video through a quality check before publishing. The critic returns a score, a list of issues, and a pass/fail verdict. Use it as a gate in your pipeline — if it fails, regenerate. If it passes, publish.
+Send a video and a freeform prompt. Gemini watches the full video and answers whatever you ask — hook quality, pacing issues, content summary, brand safety. No rigid schema, just a question and an answer.
 
-## Breakdown — deep analysis
+## Extract — server-side ffmpeg
 
-Get a structured, section-by-section analysis of any video. Hook effectiveness, pacing, visual quality, CTA placement — broken down by timestamp. Use it to understand what's working and what to fix.
+Pull frames, audio tracks, and metadata from any video. Server-side ffmpeg — no local install required. Auto-select keyframes or request specific frame counts. Get resolution, duration, FPS, and codec info.
 
-## Score — viral prediction
+## Transcribe — speech-to-text with timing
 
-Predict how a video will perform before you publish it. The score endpoint returns an overall score, per-factor breakdown (hook, pacing, audio, visual quality, niche relevance), and actionable suggestions to improve it.
+Full speech-to-text with word-level timestamps. Know exactly what was said and when. Use it for subtitle generation, content verification, or feeding transcripts into downstream analysis.
+
+## Check — spec validation
+
+Validate specs against built-in rules and your own custom rules. Define rules like `hook-required`, `max-duration-60s`, or `aspect-ratio-9-16`. Save per-client custom rules via the API and run checks programmatically.
 
 ## Storage — CDN and tagging
 
@@ -21,4 +25,4 @@ Upload videos to a global CDN with `POST /v1/upload`. Organize your content libr
 
 ## Composable
 
-Use the full stack or just parts. Run critic calls without storing anything. Store posts without scoring them. Every endpoint works on its own — no required workflow, no orchestration layer. Build the pipeline that fits your agent.
+Use the full stack or just parts. Watch a video without storing anything. Extract frames without transcribing. Every endpoint works on its own — no required workflow, no orchestration layer. Build the pipeline that fits your agent.

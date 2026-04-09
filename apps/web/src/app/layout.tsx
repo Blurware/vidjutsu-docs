@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     template: "%s | VidJutsu",
   },
   description:
-    "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
+    "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
     title: "VidJutsu — Video Intelligence API",
     description:
-      "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
+      "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VidJutsu — Video Intelligence API",
     description:
-      "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
+      "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
   },
   robots: {
     index: true,

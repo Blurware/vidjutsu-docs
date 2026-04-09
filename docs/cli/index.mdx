@@ -18,14 +18,15 @@ See [installation](/cli/install) for details and manual install options.
 | Command | Description |
 |---------|-------------|
 | [`vidjutsu auth`](/cli/auth) | Authenticate with your payment credential |
+| [`vidjutsu watch`](/cli/watch) | Gemini watches video, freeform prompt |
+| [`vidjutsu extract`](/cli/extract) | Pull frames, audio, metadata via ffmpeg |
+| [`vidjutsu transcribe`](/cli/transcribe) | Speech-to-text with word-level timing |
+| [`vidjutsu check`](/cli/check) | Validate spec against rules |
 | [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete account records |
 | [`vidjutsu post`](/cli/posts) | Create, list, get, or delete post records |
 | [`vidjutsu balance`](/cli/balance) | Check your credit balance |
 | [`vidjutsu topup`](/cli/balance#top-up) | Add credits to your balance |
 | [`vidjutsu status`](/cli/balance#status) | Check any resource status by ID |
-| `vidjutsu critic` | Run a critic check on a video |
-| `vidjutsu breakdown` | Start a deep video analysis |
-| `vidjutsu score` | Score a video's viral potential |
 | `vidjutsu chat` | Chat with the VidJutsu AI agent |
 | `vidjutsu info` | Show API discovery info |
 
@@ -38,11 +39,17 @@ vidjutsu auth --card tok_live_xxxx
 # Top up credits
 vidjutsu topup 100
 
-# Run a critic check
-vidjutsu critic --media-url "https://cdn.example.com/video.mp4" --media-type video
+# Watch a video
+vidjutsu watch --video-url "https://cdn.example.com/video.mp4" --prompt "Is the hook effective?"
 
-# Score a video
-vidjutsu score --media-url "https://cdn.example.com/video.mp4" --media-type video --niches "fitness,wellness"
+# Extract frames and audio
+vidjutsu extract --video-url "https://cdn.example.com/video.mp4" --frames auto --audio
+
+# Transcribe speech
+vidjutsu transcribe --video-url "https://cdn.example.com/video.mp4"
+
+# Validate a spec
+vidjutsu check --spec ./brief.json --rules "hook-required,max-duration-60s"
 
 # Create an account record
 vidjutsu account create --platform instagram --name "style_la" --niche "fashion"
