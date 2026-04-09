@@ -1,3 +1,34 @@
+const TIERS = [
+  {
+    name: "Free",
+    price: "$0",
+    period: "/mo",
+    calls: "50 calls/mo",
+    highlight: false,
+  },
+  {
+    name: "Pro",
+    price: "$29",
+    period: "/mo",
+    calls: "2,000 calls/mo",
+    highlight: true,
+  },
+  {
+    name: "Scale",
+    price: "$99",
+    period: "/mo",
+    calls: "10,000 calls/mo",
+    highlight: false,
+  },
+  {
+    name: "Unlimited",
+    price: "$249",
+    period: "/mo",
+    calls: "Unlimited calls",
+    highlight: false,
+  },
+];
+
 export function Pricing() {
   return (
     <section id="pricing" className="px-5 sm:px-8 py-16 sm:py-24">
@@ -7,53 +38,48 @@ export function Pricing() {
             Pricing
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-3">
-            $59/mo + pay for what your agent uses
+            Simple, predictable pricing
           </h2>
+          <p className="text-ink-muted text-sm">
+            Start free. Scale when you need to.
+          </p>
         </div>
 
-        <div className="max-w-lg mx-auto border border-border rounded p-6 sm:p-8">
-          <div className="flex items-baseline justify-between mb-6">
-            <div>
-              <div className="text-[2rem] font-bold tracking-[-0.03em] leading-none">
-                $59
-                <span className="text-base font-normal text-ink-muted">/mo</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          {TIERS.map((tier) => (
+            <div
+              key={tier.name}
+              className={`p-6 rounded border ${
+                tier.highlight
+                  ? "border-brand bg-brand/5"
+                  : "border-border"
+              }`}
+            >
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-ink-muted mb-2">
+                  {tier.name}
+                </h3>
+                <div className="text-[2rem] font-bold tracking-[-0.03em] leading-none">
+                  {tier.price}
+                  <span className="text-base font-normal text-ink-muted">
+                    {tier.period}
+                  </span>
+                </div>
               </div>
-              <p className="text-ink-muted text-sm mt-1">Includes 100 credits. Required for API access.</p>
+              <p className="text-ink-muted text-sm">{tier.calls}</p>
             </div>
-            <div className="text-right">
-              <div className="text-lg font-bold">$0.10</div>
-              <p className="text-ink-muted text-xs">per credit</p>
-            </div>
-          </div>
+          ))}
+        </div>
 
-          <div className="space-y-0 text-sm border-t border-border">
-            <div className="flex justify-between py-3 border-b border-border">
-              <span className="text-ink-muted">Instagram account</span>
-              <span className="font-medium">990 cr · $99</span>
-            </div>
-            <div className="flex justify-between py-3 border-b border-border">
-              <span className="text-ink-muted">Post</span>
-              <span className="font-medium">36 cr · $3.60</span>
-            </div>
-            <div className="flex justify-between py-3 border-b border-border">
-              <span className="text-ink-muted">Analyze / QA</span>
-              <span className="font-medium">10 cr · $1.00</span>
-            </div>
-            <div className="flex justify-between py-3 border-b border-border">
-              <span className="text-ink-muted">Niche scrape</span>
-              <span className="font-medium">10 cr · $1.00</span>
-            </div>
-          </div>
-
+        <div className="text-center mt-8">
           <a
             href="https://docs.vidjutsu.ai/quickstart"
-            className="block text-center mt-8 px-5 py-2.5 bg-brand text-white text-sm font-medium rounded hover:bg-brand-hover transition-colors"
+            className="inline-flex items-center px-5 py-2.5 bg-brand text-white text-sm font-medium rounded hover:bg-brand-hover transition-colors"
           >
             Get API Key
           </a>
-
-          <p className="text-ink-light text-xs mt-4 text-center">
-            Your agent subscribes and buys credits via the API. Typical week at 2 posts/day: ~$63 in credits.
+          <p className="text-ink-light text-xs mt-4">
+            All tiers include critic, breakdown, viral score, and storage endpoints.
           </p>
         </div>
       </div>

@@ -1,0 +1,64 @@
+---
+title: "Score"
+description: "Predict viral potential before you publish"
+---
+
+## POST /v1/score
+
+Score a video's viral potential based on content, niche, and format. Returns a score, a breakdown of contributing factors, and actionable suggestions.
+
+### Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `mediaUrl` | string | Yes | Public URL of the video or image to score |
+| `mediaType` | string | Yes | `video` or `image` |
+| `content` | string | No | Description of the content or caption |
+| `niches` | string[] | No | Target niches (e.g. `["fitness", "wellness"]`) |
+| `type` | string | No | Content format — `talking-head`, `b-roll`, `ugc`, `slideshow`, `podcast` |
+
+### Example request
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/score \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "mediaUrl": "https://cdn.example.com/video.mp4",
+    "mediaType": "video",
+    "content": "3 morning habits that changed my physique",
+    "niches": ["fitness", "wellness"],
+    "type": "talking-head"
+  }'
+```
+
+### Example response
+
+```json
+{
+  "score": 84,
+  "breakdown": {
+    "hook": 92,
+    "pacing": 78,
+    "visualQuality": 88,
+    "audioQuality": 80,
+    "nicheRelevance": 82
+  },
+  "suggestions": [
+    "Tighten the mid-section — pacing drops between 0:05 and 0:09",
+    "Add a text overlay to reinforce the hook in the first second"
+  ]
+}
+```
+
+### Response fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `score` | number | Overall viral potential score from 0 to 100 |
+| `breakdown` | object | Per-factor scores |
+| `suggestions` | string[] | Actionable improvements to increase the score |
+
+### Credits
+
+**10 credits** ($1.00) per call.

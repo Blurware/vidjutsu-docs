@@ -18,12 +18,16 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Built for Claude
+            Video Intelligence API
           </p>
 
-          <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-8 max-w-2xl mx-auto">
-            A managed Instagram page that posts your videos daily and drives traffic to your product — live in 7 days.
+          <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
+            The feedback loop your agent is missing.
           </h1>
+
+          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
+            Critic. Breakdown. Viral Score. The QA gate for your video production pipeline.
+          </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
             <a

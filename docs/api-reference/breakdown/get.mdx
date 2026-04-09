@@ -1,0 +1,63 @@
+---
+title: "Get breakdown"
+description: "Poll for the result of a breakdown analysis"
+---
+
+## GET /v1/breakdown
+
+Retrieve the result of a breakdown analysis. Poll this endpoint until `status` is `completed`.
+
+### Query parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | Breakdown ID returned by `POST /v1/breakdown` |
+
+### Example request
+
+```bash
+curl "https://api.vidjutsu.ai/v1/breakdown?id=va_abc123" \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+### Example response (processing)
+
+```json
+{
+  "id": "va_abc123",
+  "status": "processing"
+}
+```
+
+### Example response (completed)
+
+```json
+{
+  "id": "va_abc123",
+  "status": "completed",
+  "result": {
+    "summary": "Strong hook with clear value proposition. Pacing drops mid-video.",
+    "sections": [
+      {
+        "timestamp": "0:00-0:03",
+        "label": "Hook",
+        "analysis": "Direct address to camera with a question — high scroll-stop potential."
+      },
+      {
+        "timestamp": "0:03-0:12",
+        "label": "Body",
+        "analysis": "Information density is good but pacing slows at 0:08. Consider tighter cuts."
+      },
+      {
+        "timestamp": "0:12-0:15",
+        "label": "CTA",
+        "analysis": "Clear call to action with text overlay. Placement is clean."
+      }
+    ]
+  }
+}
+```
+
+### Credits
+
+**0 credits** — polling is free. Credits are charged on `POST /v1/breakdown`.

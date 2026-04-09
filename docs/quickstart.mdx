@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Get your API key and create your first draft account in minutes"
+description: "Get your API key, run your first critic call, breakdown, and score in minutes"
 ---
 
 ## Option A: Use the CLI
@@ -17,16 +17,10 @@ Then authenticate with your card:
 vidjutsu auth --card tok_live_your_card_token
 ```
 
-Create a draft account (free):
+Run a critic check:
 
 ```bash
-vidjutsu account create --platform instagram --name "my_brand" --niche "fitness"
-```
-
-Provision when ready (990 credits):
-
-```bash
-vidjutsu account provision acc_abc123 --niche "fitness" --country US
+vidjutsu critic --media-url "https://cdn.example.com/video.mp4" --media-type video
 ```
 
 See the [CLI reference](/cli/index) for all commands.
@@ -80,88 +74,94 @@ curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
 Store your API key securely — it is shown once in this response.
 </Warning>
 
-### 3. Create a draft account (free)
+### 3. Run a critic check (10 credits)
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/accounts \
+curl -X POST https://api.vidjutsu.ai/v1/critic \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "platform": "instagram",
-    "name": "my_brand",
-    "niche": "fitness",
-    "tags": [
-      { "key": "campaign", "value": "my-first" }
-    ]
+    "mediaUrl": "https://cdn.example.com/video.mp4",
+    "mediaType": "video",
+    "context": "fitness niche, talking-head format"
   }'
 ```
 
 ```json
 {
-  "id": "acc_abc123",
-  "status": "draft",
-  "creditsCharged": 0
+  "score": 72,
+  "issues": [
+    "Audio levels inconsistent between 0:03 and 0:08",
+    "Text overlay partially obscured at 0:12"
+  ],
+  "verdict": "fail"
 }
 ```
 
-### 4. Provision the account (990 credits)
+### 4. Start a breakdown (10 credits)
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/accounts/provision \
+curl -X POST https://api.vidjutsu.ai/v1/breakdown \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "accountId": "acc_abc123",
-    "country": "US",
-    "niche": "fitness"
+    "mediaUrl": "https://cdn.example.com/video.mp4",
+    "mediaType": "video",
+    "prompt": "Analyze the hook and first 3 seconds"
   }'
 ```
 
 ```json
 {
-  "id": "acc_abc123",
-  "status": "creating",
-  "creditsCharged": 990
+  "id": "va_abc123",
+  "status": "processing"
 }
 ```
 
-### 5. Create a draft post (free)
+Poll for the result:
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/posts \
+curl "https://api.vidjutsu.ai/v1/breakdown?id=va_abc123" \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+### 5. Score viral potential (10 credits)
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/score \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "accountId": "acc_abc123",
-    "videoUrl": "https://your-video-url.com/video.mp4",
-    "caption": "Your caption here"
+    "mediaUrl": "https://cdn.example.com/video.mp4",
+    "mediaType": "video",
+    "content": "3 morning habits that changed my physique",
+    "niches": ["fitness", "wellness"],
+    "type": "talking-head"
   }'
 ```
 
 ```json
 {
-  "id": "post_xyz789",
-  "status": "draft",
-  "creditsCharged": 0
+  "score": 84,
+  "breakdown": {
+    "hook": 92,
+    "pacing": 78,
+    "visualQuality": 88,
+    "audioQuality": 80,
+    "nicheRelevance": 82
+  },
+  "suggestions": [
+    "Tighten the mid-section — pacing drops between 0:05 and 0:09",
+    "Add a text overlay to reinforce the hook in the first second"
+  ]
 }
-```
-
-### 6. Schedule the post (36 credits)
-
-Once the account is active:
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/posts/schedule \
-  -H "Content-Type: application/json" \
-  -H "X-Api-Key: vj_live_abc123..." \
-  -d '{ "postId": "post_xyz789" }'
 ```
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Manage accounts" icon="user-plus" href="/guides/manage-accounts">
-    Learn the full draft-first account workflow.
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Full endpoint reference for critic, breakdown, score, and storage.
   </Card>
   <Card title="CLI reference" icon="terminal" href="/cli/index">
     Full command reference for the VidJutsu CLI.

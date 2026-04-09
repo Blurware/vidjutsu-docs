@@ -1,29 +1,31 @@
 const ALTERNATIVES = [
   {
-    name: "Building it yourself with agents",
+    name: "No QA at all",
     summary:
-      "You wire up account provisioning, warming, content pipelines, posting, and recovery. VidJutsu is that system already built.",
-    gap: "Missing: account warming, shadow ban detection, performance-driven improvement.",
-    href: "/alternatives/building-with-agents",
+      "Your agent generates and posts without checking. Bad hooks, AI artifacts, and off-brand content go live uncaught.",
+    gap: "Missing: quality gates, content analysis, performance prediction.",
+    href: "/alternatives/no-qa",
   },
   {
-    name: "Doing it yourself",
-    summary: "1-2 hours a day, every day. Most people stop in 2 weeks.",
-    gap: "Missing: consistency, niche research, performance tracking.",
-    href: "/alternatives/diy",
-  },
-  {
-    name: "Hiring a VA",
+    name: "Manual QA review",
     summary:
-      "$300-500/mo plus your time managing them. They don't know your niche.",
-    gap: "Missing: niche intelligence, content generation, self-improving loop.",
-    href: "/alternatives/hiring-a-va",
+      "A human watches every video before it posts. Doesn't scale, blocks your pipeline, and adds hours of latency.",
+    gap: "Missing: automation, structured feedback, agent-readable output.",
+    href: "/alternatives/manual-review",
   },
   {
-    name: "Social media agencies",
-    summary: "$1,000-3,000/mo with contracts. 15-30 posts/month.",
-    gap: "Missing: daily posting volume, real-time research, agent automation.",
-    href: "/alternatives/social-media-agencies",
+    name: "VidIQ",
+    summary:
+      "Built for humans managing YouTube channels. Dashboard-first, no API, no agent integration.",
+    gap: "Missing: API access, video quality scoring, agent-native workflow.",
+    href: "/alternatives/vidiq",
+  },
+  {
+    name: "Building it yourself",
+    summary:
+      "Wire up vision models, prompt engineering, scoring logic, and storage. Weeks of work before you ship anything.",
+    gap: "Missing: battle-tested scoring, niche context, maintained endpoints.",
+    href: "/alternatives/building-yourself",
   },
 ];
 
@@ -36,7 +38,7 @@ export function Alternatives() {
             Alternatives
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em]">
-            None handle the full loop
+            None give your agent structured video feedback
           </h2>
         </div>
 

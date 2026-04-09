@@ -1,11 +1,11 @@
 ---
 title: "vidjutsu account"
-description: "Create, edit, and provision managed accounts"
+description: "Create, edit, and manage account records"
 ---
 
-## Create a draft account
+## Create an account
 
-Create a draft account for free (0 credits). No TokPortal call until you provision.
+Create an account record (0 credits).
 
 ```bash
 vidjutsu account create --platform instagram --name "nyc_streetstyle"
@@ -15,46 +15,24 @@ vidjutsu account create --platform instagram --name "nyc_streetstyle"
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--platform` | string | `instagram` (required) |
+| `--platform` | string | Platform name (required) |
 | `--name` | string | Account name (required) |
-| `--username` | string | Preferred Instagram handle |
+| `--niche` | string | Primary niche |
+| `--handle` | string | Social media handle |
 | `--bio` | string | Profile biography |
-| `--profile-pic` | string | Profile picture URL |
+| `--pfp` | string | Profile picture URL |
 | `--link` | string | Link in bio URL |
-| `--tag` | string | Key-value tag, e.g. `campaign=summer-launch` (repeatable) |
+| `--tag` | string | Key-value tag, e.g. `brand=acme` (repeatable) |
 
 **Cost:** 0 credits (free).
 
-## Edit a draft account
+## Edit an account
 
-Update a draft account's profile before provisioning:
+Update an account record:
 
 ```bash
 vidjutsu account edit acc_8k2x --bio "Updated bio" --link "https://newshop.com"
 ```
-
-Only works on accounts in `"draft"` status.
-
-## Provision an account
-
-Charge 990 credits and start account creation via TokPortal:
-
-```bash
-vidjutsu account provision acc_8k2x --niche "street fashion" --country US
-```
-
-### Options
-
-| Flag | Type | Description |
-|------|------|-------------|
-| `--niche` | string | Niche keyword for warming |
-| `--country` | string | Country code |
-
-**Cost:** 990 credits ($99).
-
-<Warning>
-Account warming can take **up to 7 days**. Wait for `"active"` status before scheduling posts.
-</Warning>
 
 ## List accounts
 
@@ -65,7 +43,7 @@ vidjutsu account list
 Filter by tag:
 
 ```bash
-vidjutsu account list --tag campaign=summer-launch
+vidjutsu account list --tag brand=acme
 ```
 
 ## Get account details
@@ -79,7 +57,3 @@ vidjutsu account get acc_8k2x
 ```bash
 vidjutsu account delete acc_8k2x
 ```
-
-<Warning>
-Deleting an account sets its status to `deleted` and cancels all scheduled posts.
-</Warning>

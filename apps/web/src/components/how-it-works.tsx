@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Upgrade your agent with VidJutsu",
-    desc: "Install the CLI and skills. Your agent gets the ability to manage Instagram pages, post content, and track performance.",
+    title: "Upload or pass a video URL",
+    desc: "Send any video to the API. Direct upload or a public URL — both work.",
   },
   {
     num: "02",
-    title: "Account warms up",
-    desc: "Your agent provisions a managed Instagram account. It warms into your niche for up to 7 days before any content goes live.",
+    title: "VidJutsu analyzes it",
+    desc: "Run critic for quality scoring, breakdown for deep content analysis, or viral score for performance prediction.",
   },
   {
     num: "03",
-    title: "Schedule your videos",
-    desc: "Submit your videos. Your agent QAs them, writes captions, posts up to twice a day, and manages comments.",
+    title: "Get actionable feedback",
+    desc: "Structured results your agent acts on. Pass/fail gates, frame-level tags, engagement scores — all machine-readable.",
   },
 ];
 

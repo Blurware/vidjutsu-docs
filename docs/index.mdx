@@ -1,9 +1,9 @@
 ---
-title: "Introduction"
-description: "Give your agent the tools to manage its own Instagram account and drive sales."
+title: "VidJutsu — Video Intelligence API"
+description: "The feedback loop your agent is missing."
 ---
 
-VidJutsu is an API and CLI for launching managed Instagram campaigns. Provision accounts, schedule posts, analyze performance, and drive traffic to any link — all from a single interface.
+Critic, breakdown, and viral scoring for AI-generated video. Plus storage and tagging for your content library.
 
 ## Base URL
 
@@ -11,20 +11,32 @@ VidJutsu is an API and CLI for launching managed Instagram campaigns. Provision 
 https://api.vidjutsu.ai
 ```
 
-## What you can do
+## Intelligence endpoints
+
+Three endpoints that close the loop between generation and publishing:
+
+<CardGroup cols={3}>
+  <Card title="Critic" icon="shield-check" href="/api-reference/critic/critic">
+    QA gate. Pass/fail verdict with a list of issues. Run this before publishing anything.
+  </Card>
+  <Card title="Breakdown" icon="microscope" href="/api-reference/breakdown/create">
+    Deep, structured analysis of any video — hook, pacing, CTA, visual quality.
+  </Card>
+  <Card title="Score" icon="chart-line" href="/api-reference/score/score">
+    Viral potential prediction. Score, per-factor breakdown, and actionable suggestions.
+  </Card>
+</CardGroup>
+
+## Storage and CRUD
+
+Organize your content library with accounts, posts, uploads, and tags — all free.
 
 <CardGroup cols={2}>
-  <Card title="Draft accounts" icon="user-plus" href="/guides/manage-accounts">
-    Create draft accounts for free, then provision when ready.
+  <Card title="Accounts" icon="user" href="/api-reference/accounts/create">
+    Pure data records for your social accounts. Tag and filter by niche, platform, or any custom key.
   </Card>
-  <Card title="Schedule posts" icon="calendar" href="/guides/schedule-posts">
-    Draft posts for free, then schedule to active accounts.
-  </Card>
-  <Card title="Estimate costs" icon="calculator" href="/api-reference/estimate/estimate">
-    Preview credit costs before committing with the estimate endpoint.
-  </Card>
-  <Card title="Analyze content" icon="chart-line" href="/api-reference/analyze/analyze">
-    Analyze media performance and get actionable insights.
+  <Card title="Posts" icon="file-video" href="/api-reference/posts/create">
+    Track videos, captions, and briefs. Link posts to accounts and filter by tag.
   </Card>
 </CardGroup>
 
@@ -32,22 +44,8 @@ https://api.vidjutsu.ai
 
 1. **Top up credits** — `POST /v1/api_keys` with your email. Pay with any card via Stripe.
 2. **Get your API key** — Poll `GET /v1/api_keys/status` after payment. Your key is returned in the response.
-3. **Draft resources for free** — Create accounts and posts as drafts (0 credits). Edit them with PUT until ready.
-4. **Provision and schedule** — Use command endpoints (`/provision`, `/schedule`) to charge credits and go live.
-5. **Poll for results** — Async endpoints return `202 Accepted`. Use list endpoints to check status.
-
-## Draft-first workflow
-
-All resource creation is free. Credits are only charged at command endpoints:
-
-| Action | Endpoint | Credits | Cost |
-|--------|----------|---------|------|
-| Create draft account | `POST /v1/accounts` | 0 | Free |
-| Provision account | `POST /v1/accounts/provision` | 990 | $99.00 |
-| Create draft post | `POST /v1/posts` | 0 | Free |
-| Schedule post | `POST /v1/posts/schedule` | 36 | $3.60 |
-
-Use `POST /v1/estimate` to preview costs before committing.
+3. **Analyze your content** — Call `/v1/critic`, `/v1/breakdown`, or `/v1/score` on any public video URL.
+4. **Store and organize** — Create accounts and posts as data records (0 credits). Tag them for filtering.
 
 ## Choose your interface
 
@@ -56,6 +54,6 @@ Use `POST /v1/estimate` to preview costs before committing.
     Direct HTTP calls to `api.vidjutsu.ai`. Works from any language or agent.
   </Card>
   <Card title="CLI" icon="terminal" href="/cli/index">
-    Install the `vidjutsu` CLI and run campaigns from your terminal.
+    Install the `vidjutsu` CLI and run intelligence calls from your terminal.
   </Card>
 </CardGroup>

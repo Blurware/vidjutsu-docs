@@ -1,4 +1,18 @@
 ---
-title: "Analyze media"
-openapi: "POST /v1/analyze"
+title: "Analyze (deprecated)"
+description: "This endpoint is deprecated. Use critic, breakdown, or score instead."
 ---
+
+<Warning>
+**Deprecated.** The `POST /v1/analyze` endpoint is deprecated and will be removed in a future version.
+</Warning>
+
+Use the new intelligence endpoints instead:
+
+| Use case | New endpoint | Description |
+|----------|-------------|-------------|
+| QA gate | [`POST /v1/critic`](/api-reference/critic/critic) | Pass/fail verdict with issues list |
+| Deep analysis | [`POST /v1/breakdown`](/api-reference/breakdown/create) | Structured, section-by-section analysis |
+| Viral prediction | [`POST /v1/score`](/api-reference/score/score) | Score with per-factor breakdown and suggestions |
+
+All three endpoints cost **10 credits** per call.
