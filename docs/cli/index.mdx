@@ -17,27 +17,25 @@ See [installation](/cli/install) for details and manual install options.
 
 | Command | Description |
 |---------|-------------|
-| [`vidjutsu auth`](/cli/auth) | Authenticate with your payment credential |
+| [`vidjutsu auth`](/cli/auth) | Authenticate with your API key |
 | [`vidjutsu watch`](/cli/watch) | Gemini watches video, freeform prompt |
 | [`vidjutsu extract`](/cli/extract) | Pull frames, audio, metadata via ffmpeg |
 | [`vidjutsu transcribe`](/cli/transcribe) | Speech-to-text with word-level timing |
 | [`vidjutsu check`](/cli/check) | Validate spec against rules |
+| [`vidjutsu upload`](/cli/upload) | Upload media to CDN |
 | [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete account records |
 | [`vidjutsu post`](/cli/posts) | Create, list, get, or delete post records |
 | [`vidjutsu balance`](/cli/balance) | Check your credit balance |
-| [`vidjutsu topup`](/cli/balance#top-up) | Add credits to your balance |
+| [`vidjutsu subscribe`](/cli/subscribe) | Manage your subscription |
 | [`vidjutsu status`](/cli/balance#status) | Check any resource status by ID |
-| `vidjutsu chat` | Chat with the VidJutsu AI agent |
-| `vidjutsu info` | Show API discovery info |
+| [`vidjutsu info`](/cli/info) | Show API discovery info |
+| [`vidjutsu session`](/cli/session) | Manage CLI sessions |
 
 ## Quick example
 
 ```bash
 # Authenticate
-vidjutsu auth --card tok_live_xxxx
-
-# Top up credits
-vidjutsu topup 100
+vidjutsu auth --key vj_live_xxxx
 
 # Watch a video
 vidjutsu watch --video-url "https://cdn.example.com/video.mp4" --prompt "Is the hook effective?"
@@ -62,7 +60,7 @@ The CLI stores its config at `~/.vidjutsu/config.json`:
 ```json
 {
   "apiUrl": "https://api.vidjutsu.ai",
-  "payment": "card:tok_live_xxxx"
+  "apiKey": "vj_live_xxxx"
 }
 ```
 

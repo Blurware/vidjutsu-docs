@@ -1,37 +1,27 @@
 ---
 title: "vidjutsu auth"
-description: "Authenticate with your payment credential"
+description: "Authenticate with your API key"
 ---
 
 ## Usage
 
 ```bash
-vidjutsu auth [--card <token> | --wallet <address>]
+vidjutsu auth --key <api_key>
 ```
 
-## Authenticate with a card
+## Authenticate with an API key
 
-Pay with any credit or debit card via Stripe:
+Pass your API key to authenticate all future CLI requests:
 
 ```bash
-vidjutsu auth --card tok_live_xxxx
+vidjutsu auth --key vj_live_xxxx
 ```
 
 ```
-Authenticated with card payment method.
+Authenticated with API key.
 ```
 
-Your credential is stored at `~/.vidjutsu/config.json` and sent as the `X-Payment` header on every request.
-
-## Authenticate with a wallet
-
-<Info>
-**Coming soon.** MPP x402 USDC payments are not yet available. This flag is reserved for future use.
-</Info>
-
-```bash
-vidjutsu auth --wallet 0xYourWalletAddress
-```
+Your key is stored at `~/.vidjutsu/config.json` and sent as the `X-Api-Key` header on every request.
 
 ## Check current auth
 
@@ -42,9 +32,9 @@ vidjutsu auth
 ```
 
 ```
-Current auth: card:****
+Current auth: key:vj_live_****
 ```
 
 ## Switching credentials
 
-Run `vidjutsu auth` again with a new credential to replace the existing one.
+Run `vidjutsu auth` again with a new key to replace the existing one.
