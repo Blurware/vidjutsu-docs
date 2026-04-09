@@ -31,7 +31,7 @@ export default function NicheResearch() {
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
           Scrape and analyze what&rsquo;s working on Instagram.
-          10 credits per scrape request.
+          Research powered by Scrape Creators + VidJutsu watch.
         </p>
 
         <section className="mb-14">
@@ -48,7 +48,7 @@ export default function NicheResearch() {
               {
                 label: "Analyzes top content with breakdown mode",
                 detail:
-                  "Identifies hooks, transitions, and engagement patterns via the analyze endpoint.",
+                  "Identifies hooks, transitions, and engagement patterns via POST /v1/watch.",
               },
               {
                 label: "Compiles a research brief",

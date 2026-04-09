@@ -46,6 +46,16 @@ curl -X POST https://api.vidjutsu.ai/v1/api_keys \
 
 This opens a Stripe checkout session. Credits are added immediately after payment.
 
+## Media limits
+
+| Media type | Max size | Max duration | Allowed types |
+|------------|----------|--------------|---------------|
+| Video | 32MB | 5 minutes | mp4, mov, webm |
+| Image | 10MB | — | jpeg, png, webp, gif |
+| Audio | 25MB | 5 minutes | mp3, wav, ogg |
+
+Videos submitted to `/v1/extract` and `/v1/transcribe` must be under 5 minutes. Uploads to `/v1/upload` must be under the size limit for their content type.
+
 ## Getting pricing programmatically
 
 ```bash
