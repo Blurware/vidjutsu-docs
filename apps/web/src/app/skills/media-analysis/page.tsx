@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const RELATED = [
   { name: "Niche Research", href: "/skills/niche-research" },
   { name: "Talking Head", href: "/skills/talking-head" },
-  { name: "Campaign Management", href: "/skills/campaign-management" },
+  { name: "VidJutsu API", href: "/skills/vidjutsu-api" },
 ];
 
 export default function MediaAnalysis() {

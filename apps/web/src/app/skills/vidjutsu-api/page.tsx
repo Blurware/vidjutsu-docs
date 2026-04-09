@@ -4,13 +4,12 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "VidJutsu API Skill",
   description:
-    "Agent skill with API endpoint reference and authentication for calling the VidJutsu API.",
+    "Agent skill with API endpoint reference for critic, breakdown, viral score, and media analysis.",
 };
 
 const RELATED = [
-  { name: "Account Management", href: "/skills/account-management" },
-  { name: "Campaign Management", href: "/skills/campaign-management" },
   { name: "Media Analysis", href: "/skills/media-analysis" },
+  { name: "Niche Research", href: "/skills/niche-research" },
 ];
 
 export default function VidjutsuApi() {
@@ -31,8 +30,9 @@ export default function VidjutsuApi() {
           VidJutsu API
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
-          Complete API endpoint reference and authentication for agents calling
-          VidJutsu. The foundation skill every agent needs.
+          Video intelligence API for agents. Critic scores, scene breakdowns,
+          and viral predictions &mdash; all from a single endpoint your agent
+          calls.
         </p>
 
         <section className="mb-14">
@@ -42,14 +42,24 @@ export default function VidjutsuApi() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Authentication setup",
+                label: "Critic",
                 detail:
-                  "API key creation via Stripe checkout. Your agent knows how to authenticate.",
+                  "Submit a video URL, get a structured quality score — hooks, pacing, artifacts, CTA strength.",
               },
               {
-                label: "Account provisioning and management",
+                label: "Breakdown",
                 detail:
-                  "Create and manage Instagram accounts.",
+                  "Scene-by-scene analysis with timestamps, visual descriptions, and quality flags.",
+              },
+              {
+                label: "Viral Score",
+                detail:
+                  "Predict distribution potential before a video ships.",
+              },
+              {
+                label: "Media analysis",
+                detail:
+                  "Critic, verify, and breakdown modes for automated QA.",
               },
               {
                 label: "File upload",
@@ -57,19 +67,9 @@ export default function VidjutsuApi() {
                   "Upload videos, images, and audio to the VidJutsu CDN.",
               },
               {
-                label: "Post scheduling and campaign orchestration",
+                label: "Authentication setup",
                 detail:
-                  "Schedule posts, manage campaigns, track execution.",
-              },
-              {
-                label: "Niche research and content scraping",
-                detail:
-                  "Scrape top-performing accounts and content.",
-              },
-              {
-                label: "Media analysis",
-                detail:
-                  "Critic, verify, and breakdown modes for QA.",
+                  "API key creation via Stripe checkout. Your agent knows how to authenticate.",
               },
               {
                 label: "Balance and credit management",
@@ -110,7 +110,7 @@ export default function VidjutsuApi() {
         </section>
 
         <div className="border-t border-border pt-10">
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
+          <CopyCommand command="npx skills add tfcbot/shortform-distribution-skills" />
         </div>
       </div>
     </main>

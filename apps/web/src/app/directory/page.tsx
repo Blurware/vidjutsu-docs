@@ -4,74 +4,41 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "Skills Directory",
   description:
-    "Browse all VidJutsu skills — campaign types, video formats, production tools, and infrastructure.",
+    "Browse all VidJutsu skills — video intelligence, video formats, production tools, and content quality.",
 };
 
 const GITHUB_BASE = "https://github.com/tfcbot/vidjutsu-skills/tree/main/skills";
 
 const INFRASTRUCTURE = [
   {
+    name: "Critic",
+    slug: "media-analysis",
+    description: "Submit a video URL, get a structured quality score — hooks, pacing, artifacts, CTA strength.",
+  },
+  {
+    name: "Breakdown",
+    slug: "media-analysis",
+    description: "Scene-by-scene analysis with timestamps, visual descriptions, and quality flags.",
+  },
+  {
+    name: "Viral Score",
+    slug: "media-analysis",
+    description: "Predict distribution potential before a video ships.",
+  },
+  {
     name: "VidJutsu API",
     slug: "vidjutsu-api",
-    description: "API endpoint reference and authentication. The foundation every agent needs.",
-  },
-  {
-    name: "Account Management",
-    slug: "account-management",
-    description: "Provision, warm, and manage Instagram accounts. 990 credits per account.",
-  },
-  {
-    name: "Campaign Management",
-    slug: "campaign-management",
-    description: "Create multi-account campaigns (1-50 accounts, 1-20 posts each) with cost estimation.",
+    description: "Core API endpoint reference and authentication. The foundation every agent needs.",
   },
   {
     name: "Niche Research",
     slug: "niche-research",
-    description: "Scrape top-performing Instagram accounts and analyze what hooks and formats work.",
+    description: "Scrape top-performing short-form content and analyze what hooks and formats work.",
   },
   {
     name: "Media Analysis",
     slug: "media-analysis",
-    description: "QA content before posting with critic, verify, and breakdown modes.",
-  },
-  {
-    name: "Reflect",
-    slug: "reflect",
-    description: "Pull analytics across all accounts and generate a performance report.",
-  },
-];
-
-const CAMPAIGNS = [
-  {
-    name: "Storefront",
-    slug: "storefront",
-    description: "Drive traffic to Shopify, dropshipping, or DTC stores.",
-  },
-  {
-    name: "Booking",
-    slug: "booking",
-    description: "Drive inbound leads to Calendly, Cal.com, or booking pages.",
-  },
-  {
-    name: "Community",
-    slug: "community",
-    description: "Grow Skool, Discord, or membership communities.",
-  },
-  {
-    name: "Courses",
-    slug: "courses",
-    description: "Promote online courses and educational content.",
-  },
-  {
-    name: "Digital Products",
-    slug: "digital-products",
-    description: "Promote templates, ebooks, tools, and digital products.",
-  },
-  {
-    name: "Mobile App",
-    slug: "mobile-app",
-    description: "Drive app downloads and signups.",
+    description: "QA content before publishing with critic, verify, and breakdown modes.",
   },
 ];
 
@@ -89,7 +56,7 @@ const FORMATS = [
   {
     name: "Clipper",
     slug: "clipper",
-    description: "Clip long-form YouTube or podcast content into daily Instagram posts.",
+    description: "Clip long-form YouTube or podcast content into daily short-form posts.",
   },
   {
     name: "B2C",
@@ -232,7 +199,6 @@ function Section({
 export default function Directory() {
   const totalSkills =
     INFRASTRUCTURE.length +
-    CAMPAIGNS.length +
     FORMATS.length +
     PRODUCTION.length +
     QUALITY.length;
@@ -259,23 +225,17 @@ export default function Directory() {
             {totalSkills} skills with {totalFormats}+ video formats. Each skill is a markdown
             file your agent reads and follows. Browse the source on GitHub or install them all.
           </p>
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" />
+          <CopyCommand command="npx skills add tfcbot/shortform-distribution-skills" />
         </div>
 
         <Section
-          title="Infrastructure"
-          description="Core skills that power everything else. Start here."
+          title="Video Intelligence"
+          description="Critic, Breakdown, Viral Score, and the VidJutsu API. The core of automated video QA."
           skills={INFRASTRUCTURE}
         />
 
         <Section
-          title="Campaign Types"
-          description="Each skill walks your agent through running a specific type of Instagram campaign."
-          skills={CAMPAIGNS}
-        />
-
-        <Section
-          title="Video Formats"
+          title="Video Format Reference"
           description="Format libraries with shot-by-shot guides and AI generation prompt templates."
           skills={FORMATS}
         />

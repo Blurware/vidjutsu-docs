@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "VidJutsu vs AI Content Tools",
   description:
-    "AI content tools generate clips but stop there. Here's how to use VidJutsu skills to go from generated video to posted, tracked, and managed.",
+    "AI content tools generate video but stop at output. VidJutsu checks that output before it ships.",
 };
 
 const SKILLS = [
@@ -16,17 +16,17 @@ const SKILLS = [
   {
     name: "Clipper",
     href: "/skills/clipper",
-    what: "Turn long-form YouTube or podcast content into daily short-form posts.",
+    what: "Turn long-form YouTube or podcast content into daily short-form clips.",
   },
   {
     name: "Media Analysis",
     href: "/skills/media-analysis",
-    what: "QA every video before it goes live — catches bad hooks, AI artifacts, weak CTAs.",
+    what: "QA every video before it ships — catches artifacts, bad hooks, face drift, and weak CTAs.",
   },
   {
-    name: "Campaign Management",
-    href: "/skills/campaign-management",
-    what: "Multi-account campaign setup, monitoring, and optimization.",
+    name: "VidJutsu API",
+    href: "/skills/vidjutsu-api",
+    what: "Core API reference — critic, breakdown, viral score. Everything your agent calls.",
   },
 ];
 
@@ -48,9 +48,8 @@ export default function AiContentTools() {
           Already using Opus Clip, Pictory, or Descript?
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-16">
-          Keep using them for generation. Use VidJutsu for everything after
-          that&nbsp;&mdash; QA, captions, posting, analytics, and comment
-          moderation.
+          Keep using them for generation. Use VidJutsu to check the output
+          before it ships.
         </p>
 
         {/* The gap */}
@@ -60,10 +59,11 @@ export default function AiContentTools() {
           </h2>
           <p className="text-ink-muted leading-relaxed max-w-2xl">
             AI content tools create video assets. After that, you&rsquo;re on
-            your own. You still need to review output, write captions, find an
-            account to post from, schedule it, and check if it performed. That
-            gap between &ldquo;generated a clip&rdquo; and &ldquo;that clip is
-            driving traffic on Instagram&rdquo; is where VidJutsu fits.
+            your own. Generation tools stop at output &mdash; they don&rsquo;t
+            tell you if the hook lands, if there are AI artifacts in frame 47,
+            or if the face drifts between scenes. VidJutsu sits between
+            generation and distribution. It scores what the tool made so your
+            agent can decide what ships.
           </p>
         </section>
 
@@ -80,24 +80,19 @@ export default function AiContentTools() {
                   "Opus Clip, Pictory, Descript, Wavespeed, KIE, or your phone. VidJutsu doesn't generate video — you bring the content.",
               },
               {
-                step: "Submit video URLs to VidJutsu via the API",
+                step: "Submit video URLs to the Critic endpoint",
                 detail:
-                  "Your agent calls the API with a video URL. No uploads, no dashboards.",
+                  "Your agent sends a video URL. VidJutsu returns a structured quality score — hooks, pacing, artifacts, CTA strength.",
               },
               {
-                step: "Agent QAs every video before posting",
+                step: "Use Breakdown for scene-level analysis",
                 detail:
-                  "The Media Analysis skill checks hooks, AI artifacts, and CTA quality. Videos that don't pass get flagged, not posted.",
+                  "Get timestamped, scene-by-scene quality flags. Know exactly where a video falls apart before you ship it.",
               },
               {
-                step: "Agent writes captions and schedules posts",
+                step: "Score distribution potential with Viral Score",
                 detail:
-                  "Your agent writes niche-optimized captions and schedules posts up to twice a day on managed Instagram accounts.",
-              },
-              {
-                step: "Track performance and adjust",
-                detail:
-                  "Post-level analytics — views, likes, link taps — available through the API. Your agent reads the numbers and adjusts.",
+                  "Predict which videos are worth distributing. Your agent prioritizes the ones most likely to perform.",
               },
             ].map((item, i) => (
               <li key={i} className="flex gap-4">
@@ -139,9 +134,9 @@ export default function AiContentTools() {
         {/* CTA */}
         <div className="border-t border-border pt-10">
           <p className="text-ink font-medium mb-4">
-            Generate anywhere. Post through VidJutsu.
+            Generate anywhere. Score through VidJutsu.
           </p>
-          <CopyCommand command="npx skills add tfcbot/vidjutsu-skills" className="mb-4" />
+          <CopyCommand command="npx skills add tfcbot/shortform-distribution-skills" className="mb-4" />
           <a
             href="https://docs.vidjutsu.ai"
             className="text-ink-muted text-sm font-semibold hover:text-ink transition-colors"
