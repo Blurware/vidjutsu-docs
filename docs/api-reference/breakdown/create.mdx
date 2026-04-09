@@ -1,6 +1,7 @@
 ---
 title: "Create breakdown"
 description: "Start a deep analysis of any video or image"
+openapi: "POST /v1/breakdown"
 ---
 
 ## POST /v1/breakdown
@@ -33,7 +34,7 @@ curl -X POST https://api.vidjutsu.ai/v1/breakdown \
 ```json
 {
   "id": "va_abc123",
-  "status": "processing"
+  "status": "pending"
 }
 ```
 
@@ -42,7 +43,7 @@ curl -X POST https://api.vidjutsu.ai/v1/breakdown \
 | Field | Type | Description |
 |-------|------|-------------|
 | `id` | string | Breakdown ID — use this to poll for the result |
-| `status` | string | `processing` or `completed` |
+| `status` | string | `pending`, `processing`, or `completed` |
 
 ### Credits
 
