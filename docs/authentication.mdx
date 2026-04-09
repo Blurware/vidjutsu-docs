@@ -10,7 +10,7 @@ VidJutsu uses a credit-based system with Stripe checkout. No sign-up form — ju
 ### 1. Start checkout
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/api_keys \
+curl -X POST https://api.vidjutsu.ai/v1/credits \
   -H "Content-Type: application/json" \
   -d '{
     "credits": 100,
@@ -25,7 +25,7 @@ This returns a Stripe checkout URL. Open it in your browser and pay with **any c
 After payment, poll the status endpoint with your session ID:
 
 ```bash
-curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
+curl "https://api.vidjutsu.ai/v1/credits/status?session=cs_..."
 ```
 
 ```json

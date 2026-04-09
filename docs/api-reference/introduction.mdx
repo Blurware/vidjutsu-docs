@@ -60,8 +60,8 @@ Get your API key by [purchasing credits](/authentication) with any card via Stri
 
 | Method | Endpoint | Description | Credits |
 |--------|----------|-------------|---------|
-| POST | `/v1/api_keys` | Start a Stripe checkout session | 0 |
-| GET | `/v1/api_keys/status` | Check payment status / get API key | 0 |
+| POST | `/v1/credits` | Start a Stripe checkout session | 0 |
+| GET | `/v1/credits/status` | Check payment status / get API key | 0 |
 | POST | `/v1/api_keys/rotate` | Rotate your API key | 0 |
 | POST | `/v1/api_keys/recover` | Recover a lost API key | 0 |
 | GET | `/v1/balance` | Check credit balance | 0 |
@@ -101,7 +101,7 @@ All errors return a consistent JSON structure:
 {
   "error": "insufficient_credits",
   "message": "This operation requires 10 credits but you have 2",
-  "setup": "/v1/api_keys"
+  "setup": "/v1/credits"
 }
 ```
 

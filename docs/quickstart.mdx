@@ -34,7 +34,7 @@ See the [CLI reference](/cli/index) for all commands.
 Start a Stripe checkout session. Pay with any credit or debit card.
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/api_keys \
+curl -X POST https://api.vidjutsu.ai/v1/credits \
   -H "Content-Type: application/json" \
   -d '{
     "credits": 100,
@@ -58,7 +58,7 @@ Open the returned URL in your browser to complete payment.
 After payment, poll the status endpoint:
 
 ```bash
-curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
+curl "https://api.vidjutsu.ai/v1/credits/status?session=cs_..."
 ```
 
 ```json

@@ -11,7 +11,7 @@ const SKILLS = [
   {
     name: "Talking Head",
     href: "/skills/talking-head",
-    what: "Draft video scripts with hooks, settings, and delivery notes. Generate with Wavespeed + KIE or record yourself.",
+    what: "Draft video scripts with hooks, settings, and delivery notes. Generate with AI or record yourself.",
   },
   {
     name: "Clipper",
@@ -77,7 +77,7 @@ export default function AiContentTools() {
               {
                 step: "Generate videos with your tool of choice",
                 detail:
-                  "Opus Clip, Pictory, Descript, Wavespeed, KIE, or your phone. VidJutsu doesn't generate video — you bring the content.",
+                  "Opus Clip, Pictory, Descript, any AI generator, or your phone. VidJutsu doesn't generate video — you bring the content.",
               },
               {
                 step: "Submit video URLs to the Watch endpoint",

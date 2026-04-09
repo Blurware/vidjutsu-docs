@@ -1,11 +1,11 @@
 const FEATURES = [
   {
     title: "Watch",
-    desc: "Gemini watches your video and answers what you ask. Freeform prompt — no rigid schema, just a question and an answer.",
+    desc: "AI watches your video and answers what you ask. Freeform prompt — no rigid schema, just a question and an answer.",
   },
   {
     title: "Extract",
-    desc: "Pull frames, audio, metadata. Server-side ffmpeg — no local install. Auto-select keyframes or request specific counts.",
+    desc: "Pull frames, audio, metadata. Server-side processing — no local install. Auto-select keyframes or request specific counts.",
   },
   {
     title: "Transcribe",
