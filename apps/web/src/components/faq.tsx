@@ -20,8 +20,8 @@ const FAQS = [
     a: "You pass content plus niche keywords. VidJutsu scores against its understanding of what performs — hook strength, pacing, format match, engagement prediction.",
   },
   {
-    q: "What are accounts and posts?",
-    a: "Pure data records for organizing your content library. Tag-based queries, no provisioning, no posting. Just structured storage your agent can query.",
+    q: "How do credits work?",
+    a: "Your $99/mo subscription includes 1,000 credits. Each critic, breakdown, or viral score call uses 10 credits. Upload and storage are free. Need more? Buy additional credits at $0.10 each.",
   },
 ];
 

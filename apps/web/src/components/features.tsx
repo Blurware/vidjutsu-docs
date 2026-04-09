@@ -12,8 +12,8 @@ const FEATURES = [
     desc: "Will this perform? Score content against niche context. Hook strength, pacing, format match, engagement prediction.",
   },
   {
-    title: "Storage + Tagging",
-    desc: "Organize your content library. Accounts and posts as pure data records with tag-based queries.",
+    title: "Agent-Native API",
+    desc: "Every response is structured JSON your agent acts on. No dashboards. No UI. Score in, decision out.",
   },
 ];
 
