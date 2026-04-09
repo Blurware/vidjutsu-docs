@@ -3,7 +3,7 @@ title: "VidJutsu — Video Intelligence API"
 description: "The feedback loop your agent is missing."
 ---
 
-Critic, breakdown, and viral scoring for AI-generated video. Plus storage and tagging for your content library.
+Watch, extract, transcribe, and check AI-generated video. Plus storage and tagging for your content library.
 
 ## Base URL
 
@@ -13,23 +13,26 @@ https://api.vidjutsu.ai
 
 ## Intelligence endpoints
 
-Three endpoints that close the loop between generation and publishing:
+Four endpoints that close the loop between generation and publishing:
 
-<CardGroup cols={3}>
-  <Card title="Critic" icon="shield-check" href="/api-reference/critic/critic">
-    QA gate. Pass/fail verdict with a list of issues. Run this before publishing anything.
+<CardGroup cols={2}>
+  <Card title="Watch" icon="eye" href="/api-reference/watch/watch">
+    Gemini watches your video with a freeform prompt. Ask any question about what it sees.
   </Card>
-  <Card title="Breakdown" icon="microscope" href="/api-reference/breakdown/create">
-    Deep, structured analysis of any video — hook, pacing, CTA, visual quality.
+  <Card title="Extract" icon="scissors" href="/api-reference/extract/create">
+    Pull frames, audio, and metadata from any video via ffmpeg.
   </Card>
-  <Card title="Score" icon="chart-line" href="/api-reference/score/score">
-    Viral potential prediction. Score, per-factor breakdown, and actionable suggestions.
+  <Card title="Transcribe" icon="microphone" href="/api-reference/transcribe/create">
+    Speech-to-text with word-level timing for every spoken word.
+  </Card>
+  <Card title="Check" icon="shield-check" href="/api-reference/check/check">
+    Validate a spec against rules. QA gate before publishing.
   </Card>
 </CardGroup>
 
 ## Storage and CRUD
 
-Organize your content library with accounts, posts, uploads, and tags — all free.
+Organize your content library with accounts, posts, assets, references, and tags — all free.
 
 <CardGroup cols={2}>
   <Card title="Accounts" icon="user" href="/api-reference/accounts/create">
@@ -38,14 +41,19 @@ Organize your content library with accounts, posts, uploads, and tags — all fr
   <Card title="Posts" icon="file-video" href="/api-reference/posts/create">
     Track videos, captions, and briefs. Link posts to accounts and filter by tag.
   </Card>
+  <Card title="Assets" icon="image" href="/api-reference/assets/create">
+    Upload and manage media files — images, videos, and audio clips for your content pipeline.
+  </Card>
+  <Card title="References" icon="bookmark" href="/api-reference/references/create">
+    Save reference URLs and inspiration links. Tag and retrieve by niche, format, or campaign.
+  </Card>
 </CardGroup>
 
 ## How it works
 
-1. **Top up credits** — `POST /v1/api_keys` with your email. Pay with any card via Stripe.
-2. **Get your API key** — Poll `GET /v1/api_keys/status` after payment. Your key is returned in the response.
-3. **Analyze your content** — Call `/v1/critic`, `/v1/breakdown`, or `/v1/score` on any public video URL.
-4. **Store and organize** — Create accounts and posts as data records (0 credits). Tag them for filtering.
+1. **Get your API key** — `POST /v1/api_keys` with your email. Pay with any card via Stripe. Poll `GET /v1/api_keys/status` after payment.
+2. **Analyze your content** — Call `/v1/watch`, `/v1/extract`, `/v1/transcribe`, or `/v1/check` on any public video URL.
+3. **Store and organize** — Create accounts, posts, assets, and references as data records (0 credits). Tag them for filtering.
 
 ## Choose your interface
 
