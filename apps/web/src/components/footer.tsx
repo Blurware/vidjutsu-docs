@@ -34,10 +34,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Alternatives</h4>
             <ul className="space-y-2.5">
               <li><a href="/alternatives/building-with-agents" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Building with agents</a></li>
-              <li><a href="/alternatives/diy" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Doing it yourself</a></li>
-              <li><a href="/alternatives/hiring-a-va" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Hiring a VA</a></li>
-              <li><a href="/alternatives/social-media-agencies" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Social media agencies</a></li>
-              <li><a href="/alternatives/scheduling-tools" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Scheduling tools</a></li>
+              <li><a href="/alternatives/diy" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Manual video review</a></li>
               <li><a href="/alternatives/ai-content-tools" className="text-[13px] text-ink-muted hover:text-ink transition-colors">AI content tools</a></li>
             </ul>
           </div>
