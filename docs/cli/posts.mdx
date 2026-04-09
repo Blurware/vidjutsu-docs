@@ -1,11 +1,11 @@
 ---
 title: "vidjutsu post"
-description: "Create, edit, and schedule posts across your accounts"
+description: "Create, edit, and manage post records"
 ---
 
-## Create a draft post
+## Create a post
 
-Create a draft post for free (0 credits). The account ID is optional at draft time.
+Create a post record (0 credits). The account ID is optional.
 
 ```bash
 vidjutsu post create --video vid_q9f3 --caption "Summer fits"
@@ -15,45 +15,21 @@ vidjutsu post create --video vid_q9f3 --caption "Summer fits"
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--account` | string | Account ID (optional at draft, required for scheduling) |
+| `--account` | string | Account ID to link to |
 | `--video` | string | Video ID |
 | `--video-url` | string | Video URL |
 | `--caption` | string | Post caption |
-| `--scheduled-at` | string | Unix timestamp for publish time |
-| `--tag` | string | Key-value tag, e.g. `campaign=summer-launch` (repeatable) |
+| `--brief` | string | Content brief or notes |
+| `--tag` | string | Key-value tag, e.g. `batch=week-12` (repeatable) |
 
 **Cost:** 0 credits (free).
 
-## Edit a draft post
+## Edit a post
 
-Update a draft post's content before scheduling:
+Update a post record:
 
 ```bash
 vidjutsu post edit post_m2v1 --caption "Updated caption" --video-url "https://..."
-```
-
-Only works on posts in `"draft"` status.
-
-## Schedule a post
-
-Charge 36 credits and queue the post for publishing. The post must have an account ID, and the account must be `"active"`.
-
-```bash
-vidjutsu post schedule post_m2v1
-```
-
-**Cost:** 36 credits ($3.60).
-
-## Assign a draft to an account
-
-```bash
-vidjutsu post assign post_m2v1 --account acc_8k2x
-```
-
-## Duplicate a post
-
-```bash
-vidjutsu post duplicate post_m2v1 --account acc_other
 ```
 
 ## List posts
@@ -65,19 +41,23 @@ vidjutsu post list
 Filter by tag:
 
 ```bash
-vidjutsu post list --tag campaign=summer-launch
+vidjutsu post list --tag batch=week-12
 ```
 
-## Get post status
+Filter by account:
+
+```bash
+vidjutsu post list --account acc_8k2x
+```
+
+## Get post details
 
 ```bash
 vidjutsu post get post_m2v1
 ```
 
-## Cancel a post
+## Delete a post
 
 ```bash
-vidjutsu post cancel post_m2v1
+vidjutsu post delete post_m2v1
 ```
-
-Only posts with `"draft"` or `"scheduled"` status can be cancelled.

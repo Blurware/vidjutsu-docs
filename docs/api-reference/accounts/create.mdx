@@ -1,4 +1,63 @@
 ---
-title: "Create draft account"
-openapi: "POST /v1/accounts"
+title: "Create account"
+description: "Create a data record for a social account"
 ---
+
+## POST /v1/accounts
+
+Create an account record in your content library. Accounts are pure data records for organizing posts and tracking metadata — no provisioning or platform integration.
+
+### Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `platform` | string | Yes | Platform name (e.g. `instagram`, `tiktok`, `youtube`) |
+| `name` | string | Yes | Display name for the account |
+| `niche` | string | No | Primary niche (e.g. `fitness`, `fashion`, `tech`) |
+| `handle` | string | No | Social media handle |
+| `bio` | string | No | Profile biography |
+| `pfp` | string | No | Profile picture URL |
+| `linkInBio` | string | No | Link in bio URL |
+| `tags` | array | No | AWS-style key-value tags for filtering |
+
+### Example request
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/accounts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "platform": "instagram",
+    "name": "nyc_streetstyle",
+    "niche": "fashion",
+    "handle": "nyc_streetstyle",
+    "bio": "NYC street style and fits",
+    "linkInBio": "https://myshop.com",
+    "tags": [
+      { "key": "brand", "value": "acme" },
+      { "key": "region", "value": "northeast" }
+    ]
+  }'
+```
+
+### Example response
+
+```json
+{
+  "id": "acc_8k2x",
+  "platform": "instagram",
+  "name": "nyc_streetstyle",
+  "niche": "fashion",
+  "handle": "nyc_streetstyle",
+  "bio": "NYC street style and fits",
+  "linkInBio": "https://myshop.com",
+  "tags": [
+    { "key": "brand", "value": "acme" },
+    { "key": "region", "value": "northeast" }
+  ]
+}
+```
+
+### Credits
+
+**0 credits** — account records are free.

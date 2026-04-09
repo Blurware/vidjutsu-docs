@@ -29,14 +29,6 @@
               "authentication",
               "credits-and-billing"
             ]
-          },
-          {
-            "group": "Campaigns",
-            "pages": [
-              "guides/launch-a-campaign",
-              "guides/manage-accounts",
-              "guides/schedule-posts"
-            ]
           }
         ]
       },
@@ -62,12 +54,31 @@
             ]
           },
           {
+            "group": "Critic",
+            "pages": [
+              "api-reference/critic/critic"
+            ]
+          },
+          {
+            "group": "Breakdown",
+            "pages": [
+              "api-reference/breakdown/create",
+              "api-reference/breakdown/get"
+            ]
+          },
+          {
+            "group": "Score",
+            "pages": [
+              "api-reference/score/score"
+            ]
+          },
+          {
             "group": "Accounts",
             "pages": [
               "api-reference/accounts/create",
               "api-reference/accounts/update",
-              "api-reference/accounts/provision",
-              "api-reference/accounts/list"
+              "api-reference/accounts/list",
+              "api-reference/accounts/delete"
             ]
           },
           {
@@ -75,28 +86,19 @@
             "pages": [
               "api-reference/posts/create",
               "api-reference/posts/update",
-              "api-reference/posts/schedule",
-              "api-reference/posts/list"
+              "api-reference/posts/list",
+              "api-reference/posts/delete"
             ]
           },
           {
-            "group": "Estimate",
+            "group": "Upload",
             "pages": [
-              "api-reference/estimate/estimate"
+              "api-reference/upload/upload",
+              "api-reference/upload/upload-url"
             ]
           },
           {
-            "group": "Campaigns (Legacy)",
-            "pages": [
-              "api-reference/campaigns/create",
-              "api-reference/campaigns/list",
-              "api-reference/campaigns/execute",
-              "api-reference/campaigns/cancel",
-              "api-reference/campaigns/estimate"
-            ]
-          },
-          {
-            "group": "Analysis",
+            "group": "Analysis (Deprecated)",
             "pages": [
               "api-reference/analyze/analyze"
             ]
@@ -114,7 +116,6 @@
               "cli/auth",
               "cli/accounts",
               "cli/posts",
-              "cli/campaigns",
               "cli/balance"
             ]
           }

@@ -1,6 +1,6 @@
 ---
 title: "API Reference"
-description: "Complete reference for the VidJutsu API"
+description: "Complete reference for the VidJutsu Video Intelligence API"
 ---
 
 ## Base URL
@@ -20,16 +20,42 @@ curl https://api.vidjutsu.ai/v1/accounts \
 
 Get your API key by [purchasing credits](/authentication) with any card via Stripe.
 
-## Draft-first design
+## Endpoints
 
-All resource creation is free. `POST /v1/accounts` and `POST /v1/posts` create drafts that cost 0 credits. Credits are only charged at command endpoints:
+### Intelligence
 
-| Command | Endpoint | Credits |
-|---------|----------|---------|
-| Provision account | `POST /v1/accounts/provision` | 990 |
-| Schedule post | `POST /v1/posts/schedule` | 36 |
+| Method | Endpoint | Description | Credits |
+|--------|----------|-------------|---------|
+| POST | `/v1/critic` | QA gate — pass/fail verdict with issues | 10 |
+| POST | `/v1/breakdown` | Start a deep video analysis (async) | 10 |
+| GET | `/v1/breakdown` | Poll for breakdown result | 0 |
+| POST | `/v1/score` | Viral potential prediction | 10 |
 
-Draft resources can be edited with `PUT /v1/accounts?id={id}` and `PUT /v1/posts?id={id}` before committing. Use `POST /v1/estimate` to preview costs.
+### Storage
+
+| Method | Endpoint | Description | Credits |
+|--------|----------|-------------|---------|
+| POST | `/v1/accounts` | Create an account record | 0 |
+| PUT | `/v1/accounts` | Update an account record | 0 |
+| GET | `/v1/accounts` | List accounts (supports tag filtering) | 0 |
+| DELETE | `/v1/accounts` | Delete an account | 0 |
+| POST | `/v1/posts` | Create a post record | 0 |
+| PUT | `/v1/posts` | Update a post record | 0 |
+| GET | `/v1/posts` | List posts (supports tag filtering) | 0 |
+| DELETE | `/v1/posts` | Delete a post | 0 |
+| POST | `/v1/upload` | Upload media to CDN | 0 |
+| POST | `/v1/upload-url` | Get a signed upload URL | 0 |
+
+### Billing
+
+| Method | Endpoint | Description | Credits |
+|--------|----------|-------------|---------|
+| POST | `/v1/api_keys` | Start a Stripe checkout session | 0 |
+| GET | `/v1/api_keys/status` | Check payment status / get API key | 0 |
+| POST | `/v1/api_keys/rotate` | Rotate your API key | 0 |
+| POST | `/v1/api_keys/recover` | Recover a lost API key | 0 |
+| GET | `/v1/balance` | Check credit balance | 0 |
+| GET | `/v1/pricing` | Get current pricing table | 0 |
 
 ## Tags
 
@@ -51,8 +77,8 @@ Filter on GET requests: `?tag.campaign=summer-launch`
 | Code | Description |
 |------|-------------|
 | `200` | Success (read operations, edits) |
-| `201` | Created (drafts) |
-| `202` | Accepted (async operation started — provision, schedule) |
+| `201` | Created (new records) |
+| `202` | Accepted (async operation started — breakdown) |
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
 | `402` | Insufficient credits |
@@ -64,7 +90,7 @@ All errors return a consistent JSON structure:
 ```json
 {
   "error": "insufficient_credits",
-  "message": "This operation requires 990 credits but you have 2",
+  "message": "This operation requires 10 credits but you have 2",
   "setup": "/v1/api_keys"
 }
 ```
@@ -73,17 +99,16 @@ The `setup` field is included on `402` errors to help agents self-recover by ini
 
 ## Async operations
 
-Account provisioning and campaign execution return `202 Accepted`:
+Breakdown analysis returns `202 Accepted`:
 
 ```json
 {
-  "id": "acc_abc123",
-  "status": "creating",
-  "creditsCharged": 990
+  "id": "va_abc123",
+  "status": "processing"
 }
 ```
 
-Poll the corresponding list endpoint (`GET /v1/accounts`, etc.) until `status` changes to `"active"`.
+Poll `GET /v1/breakdown?id=va_abc123` until `status` changes to `"completed"`.
 
 ## CORS
 

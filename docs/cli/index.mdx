@@ -3,7 +3,7 @@ title: "CLI Overview"
 description: "The VidJutsu command-line interface"
 ---
 
-The VidJutsu CLI lets you run campaigns from your terminal. It's a lightweight wrapper around the [REST API](/api-reference/introduction) — every CLI command maps to an API call to `api.vidjutsu.ai`.
+The VidJutsu CLI lets you run intelligence calls and manage your content library from the terminal. It's a lightweight wrapper around the [REST API](/api-reference/introduction) — every CLI command maps to an API call to `api.vidjutsu.ai`.
 
 ## Install
 
@@ -18,13 +18,14 @@ See [installation](/cli/install) for details and manual install options.
 | Command | Description |
 |---------|-------------|
 | [`vidjutsu auth`](/cli/auth) | Authenticate with your payment credential |
-| [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete accounts |
-| [`vidjutsu post`](/cli/posts) | Schedule, list, get, or cancel posts |
-| [`vidjutsu campaign`](/cli/campaigns) | Create, list, or get campaigns |
-| [`vidjutsu analytics`](/cli/accounts#analytics) | Get account analytics and video stats |
+| [`vidjutsu account`](/cli/accounts) | Create, list, get, or delete account records |
+| [`vidjutsu post`](/cli/posts) | Create, list, get, or delete post records |
 | [`vidjutsu balance`](/cli/balance) | Check your credit balance |
 | [`vidjutsu topup`](/cli/balance#top-up) | Add credits to your balance |
 | [`vidjutsu status`](/cli/balance#status) | Check any resource status by ID |
+| `vidjutsu critic` | Run a critic check on a video |
+| `vidjutsu breakdown` | Start a deep video analysis |
+| `vidjutsu score` | Score a video's viral potential |
 | `vidjutsu chat` | Chat with the VidJutsu AI agent |
 | `vidjutsu info` | Show API discovery info |
 
@@ -37,14 +38,14 @@ vidjutsu auth --card tok_live_xxxx
 # Top up credits
 vidjutsu topup 100
 
-# Create an account
+# Run a critic check
+vidjutsu critic --media-url "https://cdn.example.com/video.mp4" --media-type video
+
+# Score a video
+vidjutsu score --media-url "https://cdn.example.com/video.mp4" --media-type video --niches "fitness,wellness"
+
+# Create an account record
 vidjutsu account create --platform instagram --name "style_la" --niche "fashion"
-
-# Schedule a post
-vidjutsu post schedule --account acc_8k2x --video-url "https://your-video.com/v.mp4"
-
-# Check analytics
-vidjutsu analytics get acc_8k2x
 ```
 
 ## Configuration

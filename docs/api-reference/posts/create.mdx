@@ -1,4 +1,57 @@
 ---
-title: "Create draft post"
-openapi: "POST /v1/posts"
+title: "Create post"
+description: "Create a data record for a video post"
 ---
+
+## POST /v1/posts
+
+Create a post record in your content library. Posts are pure data records for tracking videos, captions, and briefs — no scheduling or publishing.
+
+### Request body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `videoId` | string | No | ID of an uploaded video |
+| `videoUrl` | string | No | Public URL of the video |
+| `caption` | string | No | Post caption |
+| `brief` | string | No | Content brief or notes |
+| `accountId` | string | No | Link to an account record |
+| `tags` | array | No | AWS-style key-value tags for filtering |
+
+### Example request
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/posts \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: vj_live_abc123..." \
+  -d '{
+    "videoUrl": "https://cdn.example.com/video.mp4",
+    "caption": "3 morning habits that changed my physique",
+    "brief": "Fitness talking-head, 15 seconds, hook-first",
+    "accountId": "acc_8k2x",
+    "tags": [
+      { "key": "batch", "value": "week-12" },
+      { "key": "format", "value": "talking-head" }
+    ]
+  }'
+```
+
+### Example response
+
+```json
+{
+  "id": "post_xyz789",
+  "videoUrl": "https://cdn.example.com/video.mp4",
+  "caption": "3 morning habits that changed my physique",
+  "brief": "Fitness talking-head, 15 seconds, hook-first",
+  "accountId": "acc_8k2x",
+  "tags": [
+    { "key": "batch", "value": "week-12" },
+    { "key": "format", "value": "talking-head" }
+  ]
+}
+```
+
+### Credits
+
+**0 credits** — post records are free.

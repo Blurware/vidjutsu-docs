@@ -1,4 +1,67 @@
 ---
 title: "List accounts"
-openapi: "GET /v1/accounts"
+description: "List and filter account records"
 ---
+
+## GET /v1/accounts
+
+List all account records. Supports tag-based filtering.
+
+### Query parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `tag.{key}` | string | Filter by tag value. Repeat for multiple tags. |
+
+### Example request
+
+```bash
+curl "https://api.vidjutsu.ai/v1/accounts" \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+### Filtering by tag
+
+Filter accounts using the `tag.` prefix on any key:
+
+```bash
+# All accounts tagged with brand=acme
+curl "https://api.vidjutsu.ai/v1/accounts?tag.brand=acme" \
+  -H "X-Api-Key: vj_live_abc123..."
+
+# Combine multiple tag filters
+curl "https://api.vidjutsu.ai/v1/accounts?tag.brand=acme&tag.region=northeast" \
+  -H "X-Api-Key: vj_live_abc123..."
+```
+
+### Example response
+
+```json
+{
+  "data": [
+    {
+      "id": "acc_8k2x",
+      "platform": "instagram",
+      "name": "nyc_streetstyle",
+      "niche": "fashion",
+      "handle": "nyc_streetstyle",
+      "tags": [
+        { "key": "brand", "value": "acme" },
+        { "key": "region", "value": "northeast" }
+      ]
+    },
+    {
+      "id": "acc_9m3y",
+      "platform": "instagram",
+      "name": "drip_atl",
+      "niche": "fashion",
+      "handle": "drip_atl",
+      "tags": []
+    }
+  ]
+}
+```
+
+### Credits
+
+**0 credits** — list operations are free.
