@@ -1,0 +1,36 @@
+---
+title: "vidjutsu check"
+description: "Validate specs against built-in rules and your own custom rules."
+---
+
+## Usage
+
+```bash
+vidjutsu check --spec <file> --rules "rule1,rule2"
+```
+
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--spec` | Yes | Path to the spec file to validate |
+| `--rules` | No | Comma-separated list of rules to check against. Omit to use all rules. |
+
+## Example
+
+```bash
+vidjutsu check --spec ./campaign-brief.json --rules "hook-required,max-duration-60s"
+
+Checking spec...
+
+Rules:     2 applied
+Passed:    1
+Failed:    1
+
+  [pass]  hook-required — hook field present
+  [fail]  max-duration-60s — duration is 72s, max allowed is 60s
+```
+
+## Credits
+
+5 credits per call.

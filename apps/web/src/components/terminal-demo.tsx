@@ -4,50 +4,60 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const EXAMPLES = [
   {
-    label: "Critic",
+    label: "Watch",
     lines: [
-      "$ vidjutsu critic --video-url https://cdn.example.com/reel-042.mp4",
-      "Analyzing video...",
+      '$ vidjutsu watch --video-url https://cdn.example.com/reel-042.mp4 --prompt "Is the hook effective?"',
+      "Watching video...",
       "",
-      "Score:    9/10",
-      "Verdict:  pass",
-      "Issues:   none",
-      "",
-      "Face consistency: 0.96",
-      "Motion quality:   clean",
-      "Artifacts:        none",
-      "Audio sync:       aligned",
+      "Response:",
+      "  The hook lands in the first 1.2 seconds — direct",
+      "  address to camera with a bold claim. Strong for",
+      "  fitness TikTok. Consider adding a text overlay",
+      "  to reinforce for silent viewers.",
     ],
   },
   {
-    label: "Breakdown",
+    label: "Extract",
     lines: [
-      "$ vidjutsu breakdown --video-url https://cdn.example.com/reel-042.mp4",
-      "Analyzing...",
+      "$ vidjutsu extract --video-url https://cdn.example.com/reel-042.mp4 --frames auto --audio",
+      "Extracting...",
       "",
-      'Hook:        "The one thing nobody tells you about creatine" (0-2s)',
-      "Format:      talking-head, single scene",
-      "Pacing:      fast — 3 cuts in 10s",
-      "Transitions: hard cut, no crossfade",
-      'CTA:         "link in bio" at 9s',
-      "Tags:        fitness, supplements, creatine",
+      "Frames:     12 extracted (auto-selected keyframes)",
+      "Audio:      audio.wav (16kHz mono)",
+      "Duration:   14.2s",
+      "Resolution: 1080x1920",
+      "FPS:        30",
     ],
   },
   {
-    label: "Viral Score",
+    label: "Transcribe",
     lines: [
-      "$ vidjutsu score --video-url https://cdn.example.com/reel-042.mp4 --niche fitness",
-      "Scoring against fitness niche...",
+      "$ vidjutsu transcribe --video-url https://cdn.example.com/reel-042.mp4",
+      "Transcribing...",
       "",
-      "Viral Score:           81/100",
-      "Hook Strength:         9/10",
-      "Pacing:                8/10",
-      "Format Match:          7/10",
-      "Engagement Prediction: high",
+      "Words:    47",
+      "Duration: 14.2s",
       "",
-      "Suggestions:",
-      '  - Stronger CTA — "shop now" outperforms "link in bio" by 2.3x',
-      "  - Add text overlay on hook for silent viewers",
+      '[0.00 - 0.82]  "The"',
+      '[0.82 - 1.10]  "one"',
+      '[1.10 - 1.40]  "thing"',
+      '[1.40 - 1.92]  "nobody"',
+      '[1.92 - 2.30]  "tells"',
+      '[2.30 - 2.60]  "you"',
+    ],
+  },
+  {
+    label: "Check",
+    lines: [
+      '$ vidjutsu check --spec ./brief.json --rules "hook-required,max-duration-60s"',
+      "Checking spec...",
+      "",
+      "Rules:   2 applied",
+      "Passed:  1",
+      "Failed:  1",
+      "",
+      "  [pass]  hook-required — hook field present",
+      "  [fail]  max-duration-60s — duration is 72s, max allowed is 60s",
     ],
   },
 ];
@@ -99,7 +109,7 @@ export function TerminalDemo() {
             See it in action
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Your agent sends a video. VidJutsu scores it. Your pipeline decides what ships.
+            Your agent sends a video. VidJutsu watches, extracts, transcribes, and checks. Your pipeline decides what ships.
           </p>
         </div>
 

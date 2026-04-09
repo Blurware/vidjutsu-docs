@@ -26,7 +26,7 @@ export function Hero() {
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            Critic. Breakdown. Viral Score. The QA gate for your video production pipeline.
+            Watch. Extract. Transcribe. Check. Four primitives for video intelligence.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">

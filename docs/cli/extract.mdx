@@ -1,0 +1,36 @@
+---
+title: "vidjutsu extract"
+description: "Pull frames, audio, and metadata from any video. Server-side ffmpeg."
+---
+
+## Usage
+
+```bash
+vidjutsu extract --video-url <url> [--frames auto] [--audio]
+```
+
+## Options
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--video-url` | Yes | URL of the video to extract from |
+| `--frames` | No | Frame extraction mode (`auto`, `all`, or a number). Default: `auto` |
+| `--audio` | No | Also extract the audio track |
+
+## Example
+
+```bash
+vidjutsu extract --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4 --frames auto --audio
+
+Extracting...
+
+Frames:    12 extracted (auto-selected keyframes)
+Audio:     audio.wav (16kHz mono)
+Duration:  14.2s
+Resolution: 1080x1920
+FPS:       30
+```
+
+## Credits
+
+5 credits per call.

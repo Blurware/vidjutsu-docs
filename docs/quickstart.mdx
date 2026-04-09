@@ -1,6 +1,6 @@
 ---
 title: "Quickstart"
-description: "Get your API key, run your first critic call, breakdown, and score in minutes"
+description: "Get your API key and run your first watch, extract, and transcribe calls in minutes"
 ---
 
 ## Option A: Use the CLI
@@ -17,10 +17,10 @@ Then authenticate with your card:
 vidjutsu auth --card tok_live_your_card_token
 ```
 
-Run a critic check:
+Watch a video:
 
 ```bash
-vidjutsu critic --media-url "https://cdn.example.com/video.mp4" --media-type video
+vidjutsu watch --video-url "https://cdn.example.com/video.mp4" --prompt "Is the hook effective?"
 ```
 
 See the [CLI reference](/cli/index) for all commands.
@@ -74,85 +74,67 @@ curl "https://api.vidjutsu.ai/v1/api_keys/status?session=cs_..."
 Store your API key securely — it is shown once in this response.
 </Warning>
 
-### 3. Run a critic check (10 credits)
+### 3. Watch a video (10 credits)
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/critic \
+curl -X POST https://api.vidjutsu.ai/v1/watch \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4",
-    "mediaType": "video",
-    "context": "fitness niche, talking-head format"
+    "videoUrl": "https://cdn.example.com/video.mp4",
+    "prompt": "Is the hook strong enough for fitness TikTok?"
   }'
 ```
 
 ```json
 {
-  "score": 72,
-  "issues": [
-    "Audio levels inconsistent between 0:03 and 0:08",
-    "Text overlay partially obscured at 0:12"
-  ],
-  "verdict": "fail"
+  "response": "The hook lands in the first 1.2 seconds — direct address to camera with a bold claim. Strong for fitness TikTok. Consider adding a text overlay to reinforce for silent viewers."
 }
 ```
 
-### 4. Start a breakdown (10 credits)
+### 4. Extract frames and audio (5 credits)
 
 ```bash
-curl -X POST https://api.vidjutsu.ai/v1/breakdown \
+curl -X POST https://api.vidjutsu.ai/v1/extract \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4",
-    "mediaType": "video",
-    "prompt": "Analyze the hook and first 3 seconds"
+    "videoUrl": "https://cdn.example.com/video.mp4",
+    "frames": "auto",
+    "audio": true
   }'
 ```
 
 ```json
 {
-  "id": "va_abc123",
-  "status": "processing"
+  "frames": 12,
+  "frameUrls": ["https://cdn.vidjutsu.ai/..."],
+  "audioUrl": "https://cdn.vidjutsu.ai/.../audio.wav",
+  "duration": 14.2,
+  "resolution": "1080x1920",
+  "fps": 30
 }
 ```
 
-Poll for the result:
+### 5. Transcribe speech (10 credits)
 
 ```bash
-curl "https://api.vidjutsu.ai/v1/breakdown?id=va_abc123" \
-  -H "X-Api-Key: vj_live_abc123..."
-```
-
-### 5. Score viral potential (10 credits)
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/score \
+curl -X POST https://api.vidjutsu.ai/v1/transcribe \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: vj_live_abc123..." \
   -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4",
-    "mediaType": "video",
-    "content": "3 morning habits that changed my physique",
-    "niches": ["fitness", "wellness"],
-    "type": "talking-head"
+    "videoUrl": "https://cdn.example.com/video.mp4"
   }'
 ```
 
 ```json
 {
-  "score": 84,
-  "breakdown": {
-    "hook": 92,
-    "pacing": 78,
-    "visualQuality": 88,
-    "audioQuality": 80,
-    "nicheRelevance": 82
-  },
-  "suggestions": [
-    "Tighten the mid-section — pacing drops between 0:05 and 0:09",
-    "Add a text overlay to reinforce the hook in the first second"
+  "words": 47,
+  "duration": 14.2,
+  "transcript": [
+    { "word": "The", "start": 0.00, "end": 0.82 },
+    { "word": "one", "start": 0.82, "end": 1.10 },
+    { "word": "thing", "start": 1.10, "end": 1.40 }
   ]
 }
 ```
@@ -161,7 +143,7 @@ curl -X POST https://api.vidjutsu.ai/v1/score \
 
 <CardGroup cols={2}>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
-    Full endpoint reference for critic, breakdown, score, and storage.
+    Full endpoint reference for watch, extract, transcribe, check, and storage.
   </Card>
   <Card title="CLI reference" icon="terminal" href="/cli/index">
     Full command reference for the VidJutsu CLI.

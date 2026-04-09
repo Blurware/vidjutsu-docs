@@ -26,10 +26,12 @@ Get your API key by [purchasing credits](/authentication) with any card via Stri
 
 | Method | Endpoint | Description | Credits |
 |--------|----------|-------------|---------|
-| POST | `/v1/critic` | QA gate — pass/fail verdict with issues | 10 |
-| POST | `/v1/breakdown` | Start a deep video analysis (async) | 10 |
-| GET | `/v1/breakdown` | Poll for breakdown result | 0 |
-| POST | `/v1/score` | Viral potential prediction | 10 |
+| POST | `/v1/watch` | Gemini watches video, freeform prompt | 10 |
+| POST | `/v1/extract` | Pull frames, audio, metadata via ffmpeg | 5 |
+| POST | `/v1/transcribe` | Speech-to-text with word timing | 10 |
+| POST | `/v1/check` | Validate spec against rules | 5 |
+| GET | `/v1/check/rules` | Load per-client custom rules | 0 |
+| PUT | `/v1/check/rules` | Save per-client custom rules | 0 |
 
 ### Storage
 
@@ -78,7 +80,7 @@ Filter on GET requests: `?tag.brand=summer-launch`
 |------|-------------|
 | `200` | Success (read operations, edits) |
 | `201` | Created (new records) |
-| `202` | Accepted (async operation started — breakdown) |
+| `202` | Accepted (async operation started) |
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
 | `402` | Insufficient credits |
@@ -97,18 +99,9 @@ All errors return a consistent JSON structure:
 
 The `setup` field is included on `402` errors to help agents self-recover by initiating a top-up.
 
-## Async operations
+## Synchronous responses
 
-Breakdown analysis returns `202 Accepted`:
-
-```json
-{
-  "id": "va_abc123",
-  "status": "processing"
-}
-```
-
-Poll `GET /v1/breakdown?id=va_abc123` until `status` changes to `"completed"`.
+All intelligence endpoints (`/v1/watch`, `/v1/extract`, `/v1/transcribe`, `/v1/check`) return synchronous `200` responses with the result in the body. No polling required.
 
 ## CORS
 

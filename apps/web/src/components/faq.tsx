@@ -5,23 +5,23 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What does VidJutsu do?",
-    a: "Video intelligence API. Critic scores production quality. Breakdown analyzes content frame-by-frame. Viral score predicts performance against your niche.",
+    a: "Video intelligence API with four primitives. Watch uses Gemini to understand video from a freeform prompt. Extract pulls frames, audio, and metadata via server-side ffmpeg. Transcribe converts speech to text with word-level timing. Check validates specs against rules.",
   },
   {
     q: "Do I need VidJutsu to generate videos?",
-    a: "No. Use any generation tool — Kling, Veo, Runway, whatever. VidJutsu checks the output. It's the QA gate, not the generator.",
+    a: "No. Use any generation tool — Kling, Veo, Runway, whatever. VidJutsu understands and validates the output. It's the intelligence layer, not the generator.",
   },
   {
-    q: "What's the difference between critic and breakdown?",
-    a: "Critic is instant pass/fail. Face consistency, artifacts, motion, audio — scored and returned immediately. Breakdown is deep async analysis: hooks, transitions, pacing, tags, frame-level detail.",
+    q: "What's the difference between watch and transcribe?",
+    a: "Watch sends the full video to Gemini with a freeform prompt — you can ask anything about the visual and audio content. Transcribe is speech-to-text only, returning word-level timestamps for what was said.",
   },
   {
-    q: "How does viral scoring work?",
-    a: "You pass content plus niche keywords. VidJutsu scores against its understanding of what performs — hook strength, pacing, format match, engagement prediction.",
+    q: "What can I do with extract?",
+    a: "Pull keyframes, audio tracks, and metadata from any video. Server-side ffmpeg — no local install needed. Use it to feed frames into other models, generate thumbnails, or get technical metadata like resolution and FPS.",
   },
   {
     q: "How do credits work?",
-    a: "Your $99/mo subscription includes 1,000 credits. Each critic, breakdown, or viral score call uses 10 credits. Upload and storage are free. Need more? Buy additional credits at $0.10 each.",
+    a: "Your $99/mo subscription includes 1,000 credits. Watch and transcribe cost 10 credits each. Extract and check cost 5 credits each. Upload and storage are free. Need more? Buy additional credits at $0.10 each.",
   },
 ];
 
