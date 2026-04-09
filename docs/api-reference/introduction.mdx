@@ -44,7 +44,7 @@ Get your API key by [purchasing credits](/authentication) with any card via Stri
 | GET | `/v1/posts` | List posts (supports tag filtering) | 0 |
 | DELETE | `/v1/posts` | Delete a post | 0 |
 | POST | `/v1/upload` | Upload media to CDN | 0 |
-| POST | `/v1/upload-url` | Get a signed upload URL | 0 |
+| POST | `/v1/upload/url` | Get a signed upload URL | 0 |
 
 ### Billing
 
@@ -64,13 +64,13 @@ Accounts and posts support AWS-style key-value tags for organization and filteri
 ```json
 {
   "tags": [
-    { "key": "campaign", "value": "summer-launch" },
+    { "key": "brand", "value": "summer-launch" },
     { "key": "region", "value": "northeast" }
   ]
 }
 ```
 
-Filter on GET requests: `?tag.campaign=summer-launch`
+Filter on GET requests: `?tag.brand=summer-launch`
 
 ## Response codes
 

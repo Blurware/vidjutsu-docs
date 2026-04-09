@@ -9,27 +9,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default:
-      "VidJutsu — Managed Instagram Pages That Post Daily and Drive Traffic",
+    default: "VidJutsu — Video Intelligence API",
     template: "%s | VidJutsu",
   },
   description:
-    "VidJutsu gives you a managed Instagram page that posts your videos daily and drives traffic to your product. Your agent handles niche research, scheduling, posting, and analytics. Live in 7 days. $99 to start, $96/week to run.",
+    "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VidJutsu — Managed Instagram Pages That Post Daily and Drive Traffic",
+    title: "VidJutsu — Video Intelligence API",
     description:
-      "A managed Instagram page that posts your videos daily and drives traffic to your product. Niche research, scheduling, posting, and analytics — handled by your agent.",
+      "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VidJutsu — Managed Instagram Pages That Post Daily and Drive Traffic",
+    title: "VidJutsu — Video Intelligence API",
     description:
-      "A managed Instagram page that posts your videos daily and drives traffic to your product. Live in 7 days.",
+      "The feedback loop your agent is missing. Critic, breakdown, and viral score — structured video analysis your agent acts on.",
   },
   robots: {
     index: true,

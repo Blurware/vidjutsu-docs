@@ -4,49 +4,50 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const EXAMPLES = [
   {
-    label: "Stan Store",
+    label: "Critic",
     lines: [
-      "$ vidjutsu account create --platform instagram --name creator_toolkit --niche \"digital products\"",
-      "→ acc_8k2x created, warming started",
-      "$ vidjutsu post schedule --account acc_8k2x --video-url https://cdn.example.com/vid1.mp4",
-      "→ QA passed. post_3f9a scheduled.",
-      "$ vidjutsu post schedule --account acc_8k2x --video-url https://cdn.example.com/vid2.mp4",
-      "→ QA failed: hook too slow. resubmit.",
-      "$ vidjutsu analytics get acc_8k2x",
-      "→ 18.2k views, 1.2k likes, 94 link taps",
+      "$ vidjutsu critic --video-url https://cdn.example.com/reel-042.mp4",
+      "Analyzing video...",
+      "",
+      "Score:    9/10",
+      "Verdict:  pass",
+      "Issues:   none",
+      "",
+      "Face consistency: 0.96",
+      "Motion quality:   clean",
+      "Artifacts:        none",
+      "Audio sync:       aligned",
     ],
   },
   {
-    label: "Skool",
+    label: "Breakdown",
     lines: [
-      "$ vidjutsu account create --platform instagram --name fit_coach_tips --niche \"fitness coaching\"",
-      "→ acc_q7nz created, warming started",
-      "$ vidjutsu post schedule --account acc_q7nz --video-url https://cdn.example.com/reel.mp4",
-      "→ QA passed. post_x2m1 scheduled.",
-      "$ vidjutsu analytics get acc_q7nz",
-      "→ 24.1k views, 3.1k likes, 58 link taps",
+      "$ vidjutsu breakdown --video-url https://cdn.example.com/reel-042.mp4",
+      "Analyzing...",
+      "",
+      'Hook:        "The one thing nobody tells you about creatine" (0-2s)',
+      "Format:      talking-head, single scene",
+      "Pacing:      fast — 3 cuts in 10s",
+      "Transitions: hard cut, no crossfade",
+      'CTA:         "link in bio" at 9s',
+      "Tags:        fitness, supplements, creatine",
     ],
   },
   {
-    label: "Shopify",
+    label: "Viral Score",
     lines: [
-      "$ vidjutsu account create --platform instagram --name drip_drops --niche streetwear",
-      "→ acc_p4vw created, warming started",
-      "$ vidjutsu post schedule --account acc_p4vw --video-url https://cdn.example.com/drop.mp4",
-      "→ QA passed. post_k8r2 scheduled.",
-      "$ vidjutsu analytics get acc_p4vw",
-      "→ 31.4k views, 4.7k likes, 142 link taps",
-    ],
-  },
-  {
-    label: "Calendly",
-    lines: [
-      "$ vidjutsu account create --platform instagram --name scale_systems --niche \"B2B consulting\"",
-      "→ acc_m1jx created, warming started",
-      "$ vidjutsu post schedule --account acc_m1jx --video-url https://cdn.example.com/tip.mp4",
-      "→ QA passed. post_w5n7 scheduled.",
-      "$ vidjutsu analytics get acc_m1jx",
-      "→ 12.8k views, 890 likes, 29 link taps",
+      "$ vidjutsu score --video-url https://cdn.example.com/reel-042.mp4 --niche fitness",
+      "Scoring against fitness niche...",
+      "",
+      "Viral Score:           81/100",
+      "Hook Strength:         9/10",
+      "Pacing:                8/10",
+      "Format Match:          7/10",
+      "Engagement Prediction: high",
+      "",
+      "Suggestions:",
+      '  - Stronger CTA — "shop now" outperforms "link in bio" by 2.3x',
+      "  - Add text overlay on hook for silent viewers",
     ],
   },
 ];
@@ -98,7 +99,7 @@ export function TerminalDemo() {
             See it in action
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Your agent provisions the account, QAs your videos, posts daily, and tracks performance.
+            Your agent sends a video. VidJutsu scores it. Your pipeline decides what ships.
           </p>
         </div>
 
@@ -127,8 +128,8 @@ export function TerminalDemo() {
             </div>
             <div className="p-4 sm:p-5 font-mono text-[11px] sm:text-[12px] leading-[1.9] min-h-[240px] overflow-x-auto">
               {example.lines.slice(0, lineCount).map((line, i) => (
-                <div key={`${exampleIdx}-${i}`} className={line.startsWith("→") ? "text-ink-light" : "text-ink-muted"}>
-                  {line}
+                <div key={`${exampleIdx}-${i}`} className={line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}>
+                  {line || "\u00A0"}
                 </div>
               ))}
               {lineCount < example.lines.length && (
