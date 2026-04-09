@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "Media Analysis Skill",
   description:
-    "Agent skill for analyzing video and image content with critic, verify, and breakdown modes via the VidJutsu API.",
+    "Agent skill for analyzing video and image content via the VidJutsu API — watch endpoint with different prompts for quality scoring, verification, and deep analysis.",
 };
 
 const RELATED = [
@@ -31,30 +31,35 @@ export default function MediaAnalysis() {
           Media Analysis
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
-          Quality gate before posting. Analyze content with critic, verify, and
-          breakdown modes. 10 credits per analysis.
+          Quality gate before posting. Use the watch endpoint with different
+          prompts for quality scoring, verification, and deep analysis. 10 credits per call.
         </p>
 
         <section className="mb-14">
           <h2 className="text-sm font-semibold tracking-wide uppercase text-ink-light mb-5">
-            Three modes
+            Four endpoints
           </h2>
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Critic",
+                label: "Watch",
                 detail:
-                  "Quality analysis of any video or image. Catches bad hooks, AI artifacts, and weak CTAs before posting.",
+                  "Freeform video understanding. Prompt it for quality scoring, verification, or deep analysis — one endpoint, many uses.",
               },
               {
-                label: "Verify",
+                label: "Extract",
                 detail:
-                  "Fact-checking and claim verification. Essential for regulated niches.",
+                  "Pull frames, audio tracks, and metadata from any video.",
               },
               {
-                label: "Breakdown",
+                label: "Transcribe",
                 detail:
-                  "Frame-by-frame analysis powered by Gemini. Identifies hooks, transitions, and engagement patterns in competitor content.",
+                  "Speech-to-text for any video. Accurate transcripts your agent can reason over.",
+              },
+              {
+                label: "Check",
+                detail:
+                  "Validate a video against a spec. Pass/fail gate before publishing.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
@@ -79,7 +84,7 @@ export default function MediaAnalysis() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Runs critic on every video before posting",
+                label: "Runs watch + check on every video before posting",
                 detail: "Nothing goes live without passing QA.",
               },
               {

@@ -11,19 +11,24 @@ const GITHUB_BASE = "https://github.com/tfcbot/vidjutsu-skills/tree/main/skills"
 
 const INFRASTRUCTURE = [
   {
-    name: "Critic",
+    name: "Watch",
     slug: "media-analysis",
-    description: "Submit a video URL, get a structured quality score — hooks, pacing, artifacts, CTA strength.",
+    description: "Freeform video understanding — hooks, pacing, artifacts, CTA strength. Submit a URL, get structured insight.",
   },
   {
-    name: "Breakdown",
+    name: "Extract",
     slug: "media-analysis",
-    description: "Scene-by-scene analysis with timestamps, visual descriptions, and quality flags.",
+    description: "Pull frames, audio, and metadata from any video.",
   },
   {
-    name: "Viral Score",
+    name: "Transcribe",
     slug: "media-analysis",
-    description: "Predict distribution potential before a video ships.",
+    description: "Speech-to-text for any video. Accurate transcripts your agent can reason over.",
+  },
+  {
+    name: "Check",
+    slug: "media-analysis",
+    description: "Validate a video against a spec before it ships.",
   },
   {
     name: "VidJutsu API",
@@ -38,7 +43,7 @@ const INFRASTRUCTURE = [
   {
     name: "Media Analysis",
     slug: "media-analysis",
-    description: "QA content before publishing with critic, verify, and breakdown modes.",
+    description: "QA content before publishing with watch, extract, transcribe, and check endpoints.",
   },
 ];
 
@@ -230,7 +235,7 @@ export default function Directory() {
 
         <Section
           title="Video Intelligence"
-          description="Critic, Breakdown, Viral Score, and the VidJutsu API. The core of automated video QA."
+          description="Watch, Extract, Transcribe, Check, and the VidJutsu API. The core of automated video QA."
           skills={INFRASTRUCTURE}
         />
 

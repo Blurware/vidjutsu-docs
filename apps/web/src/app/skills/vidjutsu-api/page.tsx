@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "VidJutsu API Skill",
   description:
-    "Agent skill with API endpoint reference for critic, breakdown, viral score, and media analysis.",
+    "Agent skill with API endpoint reference for watch, extract, transcribe, check, and media analysis.",
 };
 
 const RELATED = [
@@ -30,9 +30,8 @@ export default function VidjutsuApi() {
           VidJutsu API
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
-          Video intelligence API for agents. Critic scores, scene breakdowns,
-          and viral predictions &mdash; all from a single endpoint your agent
-          calls.
+          Video intelligence API for agents. Watch, extract, transcribe, and
+          check &mdash; four endpoints your agent calls.
         </p>
 
         <section className="mb-14">
@@ -42,24 +41,24 @@ export default function VidjutsuApi() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Critic",
+                label: "Watch",
                 detail:
-                  "Submit a video URL, get a structured quality score — hooks, pacing, artifacts, CTA strength.",
+                  "Freeform video understanding — submit a URL with any prompt and get structured insight back.",
               },
               {
-                label: "Breakdown",
+                label: "Extract",
                 detail:
-                  "Scene-by-scene analysis with timestamps, visual descriptions, and quality flags.",
+                  "Pull frames, audio tracks, and metadata from any video.",
               },
               {
-                label: "Viral Score",
+                label: "Transcribe",
                 detail:
-                  "Predict distribution potential before a video ships.",
+                  "Speech-to-text for any video. Accurate transcripts your agent can reason over.",
               },
               {
-                label: "Media analysis",
+                label: "Check",
                 detail:
-                  "Critic, verify, and breakdown modes for automated QA.",
+                  "Validate a video against a spec. Pass/fail gate for automated QA.",
               },
               {
                 label: "File upload",

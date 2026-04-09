@@ -58,9 +58,9 @@ export default function Diy() {
           <ol className="space-y-6 list-none pl-0">
             {[
               {
-                step: "Submit a video URL to the Critic endpoint",
+                step: "Submit a video URL to the Watch endpoint",
                 detail:
-                  "Your agent sends the video. VidJutsu returns a structured quality score in seconds — hooks, pacing, artifacts, CTA strength.",
+                  "Your agent sends the video. VidJutsu returns freeform video understanding in seconds — hooks, pacing, artifacts, CTA strength.",
               },
               {
                 step: "Set a quality threshold",
@@ -68,14 +68,14 @@ export default function Diy() {
                   "Your agent decides what ships. Score above 7? Publish. Below? Flag for re-generation or manual review.",
               },
               {
-                step: "Use Breakdown for scene-level detail",
+                step: "Use Extract for frames, audio, and metadata",
                 detail:
-                  "Need to know exactly where the video falls apart? Breakdown returns timestamped analysis — scene by scene, with quality flags on each.",
+                  "Need the raw assets? Extract pulls frames, audio tracks, and metadata from any video.",
               },
               {
-                step: "Predict distribution with Viral Score",
+                step: "Validate with Check",
                 detail:
-                  "Before a video goes anywhere, get a distribution prediction. Your agent prioritizes the videos most likely to perform.",
+                  "Before a video goes anywhere, run it against your spec. Your agent publishes what passes and flags what doesn't.",
               },
             ].map((item, i) => (
               <li key={i} className="flex gap-4">
@@ -110,7 +110,7 @@ export default function Diy() {
             </div>
             <div className="bg-surface p-4">
               <p className="text-xs text-ink-light uppercase tracking-wide mb-1">
-                VidJutsu Critic
+                VidJutsu Watch
               </p>
               <p className="text-ink font-semibold">Seconds per video</p>
               <p className="text-ink-muted text-sm mt-1">
@@ -123,7 +123,7 @@ export default function Diy() {
         {/* CTA */}
         <div className="border-t border-border pt-10">
           <p className="text-ink font-medium mb-4">
-            Critic scores in seconds. Your agent decides what ships.
+            Watch scores in seconds. Your agent decides what ships.
           </p>
           <CopyCommand command="npx skills add tfcbot/shortform-distribution-skills" className="mb-4" />
           <a
