@@ -4,24 +4,24 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What is VidJutsu?",
-    a: "An API your agent calls to manage Instagram pages. Account provisioning, posting, QA, analytics, and comment moderation — you never need to log into a UI.",
+    q: "What does VidJutsu do?",
+    a: "Video intelligence API. Critic scores production quality. Breakdown analyzes content frame-by-frame. Viral score predicts performance against your niche.",
   },
   {
-    q: "Do I need to make the videos?",
-    a: 'Yes — or use free VidJutsu skills (github.com/tfcbot/vidjutsu-skills) that let your agent generate videos with providers like Wavespeed or KIE. You bring the API key, the skill handles the rest.',
+    q: "Do I need VidJutsu to generate videos?",
+    a: "No. Use any generation tool — Kling, Veo, Runway, whatever. VidJutsu checks the output. It's the QA gate, not the generator.",
   },
   {
-    q: "How does billing work?",
-    a: "$59/mo subscription for API access (includes 100 credits). Buy more credits at $0.10 each. Your agent spends credits on accounts, posts, QA, and scraping.",
+    q: "What's the difference between critic and breakdown?",
+    a: "Critic is instant pass/fail. Face consistency, artifacts, motion, audio — scored and returned immediately. Breakdown is deep async analysis: hooks, transitions, pacing, tags, frame-level detail.",
   },
   {
-    q: "How long before the page starts posting?",
-    a: "Accounts warm for up to 7 days. Your agent can start drafting posts immediately while the account warms.",
+    q: "How does viral scoring work?",
+    a: "You pass content plus niche keywords. VidJutsu scores against its understanding of what performs — hook strength, pacing, format match, engagement prediction.",
   },
   {
-    q: "What about banned accounts?",
-    a: "Accounts are managed by real US-based account managers. Shadow ban detection is built in. Flagged accounts are replaced automatically.",
+    q: "What are accounts and posts?",
+    a: "Pure data records for organizing your content library. Tag-based queries, no provisioning, no posting. Just structured storage your agent can query.",
   },
 ];
 
