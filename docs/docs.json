@@ -37,8 +37,86 @@
         "groups": [
           {
             "group": "Overview",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Intelligence",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/intelligence/watch",
+              "api-reference/intelligence/extract",
+              "api-reference/intelligence/transcribe",
+              "api-reference/intelligence/check",
+              "api-reference/intelligence/overlay"
+            ]
+          },
+          {
+            "group": "Check Rules",
+            "pages": [
+              "api-reference/check/rules-get",
+              "api-reference/check/rules-update"
+            ]
+          },
+          {
+            "group": "Accounts",
+            "pages": [
+              "api-reference/accounts/create",
+              "api-reference/accounts/update",
+              "api-reference/accounts/list",
+              "api-reference/accounts/delete"
+            ]
+          },
+          {
+            "group": "Posts",
+            "pages": [
+              "api-reference/posts/create",
+              "api-reference/posts/update",
+              "api-reference/posts/list",
+              "api-reference/posts/delete"
+            ]
+          },
+          {
+            "group": "Assets",
+            "pages": [
+              "api-reference/assets/create",
+              "api-reference/assets/update",
+              "api-reference/assets/list",
+              "api-reference/assets/delete"
+            ]
+          },
+          {
+            "group": "References",
+            "pages": [
+              "api-reference/references/create",
+              "api-reference/references/update",
+              "api-reference/references/list",
+              "api-reference/references/delete"
+            ]
+          },
+          {
+            "group": "Upload",
+            "pages": [
+              "api-reference/upload/upload",
+              "api-reference/upload/upload-url"
+            ]
+          },
+          {
+            "group": "Billing",
+            "pages": [
+              "api-reference/billing/credits",
+              "api-reference/billing/credits-status",
+              "api-reference/billing/subscribe",
+              "api-reference/billing/info",
+              "api-reference/billing/pricing",
+              "api-reference/api-keys/balance",
+              "api-reference/api-keys/rotate",
+              "api-reference/api-keys/recover"
+            ]
+          },
+          {
+            "group": "Auth",
+            "pages": [
+              "api-reference/auth/verify-request",
+              "api-reference/auth/verify-confirm"
             ]
           }
         ]
