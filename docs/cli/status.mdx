@@ -1,0 +1,18 @@
+---
+title: "vidjutsu status"
+description: "Look up any resource by ID"
+---
+
+Auto-detects the resource type from the ID prefix and calls the appropriate endpoint.
+
+```bash
+vidjutsu status acc_8k2x
+vidjutsu status post_m2v1
+vidjutsu status ref_abc123
+```
+
+| Prefix | Resource |
+|--------|----------|
+| `acc_` | Account |
+| `post_` | Post |
+| `ref_` | Reference |

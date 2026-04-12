@@ -1,0 +1,33 @@
+---
+title: "vidjutsu subscribe"
+description: "Subscribe to VidJutsu ($99/mo)"
+---
+
+Creates a Stripe checkout, then auto-polls for payment confirmation and saves credentials.
+
+```bash
+vidjutsu subscribe --email you@example.com
+```
+
+```
+Checkout: https://checkout.stripe.com/...
+
+Complete payment in your browser.
+Waiting for payment... ✓
+
+Credentials saved to ~/.vidjutsu/config.json
+```
+
+If polling times out after 15 minutes, recover via email verification:
+
+```bash
+vidjutsu auth --recover you@example.com
+vidjutsu auth --verify --email you@example.com --code 847291
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--email` | Email for checkout (required) |
+| `--claim` | Resume polling with a claim token |

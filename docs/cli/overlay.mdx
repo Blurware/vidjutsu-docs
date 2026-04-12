@@ -1,0 +1,27 @@
+---
+title: "vidjutsu overlay"
+description: "Burn text overlay onto video"
+---
+
+Burns text onto a video with configurable position, font size, and stroke. 5 credits.
+
+```bash
+vidjutsu overlay --videoUrl https://cdn.vidjutsu.ai/video.mp4 --text "Check this out"
+```
+
+```json
+{
+  "id": "ovl_...",
+  "resultUrl": "https://cdn.vidjutsu.ai/..."
+}
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--videoUrl` | Source video URL (required) |
+| `--text` | Overlay text (required) |
+| `--position` | `top`, `center`, or `bottom` |
+| `--fontSize` | Font size in pixels |
+| `--strokeThickness` | Text outline thickness (0-10) |
