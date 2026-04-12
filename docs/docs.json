@@ -8,6 +8,7 @@
     "dark": "#1D4ED8"
   },
   "favicon": "/favicon.svg",
+  "openapi": "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json",
   "api": {
     "baseUrl": "https://api.vidjutsu.ai",
     "auth": {
@@ -33,7 +34,6 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json",
         "groups": [
           {
             "group": "Overview",
