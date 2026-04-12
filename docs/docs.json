@@ -133,19 +133,41 @@
         "tab": "CLI Reference",
         "groups": [
           {
-            "group": "CLI",
+            "group": "Getting Started",
             "pages": [
               "cli/index",
               "cli/install",
-              "cli/auth",
+              "cli/subscribe",
+              "cli/auth"
+            ]
+          },
+          {
+            "group": "Intelligence",
+            "pages": [
               "cli/watch",
               "cli/extract",
               "cli/transcribe",
               "cli/check",
+              "cli/overlay"
+            ]
+          },
+          {
+            "group": "Storage",
+            "pages": [
+              "cli/upload",
+              "cli/asset",
               "cli/accounts",
               "cli/posts",
-              "cli/upload",
-              "cli/balance"
+              "cli/reference"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "cli/balance",
+              "cli/status",
+              "cli/info",
+              "cli/version"
             ]
           }
         ]

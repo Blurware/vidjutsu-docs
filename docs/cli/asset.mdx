@@ -1,0 +1,35 @@
+---
+title: "vidjutsu asset"
+description: "Manage assets"
+---
+
+## Create
+
+```bash
+vidjutsu asset create --url https://cdn.example.com/video.mp4 --tags "campaign=summer"
+```
+
+## List
+
+```bash
+vidjutsu asset list
+vidjutsu asset list --type video
+```
+
+## Get
+
+```bash
+vidjutsu asset get asset_abc123
+```
+
+## Edit
+
+```bash
+vidjutsu asset edit asset_abc123 --name "Updated name" --tags "tier=gold"
+```
+
+## Delete
+
+```bash
+vidjutsu asset delete asset_abc123
+```

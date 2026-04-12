@@ -1,9 +1,7 @@
 ---
-title: "vidjutsu balance & status"
-description: "Check balance and look up any resource"
+title: "vidjutsu balance"
+description: "Check credit balance"
 ---
-
-## Check balance
 
 ```bash
 vidjutsu balance
@@ -15,21 +13,3 @@ vidjutsu balance
   "clientId": "mc_xyz789"
 }
 ```
-
-## Check any resource status
-
-Look up any resource by its ID prefix:
-
-```bash
-vidjutsu status acc_8k2x
-vidjutsu status post_m2v1
-vidjutsu status ref_abc123
-```
-
-The `status` command auto-detects the resource type from the ID prefix and calls the appropriate endpoint.
-
-| Prefix | Resource |
-|--------|----------|
-| `acc_` | Account |
-| `post_` | Post |
-| `ref_` | Reference |
