@@ -1,0 +1,38 @@
+---
+title: "transcribeMedia"
+description: "Speech-to-text with word-level timing."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.transcribeMedia({
+  mediaUrl: "https://cdn.example.com/video.mp4",
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `mediaUrl` | `string` | Yes | URL of the video or audio to transcribe |
+| `language` | `string` | No | Language code (e.g. `"en"`, `"es"`). Auto-detected if omitted |
+
+## Response
+
+```json
+{
+  "transcript": "the one thing nobody tells you about creatine",
+  "words": [
+    { "word": "the", "start": 0.1, "end": 0.2 },
+    { "word": "one", "start": 0.22, "end": 0.35 },
+    { "word": "thing", "start": 0.37, "end": 0.52 }
+  ],
+  "language": "en",
+  "duration": 10.2
+}
+```
+
+## Credits
+
+10 credits per call.

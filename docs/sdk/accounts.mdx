@@ -1,0 +1,45 @@
+---
+title: "Accounts"
+description: "Create, list, update, and delete account records."
+---
+
+## Create
+
+```typescript
+const { data } = await vj.createAccount({
+  handle: "style_la",
+  platform: "instagram",
+  niche: "fashion",
+});
+```
+
+## List all
+
+```typescript
+const { data } = await vj.listOrGetAccounts();
+```
+
+## Get by ID
+
+```typescript
+const { data } = await vj.listOrGetAccounts({ id: "acc_..." });
+```
+
+## Update
+
+```typescript
+const { data } = await vj.updateAccount(
+  { niche: "lifestyle" },
+  { id: "acc_..." },
+);
+```
+
+## Delete
+
+```typescript
+const { data } = await vj.deleteAccount({ id: "acc_..." });
+```
+
+## Credits
+
+Free — 0 credits for all account operations.

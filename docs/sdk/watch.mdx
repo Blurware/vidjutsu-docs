@@ -1,0 +1,50 @@
+---
+title: "watchMedia"
+description: "AI watches a video or image and answers your freeform prompt."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.watchMedia({
+  mediaUrl: "https://cdn.example.com/video.mp4",
+  prompt: "Is the hook strong enough for fitness TikTok?",
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `mediaUrl` | `string` | Yes | URL of the video or image to analyze |
+| `prompt` | `string` | Yes | Freeform prompt — tell AI what to look for |
+
+## Response
+
+```json
+{
+  "response": "The hook lands in the first 1.2 seconds — direct address to camera with a bold claim. Strong for fitness TikTok. Consider adding a text overlay to reinforce for silent viewers."
+}
+```
+
+## Example — structured scoring
+
+```typescript
+const { data } = await vj.watchMedia({
+  mediaUrl: "https://cdn.example.com/video.mp4",
+  prompt: "Score quality 1-10. List issues with severity for: face consistency, artifacts, motion, audio sync.",
+});
+```
+
+## Example — content verification
+
+```typescript
+const { data } = await vj.watchMedia({
+  mediaUrl: "https://cdn.example.com/video.mp4",
+  prompt: "Does this video match this description: 'Woman at desk explaining creatine benefits'. Compare and list discrepancies.",
+});
+```
+
+## Credits
+
+10 credits per call.

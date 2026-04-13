@@ -7,11 +7,16 @@ description: "Subscribe, pay, and start using VidJutsu in under 2 minutes"
 
 VidJutsu requires a **$99/month subscription** that includes 1,000 credits. You can subscribe via the CLI or API.
 
-Install the CLI and subscribe in one flow:
+Install the CLI:
 
 ```bash
 curl -fsSL https://vidjutsu.ai/install.sh | bash
-vidjutsu subscribe --email you@example.com
+```
+
+Then subscribe with your email:
+
+```bash
+vidjutsu subscribe --email <your_email>
 ```
 
 This opens a Stripe checkout in your browser. After you pay, the CLI automatically saves your credentials:
@@ -74,10 +79,12 @@ vidjutsu auth --export
 Recover via email verification:
 
 ```bash
-vidjutsu auth --recover you@example.com
+vidjutsu auth --recover <your_email>
 # Check your email for a 6-digit code
+```
 
-vidjutsu auth --verify --email you@example.com --code 847291
+```bash
+vidjutsu auth --verify --email <your_email> --code 847291
 # Credentials saved to ~/.vidjutsu/config.json
 ```
 

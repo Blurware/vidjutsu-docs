@@ -19,6 +19,17 @@ Ask AI anything about a video. The response shape follows your prompt.
       --prompt "Is the hook strong enough for fitness TikTok?"
     ```
   </Tab>
+  <Tab title="SDK">
+    ```typescript
+    import { createClient } from "vidjutsu";
+    const vj = createClient();
+
+    const { data } = await vj.watchMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+      prompt: "Is the hook strong enough for fitness TikTok?",
+    });
+    ```
+  </Tab>
   <Tab title="curl">
     ```bash
     curl -X POST https://api.vidjutsu.ai/v1/watch \
@@ -48,6 +59,15 @@ Pull frames, audio track, and metadata from any video.
     vidjutsu extract \
       --mediaUrl "https://cdn.example.com/video.mp4" \
       --frames auto --audio
+    ```
+  </Tab>
+  <Tab title="SDK">
+    ```typescript
+    const { data } = await vj.extractMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+      frames: "auto",
+      audio: true,
+    });
     ```
   </Tab>
   <Tab title="curl">
@@ -83,6 +103,13 @@ Speech-to-text with word-level timing.
       --mediaUrl "https://cdn.example.com/video.mp4"
     ```
   </Tab>
+  <Tab title="SDK">
+    ```typescript
+    const { data } = await vj.transcribeMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+    });
+    ```
+  </Tab>
   <Tab title="curl">
     ```bash
     curl -X POST https://api.vidjutsu.ai/v1/transcribe \
@@ -109,6 +136,9 @@ Speech-to-text with word-level timing.
 <CardGroup cols={2}>
   <Card title="Features" icon="sparkles" href="/features">
     See everything VidJutsu can do.
+  </Card>
+  <Card title="SDK Reference" icon="js" href="/sdk/index">
+    Typed TypeScript client with all methods.
   </Card>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
     Full endpoint reference with interactive playground.

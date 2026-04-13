@@ -1,0 +1,41 @@
+---
+title: "createOverlay"
+description: "Burn text overlay onto video. TikTok-safe zones, configurable positioning."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.createOverlay({
+  videoUrl: "https://cdn.example.com/video.mp4",
+  text: "Follow for more tips",
+  position: "bottom",
+  fontSize: 48,
+  strokeThickness: 2,
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `videoUrl` | `string` | Yes | — | URL of the source video |
+| `text` | `string` | Yes | — | Overlay text. Use `\n` for line breaks |
+| `position` | `"top"` \| `"center"` \| `"bottom"` | No | `"bottom"` | Vertical text placement |
+| `fontSize` | `number` | No | 4% of video height | Font size in pixels |
+| `strokeThickness` | `number` | No | `2` | Text outline thickness (0–10) |
+
+## Response
+
+```json
+{
+  "id": "ovl_...",
+  "resultUrl": "https://cdn.vidjutsu.ai/overlays/ovl_.../output.mp4"
+}
+```
+
+TikTok-safe zone margins are calculated automatically based on video dimensions.
+
+## Credits
+
+5 credits per call.

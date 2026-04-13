@@ -6,7 +6,7 @@ description: "Subscribe to VidJutsu ($99/mo)"
 Creates a Stripe checkout, then auto-polls for payment confirmation and saves credentials.
 
 ```bash
-vidjutsu subscribe --email you@example.com
+vidjutsu subscribe --email <your_email>
 ```
 
 ```
@@ -21,8 +21,11 @@ Credentials saved to ~/.vidjutsu/config.json
 If polling times out after 15 minutes, recover via email verification:
 
 ```bash
-vidjutsu auth --recover you@example.com
-vidjutsu auth --verify --email you@example.com --code 847291
+vidjutsu auth --recover <your_email>
+```
+
+```bash
+vidjutsu auth --verify --email <your_email> --code 847291
 ```
 
 ### Options
