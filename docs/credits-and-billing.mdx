@@ -1,13 +1,26 @@
 ---
 title: "Credits & Billing"
-description: "Simple, predictable pricing: intelligence calls cost credits, everything else is free"
+description: "Subscription, pricing, and credit management"
 ---
 
-## Pricing model
+## Subscription
 
-VidJutsu runs on a **$99/month subscription** that includes **1,000 credits**. Intelligence calls burn credits; everything else is free.
+VidJutsu requires an active **$99/month subscription** to use the API. Your subscription includes:
 
-Need more? Additional credits are available at **$0.10/credit** via Stripe checkout — buy as many as you need, any time.
+- **1,000 credits/month** (reset each billing cycle)
+- Access to all intelligence endpoints (watch, extract, transcribe, check, overlay)
+- Unlimited free storage operations (accounts, posts, assets, references, upload)
+
+<Card title="Subscribe now" icon="credit-card" href="/get-api-key">
+  Get your API key and start using VidJutsu.
+</Card>
+
+## How billing works
+
+- **Monthly recurring** via Stripe. You're billed on the same date each month.
+- **1,000 credits included** with your subscription. They reset at each billing cycle.
+- **Additional credits** available at **$0.10/credit** anytime via `POST /v1/credits`.
+- **No overage charges** — when you run out of credits, calls return a 402 error until you top up.
 
 ## Credit costs
 
@@ -17,61 +30,59 @@ Need more? Additional credits are available at **$0.10/credit** via Stripe check
 | Extract | `POST /v1/extract` | 5 |
 | Transcribe | `POST /v1/transcribe` | 10 |
 | Check | `POST /v1/check` | 5 |
+| Overlay | `POST /v1/overlay` | 5 |
 
-**Free operations** (0 credits): accounts, posts, uploads, list/read endpoints, pricing, balance checks, check/rules management.
+**Free operations** (0 credits): accounts, posts, assets, references, uploads, balance checks, check rules.
 
-## Checking your balance
+## Check your balance
 
-```bash
-curl https://api.vidjutsu.ai/v1/balance \
-  -H "Authorization: Bearer vj_live_abc123..."
-```
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu balance
+    ```
+  </Tab>
+  <Tab title="API">
+    ```bash
+    curl https://api.vidjutsu.ai/v1/balance \
+      -H "Authorization: Bearer $VIDJUTSU_API_KEY"
+    ```
+  </Tab>
+</Tabs>
 
 ```json
 {
-  "credits": 84,
-  "clientId": "mc_xyz789"
+  "credits": 840,
+  "clientId": "mc_..."
 }
 ```
 
-## Buying additional credits
+## Buy more credits
 
-If you exhaust your included 1,000 credits, top up at $0.10/credit:
+Top up at $0.10/credit when you need more than your included 1,000:
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/credits \
   -H "Content-Type: application/json" \
-  -d '{ "credits": 100, "email": "you@example.com" }'
+  -d '{ "credits": 500, "email": "you@example.com" }'
 ```
 
-This opens a Stripe checkout session. Credits are added immediately after payment.
+Open the returned checkout URL to pay. Credits are added immediately.
+
+## Cancel your subscription
+
+Cancel anytime through the Stripe billing portal. Your existing credits remain usable, but API access ends when the current billing period expires.
+
+## Get pricing programmatically
+
+```bash
+curl https://api.vidjutsu.ai/v1/pricing
+```
 
 ## Media limits
 
 | Media type | Max size | Max duration | Allowed types |
 |------------|----------|--------------|---------------|
 | Video | 32MB | 5 minutes | mp4, mov, webm |
-| Image | 10MB | — | jpeg, png, webp, gif |
+| Image | 10MB | -- | jpeg, png, webp, gif |
 | Audio | 25MB | 5 minutes | mp3, wav, ogg |
-
-Videos submitted to `/v1/extract` and `/v1/transcribe` must be under 5 minutes. Uploads to `/v1/upload` must be under the size limit for their content type.
-
-## Getting pricing programmatically
-
-```bash
-curl https://api.vidjutsu.ai/v1/pricing
-```
-
-```json
-{
-  "costs": {
-    "watch": 10,
-    "extract": 5,
-    "transcribe": 10,
-    "check": 5,
-    "accounts.create": 0,
-    "posts.create": 0,
-    "upload": 0
-  }
-}
-```

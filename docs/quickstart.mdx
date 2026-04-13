@@ -1,90 +1,36 @@
 ---
 title: "Quickstart"
-description: "Get your API key and run your first watch, extract, and transcribe calls in minutes"
+description: "Make your first watch, extract, and transcribe calls"
 ---
 
-## Option A: Use the CLI
+<Info>
+Need an API key? Follow the [Get your API key](/get-api-key) guide first.
+</Info>
 
-The fastest way to get started. Install the CLI and authenticate in one step.
+## Watch a video (10 credits)
 
-```bash
-curl -fsSL https://vidjutsu.ai/install.sh | bash
-```
+Ask AI anything about a video. The response shape follows your prompt.
 
-Then authenticate with your API key:
-
-```bash
-vidjutsu auth --key vj_live_your_api_key
-```
-
-Watch a video:
-
-```bash
-vidjutsu watch --video-url "https://cdn.example.com/video.mp4" --prompt "Is the hook effective?"
-```
-
-See the [CLI reference](/cli/index) for all commands.
-
----
-
-## Option B: Use the API directly
-
-### 1. Top up credits
-
-Start a Stripe checkout session. Pay with any credit or debit card.
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/credits \
-  -H "Content-Type: application/json" \
-  -d '{
-    "credits": 100,
-    "email": "you@example.com"
-  }'
-```
-
-```json
-{
-  "url": "https://checkout.stripe.com/...",
-  "sessionId": "cs_...",
-  "credits": 100,
-  "amount": 1000
-}
-```
-
-Open the returned URL in your browser to complete payment.
-
-### 2. Get your API key
-
-After payment, poll the status endpoint:
-
-```bash
-curl "https://api.vidjutsu.ai/v1/credits/status?session=cs_..."
-```
-
-```json
-{
-  "status": "completed",
-  "apiKey": "vj_live_abc123...",
-  "clientId": "...",
-  "balance": 100
-}
-```
-
-<Warning>
-Store your API key securely — it is shown once in this response.
-</Warning>
-
-### 3. Watch a video (10 credits)
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/watch \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer vj_live_abc123..." \
-  -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4",
-    "prompt": "Is the hook strong enough for fitness TikTok?"
-  }'
-```
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu watch \
+      --mediaUrl "https://cdn.example.com/video.mp4" \
+      --prompt "Is the hook strong enough for fitness TikTok?"
+    ```
+  </Tab>
+  <Tab title="curl">
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/watch \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+      -d '{
+        "mediaUrl": "https://cdn.example.com/video.mp4",
+        "prompt": "Is the hook strong enough for fitness TikTok?"
+      }'
+    ```
+  </Tab>
+</Tabs>
 
 ```json
 {
@@ -92,18 +38,31 @@ curl -X POST https://api.vidjutsu.ai/v1/watch \
 }
 ```
 
-### 4. Extract frames and audio (5 credits)
+## Extract frames and audio (5 credits)
 
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/extract \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer vj_live_abc123..." \
-  -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4",
-    "frames": "auto",
-    "audio": true
-  }'
-```
+Pull frames, audio track, and metadata from any video.
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu extract \
+      --mediaUrl "https://cdn.example.com/video.mp4" \
+      --frames auto --audio
+    ```
+  </Tab>
+  <Tab title="curl">
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/extract \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+      -d '{
+        "mediaUrl": "https://cdn.example.com/video.mp4",
+        "frames": "auto",
+        "audio": true
+      }'
+    ```
+  </Tab>
+</Tabs>
 
 ```json
 {
@@ -113,16 +72,28 @@ curl -X POST https://api.vidjutsu.ai/v1/extract \
 }
 ```
 
-### 5. Transcribe speech (10 credits)
+## Transcribe speech (10 credits)
 
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/transcribe \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer vj_live_abc123..." \
-  -d '{
-    "mediaUrl": "https://cdn.example.com/video.mp4"
-  }'
-```
+Speech-to-text with word-level timing.
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu transcribe \
+      --mediaUrl "https://cdn.example.com/video.mp4"
+    ```
+  </Tab>
+  <Tab title="curl">
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/transcribe \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+      -d '{
+        "mediaUrl": "https://cdn.example.com/video.mp4"
+      }'
+    ```
+  </Tab>
+</Tabs>
 
 ```json
 {
@@ -136,10 +107,16 @@ curl -X POST https://api.vidjutsu.ai/v1/transcribe \
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="API Reference" icon="code" href="/api-reference/introduction">
-    Full endpoint reference for watch, extract, transcribe, check, and storage.
+  <Card title="Features" icon="sparkles" href="/features">
+    See everything VidJutsu can do.
   </Card>
-  <Card title="CLI reference" icon="terminal" href="/cli/index">
-    Full command reference for the VidJutsu CLI.
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Full endpoint reference with interactive playground.
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/cli/index">
+    All CLI commands and options.
+  </Card>
+  <Card title="Credits & Billing" icon="credit-card" href="/credits-and-billing">
+    Pricing, subscription management, and limits.
   </Card>
 </CardGroup>
