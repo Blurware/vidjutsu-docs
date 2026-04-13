@@ -58,10 +58,12 @@ If you lost your key, recover it via email verification:
 <Tabs>
   <Tab title="CLI">
     ```bash
-    vidjutsu auth --recover you@example.com
+    vidjutsu auth --recover <your_email>
     # Check your email for a 6-digit code
+    ```
 
-    vidjutsu auth --verify --email you@example.com --code 847291
+    ```bash
+    vidjutsu auth --verify --email <your_email> --code 847291
     ```
   </Tab>
   <Tab title="API">
@@ -70,7 +72,7 @@ If you lost your key, recover it via email verification:
     ```bash
     curl -X POST https://api.vidjutsu.ai/v1/auth/verify/request \
       -H "Content-Type: application/json" \
-      -d '{ "email": "you@example.com" }'
+      -d '{ "email": "<your_email>" }'
     ```
 
     Confirm the code to get your key back:
@@ -78,7 +80,7 @@ If you lost your key, recover it via email verification:
     ```bash
     curl -X POST https://api.vidjutsu.ai/v1/auth/verify/confirm \
       -H "Content-Type: application/json" \
-      -d '{ "email": "you@example.com", "code": "847291" }'
+      -d '{ "email": "<your_email>", "code": "847291" }'
     ```
   </Tab>
 </Tabs>
