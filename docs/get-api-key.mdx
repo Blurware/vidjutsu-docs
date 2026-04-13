@@ -7,64 +7,25 @@ description: "Subscribe, pay, and start using VidJutsu in under 2 minutes"
 
 VidJutsu requires a **$99/month subscription** that includes 1,000 credits. You can subscribe via the CLI or API.
 
-<Tabs>
-  <Tab title="CLI (recommended)">
-    Install the CLI and subscribe in one flow:
+Install the CLI and subscribe in one flow:
 
-    ```bash
-    curl -fsSL https://vidjutsu.ai/install.sh | bash
-    vidjutsu subscribe --email you@example.com
-    ```
+```bash
+curl -fsSL https://vidjutsu.ai/install.sh | bash
+vidjutsu subscribe --email you@example.com
+```
 
-    This opens a Stripe checkout in your browser. After you pay, the CLI automatically saves your credentials:
+This opens a Stripe checkout in your browser. After you pay, the CLI automatically saves your credentials:
 
-    ```
-    Checkout: https://checkout.stripe.com/...
+```
+Checkout: https://checkout.stripe.com/...
 
-    Complete payment in your browser.
-    Waiting for payment... ✓
+Complete payment in your browser.
+Waiting for payment... ✓
 
-    Credentials saved to ~/.vidjutsu/config.json
-    ```
+Credentials saved to ~/.vidjutsu/config.json
+```
 
-    That's it. Your API key is saved and ready to use.
-  </Tab>
-  <Tab title="API">
-    Create a checkout session:
-
-    ```bash
-    curl -X POST https://api.vidjutsu.ai/v1/subscribe \
-      -H "Content-Type: application/json" \
-      -d '{ "email": "you@example.com" }'
-    ```
-
-    ```json
-    {
-      "url": "https://checkout.stripe.com/...",
-      "claimToken": "claim_..."
-    }
-    ```
-
-    Open the `url` in your browser and complete payment. Then poll for your key:
-
-    ```bash
-    curl "https://api.vidjutsu.ai/v1/credits/status?session=claim_..."
-    ```
-
-    ```json
-    {
-      "status": "completed",
-      "apiKey": "vj_live_...",
-      "clientId": "mc_...",
-      "balance": 1000
-    }
-    ```
-
-    <Warning>
-    Your API key is shown **once** in this response. Store it securely.
-    </Warning>
-  </Tab>
-</Tabs>
+That's it. Your API key is saved and ready to use.
 
 ## 2. Verify
 
