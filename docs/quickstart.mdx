@@ -12,6 +12,13 @@ Need an API key? Follow the [Get your API key](/get-api-key) guide first.
 Ask AI anything about a video. The response shape follows your prompt.
 
 <Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu watch \
+      --mediaUrl "https://cdn.example.com/video.mp4" \
+      --prompt "Is the hook strong enough for fitness TikTok?"
+    ```
+  </Tab>
   <Tab title="SDK">
     ```typescript
     import { createClient } from "vidjutsu";
@@ -21,13 +28,6 @@ Ask AI anything about a video. The response shape follows your prompt.
       mediaUrl: "https://cdn.example.com/video.mp4",
       prompt: "Is the hook strong enough for fitness TikTok?",
     });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu watch \
-      --mediaUrl "https://cdn.example.com/video.mp4" \
-      --prompt "Is the hook strong enough for fitness TikTok?"
     ```
   </Tab>
   <Tab title="curl">
@@ -54,6 +54,13 @@ Ask AI anything about a video. The response shape follows your prompt.
 Pull frames, audio track, and metadata from any video.
 
 <Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu extract \
+      --mediaUrl "https://cdn.example.com/video.mp4" \
+      --frames auto --audio
+    ```
+  </Tab>
   <Tab title="SDK">
     ```typescript
     const { data } = await vj.extractMedia({
@@ -61,13 +68,6 @@ Pull frames, audio track, and metadata from any video.
       frames: "auto",
       audio: true,
     });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu extract \
-      --mediaUrl "https://cdn.example.com/video.mp4" \
-      --frames auto --audio
     ```
   </Tab>
   <Tab title="curl">
@@ -97,17 +97,17 @@ Pull frames, audio track, and metadata from any video.
 Speech-to-text with word-level timing.
 
 <Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu transcribe \
+      --mediaUrl "https://cdn.example.com/video.mp4"
+    ```
+  </Tab>
   <Tab title="SDK">
     ```typescript
     const { data } = await vj.transcribeMedia({
       mediaUrl: "https://cdn.example.com/video.mp4",
     });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu transcribe \
-      --mediaUrl "https://cdn.example.com/video.mp4"
     ```
   </Tab>
   <Tab title="curl">
