@@ -1,0 +1,134 @@
+---
+title: "Get your API key"
+description: "Subscribe, pay, and start using VidJutsu in under 2 minutes"
+---
+
+## 1. Subscribe
+
+VidJutsu requires a **$99/month subscription** that includes 1,000 credits. You can subscribe via the CLI or API.
+
+<Tabs>
+  <Tab title="CLI (recommended)">
+    Install the CLI and subscribe in one flow:
+
+    ```bash
+    curl -fsSL https://vidjutsu.ai/install.sh | bash
+    vidjutsu subscribe --email you@example.com
+    ```
+
+    This opens a Stripe checkout in your browser. After you pay, the CLI automatically saves your credentials:
+
+    ```
+    Checkout: https://checkout.stripe.com/...
+
+    Complete payment in your browser.
+    Waiting for payment... ✓
+
+    Credentials saved to ~/.vidjutsu/config.json
+    ```
+
+    That's it. Your API key is saved and ready to use.
+  </Tab>
+  <Tab title="API">
+    Create a checkout session:
+
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/subscribe \
+      -H "Content-Type: application/json" \
+      -d '{ "email": "you@example.com" }'
+    ```
+
+    ```json
+    {
+      "url": "https://checkout.stripe.com/...",
+      "claimToken": "claim_..."
+    }
+    ```
+
+    Open the `url` in your browser and complete payment. Then poll for your key:
+
+    ```bash
+    curl "https://api.vidjutsu.ai/v1/credits/status?session=claim_..."
+    ```
+
+    ```json
+    {
+      "status": "completed",
+      "apiKey": "vj_live_...",
+      "clientId": "mc_...",
+      "balance": 1000
+    }
+    ```
+
+    <Warning>
+    Your API key is shown **once** in this response. Store it securely.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## 2. Verify
+
+Confirm your credentials are working:
+
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu balance
+    ```
+  </Tab>
+  <Tab title="API">
+    ```bash
+    curl https://api.vidjutsu.ai/v1/balance \
+      -H "Authorization: Bearer vj_live_..."
+    ```
+  </Tab>
+</Tabs>
+
+```json
+{
+  "credits": 1000,
+  "clientId": "mc_..."
+}
+```
+
+## 3. Store your key safely
+
+Your API key lives in `~/.vidjutsu/config.json`. For scripts and CI, use an environment variable:
+
+```bash
+export VIDJUTSU_API_KEY=vj_live_...
+```
+
+Never commit your key to git. Add it to `.env` files that are in `.gitignore`.
+
+To export a credentials file (like AWS):
+
+```bash
+vidjutsu auth --export
+# Writes ~/.vidjutsu/credentials.json
+```
+
+## Lost your key?
+
+Recover via email verification:
+
+```bash
+vidjutsu auth --recover you@example.com
+# Check your email for a 6-digit code
+
+vidjutsu auth --verify --email you@example.com --code 847291
+# Credentials saved to ~/.vidjutsu/config.json
+```
+
+Or rotate your key if it was compromised:
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/api_keys/rotate \
+  -H "Authorization: Bearer vj_live_..."
+```
+
+## Next step
+
+<Card title="Quickstart" icon="rocket" href="/quickstart">
+  Make your first API call.
+</Card>

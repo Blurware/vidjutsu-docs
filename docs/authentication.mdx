@@ -1,87 +1,84 @@
 ---
 title: "Authentication"
-description: "How to get and use your API key"
+description: "Using, rotating, and recovering your API key"
 ---
 
-## Getting an API key
+<Info>
+Need to get your first API key? See [Get your API key](/get-api-key).
+</Info>
 
-VidJutsu uses a credit-based system with Stripe checkout. No sign-up form — just pay and get your key.
+## Using your key
 
-### 1. Start checkout
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/credits \
-  -H "Content-Type: application/json" \
-  -d '{
-    "credits": 100,
-    "email": "you@example.com"
-  }'
-```
-
-This returns a Stripe checkout URL. Open it in your browser and pay with **any credit or debit card**.
-
-### 2. Get your API key
-
-After payment, poll the status endpoint with your session ID:
-
-```bash
-curl "https://api.vidjutsu.ai/v1/credits/status?session=cs_..."
-```
-
-```json
-{
-  "status": "completed",
-  "apiKey": "vj_live_abc123...",
-  "clientId": "cl_xyz789",
-  "balance": 100
-}
-```
-
-<Warning>
-Store your API key securely. It is shown **once** in this response. If you lose it, use `/v1/api_keys/recover` to get a recovery email, or rotate it with `/v1/api_keys/rotate`.
-</Warning>
-
-## Using your API key
-
-Pass the key in the `Authorization` header as a Bearer token on every request:
+Pass your API key as a Bearer token in the `Authorization` header on every request:
 
 ```bash
 curl https://api.vidjutsu.ai/v1/balance \
-  -H "Authorization: Bearer vj_live_abc123..."
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY"
+```
+
+If you're using the CLI, your key is stored in `~/.vidjutsu/config.json` and sent automatically.
+
+## Storing your key safely
+
+Your key is a secret. Treat it like a password.
+
+| Do | Don't |
+|----|-------|
+| Store in environment variables | Commit to git |
+| Use `.env` files (add to `.gitignore`) | Share in Slack/email |
+| Use your platform's secrets manager (Vercel, AWS, etc.) | Hardcode in source files |
+
+```bash
+# .env
+VIDJUTSU_API_KEY=vj_live_...
+```
+
+For a portable credentials file:
+
+```bash
+vidjutsu auth --export
+# Writes ~/.vidjutsu/credentials.json
 ```
 
 ## Rotating your key
 
-If your key is compromised, rotate it. The old key is immediately invalidated.
+If your key is compromised, rotate it immediately. The old key is invalidated instantly.
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/api_keys/rotate \
-  -H "Authorization: Bearer vj_live_abc123..."
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY"
 ```
 
-```json
-{
-  "apiKey": "vj_live_new_key...",
-  "clientId": "cl_xyz789",
-  "message": "API key rotated successfully. Old key is now invalid."
-}
-```
+The response contains your new key. Store it securely — the old one no longer works.
 
-## Recovering your key
+## Recovering a lost key
 
-Lost your key? Request a recovery email:
+If you lost your key, recover it via email verification:
 
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/api_keys/recover \
-  -H "Content-Type: application/json" \
-  -d '{ "email": "you@example.com" }'
-```
+<Tabs>
+  <Tab title="CLI">
+    ```bash
+    vidjutsu auth --recover you@example.com
+    # Check your email for a 6-digit code
 
-## Payment methods
+    vidjutsu auth --verify --email you@example.com --code 847291
+    ```
+  </Tab>
+  <Tab title="API">
+    Request a verification code:
 
-**Available now:**
-- Any credit or debit card via Stripe (Visa, Mastercard, Amex, etc.)
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/auth/verify/request \
+      -H "Content-Type: application/json" \
+      -d '{ "email": "you@example.com" }'
+    ```
 
-<Info>
-**Coming soon: MPP x402 protocol.** Native USDC payments directly from your agent — no checkout flow, no card required. Pay per-request with stablecoins.
-</Info>
+    Confirm the code to get your key back:
+
+    ```bash
+    curl -X POST https://api.vidjutsu.ai/v1/auth/verify/confirm \
+      -H "Content-Type: application/json" \
+      -d '{ "email": "you@example.com", "code": "847291" }'
+    ```
+  </Tab>
+</Tabs>

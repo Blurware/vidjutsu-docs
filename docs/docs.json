@@ -23,8 +23,14 @@
             "group": "Getting Started",
             "pages": [
               "index",
+              "get-api-key",
               "quickstart",
-              "features",
+              "features"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
               "authentication",
               "credits-and-billing"
             ]
