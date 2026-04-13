@@ -1,0 +1,48 @@
+---
+title: "Assets"
+description: "Create, list, update, and delete asset records."
+---
+
+## Create
+
+```typescript
+const { data } = await vj.createAsset({
+  url: "https://cdn.vidjutsu.ai/uploads/...",
+  type: "video",
+  tags: [{ key: "project", value: "fitness-campaign" }],
+});
+```
+
+## List all
+
+```typescript
+const { data } = await vj.listOrGetAssets();
+
+// Filter by type
+const { data } = await vj.listOrGetAssets({ type: "video" });
+```
+
+## Get by ID
+
+```typescript
+const { data } = await vj.listOrGetAssets({ id: "asset_..." });
+```
+
+## Update
+
+```typescript
+const { data } = await vj.updateAsset(
+  { tags: [{ key: "status", value: "approved" }] },
+  { id: "asset_..." },
+);
+```
+
+## Delete
+
+```typescript
+const { data } = await vj.deleteAsset({ id: "asset_..." });
+```
+
+## Credits
+
+Free — 0 credits for all asset operations.

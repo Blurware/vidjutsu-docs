@@ -12,6 +12,17 @@ Need an API key? Follow the [Get your API key](/get-api-key) guide first.
 Ask AI anything about a video. The response shape follows your prompt.
 
 <Tabs>
+  <Tab title="SDK">
+    ```typescript
+    import { createClient } from "vidjutsu";
+    const vj = createClient();
+
+    const { data } = await vj.watchMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+      prompt: "Is the hook strong enough for fitness TikTok?",
+    });
+    ```
+  </Tab>
   <Tab title="CLI">
     ```bash
     vidjutsu watch \
@@ -43,6 +54,15 @@ Ask AI anything about a video. The response shape follows your prompt.
 Pull frames, audio track, and metadata from any video.
 
 <Tabs>
+  <Tab title="SDK">
+    ```typescript
+    const { data } = await vj.extractMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+      frames: "auto",
+      audio: true,
+    });
+    ```
+  </Tab>
   <Tab title="CLI">
     ```bash
     vidjutsu extract \
@@ -77,6 +97,13 @@ Pull frames, audio track, and metadata from any video.
 Speech-to-text with word-level timing.
 
 <Tabs>
+  <Tab title="SDK">
+    ```typescript
+    const { data } = await vj.transcribeMedia({
+      mediaUrl: "https://cdn.example.com/video.mp4",
+    });
+    ```
+  </Tab>
   <Tab title="CLI">
     ```bash
     vidjutsu transcribe \
@@ -109,6 +136,9 @@ Speech-to-text with word-level timing.
 <CardGroup cols={2}>
   <Card title="Features" icon="sparkles" href="/features">
     See everything VidJutsu can do.
+  </Card>
+  <Card title="SDK Reference" icon="js" href="/sdk/index">
+    Typed TypeScript client with all methods.
   </Card>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
     Full endpoint reference with interactive playground.

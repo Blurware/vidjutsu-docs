@@ -1,0 +1,34 @@
+---
+title: "Upload"
+description: "Upload media to VidJutsu CDN."
+---
+
+## Upload from URL
+
+```typescript
+const { data, error } = await vj.uploadFromUrl({
+  url: "https://example.com/video.mp4",
+});
+console.log(data.url); // CDN URL
+```
+
+## Upload binary file
+
+```typescript
+const file = await fs.readFile("./video.mp4");
+const { data, error } = await vj.uploadFile(file);
+console.log(data.url); // CDN URL
+```
+
+## Response
+
+```json
+{
+  "id": "upl_...",
+  "url": "https://cdn.vidjutsu.ai/uploads/..."
+}
+```
+
+## Credits
+
+Free — 0 credits.

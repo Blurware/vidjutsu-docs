@@ -1,0 +1,34 @@
+---
+title: "checkSpec"
+description: "Validate a VidLang spec against built-in and custom rules."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.checkSpec({
+  spec: { /* VidLang spec object */ },
+  rules: ["hook-required", "max-duration-60s"],
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `spec` | `object` | Yes | The VidLang spec to validate |
+| `rules` | `string[]` | No | Custom rules to apply alongside built-in rules |
+
+## Manage custom rules
+
+```typescript
+// Get your saved rules
+const { data: rules } = await vj.getCheckRules();
+
+// Update your rules
+await vj.updateCheckRules({ rules: ["hook-required", "max-scenes-5"] });
+```
+
+## Credits
+
+5 credits per call. Getting and updating rules is free.

@@ -1,0 +1,48 @@
+---
+title: "Posts"
+description: "Create, list, update, and delete post records."
+---
+
+## Create
+
+```typescript
+const { data } = await vj.createPost({
+  accountId: "acc_...",
+  caption: "The one thing nobody tells you about creatine",
+  mediaUrl: "https://cdn.vidjutsu.ai/uploads/...",
+});
+```
+
+## List all
+
+```typescript
+const { data } = await vj.listOrGetPosts();
+
+// Filter by account
+const { data } = await vj.listOrGetPosts({ accountId: "acc_..." });
+```
+
+## Get by ID
+
+```typescript
+const { data } = await vj.listOrGetPosts({ id: "post_..." });
+```
+
+## Update
+
+```typescript
+const { data } = await vj.updatePost(
+  { caption: "Updated caption" },
+  { id: "post_..." },
+);
+```
+
+## Delete
+
+```typescript
+const { data } = await vj.deletePost({ id: "post_..." });
+```
+
+## Credits
+
+Free — 0 credits for all post operations.

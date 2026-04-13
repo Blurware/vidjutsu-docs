@@ -136,6 +136,43 @@
         ]
       },
       {
+        "tab": "SDK Reference",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "sdk/index"
+            ]
+          },
+          {
+            "group": "Intelligence",
+            "pages": [
+              "sdk/watch",
+              "sdk/extract",
+              "sdk/transcribe",
+              "sdk/check",
+              "sdk/overlay"
+            ]
+          },
+          {
+            "group": "Storage",
+            "pages": [
+              "sdk/upload",
+              "sdk/accounts",
+              "sdk/posts",
+              "sdk/assets",
+              "sdk/references"
+            ]
+          },
+          {
+            "group": "Utilities",
+            "pages": [
+              "sdk/balance"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "CLI Reference",
         "groups": [
           {

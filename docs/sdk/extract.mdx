@@ -1,0 +1,49 @@
+---
+title: "extractMedia"
+description: "Extract frames, audio, and metadata from a video."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.extractMedia({
+  mediaUrl: "https://cdn.example.com/video.mp4",
+  frames: "auto",
+  audio: true,
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `mediaUrl` | `string` | Yes | URL of the video to extract from |
+| `frames` | `string` | No | Frame indices (`[0, 75, 150]`), `"auto"` for 3 evenly spaced, or `"last"` for the final frame |
+| `audio` | `boolean` | No | Extract audio track as WAV |
+| `metadata` | `boolean` | No | Return video metadata. Defaults to `true` |
+
+## Response
+
+```json
+{
+  "frames": [
+    { "index": 0, "url": "https://cdn.vidjutsu.ai/..." },
+    { "index": 75, "url": "https://cdn.vidjutsu.ai/..." },
+    { "index": 150, "url": "https://cdn.vidjutsu.ai/..." }
+  ],
+  "audio": {
+    "url": "https://cdn.vidjutsu.ai/...",
+    "duration": 10.2
+  },
+  "metadata": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "duration": 10.0
+  }
+}
+```
+
+## Credits
+
+5 credits per call.

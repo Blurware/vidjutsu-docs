@@ -1,0 +1,47 @@
+---
+title: "References"
+description: "Create, list, update, and delete reference records."
+---
+
+## Create
+
+```typescript
+const { data } = await vj.createReference({
+  platform: "instagram",
+  url: "https://instagram.com/p/...",
+});
+```
+
+## List all
+
+```typescript
+const { data } = await vj.listOrGetReferences();
+
+// Filter by platform
+const { data } = await vj.listOrGetReferences({ platform: "instagram" });
+```
+
+## Get by ID
+
+```typescript
+const { data } = await vj.listOrGetReferences({ id: "ref_..." });
+```
+
+## Update
+
+```typescript
+const { data } = await vj.updateReference(
+  { platform: "tiktok" },
+  { id: "ref_..." },
+);
+```
+
+## Delete
+
+```typescript
+const { data } = await vj.deleteReference({ id: "ref_..." });
+```
+
+## Credits
+
+Free — 0 credits for all reference operations.
