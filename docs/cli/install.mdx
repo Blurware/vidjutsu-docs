@@ -19,12 +19,12 @@ The installer:
 ## Pin a specific version
 
 ```bash
-VERSION=0.1.0 curl -fsSL https://vidjutsu.ai/install.sh | bash
+VERSION=1.0.0 curl -fsSL https://vidjutsu.ai/install.sh | bash
 ```
 
 ## Manual install
 
-Download the binary for your platform from [GitHub releases](https://github.com/tfcbot/vidjutsu-cli/releases):
+Download the binary for your platform from [GitHub releases](https://github.com/tfcbot/vidjutsu-sdk/releases):
 
 | Platform | Binary |
 |----------|--------|
@@ -35,7 +35,7 @@ Download the binary for your platform from [GitHub releases](https://github.com/
 
 ```bash
 # Example: macOS Apple Silicon
-curl -fsSL https://github.com/tfcbot/vidjutsu-cli/releases/latest/download/vidjutsu-darwin-arm64 -o vidjutsu
+curl -fsSL https://github.com/tfcbot/vidjutsu-sdk/releases/latest/download/vidjutsu-darwin-arm64 -o vidjutsu
 chmod +x vidjutsu
 sudo mv vidjutsu /usr/local/bin/
 ```
@@ -47,9 +47,9 @@ vidjutsu --help
 ```
 
 ```
-Video Intelligence API — watch, extract, transcribe, and check AI-generated video. (vidjutsu v0.1.0)
+Video Intelligence API — watch, extract, transcribe, and check AI-generated video. (vidjutsu v1.0.0)
 
-USAGE vidjutsu auth|watch|extract|transcribe|check|upload|account|post|balance|subscribe|status|info|session
+USAGE vidjutsu auth|check|upload|subscribe|status|version|update|watch|extract|transcribe|overlay|account|post|asset|reference|usage|info
 ```
 
 ## Requirements

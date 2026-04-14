@@ -220,7 +220,7 @@
       "anchors": [
         {
           "anchor": "GitHub",
-          "href": "https://github.com/tfcbot/vidjutsu-cli",
+          "href": "https://github.com/tfcbot/vidjutsu-sdk",
           "icon": "github"
         }
       ]
@@ -251,7 +251,7 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/tfcbot/vidjutsu-cli"
+      "github": "https://github.com/tfcbot/vidjutsu-sdk"
     }
   }
 }

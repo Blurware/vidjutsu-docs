@@ -19,7 +19,7 @@ export function Footer() {
               <li><a href="https://docs.vidjutsu.ai" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Docs</a></li>
               <li><a href="https://docs.vidjutsu.ai/api-reference" className="text-[13px] text-ink-muted hover:text-ink transition-colors">API Reference</a></li>
               <li><a href="https://docs.vidjutsu.ai/quickstart" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Quickstart</a></li>
-              <li><a href="https://github.com/tfcbot/vidjutsu-cli" className="text-[13px] text-ink-muted hover:text-ink transition-colors">GitHub</a></li>
+              <li><a href="https://github.com/tfcbot/vidjutsu-sdk" className="text-[13px] text-ink-muted hover:text-ink transition-colors">GitHub</a></li>
             </ul>
           </div>
 
