@@ -1,6 +1,6 @@
 ---
 title: "checkSpec"
-description: "Validate a VidLang spec against built-in and custom rules."
+description: "Validate a VidLang spec against enabled rules. All rules off by default — caller enables explicitly."
 ---
 
 ## Usage
@@ -8,7 +8,11 @@ description: "Validate a VidLang spec against built-in and custom rules."
 ```typescript
 const { data, error } = await vj.checkSpec({
   spec: { /* VidLang spec object */ },
-  rules: ["hook-required", "max-duration-60s"],
+  rules: {
+    VL013: true,                        // enable
+    VL011: { severity: "warning" },     // enable with override
+    VL003: false,                       // explicitly disable (already off by default)
+  },
 });
 ```
 
@@ -17,18 +21,67 @@ const { data, error } = await vj.checkSpec({
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `spec` | `object` | Yes | The VidLang spec to validate |
-| `rules` | `string[]` | No | Custom rules to apply alongside built-in rules |
+| `rules` | `Record<string, boolean \| { enabled?: boolean, severity?: string }>` | Yes | Rules config. All off by default — enable at least one. |
 
-## Manage custom rules
+## Rules
+
+| Rule | Name | Use for |
+|------|------|---------|
+| VL001 | Temporal Continuity | All formats |
+| VL002 | Subject Consistency | All formats |
+| VL003 | Camera Physics | B-roll, cinematic |
+| VL004 | Audio Alignment | Talking-head, dialogue |
+| VL005 | Provider Compatibility | All formats |
+| VL006 | Description Quality | B-roll, cinematic |
+| VL009 | Expression Continuity | Talking-head |
+| VL010 | Audio Normalization | B-roll, music |
+| VL011 | Prosody Control | Talking-head, dialogue |
+| VL012 | Anti-Emphasis | Talking-head, dialogue |
+| VL013 | Talking Head Stillness | Talking-head only |
+
+## Example configs
+
+### Talking-head format
 
 ```typescript
-// Get your saved rules
+const { data } = await vj.checkSpec({
+  spec,
+  rules: {
+    VL001: true, VL002: true, VL004: true, VL005: true,
+    VL009: true, VL011: true, VL012: true, VL013: true,
+  },
+});
+```
+
+### B-roll format
+
+```typescript
+const { data } = await vj.checkSpec({
+  spec,
+  rules: {
+    VL001: true, VL002: true, VL003: true,
+    VL005: true, VL006: true, VL010: true,
+  },
+});
+```
+
+## Custom rules
+
+Custom rules are plain-text strings stored per-client. They are stored by VidJutsu but **evaluated by the agent layer**, not the check endpoint.
+
+```typescript
+// Get your saved custom rules
 const { data: rules } = await vj.getCheckRules();
 
-// Update your rules
-await vj.updateCheckRules({ rules: ["hook-required", "max-scenes-5"] });
+// Update your custom rules
+await vj.updateCheckRules({
+  rules: [
+    "ai-reveal-required: Dialogue must contain a clear AI reveal",
+    "first-person-dialogue: All dialogue must be first-person",
+  ],
+});
 ```
 
 ## Credits
 
-5 credits per call. Getting and updating rules is free.
+5 credits per check call. Custom rule CRUD is free.
