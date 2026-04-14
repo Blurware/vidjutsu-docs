@@ -4,7 +4,7 @@ set -e
 # VidJutsu CLI Installer
 # Usage: curl -fsSL https://vidjutsu.ai/install.sh | bash
 
-REPO="tfcbot/vidjutsu-cli"
+REPO="tfcbot/vidjutsu-sdk"
 BINARY_NAME="vidjutsu"
 INSTALL_DIR="$HOME/.local/bin"
 
