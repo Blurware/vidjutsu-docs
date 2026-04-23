@@ -1,0 +1,89 @@
+---
+title: "vidjutsu compliance"
+description: "Scan a video or caption against platform TOS and return a risk score with cited policy clauses."
+---
+
+Flags a video or text against the target platform's current community guidelines or ad standards. Returns a deterministic risk score (0–100), a verdict, and each violation with the verbatim policy clause + source URL it's based on.
+
+Informational only, not legal advice — every response carries a disclaimer.
+
+## Subcommands
+
+| Command | Use when |
+|---|---|
+| `vidjutsu compliance video` | You have a video URL and want both visual + transcript analysis |
+| `vidjutsu compliance prompt` | You have text (caption, ad copy, draft script, description) you want to pre-flight before publishing |
+
+## `vidjutsu compliance video`
+
+```bash
+vidjutsu compliance video --video-url <url> --platform <platform>
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--video-url` | Yes | Public URL of the video to scan |
+| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `facebook-ads` |
+| `--format` | No | `shortform` \| `longform`. Inferred from duration when omitted |
+
+**Rate limit:** 20 per day.
+
+## `vidjutsu compliance prompt`
+
+```bash
+vidjutsu compliance prompt --text "..." --platform <platform>
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--text` | Yes | Caption, ad copy, script, description, etc. |
+| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `facebook-ads` |
+| `--kind` | No | `caption` \| `script` \| `ad-copy` \| `description` \| `other` (label only; doesn't affect scoring) |
+
+**Rate limit:** 100 per day.
+
+## Example
+
+```bash
+vidjutsu compliance prompt \
+  --text "Get rich in 30 days guaranteed — insider investment tip" \
+  --platform instagram \
+  --kind caption
+
+{
+  "riskScore": 45,
+  "verdict": "high-risk",
+  "violations": [
+    {
+      "ruleId": "instagram-misinformation-financial-claims",
+      "category": "misinformation",
+      "severity": "high",
+      "explanation": "The caption promises guaranteed returns in a short timeframe, which falls under Meta's misinformation policy on misleading financial claims.",
+      "citation": {
+        "text": "...",
+        "sourceUrl": "https://transparency.meta.com/policies/community-standards/misinformation",
+        "policyVersion": "2026-04-23"
+      },
+      "evidence": {
+        "transcriptExcerpt": "Get rich in 30 days guaranteed"
+      }
+    }
+  ],
+  "platform": "instagram",
+  "policySnapshotDate": "2026-04-23",
+  "disclaimer": "This response is informational only and does not constitute legal advice..."
+}
+```
+
+## How it works
+
+Our ingestion pipeline weekly scrapes each platform's policy pages (YouTube Community Guidelines, TikTok ads + CG, Meta Community Standards + Ad Standards) and extracts the enforceable clauses. On a scan:
+
+1. We analyze the input and retrieve the most relevant policy clauses using vector search
+2. An LLM cross-references the content against those clauses
+3. Every citation in the response is drawn verbatim from our ingested corpus — no fabricated rules
+4. The risk score is deterministic: severity weights sum to a 0–100 value, capped at 100
+
+## Credits
+
+20 credits per `video` call. 5 credits per `prompt` call.
