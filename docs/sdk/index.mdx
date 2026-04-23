@@ -18,43 +18,52 @@ import { createClient } from "vidjutsu";
 
 const vj = createClient();
 
-// Watch a video (10 credits)
+// Watch a video
 const { data } = await vj.watchMedia({
   mediaUrl: "https://cdn.example.com/video.mp4",
   prompt: "Is the hook strong enough for fitness TikTok?",
 });
 console.log(data.response);
 
-// Extract frames and audio (5 credits)
+// Extract frames and audio
 const { data: extract } = await vj.extractMedia({
   mediaUrl: "https://cdn.example.com/video.mp4",
   frames: "auto",
   audio: true,
 });
 
-// Transcribe speech (10 credits)
+// Transcribe speech
 const { data: transcript } = await vj.transcribeMedia({
   mediaUrl: "https://cdn.example.com/video.mp4",
 });
 console.log(transcript.transcript);
+
+// Scan a caption against Instagram's policies
+const { data: compliance } = await vj.checkCompliancePrompt({
+  text: "Get rich in 30 days guaranteed",
+  platform: "instagram",
+});
 ```
 
 ## Methods
 
-| Method | Credits | Description |
-|--------|---------|-------------|
-| [`watchMedia`](/sdk/watch) | 10 | AI watches a video/image, answers your prompt |
-| [`extractMedia`](/sdk/extract) | 5 | Extract frames, audio, and metadata |
-| [`transcribeMedia`](/sdk/transcribe) | 10 | Speech-to-text with word-level timing |
-| [`checkSpec`](/sdk/check) | 5 | Validate a VidLang spec against rules |
-| [`createOverlay`](/sdk/overlay) | 5 | Burn text overlay onto video |
-| [`uploadFile`](/sdk/upload) | 0 | Upload binary file to CDN |
-| [`uploadFromUrl`](/sdk/upload) | 0 | Upload from URL to CDN |
-| [`createAccount`](/sdk/accounts) / `listOrGetAccounts` / `updateAccount` / `deleteAccount` | 0 | Manage accounts |
-| [`createPost`](/sdk/posts) / `listOrGetPosts` / `updatePost` / `deletePost` | 0 | Manage posts |
-| [`createAsset`](/sdk/assets) / `listOrGetAssets` / `updateAsset` / `deleteAsset` | 0 | Manage assets |
-| [`createReference`](/sdk/references) / `listOrGetReferences` / `updateReference` / `deleteReference` | 0 | Manage references |
-| [`getBalance`](/sdk/balance) | 0 | Check credit balance |
+Each intelligence call counts against the endpoint's daily rate-limit bucket. Storage methods are unmetered. See [Pricing & Rate Limits](/credits-and-billing) for limits.
+
+| Method | Description |
+|--------|-------------|
+| [`watchMedia`](/sdk/watch) | AI watches a video/image, answers your prompt |
+| [`extractMedia`](/sdk/extract) | Extract frames, audio, and metadata |
+| [`transcribeMedia`](/sdk/transcribe) | Speech-to-text with word-level timing |
+| [`checkSpec`](/sdk/check) | Validate a VidLang spec against rules |
+| `checkComplianceVideo` | Scan a video against platform TOS |
+| `checkCompliancePrompt` | Scan text against platform TOS |
+| [`createOverlay`](/sdk/overlay) | Burn text overlay onto video |
+| [`uploadFile`](/sdk/upload) / `uploadFromUrl` | Upload to CDN |
+| [`createAccount`](/sdk/accounts) / `listOrGetAccounts` / `updateAccount` / `deleteAccount` | Manage accounts |
+| [`createPost`](/sdk/posts) / `listOrGetPosts` / `updatePost` / `deletePost` | Manage posts |
+| [`createAsset`](/sdk/assets) / `listOrGetAssets` / `updateAsset` / `deleteAsset` | Manage assets |
+| [`createReference`](/sdk/references) / `listOrGetReferences` / `updateReference` / `deleteReference` | Manage references |
+| `getUsage` | Remaining daily capacity per endpoint |
 
 ## Authentication
 
@@ -80,7 +89,7 @@ const vj = createClient({ baseUrl: "https://staging.api.vidjutsu.ai" });
 For endpoints not covered by convenience methods, or for advanced usage, access the raw `openapi-fetch` client:
 
 ```typescript
-const { data, error } = await vj.api.GET("/v1/balance");
+const { data, error } = await vj.api.GET("/v1/usage");
 const { data, error } = await vj.api.POST("/v1/watch", {
   body: { mediaUrl: "...", prompt: "..." },
 });

@@ -5,7 +5,7 @@ description: "Subscribe, pay, and start using VidJutsu in under 2 minutes"
 
 ## 1. Subscribe
 
-VidJutsu requires a **$99/month subscription** that includes 1,000 credits. You can subscribe via the CLI or API.
+VidJutsu requires a **$99/month subscription** for API access. Per-endpoint daily rate limits apply — see [Pricing & Rate Limits](/credits-and-billing). You can subscribe via the CLI or API.
 
 Install the CLI:
 
@@ -39,12 +39,12 @@ Confirm your credentials are working:
 <Tabs>
   <Tab title="CLI">
     ```bash
-    vidjutsu balance
+    vidjutsu usage
     ```
   </Tab>
   <Tab title="API">
     ```bash
-    curl https://api.vidjutsu.ai/v1/balance \
+    curl https://api.vidjutsu.ai/v1/usage \
       -H "Authorization: Bearer vj_live_..."
     ```
   </Tab>
@@ -52,8 +52,11 @@ Confirm your credentials are working:
 
 ```json
 {
-  "credits": 1000,
-  "clientId": "mc_..."
+  "clientId": "mc_...",
+  "usage": {
+    "watch": { "limit": 50, "remaining": 50 }
+  },
+  "resetsAt": "2026-04-24T00:00:00.000Z"
 }
 ```
 

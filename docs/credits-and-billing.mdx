@@ -1,15 +1,14 @@
 ---
-title: "Credits & Billing"
-description: "Subscription, pricing, and credit management"
+title: "Pricing & Rate Limits"
+description: "Subscription pricing and per-endpoint daily rate limits"
 ---
 
 ## Subscription
 
-VidJutsu requires an active **$99/month subscription** to use the API. Your subscription includes:
+VidJutsu requires an active **$99/month subscription** to use the API. Access covers:
 
-- **1,000 credits/month** (reset each billing cycle)
-- Access to all intelligence endpoints (watch, extract, transcribe, check, overlay)
-- Unlimited free storage operations (accounts, posts, assets, references, upload)
+- All intelligence endpoints (watch, extract, transcribe, check, compliance, overlay)
+- Unlimited storage operations (accounts, posts, assets, references, upload)
 
 <Card title="Subscribe now" icon="credit-card" href="/get-api-key">
   Get your API key and start using VidJutsu.
@@ -18,33 +17,41 @@ VidJutsu requires an active **$99/month subscription** to use the API. Your subs
 ## How billing works
 
 - **Monthly recurring** via Stripe. You're billed on the same date each month.
-- **1,000 credits included** with your subscription. They reset at each billing cycle.
-- **Additional credits** available at **$0.10/credit** anytime via `POST /v1/credits`.
-- **No overage charges** — when you run out of credits, calls return a 402 error until you top up.
+- **Flat rate** — no per-call charges, no metered billing, no top-ups.
+- **Daily rate limits** per endpoint (see below). Reset at 00:00 UTC.
+- When you hit a limit, calls return **HTTP 429** with a `retryAfter` hint.
 
-## Credit costs
+## Daily rate limits
 
-| Operation | Endpoint | Credits |
-|-----------|----------|---------|
-| Watch | `POST /v1/watch` | 10 |
-| Extract | `POST /v1/extract` | 5 |
-| Transcribe | `POST /v1/transcribe` | 10 |
-| Check | `POST /v1/check` | 5 |
-| Overlay | `POST /v1/overlay` | 5 |
+Each endpoint has its own bucket. Buckets are independent — hitting the `watch` limit doesn't affect `compliance`.
 
-**Free operations** (0 credits): accounts, posts, assets, references, uploads, balance checks, check rules.
+| Endpoint | Calls / day |
+|----------|-------------|
+| `POST /v1/watch` | 50 |
+| `POST /v1/extract` | 100 |
+| `POST /v1/transcribe` | 30 |
+| `POST /v1/check` | 100 |
+| `POST /v1/compliance/video` | 20 |
+| `POST /v1/compliance/prompt` | 100 |
+| `POST /v1/overlay` | 50 |
+| `POST /v1/upload` | 100 |
+| `POST /v1/posts` (and related CRUD) | 200 |
 
-## Check your balance
+Accounts, assets, references, and read-only endpoints are unmetered.
+
+## Check your usage
+
+Returns remaining capacity per endpoint for the current UTC day.
 
 <Tabs>
   <Tab title="CLI">
     ```bash
-    vidjutsu balance
+    vidjutsu usage
     ```
   </Tab>
   <Tab title="API">
     ```bash
-    curl https://api.vidjutsu.ai/v1/balance \
+    curl https://api.vidjutsu.ai/v1/usage \
       -H "Authorization: Bearer $VIDJUTSU_API_KEY"
     ```
   </Tab>
@@ -52,26 +59,18 @@ VidJutsu requires an active **$99/month subscription** to use the API. Your subs
 
 ```json
 {
-  "credits": 840,
-  "clientId": "mc_..."
+  "clientId": "mc_...",
+  "usage": {
+    "watch": { "limit": 50, "remaining": 37 },
+    "compliancePrompt": { "limit": 100, "remaining": 98 }
+  },
+  "resetsAt": "2026-04-24T00:00:00.000Z"
 }
 ```
 
-## Buy more credits
-
-Top up at $0.10/credit when you need more than your included 1,000:
-
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/credits \
-  -H "Content-Type: application/json" \
-  -d '{ "credits": 500, "email": "<your_email>" }'
-```
-
-Open the returned checkout URL to pay. Credits are added immediately.
-
 ## Cancel your subscription
 
-Cancel anytime through the Stripe billing portal. Your existing credits remain usable, but API access ends when the current billing period expires.
+Cancel anytime through the Stripe billing portal. API access ends when the current billing period expires.
 
 ## Get pricing programmatically
 

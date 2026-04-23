@@ -1,0 +1,30 @@
+---
+title: "vidjutsu usage"
+description: "Show remaining daily capacity per endpoint"
+---
+
+```bash
+vidjutsu usage
+```
+
+Returns the daily rate-limit bucket for each endpoint with its limit and remaining calls. Buckets reset at 00:00 UTC.
+
+## Example
+
+```bash
+vidjutsu usage
+
+{
+  "clientId": "mc_...",
+  "usage": {
+    "watch":            { "limit": 50,  "remaining": 37 },
+    "extract":          { "limit": 100, "remaining": 92 },
+    "transcribe":       { "limit": 30,  "remaining": 30 },
+    "check":            { "limit": 100, "remaining": 100 },
+    "complianceVideo":  { "limit": 20,  "remaining": 20 },
+    "compliancePrompt": { "limit": 100, "remaining": 98 },
+    "overlay":          { "limit": 50,  "remaining": 50 }
+  },
+  "resetsAt": "2026-04-24T00:00:00.000Z"
+}
+```
