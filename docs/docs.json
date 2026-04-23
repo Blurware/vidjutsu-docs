@@ -78,6 +78,14 @@
             ]
           },
           {
+            "group": "Compliance",
+            "openapi": "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json",
+            "pages": [
+              "POST /v1/compliance/video",
+              "POST /v1/compliance/prompt"
+            ]
+          },
+          {
             "group": "Check Rules",
             "openapi": "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json",
             "pages": [
@@ -191,7 +199,8 @@
               "cli/extract",
               "cli/transcribe",
               "cli/check",
-              "cli/overlay"
+              "cli/overlay",
+              "cli/compliance"
             ]
           },
           {
