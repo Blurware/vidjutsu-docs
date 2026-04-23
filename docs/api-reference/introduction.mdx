@@ -18,55 +18,62 @@ curl https://api.vidjutsu.ai/v1/accounts \
   -H "Authorization: Bearer vj_live_your_key_here"
 ```
 
-Get your API key by [purchasing credits](/authentication) with any card via Stripe.
+Get your API key by [subscribing](/authentication) with any card via Stripe.
 
 ## Endpoints
 
 ### Intelligence
 
-| Method | Endpoint | Description | Credits |
-|--------|----------|-------------|---------|
-| POST | `/v1/watch` | AI watches video, freeform prompt | 10 |
-| POST | `/v1/extract` | Pull frames, audio, metadata via server-side processing | 5 |
-| POST | `/v1/transcribe` | Speech-to-text with word timing | 10 |
-| POST | `/v1/check` | Validate spec against rules | 5 |
-| GET | `/v1/check/rules` | Load per-client custom rules | 0 |
-| PUT | `/v1/check/rules` | Save per-client custom rules | 0 |
+Each intelligence endpoint has its own daily rate-limit bucket. Buckets are independent.
+
+| Method | Endpoint | Description | Calls / day |
+|--------|----------|-------------|-------------|
+| POST | `/v1/watch` | AI watches video, freeform prompt | 50 |
+| POST | `/v1/extract` | Pull frames, audio, metadata | 100 |
+| POST | `/v1/transcribe` | Speech-to-text with word timing | 30 |
+| POST | `/v1/check` | Validate spec against rules | 100 |
+| POST | `/v1/compliance/video` | Scan a video against platform TOS | 20 |
+| POST | `/v1/compliance/prompt` | Scan text against platform TOS | 100 |
+| POST | `/v1/overlay` | Burn text overlay onto a video | 50 |
+| GET | `/v1/check/rules` | Load per-client custom rules | unmetered |
+| PUT | `/v1/check/rules` | Save per-client custom rules | unmetered |
 
 ### Storage
 
-| Method | Endpoint | Description | Credits |
-|--------|----------|-------------|---------|
-| POST | `/v1/accounts` | Create an account record | 0 |
-| PUT | `/v1/accounts` | Update an account record | 0 |
-| GET | `/v1/accounts` | List accounts (supports tag filtering) | 0 |
-| DELETE | `/v1/accounts` | Delete an account | 0 |
-| POST | `/v1/posts` | Create a post record | 0 |
-| PUT | `/v1/posts` | Update a post record | 0 |
-| GET | `/v1/posts` | List posts (supports tag filtering) | 0 |
-| DELETE | `/v1/posts` | Delete a post | 0 |
-| POST | `/v1/upload` | Upload media to CDN | 0 |
-| POST | `/v1/upload/url` | Upload from external URL | 0 |
-| POST | `/v1/references` | Create a reference record | 0 |
-| PUT | `/v1/references` | Update a reference record | 0 |
-| GET | `/v1/references` | List references (supports tag filtering) | 0 |
-| DELETE | `/v1/references` | Delete a reference | 0 |
-| POST | `/v1/assets` | Create an asset record | 0 |
-| PUT | `/v1/assets` | Update an asset record | 0 |
-| GET | `/v1/assets` | List assets (supports tag filtering) | 0 |
-| DELETE | `/v1/assets` | Delete an asset | 0 |
+Storage endpoints are unmetered under your subscription.
 
-### Billing
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/accounts` | Create an account record |
+| PUT | `/v1/accounts` | Update an account record |
+| GET | `/v1/accounts` | List accounts (supports tag filtering) |
+| DELETE | `/v1/accounts` | Delete an account |
+| POST | `/v1/posts` | Create a post record (200/day) |
+| PUT | `/v1/posts` | Update a post record |
+| GET | `/v1/posts` | List posts (supports tag filtering) |
+| DELETE | `/v1/posts` | Delete a post |
+| POST | `/v1/upload` | Upload media to CDN (100/day) |
+| POST | `/v1/upload/url` | Upload from external URL |
+| POST | `/v1/references` | Create a reference record |
+| PUT | `/v1/references` | Update a reference record |
+| GET | `/v1/references` | List references (supports tag filtering) |
+| DELETE | `/v1/references` | Delete a reference |
+| POST | `/v1/assets` | Create an asset record |
+| PUT | `/v1/assets` | Update an asset record |
+| GET | `/v1/assets` | List assets (supports tag filtering) |
+| DELETE | `/v1/assets` | Delete an asset |
 
-| Method | Endpoint | Description | Credits |
-|--------|----------|-------------|---------|
-| POST | `/v1/credits` | Start a Stripe checkout session | 0 |
-| GET | `/v1/credits/status` | Check payment status / get API key | 0 |
-| POST | `/v1/api_keys/rotate` | Rotate your API key | 0 |
-| POST | `/v1/api_keys/recover` | Recover a lost API key | 0 |
-| GET | `/v1/balance` | Check credit balance | 0 |
-| GET | `/v1/pricing` | Get current pricing table | 0 |
-| POST | `/v1/subscribe` | Start a subscription checkout session | 0 |
+### Billing & Keys
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/subscribe` | Start a subscription checkout session |
+| GET | `/v1/credits/status` | Poll checkout status, retrieve API key |
+| GET | `/v1/usage` | Remaining daily capacity per endpoint |
+| GET | `/v1/pricing` | Current pricing + limits table |
+| POST | `/v1/api_keys/rotate` | Rotate your API key |
+| POST | `/v1/api_keys/recover` | Recover a lost API key |
+| GET | `/v1/info` | API discovery + endpoint catalog |
 
 ## Tags
 
@@ -92,25 +99,25 @@ Filter on GET requests: `?tag.brand=summer-launch`
 | `202` | Accepted (async operation started) |
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
-| `402` | Insufficient credits |
+| `402` | Subscription inactive or expired |
+| `429` | Daily rate limit reached |
 
 ## Error format
 
-All errors return a consistent JSON structure:
+All errors return a consistent JSON structure. On `429`, the response includes `retryAfter` (seconds until the bucket resets at 00:00 UTC):
 
 ```json
 {
-  "error": "insufficient_credits",
-  "message": "This operation requires 10 credits but you have 2",
-  "setup": "/v1/credits"
+  "error": "rate_limited",
+  "message": "Daily limit reached for watch (50/day). Resets at midnight UTC.",
+  "limit": 50,
+  "retryAfter": 14523
 }
 ```
 
-The `setup` field is included on `402` errors to help agents self-recover by initiating a top-up.
-
 ## Synchronous responses
 
-All intelligence endpoints (`/v1/watch`, `/v1/extract`, `/v1/transcribe`, `/v1/check`) return synchronous `200` responses with the result in the body. No polling required.
+All intelligence endpoints return synchronous `200` responses with the result in the body. No polling required.
 
 ## CORS
 
@@ -118,8 +125,4 @@ The API allows cross-origin requests from any origin. Allowed headers: `Content-
 
 ## Versioning
 
-Responses include the `VidJutsu-Version` header (`2026-03-25`) indicating the current API version.
-
-## Rate limits
-
-No rate limits are enforced during beta. Fair use applies.
+Responses include the `VidJutsu-Version` header indicating the current API version.

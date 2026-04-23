@@ -84,6 +84,9 @@ Our ingestion pipeline weekly scrapes each platform's policy pages (YouTube Comm
 3. Every citation in the response is drawn verbatim from our ingested corpus — no fabricated rules
 4. The risk score is deterministic: severity weights sum to a 0–100 value, capped at 100
 
-## Credits
+## Rate limits
 
-20 credits per `video` call. 5 credits per `prompt` call.
+- `video` — 20 calls per day
+- `prompt` — 100 calls per day
+
+Separate buckets. Check remaining capacity with `vidjutsu usage`.

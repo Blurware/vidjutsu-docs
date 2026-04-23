@@ -51,9 +51,9 @@ Organize your content library with accounts, posts, assets, references, and tags
 
 ## How it works
 
-1. **Get your API key** — `POST /v1/credits` with your email. Pay with any card via Stripe. Poll `GET /v1/credits/status` after payment.
-2. **Analyze your content** — Call `/v1/watch`, `/v1/extract`, `/v1/transcribe`, or `/v1/check` on any public video URL.
-3. **Store and organize** — Create accounts, posts, assets, and references as data records (0 credits). Tag them for filtering.
+1. **Get your API key** — `POST /v1/subscribe` with your email, then pay the $99/mo via Stripe. Poll `GET /v1/credits/status` after payment to retrieve your key.
+2. **Analyze your content** — Call `/v1/watch`, `/v1/extract`, `/v1/transcribe`, `/v1/check`, or `/v1/compliance/*` on any public video URL or text input.
+3. **Store and organize** — Create accounts, posts, assets, and references as data records. Tag them for filtering.
 
 ## Choose your interface
 
