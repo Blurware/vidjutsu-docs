@@ -128,7 +128,7 @@ export function TerminalDemo() {
             Scan a post. See the risk. Ship or fix.
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Paste your caption or drop a video URL. Get back the exact rule you'd break and where on the platform's site it lives.
+            Paste a caption or drop a video. You get a risk score and the rule behind every flag.
           </p>
         </div>
 

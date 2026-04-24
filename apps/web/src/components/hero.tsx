@@ -18,15 +18,15 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Post safer. Ship faster.
+            Stop rolling the dice on every post.
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Know if your post gets you banned. Before you hit post.
+            Check every post before it goes live.
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            We check your video or caption against YouTube, TikTok, Instagram, and Facebook Ads rules. You get a risk score and the exact rule you might break. Ship what works. Cut what doesn't.
+            Every video and every caption gets a risk score. Plus the rule behind every flag. One check saves weeks of pain.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">

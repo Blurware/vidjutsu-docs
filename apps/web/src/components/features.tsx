@@ -1,7 +1,7 @@
 const FEATURES = [
   {
     title: "Compliance",
-    desc: "Don't guess if your post is safe. We tell you the exact rule you'd break and quote it back to you. YouTube, TikTok, Instagram, Facebook Ads.",
+    desc: "YouTube, TikTok, Instagram, Facebook Ads. We know the rules. Every video and every caption gets a risk score and the quote.",
   },
   {
     title: "Watch",
@@ -33,7 +33,7 @@ export function Features() {
           What you get
         </p>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center">
-          Keep your accounts. Keep your money.
+          Six tools. One job: keep you posting.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10 max-w-5xl mx-auto">
