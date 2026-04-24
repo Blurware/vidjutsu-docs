@@ -18,15 +18,15 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Video Intelligence & Platform Compliance API
+            Post safer. Ship faster.
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Catch violations before you post.
+            Know if your post gets you banned. Before you hit post.
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            Pre-flight any video or caption against YouTube, TikTok, Instagram, and Facebook Ads policies. Cited clauses, deterministic risk score, zero guesswork. Plus a full video intelligence stack: watch, extract, transcribe, check.
+            We check your video or caption against YouTube, TikTok, Instagram, and Facebook Ads rules. You get a risk score and the exact rule you might break. Ship what works. Cut what doesn't.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">

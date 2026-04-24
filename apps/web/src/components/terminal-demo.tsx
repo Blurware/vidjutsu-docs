@@ -7,17 +7,19 @@ const EXAMPLES = [
     label: "Compliance",
     lines: [
       '$ vidjutsu compliance prompt \\',
-      '    --text "Get rich in 30 days guaranteed — insider tip" \\',
+      '    --text "Get rich in 30 days guaranteed" \\',
       "    --platform instagram",
-      "Scanning against Instagram policies...",
+      "Checking...",
       "",
-      "riskScore: 45   verdict: high-risk",
-      "violations: 3",
+      "Risk: 45/100  →  high-risk",
       "",
-      "  [high] misinformation — misleading financial claim",
-      '    cite: "Do not share content with promises of',
-      '           guaranteed financial returns..."',
-      "    source: transparency.meta.com/.../misinformation",
+      "Why:",
+      "  You promise guaranteed money. Instagram bans that.",
+      "",
+      "The rule:",
+      '  "Do not share content with promises of',
+      '   guaranteed financial returns."',
+      "  meta.com › community-standards › misinformation",
     ],
   },
   {
@@ -120,13 +122,13 @@ export function TerminalDemo() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
-            Your agent at work
+            One command
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-            See it in action
+            Scan a post. See the risk. Ship or fix.
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Pre-flight any post against platform TOS, then watch, extract, transcribe, and check. Your pipeline decides what ships.
+            Paste your caption or drop a video URL. Get back the exact rule you'd break and where on the platform's site it lives.
           </p>
         </div>
 
