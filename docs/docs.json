@@ -34,6 +34,12 @@
               "authentication",
               "credits-and-billing"
             ]
+          },
+          {
+            "group": "Legal",
+            "pages": [
+              "legal/terms"
+            ]
           }
         ]
       },
