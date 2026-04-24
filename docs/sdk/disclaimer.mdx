@@ -1,0 +1,36 @@
+---
+title: "createDisclaimer"
+description: "Burn a fine-print disclaimer at the bottom of a video."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.createDisclaimer({
+  videoUrl: "https://cdn.example.com/ad.mp4",
+  text: "Results not typical. Consult a professional.",
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `videoUrl` | `string` | Yes | — | URL of the source video |
+| `text` | `string` | Yes | — | Disclaimer text. Use `\n` for line breaks |
+| `fontSize` | `number` | No | 2.2% of video height | Font size in pixels |
+
+## Response
+
+```json
+{
+  "id": "dsc_...",
+  "resultUrl": "https://cdn.vidjutsu.ai/disclaimers/dsc_.../output.mp4"
+}
+```
+
+Text is always centered at the bottom with a subtle 1px outline. For FTC-style disclosures: results-not-typical, paid-endorsement, AI-generated labels.
+
+## Credits
+
+5 credits per call.
