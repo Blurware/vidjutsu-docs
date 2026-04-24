@@ -18,15 +18,15 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Video Intelligence API
+            Video Intelligence & Platform Compliance API
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            The feedback loop your agent is missing.
+            Catch violations before you post.
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            Watch. Extract. Transcribe. Check. Four primitives for video intelligence.
+            Pre-flight any video or caption against YouTube, TikTok, Instagram, and Facebook Ads policies. Cited clauses, deterministic risk score, zero guesswork. Plus a full video intelligence stack: watch, extract, transcribe, check.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">

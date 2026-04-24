@@ -4,6 +4,23 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 const EXAMPLES = [
   {
+    label: "Compliance",
+    lines: [
+      '$ vidjutsu compliance prompt \\',
+      '    --text "Get rich in 30 days guaranteed — insider tip" \\',
+      "    --platform instagram",
+      "Scanning against Instagram policies...",
+      "",
+      "riskScore: 45   verdict: high-risk",
+      "violations: 3",
+      "",
+      "  [high] misinformation — misleading financial claim",
+      '    cite: "Do not share content with promises of',
+      '           guaranteed financial returns..."',
+      "    source: transparency.meta.com/.../misinformation",
+    ],
+  },
+  {
     label: "Watch",
     lines: [
       '$ vidjutsu watch --video-url https://cdn.example.com/reel-042.mp4 --prompt "Is the hook effective?"',
@@ -109,7 +126,7 @@ export function TerminalDemo() {
             See it in action
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Your agent sends a video. VidJutsu watches, extracts, transcribes, and checks. Your pipeline decides what ships.
+            Pre-flight any post against platform TOS, then watch, extract, transcribe, and check. Your pipeline decides what ships.
           </p>
         </div>
 

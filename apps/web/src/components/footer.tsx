@@ -43,6 +43,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Company</h4>
             <ul className="space-y-2.5">
               <li><a href="mailto:support@vidjutsu.ai" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Contact</a></li>
+              <li><a href="https://docs.vidjutsu.ai/legal/terms" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>
