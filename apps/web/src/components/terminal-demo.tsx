@@ -3,19 +3,19 @@
 const LINES = [
   "$ vidjutsu compliance video \\",
   "    --video-url https://example.com/your-video.mp4 \\",
-  "    --platform tiktok",
-  "Checking...",
+  "    --platform youtube",
   "",
-  "Risk: 45/100  →  high-risk",
+  "risk_score: 88/100",
+  "level: high",
   "",
-  "Why:",
-  '  The ad uses "Idgaf" and shouts profanity.',
-  "  TikTok bans insulting words in ads.",
+  "flags:",
+  "  profanity_in_audio  strong_language  count:7  span:00:00:04-00:00:18",
   "",
-  "The rule:",
-  '  "We do not allow insulting words or actions',
-  '   or gestures in ad content."',
-  "  ads.tiktok.com › tiktok-ads-policy › other-products",
+  "primary_reason:",
+  "  repeated_uncensored_expletives_in_voiceover",
+  "",
+  "cited_rules:",
+  "  community_guidelines / harassment_and_abuse / profanity_and_slurs",
 ];
 
 export function TerminalDemo() {
@@ -27,11 +27,11 @@ export function TerminalDemo() {
             Example
           </p>
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            See the risk before you upload
+            See the risk before you post
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            One CLI call (or API call) on your video URL. You get a score and the
-            reasons — then you decide.
+            Sample output: high score from profanity in the audio track — no extra
+            narration from the tool.
           </p>
         </div>
 

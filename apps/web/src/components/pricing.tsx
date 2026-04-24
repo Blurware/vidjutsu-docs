@@ -30,8 +30,8 @@ export function Pricing() {
             </div>
 
             <p className="text-sm text-ink-muted mb-6 leading-relaxed">
-              Full API access for your stack. Use it as a gate before anything goes
-              public on YouTube, TikTok, Instagram, or Meta ads.
+              Full API access for your stack. Use it as a gate before you post to
+              YouTube, TikTok, Instagram, or Meta ads.
             </p>
 
             <a

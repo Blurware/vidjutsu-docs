@@ -2,7 +2,7 @@ const STEPS = [
   {
     num: "01",
     title: "Paste your video URL",
-    desc: "Send the hosted file you plan to publish. No upload drama — one URL is enough.",
+    desc: "Send the hosted file you plan to post. One URL is enough.",
   },
   {
     num: "02",
@@ -12,7 +12,7 @@ const STEPS = [
   {
     num: "03",
     title: "Fix it, then post",
-    desc: "You get a risk score, plain reasons, and the policy line behind each flag — before you hit publish.",
+    desc: "You get a risk score, plain reasons, and the policy line behind each flag — before you post.",
   },
 ];
 
@@ -24,7 +24,7 @@ export function HowItWorks() {
           How it works
         </p>
         <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
-          URL in. Risk out. Then you ship.
+          URL in. Risk out. Then you post.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">

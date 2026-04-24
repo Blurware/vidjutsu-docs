@@ -25,13 +25,10 @@ export function Hero() {
             Catch strikes and shadowbans before they happen.
           </h1>
 
-          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-3 max-w-xl mx-auto">
-            Platforms often act after your video is live. One clip can break a
-            rule you never saw — and there are hundreds of them.
-          </p>
-          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            VidJutsu scans your file against the rules we track for that platform.
-            You get a risk score and what to fix — while you can still edit.
+          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto">
+            Platforms often strike or cut your reach after you post. VidJutsu
+            scores your video against hundreds of rules first — so you see what to
+            fix before you post.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">

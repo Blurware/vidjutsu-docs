@@ -5,7 +5,7 @@ import { useState } from "react";
 const FAQS = [
   {
     q: "What does VidJutsu check?",
-    a: "Your video file, end to end, against the platform rules we track for the network you choose. You get a risk score and citations so you know what to change before you publish.",
+    a: "Your video file, end to end, against the platform rules we track for the network you choose. You get a risk score and citations so you know what to change before you post.",
   },
   {
     q: "Why scan before I post?",
