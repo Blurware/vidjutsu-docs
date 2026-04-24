@@ -1,7 +1,7 @@
 const FEATURES = [
   {
     title: "Compliance",
-    desc: "YouTube, TikTok, Instagram, Facebook Ads. We know the rules. Every video and every caption gets a risk score and the quote.",
+    desc: "YouTube, TikTok, Instagram, Facebook Ads. We know the rules. Every video gets a risk score and the quote from the rulebook.",
   },
   {
     title: "Watch",

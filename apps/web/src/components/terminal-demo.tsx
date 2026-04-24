@@ -6,20 +6,21 @@ const EXAMPLES = [
   {
     label: "Compliance",
     lines: [
-      '$ vidjutsu compliance prompt \\',
-      '    --text "Get rich in 30 days guaranteed" \\',
-      "    --platform instagram",
+      '$ vidjutsu compliance video \\',
+      '    --video-url https://cdn.example.com/ad-083.mp4 \\',
+      "    --platform tiktok",
       "Checking...",
       "",
       "Risk: 45/100  →  high-risk",
       "",
       "Why:",
-      "  You promise guaranteed money. Instagram bans that.",
+      '  The ad uses "Idgaf" and shouts profanity.',
+      "  TikTok bans insulting words in ads.",
       "",
       "The rule:",
-      '  "Do not share content with promises of',
-      '   guaranteed financial returns."',
-      "  meta.com › community-standards › misinformation",
+      '  "We do not allow insulting words or actions',
+      '   or gestures in ad content."',
+      "  ads.tiktok.com › tiktok-ads-policy › other-products",
     ],
   },
   {
@@ -128,7 +129,7 @@ export function TerminalDemo() {
             Scan a post. See the risk. Ship or fix.
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Paste a caption or drop a video. You get a risk score and the rule behind every flag.
+            Drop a video URL. You get a risk score and the rule behind every flag.
           </p>
         </div>
 

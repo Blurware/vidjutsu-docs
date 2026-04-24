@@ -26,7 +26,7 @@ export function Hero() {
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            Every video and every caption gets a risk score. Plus the rule behind every flag. One check saves weeks of pain.
+            Every video gets a risk score. Plus the rule behind every flag. One check saves weeks of pain.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
