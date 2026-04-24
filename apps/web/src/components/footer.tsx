@@ -8,6 +8,7 @@ export function Footer() {
             <ul className="space-y-2.5">
               <li><a href="#how-it-works" className="text-[13px] text-ink-muted hover:text-ink transition-colors">How it works</a></li>
               <li><a href="#voices" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Why scan first</a></li>
+              <li><a href="#who-its-for" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Who it&apos;s for</a></li>
               <li><a href="#try-it" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Example</a></li>
               <li><a href="#pricing" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Pricing</a></li>
               <li><a href="#faq" className="text-[13px] text-ink-muted hover:text-ink transition-colors">FAQ</a></li>

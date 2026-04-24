@@ -3,6 +3,7 @@
 const LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Why scan", href: "#voices" },
+  { label: "Who it's for", href: "#who-its-for" },
   { label: "Example", href: "#try-it" },
   { label: "Pricing", href: "#pricing" },
   { label: "FAQ", href: "#faq" },

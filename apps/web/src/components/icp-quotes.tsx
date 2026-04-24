@@ -1,4 +1,5 @@
 const VOICES = [
+  "Advertisers wouldn't even see my videos because of some small change in the Terms of Service. Now I know without having to check every time.",
   "I used to guess whether a clip was safe. Now I run it through VidJutsu before it hits my channels — I catch problems before an automated system can strike or bury my reach.",
   "I post at volume. I do not have time to read every rule change. I needed one step that says \"fix this now\" instead of finding out after the fact.",
   "Brand deals mean I cannot afford a surprise takedown. I scan first — same file, clear risk readout, then I post.",
