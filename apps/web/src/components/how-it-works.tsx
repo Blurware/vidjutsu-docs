@@ -1,30 +1,30 @@
 const STEPS = [
   {
     num: "01",
-    title: "Send a URL or text",
-    desc: "Point us at a hosted video, or paste a prompt, script, caption, or ad line you plan to use.",
+    title: "Paste your video URL",
+    desc: "Send the hosted file you plan to publish. No upload drama — one URL is enough.",
   },
   {
     num: "02",
-    title: "We run the deep check",
-    desc: "For compliance, we watch the full video and stack it next to hundreds of platform rules. Other tools do watch, extract, transcribe, or custom checks.",
+    title: "We scan the whole clip",
+    desc: "We watch your video and check it against hundreds of platform rules for the network you pick.",
   },
   {
     num: "03",
-    title: "Read the report, then post",
-    desc: "You get a risk score, reasons in plain language, and citations — so you fix issues before the upload button.",
+    title: "Fix it, then post",
+    desc: "You get a risk score, plain reasons, and the policy line behind each flag — before you hit publish.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="px-5 sm:px-8 py-16 sm:py-24">
+    <section id="how-it-works" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-6xl mx-auto">
-        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4 text-center">
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3 text-center">
           How it works
         </p>
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-10 text-center max-w-xl mx-auto">
-          Three steps from file to clear go / no-go
+        <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
+          URL in. Risk out. Then you ship.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">

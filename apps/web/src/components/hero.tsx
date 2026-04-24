@@ -14,31 +14,27 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="px-5 sm:px-8 pt-24 sm:pt-32 pb-16 sm:pb-24">
+    <section className="px-5 sm:px-8 pt-24 sm:pt-32 pb-14 sm:pb-20">
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Pre-publish checks for serious creators
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
+            Scan your video before you post
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Catch strikes and shadowbans before you post.
+            Catch strikes and shadowbans before they happen.
           </h1>
 
-          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-            Many platforms only step in after your video is live. You can get a
-            strike, lose reach with no clear warning, or a shadowban. That often
-            means your clip broke their terms — and there are hundreds of rules,
-            with more added all the time.
+          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-3 max-w-xl mx-auto">
+            Platforms often act after your video is live. One clip can break a
+            rule you never saw — and there are hundreds of them.
           </p>
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            VidJutsu watches your file (or your prompt, script, or caption) and
-            checks it against every rule we track for that platform. You get a risk
-            report before you post. Built for brand deals, monetization, more views,
-            and agent-built pipelines — without a separate compliance team.
+            VidJutsu scans your file against the rules we track for that platform.
+            You get a risk score and what to fix — while you can still edit.
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
             <a
               href="https://docs.vidjutsu.ai/quickstart"
               className="inline-flex items-center justify-center px-5 py-2.5 bg-brand text-white text-sm font-medium rounded hover:bg-brand-hover transition-colors"
@@ -53,17 +49,21 @@ export function Hero() {
             </a>
           </div>
 
-          <button
-            type="button"
-            onClick={copy}
-            className="group inline-flex items-center gap-3 font-mono text-[13px] text-ink-muted hover:text-ink transition-colors cursor-pointer"
-          >
-            <span className="text-ink-light select-none">$</span>
-            <span>{INSTALL_CMD}</span>
-            <span className="text-[11px] text-ink-light group-hover:text-ink-muted transition-colors">
-              {copied ? "copied" : "copy"}
-            </span>
-          </button>
+          <div className="max-w-full mx-auto text-left sm:text-center">
+            <button
+              type="button"
+              onClick={copy}
+              className="group w-full sm:w-auto sm:inline-flex flex-col sm:flex-row sm:items-center sm:justify-center gap-1 sm:gap-3 font-mono text-[11px] sm:text-[13px] text-ink-muted hover:text-ink transition-colors cursor-pointer break-all sm:break-normal text-left sm:text-center"
+            >
+              <span className="inline-flex items-baseline gap-2 sm:gap-3 flex-wrap">
+                <span className="text-ink-light select-none shrink-0">$</span>
+                <span className="min-w-0">{INSTALL_CMD}</span>
+                <span className="text-[10px] sm:text-[11px] text-ink-light group-hover:text-ink-muted transition-colors shrink-0">
+                  {copied ? "copied" : "copy"}
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

@@ -4,28 +4,16 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What is VidJutsu for?",
-    a: "It is an API that understands video and text. The main win for most teams is compliance: we score a clip or prompt against hundreds of platform rules and return a risk report with citations. You can also watch a video with a free-form question, extract frames and audio, transcribe speech, or run custom checks.",
+    q: "What does VidJutsu check?",
+    a: "Your video file, end to end, against the platform rules we track for the network you choose. You get a risk score and citations so you know what to change before you publish.",
   },
   {
-    q: "Why check before I post?",
-    a: "Platforms often enforce terms after content is public — strikes, removals, or reduced reach you were not warned about ahead of time. A pre-publish scan surfaces rule conflicts while you can still edit.",
+    q: "Why scan before I post?",
+    a: "Many networks react after the fact — strikes, removed videos, or reach that drops with little warning. Scanning first turns that into a fix list while you still control the file.",
   },
   {
-    q: "Do I need VidJutsu to make the video?",
-    a: "No. Use any generator or editor you like. VidJutsu reviews what you already made — or the text you plan to use — so your pipeline can stay automated end to end.",
-  },
-  {
-    q: "What is the difference between watch and transcribe?",
-    a: "Watch answers a question about the full picture and sound. Transcribe is speech-to-text only, with a time stamp on each word.",
-  },
-  {
-    q: "What can I do with extract?",
-    a: "Pull key frames, an audio file, and technical details such as length and resolution from a hosted URL. It runs on our side so you do not need local ffmpeg jobs.",
-  },
-  {
-    q: "How do credits work?",
-    a: "The $99 per month plan includes 1,000 credits. Watch and transcribe cost 10 credits each call. Extract and check cost 5 credits each. Uploads and storage cost zero credits. Extra credits are $0.10 each.",
+    q: "How do I start?",
+    a: "Grab an API key and call the compliance video endpoint from your code or the CLI. Full steps are in the quickstart.",
   },
 ];
 
@@ -66,15 +54,15 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export function Faq() {
   return (
-    <section id="faq" className="px-5 sm:px-8 py-16 sm:py-24 bg-surface-alt">
+    <section id="faq" className="px-5 sm:px-8 py-14 sm:py-20 bg-surface-alt">
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          <div className="text-center mb-8">
+            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3">
               FAQ
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em]">
-              Common questions
+            <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em]">
+              Quick answers
             </h2>
           </div>
           <div>

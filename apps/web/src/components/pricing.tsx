@@ -1,16 +1,17 @@
 export function Pricing() {
   return (
-    <section id="pricing" className="px-5 sm:px-8 py-16 sm:py-24">
+    <section id="pricing" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+        <div className="text-center mb-10">
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3">
             Pricing
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-3">
-            Simple, predictable pricing
+          <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-2">
+            $99 / month. API access.
           </h2>
-          <p className="text-ink-muted text-sm">
-            One plan. No tiers to compare.
+          <p className="text-ink-muted text-sm max-w-md mx-auto">
+            Flat subscription. Daily limits per endpoint — see docs for current
+            numbers. Compliance video scans have their own daily cap.
           </p>
         </div>
 
@@ -28,39 +29,9 @@ export function Pricing() {
               </div>
             </div>
 
-            <ul className="space-y-3 text-sm text-ink-muted mb-6">
-              <li className="flex justify-between">
-                <span>Included credits</span>
-                <span className="font-medium text-ink">1,000/mo</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Watch</span>
-                <span className="font-medium text-ink">10 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Extract</span>
-                <span className="font-medium text-ink">5 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Transcribe</span>
-                <span className="font-medium text-ink">10 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Check</span>
-                <span className="font-medium text-ink">5 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Upload / accounts / posts</span>
-                <span className="font-medium text-ink">0 credits</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Additional credits</span>
-                <span className="font-medium text-ink">$0.10 each</span>
-              </li>
-            </ul>
-
-            <p className="text-xs text-ink-light mb-6">
-              That&apos;s ~100 video analyses per month included.
+            <p className="text-sm text-ink-muted mb-6 leading-relaxed">
+              Full API access for your stack. Use it as a gate before anything goes
+              public on YouTube, TikTok, Instagram, or Meta ads.
             </p>
 
             <a
@@ -69,6 +40,14 @@ export function Pricing() {
             >
               Get API Key
             </a>
+            <p className="text-xs text-ink-light mt-4 text-center">
+              <a
+                href="https://docs.vidjutsu.ai/credits-and-billing"
+                className="underline hover:text-ink-muted transition-colors"
+              >
+                Rate limits and billing details
+              </a>
+            </p>
           </div>
         </div>
       </div>
