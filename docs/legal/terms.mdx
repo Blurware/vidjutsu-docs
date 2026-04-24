@@ -24,11 +24,12 @@ VidJutsu is a developer API that performs automated analysis of audiovisual cont
 - VidJutsu is not a law firm. We do not provide attorney-client relationships. For legal advice about any specific post or campaign, consult qualified counsel in your jurisdiction.
 - Using the output to make publishing decisions is solely at your discretion. VidJutsu is not liable for platform actions (demonetization, removal, suspension, account termination) taken against content you publish.
 
-## 4. Policy Data and Freshness
+## 4. Policy Data
 
-- We re-ingest platform policy pages on a weekly schedule. The `policySnapshotDate` on every response indicates the date of the latest corpus update at the time of your scan.
-- Platforms may change their policies at any time, including silently. We do not guarantee real-time accuracy. A scan reflects our best snapshot at the time it ran, not the current state of any platform's enforcement.
-- We make no warranty that our ingestion captures every rule on every page, that rules are correctly categorized, or that our chunking preserves full context. Citations link back to the source page so you can verify.
+- The `policySnapshotDate` on every response indicates the date associated with the latest corpus update our scan was evaluated against. It is a timestamp, not a warranty.
+- **No freshness guarantee.** VidJutsu makes no commitment, express or implied, about how often the policy corpus is updated, whether it reflects the current state of any platform's published rules, or whether any given policy page has ever been ingested. The corpus may be weeks, months, or arbitrarily out of date at the moment of any given scan.
+- **No accuracy guarantee.** We make no warranty that our ingestion captures every rule on every page, that rules are correctly categorized, that chunking preserves full context, or that citations reflect the platform's current enforcement stance. Citations link back to the platform's own source page so you can verify against the live policy yourself — you are expected to do so before relying on any result.
+- Platforms may change their policies at any time, including silently. VidJutsu has no obligation to detect, reflect, or notify you of such changes.
 
 ## 5. Your Content
 
@@ -61,13 +62,17 @@ You grant VidJutsu a limited license to process your content to provide the serv
 - Uninterrupted or error-free operation
 - That any platform will take or refrain from any enforcement action consistent with our analysis
 
-## 9. Limitation of Liability
+## 9. No Liability
 
-To the maximum extent permitted by law:
+**To the maximum extent permitted by law, VidJutsu has no liability to you, and you assume all risk, arising from or related to these terms, the service, or any output the service produces.**
 
-- VidJutsu's total liability for any claim arising from or related to these terms or the service is **capped at the fees you paid VidJutsu in the 12 months preceding the claim**.
-- VidJutsu is **not liable for indirect, incidental, special, consequential, or punitive damages**, including lost profits, lost revenue, platform enforcement actions (bans, demonetization, strikes), loss of audience, or reputational harm — regardless of whether VidJutsu was advised of the possibility.
-- This limitation applies to all theories of liability (contract, tort, strict liability, etc.).
+Specifically, and without limiting the generality of the foregoing:
+
+- VidJutsu shall not be liable for **any damages of any kind**, whether direct, indirect, incidental, consequential, special, exemplary, or punitive — including without limitation lost profits, lost revenue, lost savings, platform enforcement actions (demonetization, shadow-bans, suspensions, account termination, content removal, strikes), loss of audience, business interruption, reputational harm, legal fees, or costs of substitute services — regardless of the theory of liability (contract, tort, strict liability, negligence, statute, or otherwise) and regardless of whether VidJutsu was advised of the possibility of such damages.
+- You acknowledge that the service is provided at no price-matched-to-risk premium; the fee structure assumes **zero liability** on VidJutsu's part for any outcome of your use of the output.
+- Any compliance scan, citation, verdict, or risk score is offered at your sole risk. You are the decision-maker on every publish, monetization, or ad-buy decision; VidJutsu provides analysis only and bears no responsibility for the consequences of acting on it.
+
+Where applicable law does not permit the exclusion or limitation of certain damages, VidJutsu's liability in those jurisdictions is limited to the minimum amount permitted by that law.
 
 ## 10. Indemnification
 
