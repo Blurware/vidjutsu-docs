@@ -1,27 +1,27 @@
 const FEATURES = [
   {
     title: "Compliance",
-    desc: "YouTube, TikTok, Instagram, Facebook Ads. We know the rules. Every video gets a risk score and the quote from the rulebook.",
+    desc: "YouTube, TikTok, Instagram, and Meta ad rules in one pass. Your clip gets a risk score and the exact policy quote for each flag.",
   },
   {
     title: "Watch",
-    desc: "Ask any question about a video. Your AI watches. Your AI answers.",
+    desc: "Ask a plain question about a video. You get an answer based on what is on screen and in the audio.",
   },
   {
     title: "Transcribe",
-    desc: "Turn speech into text. With timings for every word.",
+    desc: "Speech to text with a time stamp for every word.",
   },
   {
     title: "Extract",
-    desc: "Pull frames, audio, and metadata out of a video. No local tools.",
+    desc: "Pull frames, audio, and metadata from a URL. Nothing to install on your machine.",
   },
   {
     title: "Check",
-    desc: "Run your own rules against a spec. Pass or fail, every time.",
+    desc: "Run your own brief against your own rules. Pass or fail, every time.",
   },
   {
     title: "Storage",
-    desc: "Store your videos. Tag them. Find them in a second.",
+    desc: "Store videos, tag them, and pull them back fast.",
   },
 ];
 
@@ -32,8 +32,8 @@ export function Features() {
         <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4 text-center">
           What you get
         </p>
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center">
-          Six tools. One job: keep you posting.
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-12 text-center max-w-2xl mx-auto">
+          Compliance is the headline. Watch, extract, transcribe, and check fill out the stack.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10 max-w-5xl mx-auto">

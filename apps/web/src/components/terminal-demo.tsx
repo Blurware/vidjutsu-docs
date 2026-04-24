@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 
 const EXAMPLES = [
   {
@@ -84,38 +84,6 @@ const EXAMPLES = [
 
 export function TerminalDemo() {
   const [exampleIdx, setExampleIdx] = useState(0);
-  const [lineCount, setLineCount] = useState(0);
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const runExample = useCallback((idx: number) => {
-    setLineCount(0);
-    setExampleIdx(idx);
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-
-    const example = EXAMPLES[idx];
-    example.lines.forEach((_, i) => {
-      const t = setTimeout(() => setLineCount(i + 1), 500 + i * 700);
-      timeoutsRef.current.push(t);
-    });
-
-    const next = setTimeout(() => {
-      runExample((idx + 1) % EXAMPLES.length);
-    }, 500 + example.lines.length * 700 + 2000);
-    timeoutsRef.current.push(next);
-  }, []);
-
-  useEffect(() => {
-    runExample(0);
-    return () => timeoutsRef.current.forEach(clearTimeout);
-  }, [runExample]);
-
-  const switchTo = (idx: number) => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-    runExample(idx);
-  };
-
   const example = EXAMPLES[exampleIdx];
 
   return (
@@ -123,22 +91,23 @@ export function TerminalDemo() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
-            One command
+            See it in the CLI
           </p>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-            Scan a post. See the risk. Ship or fix.
+            One command. A full risk readout.
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Drop a video URL. You get a risk score and the rule behind every flag.
+            Paste a URL. Get a score, plain-English reasons, and the exact policy line — before you post.
           </p>
         </div>
 
         <div>
-          <div className="flex justify-center gap-1 mb-3">
+          <div className="flex flex-wrap justify-center gap-1 mb-3">
             {EXAMPLES.map((ex, i) => (
               <button
                 key={ex.label}
-                onClick={() => switchTo(i)}
+                type="button"
+                onClick={() => setExampleIdx(i)}
                 className={`text-[11px] font-medium px-3 py-1.5 rounded transition-colors cursor-pointer ${
                   i === exampleIdx
                     ? "bg-ink text-surface"
@@ -157,17 +126,14 @@ export function TerminalDemo() {
               </span>
             </div>
             <div className="p-4 sm:p-5 font-mono text-[11px] sm:text-[12px] leading-[1.9] min-h-[240px] overflow-x-auto">
-              {example.lines.slice(0, lineCount).map((line, i) => (
-                <div key={`${exampleIdx}-${i}`} className={line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}>
+              {example.lines.map((line, i) => (
+                <div
+                  key={`${exampleIdx}-${i}`}
+                  className={line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}
+                >
                   {line || "\u00A0"}
                 </div>
               ))}
-              {lineCount < example.lines.length && (
-                <span
-                  className="inline-block w-[7px] h-[14px] bg-ink/30"
-                  style={{ animation: "blink 1s step-end infinite" }}
-                />
-              )}
             </div>
           </div>
         </div>

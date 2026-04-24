@@ -1,7 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
 const LINKS = [
   { label: "How it works", href: "#how-it-works" },
   { label: "Features", href: "#features" },
@@ -10,22 +8,8 @@ const LINKS = [
 ];
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-40 transition-[background-color,border-color] duration-300 ${
-        scrolled
-          ? "bg-surface/95 backdrop-blur-sm border-b border-border"
-          : "border-b border-transparent"
-      }`}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-center h-14 gap-8">
         <a href="/" className="text-[15px] font-semibold tracking-[-0.02em]">
           VidJutsu

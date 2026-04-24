@@ -4,24 +4,28 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What does VidJutsu do?",
-    a: "Video intelligence API with four primitives. Watch understands video from a freeform prompt. Extract pulls frames, audio, and metadata via server-side processing. Transcribe converts speech to text with word-level timing. Check validates specs against rules.",
+    q: "What is VidJutsu for?",
+    a: "It is an API that understands video and text. The main win for most teams is compliance: we score a clip or prompt against hundreds of platform rules and return a risk report with citations. You can also watch a video with a free-form question, extract frames and audio, transcribe speech, or run custom checks.",
   },
   {
-    q: "Do I need VidJutsu to generate videos?",
-    a: "No. Use any generation tool — Kling, Veo, Runway, whatever. VidJutsu understands and validates the output. It's the intelligence layer, not the generator.",
+    q: "Why check before I post?",
+    a: "Platforms often enforce terms after content is public — strikes, removals, or reduced reach you were not warned about ahead of time. A pre-publish scan surfaces rule conflicts while you can still edit.",
   },
   {
-    q: "What's the difference between watch and transcribe?",
-    a: "Watch analyzes the full video with a freeform prompt — you can ask anything about the visual and audio content. Transcribe is speech-to-text only, returning word-level timestamps for what was said.",
+    q: "Do I need VidJutsu to make the video?",
+    a: "No. Use any generator or editor you like. VidJutsu reviews what you already made — or the text you plan to use — so your pipeline can stay automated end to end.",
+  },
+  {
+    q: "What is the difference between watch and transcribe?",
+    a: "Watch answers a question about the full picture and sound. Transcribe is speech-to-text only, with a time stamp on each word.",
   },
   {
     q: "What can I do with extract?",
-    a: "Pull keyframes, audio tracks, and metadata from any video. Server-side processing — no local tools needed. Use it to feed frames into other models, generate thumbnails, or get technical metadata like resolution and FPS.",
+    a: "Pull key frames, an audio file, and technical details such as length and resolution from a hosted URL. It runs on our side so you do not need local ffmpeg jobs.",
   },
   {
     q: "How do credits work?",
-    a: "Your $99/mo subscription includes 1,000 credits. Watch and transcribe cost 10 credits each. Extract and check cost 5 credits each. Upload and storage are free. Need more? Buy additional credits at $0.10 each.",
+    a: "The $99 per month plan includes 1,000 credits. Watch and transcribe cost 10 credits each call. Extract and check cost 5 credits each. Uploads and storage cost zero credits. Extra credits are $0.10 each.",
   },
 ];
 
@@ -31,6 +35,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-border last:border-0">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         className="w-full flex items-center justify-between py-4 text-left cursor-pointer group"

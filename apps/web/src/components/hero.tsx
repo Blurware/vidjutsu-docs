@@ -10,7 +10,7 @@ export function Hero() {
   const copy = useCallback(() => {
     navigator.clipboard.writeText(INSTALL_CMD);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    window.setTimeout(() => setCopied(false), 2000);
   }, []);
 
   return (
@@ -18,15 +18,24 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-6">
-            Stop rolling the dice on every post.
+            Pre-publish checks for serious creators
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Check every post before it goes live.
+            Catch strikes and shadowbans before you post.
           </h1>
 
+          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
+            Many platforms only step in after your video is live. You can get a
+            strike, lose reach with no clear warning, or a shadowban. That often
+            means your clip broke their terms — and there are hundreds of rules,
+            with more added all the time.
+          </p>
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            Every video gets a risk score. Plus the rule behind every flag. One check saves weeks of pain.
+            VidJutsu watches your file (or your prompt, script, or caption) and
+            checks it against every rule we track for that platform. You get a risk
+            report before you post. Built for brand deals, monetization, more views,
+            and agent-built pipelines — without a separate compliance team.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-10">
@@ -45,6 +54,7 @@ export function Hero() {
           </div>
 
           <button
+            type="button"
             onClick={copy}
             className="group inline-flex items-center gap-3 font-mono text-[13px] text-ink-muted hover:text-ink transition-colors cursor-pointer"
           >
