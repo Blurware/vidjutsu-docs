@@ -1,8 +1,8 @@
 const AUDIENCES = [
   "Clippers",
   "Personal brands",
-  "AI-generated video",
-  "Short-form under 5 minutes",
+  "AI videos",
+  "Short-form content under 5 minutes",
 ];
 
 export function WhoItsFor() {
