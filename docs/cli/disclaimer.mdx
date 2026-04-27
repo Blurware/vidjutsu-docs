@@ -1,0 +1,25 @@
+---
+title: "vidjutsu disclaimer"
+description: "Burn fine-print disclaimer onto video"
+---
+
+Burns a small disclaimer centered at the bottom of a video. Use for FTC-style disclosures like results-not-typical, paid-endorsement, or AI-generated labels. 5 credits.
+
+```bash
+vidjutsu disclaimer --videoUrl https://cdn.vidjutsu.ai/ad.mp4 --text "Results not typical. Consult a professional."
+```
+
+```json
+{
+  "id": "dsc_...",
+  "resultUrl": "https://cdn.vidjutsu.ai/..."
+}
+```
+
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--videoUrl` | Source video URL (required) |
+| `--text` | Disclaimer text (required). Use `\n` for line breaks |
+| `--fontSize` | Font size in pixels. Defaults to 2.2% of video height |

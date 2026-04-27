@@ -79,7 +79,8 @@
               "POST /v1/extract",
               "POST /v1/transcribe",
               "POST /v1/check",
-              "POST /v1/overlay"
+              "POST /v1/overlay",
+              "POST /v1/disclaimer"
             ]
           },
           {
@@ -164,7 +165,8 @@
               "sdk/extract",
               "sdk/transcribe",
               "sdk/check",
-              "sdk/overlay"
+              "sdk/overlay",
+              "sdk/disclaimer"
             ]
           },
           {
@@ -199,6 +201,7 @@
               "cli/transcribe",
               "cli/check",
               "cli/overlay",
+              "cli/disclaimer",
               "cli/compliance"
             ]
           },
