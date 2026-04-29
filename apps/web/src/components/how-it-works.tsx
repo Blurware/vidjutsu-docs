@@ -1,28 +1,31 @@
 const STEPS = [
   {
     num: "01",
-    title: "Upload or pass a video URL",
-    desc: "Send any video to the API. Direct upload or a public URL — both work.",
+    title: "Hand your agent the creative",
+    desc: "Drop a URL into Claude or the CLI. Video ad, UGC clip, whatever you're about to submit.",
   },
   {
     num: "02",
-    title: "VidJutsu analyzes it",
-    desc: "Run watch for freeform video understanding, extract for frames/audio/metadata, transcribe for speech-to-text, or check for spec validation.",
+    title: "Your agent calls the policy brain",
+    desc: "VidJutsu is the ad-policy intelligence trained on current Meta and TikTok ad standards, refreshed weekly. Your agent runs the creative through it and checks every clause that applies.",
   },
   {
     num: "03",
-    title: "Get actionable feedback",
-    desc: "Structured results your agent acts on. Pass/fail gates, frame-level tags, engagement scores — all machine-readable.",
+    title: "Fix it, then submit",
+    desc: "Risk score, flagged moment, exact policy line. No more finding out from a paused campaign. Or a restricted account.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="px-5 sm:px-8 py-16 sm:py-24">
+    <section id="how-it-works" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-6xl mx-auto">
-        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-10 text-center">
+        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3 text-center">
           How it works
         </p>
+        <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
+          URL in. Risk out. Then you submit.
+        </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">
           {STEPS.map((s) => (

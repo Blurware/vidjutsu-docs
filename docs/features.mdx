@@ -19,6 +19,15 @@ Full speech-to-text with word-level timestamps. Know exactly what was said and w
 
 Validate specs against built-in rules and your own custom rules. Define rules like `hook-required`, `max-duration-60s`, or `aspect-ratio-9-16`. Save per-client custom rules via the API and run checks programmatically.
 
+## Compliance — platform TOS pre-flight
+
+Scan any video or caption against the target platform's current policies before you publish. Covers **YouTube, TikTok (consumer + ads), Instagram / Meta, Facebook Ads**. Returns a deterministic 0–100 risk score, a verdict, and each violation with the **verbatim policy clause** and source URL it's based on.
+
+- Anti-hallucination validator — every cited rule is resolved against our DB before returning; the LLM can't invent clauses
+- Two inputs: `POST /v1/compliance/video` (scans a hosted video URL, 20/day) and `POST /v1/compliance/prompt` (scans caption or ad copy, 100/day)
+- Every response includes a `policySnapshotDate` timestamp and a disclaimer field
+- Informational only — not legal advice, and no freshness or accuracy guarantee. The citation reflects what we last ingested from the platform's own published text; you're expected to verify the live source before acting on the result. See [Terms of Service](/legal/terms)
+
 ## Storage — CDN and tagging
 
 Upload videos to a global CDN with `POST /v1/upload`. Organize your content library with accounts, posts, and AWS-style key-value tags. Filter anything by tag — `?tag.brand=acme`, `?tag.batch=week-12`.

@@ -7,7 +7,8 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Product</h4>
             <ul className="space-y-2.5">
               <li><a href="#how-it-works" className="text-[13px] text-ink-muted hover:text-ink transition-colors">How it works</a></li>
-              <li><a href="#features" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Features</a></li>
+              <li><a href="#voices" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Use cases</a></li>
+              <li><a href="#try-it" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Example</a></li>
               <li><a href="#pricing" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Pricing</a></li>
               <li><a href="#faq" className="text-[13px] text-ink-muted hover:text-ink transition-colors">FAQ</a></li>
             </ul>
@@ -43,6 +44,7 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Company</h4>
             <ul className="space-y-2.5">
               <li><a href="mailto:support@vidjutsu.ai" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Contact</a></li>
+              <li><a href="https://docs.vidjutsu.ai/legal/terms" className="text-[13px] text-ink-muted hover:text-ink transition-colors">Terms of Service</a></li>
             </ul>
           </div>
         </div>

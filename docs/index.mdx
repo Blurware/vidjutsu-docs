@@ -3,7 +3,24 @@ title: "VidJutsu — Video Intelligence API"
 description: "The feedback loop your agent is missing."
 ---
 
-Watch, extract, transcribe, and check AI-generated video. Plus storage and tagging for your content library.
+Watch, extract, transcribe, check, and **pre-flight platform compliance** on any AI-generated video or caption. Plus storage and tagging for your content library.
+
+## Catch violations before you post
+
+Every creator who's been demonetized, shadow-banned, or suspended knows the feeling. **VidJutsu Compliance** scans a video or caption against each platform's current Community Guidelines and ad policies, returns a deterministic risk score, and cites the exact policy clause behind every flag.
+
+- **Four platforms** — YouTube, TikTok (consumer + ads), Instagram / Meta, Facebook Ads
+- **Verbatim citations** — every violation links back to the platform's own policy page, with the exact quoted clause; you can verify against the live source
+- **Deterministic scoring** — severity weights sum to a 0–100 score, capped at 100
+- **Informational, not legal advice** — you still own the publish decision, we just surface what the platforms' own published text says
+
+<Card title="Scan a caption in one line" icon="terminal" href="/cli/compliance">
+```bash
+vidjutsu compliance prompt \
+  --text "Get rich in 30 days guaranteed — insider tip" \
+  --platform instagram
+```
+</Card>
 
 ## Base URL
 
@@ -13,7 +30,7 @@ https://api.vidjutsu.ai
 
 ## Intelligence endpoints
 
-Four endpoints that close the loop between generation and publishing:
+Five endpoints that close the loop between generation and publishing:
 
 <CardGroup cols={2}>
   <Card title="Watch" icon="eye" href="/api-reference/watch/watch">
@@ -27,6 +44,9 @@ Four endpoints that close the loop between generation and publishing:
   </Card>
   <Card title="Check" icon="shield-check" href="/api-reference/check/check">
     Validate a spec against rules. QA gate before publishing.
+  </Card>
+  <Card title="Compliance" icon="scale-balanced" href="/cli/compliance">
+    Pre-flight any video or caption against platform TOS. Cited policy clauses, deterministic risk score.
   </Card>
 </CardGroup>
 

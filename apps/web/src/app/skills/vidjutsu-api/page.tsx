@@ -30,8 +30,8 @@ export default function VidjutsuApi() {
           VidJutsu API
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
-          Video intelligence API for agents. Watch, extract, transcribe, and
-          check &mdash; four endpoints your agent calls.
+          Scan a video against platform guidelines before you post, plus the
+          primitives agents need — watch, extract, transcribe, check.
         </p>
 
         <section className="mb-14">

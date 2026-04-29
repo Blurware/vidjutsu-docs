@@ -1,154 +1,56 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-
-const EXAMPLES = [
-  {
-    label: "Watch",
-    lines: [
-      '$ vidjutsu watch --video-url https://cdn.example.com/reel-042.mp4 --prompt "Is the hook effective?"',
-      "Watching video...",
-      "",
-      "Response:",
-      "  The hook lands in the first 1.2 seconds — direct",
-      "  address to camera with a bold claim. Strong for",
-      "  fitness TikTok. Consider adding a text overlay",
-      "  to reinforce for silent viewers.",
-    ],
-  },
-  {
-    label: "Extract",
-    lines: [
-      "$ vidjutsu extract --video-url https://cdn.example.com/reel-042.mp4 --frames auto --audio",
-      "Extracting...",
-      "",
-      "Frames:     12 extracted (auto-selected keyframes)",
-      "Audio:      audio.wav (16kHz mono)",
-      "Duration:   14.2s",
-      "Resolution: 1080x1920",
-      "FPS:        30",
-    ],
-  },
-  {
-    label: "Transcribe",
-    lines: [
-      "$ vidjutsu transcribe --video-url https://cdn.example.com/reel-042.mp4",
-      "Transcribing...",
-      "",
-      "Words:    47",
-      "Duration: 14.2s",
-      "",
-      '[0.00 - 0.82]  "The"',
-      '[0.82 - 1.10]  "one"',
-      '[1.10 - 1.40]  "thing"',
-      '[1.40 - 1.92]  "nobody"',
-      '[1.92 - 2.30]  "tells"',
-      '[2.30 - 2.60]  "you"',
-    ],
-  },
-  {
-    label: "Check",
-    lines: [
-      '$ vidjutsu check --spec ./brief.json --rules "hook-required,max-duration-60s"',
-      "Checking spec...",
-      "",
-      "Rules:   2 applied",
-      "Passed:  1",
-      "Failed:  1",
-      "",
-      "  [pass]  hook-required — hook field present",
-      "  [fail]  max-duration-60s — duration is 72s, max allowed is 60s",
-    ],
-  },
+const LINES = [
+  "$ vidjutsu compliance video \\",
+  "    --video-url https://cdn.example.com/creative-v3.mp4 \\",
+  "    --platform meta-ads",
+  "",
+  "risk_score: 88/100",
+  "level: high",
+  "",
+  "flags:",
+  "  unrealistic_outcome_claim  voiceover  span:00:00:07-00:00:11",
+  "",
+  "primary_reason:",
+  "  implied_guaranteed_financial_return_in_voiceover",
+  "",
+  "cited_rules:",
+  "  meta_advertising_standards / misleading_claims / unrealistic_outcomes",
+  "",
+  "policy_snapshot: 2026-04-23",
 ];
 
 export function TerminalDemo() {
-  const [exampleIdx, setExampleIdx] = useState(0);
-  const [lineCount, setLineCount] = useState(0);
-  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
-
-  const runExample = useCallback((idx: number) => {
-    setLineCount(0);
-    setExampleIdx(idx);
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-
-    const example = EXAMPLES[idx];
-    example.lines.forEach((_, i) => {
-      const t = setTimeout(() => setLineCount(i + 1), 500 + i * 700);
-      timeoutsRef.current.push(t);
-    });
-
-    const next = setTimeout(() => {
-      runExample((idx + 1) % EXAMPLES.length);
-    }, 500 + example.lines.length * 700 + 2000);
-    timeoutsRef.current.push(next);
-  }, []);
-
-  useEffect(() => {
-    runExample(0);
-    return () => timeoutsRef.current.forEach(clearTimeout);
-  }, [runExample]);
-
-  const switchTo = (idx: number) => {
-    timeoutsRef.current.forEach(clearTimeout);
-    timeoutsRef.current = [];
-    runExample(idx);
-  };
-
-  const example = EXAMPLES[exampleIdx];
-
   return (
-    <section className="px-5 sm:px-8 py-16 sm:py-24">
+    <section id="try-it" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-10">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
-            Your agent at work
+        <div className="text-center mb-8">
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3">
+            Example
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-4">
-            See it in action
+          <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
+            See the risk before you submit
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Your agent sends a video. VidJutsu watches, extracts, transcribes, and checks. Your pipeline decides what ships.
+            Sample Meta Ads report: high risk flagged on an unrealistic
+            outcome claim at 0:07, with the cited clause from Meta's current
+            advertising standards.
           </p>
         </div>
 
-        <div>
-          <div className="flex justify-center gap-1 mb-3">
-            {EXAMPLES.map((ex, i) => (
-              <button
-                key={ex.label}
-                onClick={() => switchTo(i)}
-                className={`text-[11px] font-medium px-3 py-1.5 rounded transition-colors cursor-pointer ${
-                  i === exampleIdx
-                    ? "bg-ink text-surface"
-                    : "text-ink-muted hover:text-ink"
-                }`}
-              >
-                {ex.label}
-              </button>
-            ))}
+        <div className="rounded bg-surface-alt border border-border overflow-hidden -mx-1 sm:mx-0">
+          <div className="px-3 sm:px-4 py-2 border-b border-border">
+            <span className="text-[11px] font-mono text-ink-light">terminal</span>
           </div>
-
-          <div className="rounded bg-surface-alt border border-border overflow-hidden">
-            <div className="px-4 py-2 border-b border-border">
-              <span className="text-[11px] font-mono text-ink-light">
-                vidjutsu
-              </span>
-            </div>
-            <div className="p-4 sm:p-5 font-mono text-[11px] sm:text-[12px] leading-[1.9] min-h-[240px] overflow-x-auto">
-              {example.lines.slice(0, lineCount).map((line, i) => (
-                <div key={`${exampleIdx}-${i}`} className={line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}>
-                  {line || "\u00A0"}
-                </div>
-              ))}
-              {lineCount < example.lines.length && (
-                <span
-                  className="inline-block w-[7px] h-[14px] bg-ink/30"
-                  style={{ animation: "blink 1s step-end infinite" }}
-                />
-              )}
-            </div>
+          <div className="p-3 sm:p-5 font-mono text-[10px] sm:text-[12px] leading-[1.85] min-h-[200px] sm:min-h-[240px] overflow-x-auto">
+            {LINES.map((line, i) => (
+              <div
+                key={i}
+                className={`whitespace-pre-wrap break-words ${line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}`}
+              >
+                {line || "\u00A0"}
+              </div>
+            ))}
           </div>
         </div>
       </div>

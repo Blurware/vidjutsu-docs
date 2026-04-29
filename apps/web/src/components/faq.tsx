@@ -4,24 +4,32 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What does VidJutsu do?",
-    a: "Video intelligence API with four primitives. Watch understands video from a freeform prompt. Extract pulls frames, audio, and metadata via server-side processing. Transcribe converts speech to text with word-level timing. Check validates specs against rules.",
+    q: "Who is this for?",
+    a: "Anyone running paid creative on Meta or TikTok. DTC brands, performance marketers, agencies managing client accounts, UGC studios, affiliate teams. If your livelihood depends on ad accounts staying healthy, this is for you.",
   },
   {
-    q: "Do I need VidJutsu to generate videos?",
-    a: "No. Use any generation tool — Kling, Veo, Runway, whatever. VidJutsu understands and validates the output. It's the intelligence layer, not the generator.",
+    q: "Why can't my agent just do this already?",
+    a: "Fair question. Your agent could do this. You'd just need to stitch three-plus things together: a way to watch video, a live corpus of each platform's ad policies, and a retrieval + citation layer that keeps pace with weekly policy updates. If you're technical and have the time, go for it. VidJutsu is that whole stack behind a single entry point, updated for you. Total cost of ownership ends up lower unless building compliance infrastructure is already what you do.",
   },
   {
-    q: "What's the difference between watch and transcribe?",
-    a: "Watch analyzes the full video with a freeform prompt — you can ask anything about the visual and audio content. Transcribe is speech-to-text only, returning word-level timestamps for what was said.",
+    q: "What does VidJutsu check?",
+    a: "Your agent runs the creative against VidJutsu's policy intelligence. Audio, frames, on-screen text, caption: all scored against current Meta Advertising Standards and TikTok Ads Policies. You get a risk score and the exact clause behind each flag.",
   },
   {
-    q: "What can I do with extract?",
-    a: "Pull keyframes, audio tracks, and metadata from any video. Server-side processing — no local tools needed. Use it to feed frames into other models, generate thumbnails, or get technical metadata like resolution and FPS.",
+    q: "Does this guarantee my ads get approved?",
+    a: "No. And anyone who tells you otherwise is lying. Platforms make the final call, and their reviewers have discretion. What VidJutsu does is make the risk clear before you submit: which clauses you're likely violating, which moments triggered the flag, and how severe each one is. You decide whether to ship, edit, or kill the creative. It's informational, not a guarantee or a legal opinion. See our Terms of Service for the full posture.",
   },
   {
-    q: "How do credits work?",
-    a: "Your $99/mo subscription includes 1,000 credits. Watch and transcribe cost 10 credits each. Extract and check cost 5 credits each. Upload and storage are free. Need more? Buy additional credits at $0.10 each.",
+    q: "What if Meta or TikTok update their policies?",
+    a: "We re-ingest both policy sets weekly. Every response includes the policy snapshot date it's based on, so you know exactly what your risk score was checked against.",
+  },
+  {
+    q: "How do I start?",
+    a: "Install VidJutsu from the CLI, then install the Claude plugin. Now you can tell Claude to check any creative before you submit, or call it from the CLI directly. Full steps are in the quickstart.",
+  },
+  {
+    q: "What about organic video?",
+    a: "VidJutsu works on organic short-form video too, we just don't pitch it here. Ad safety is the wedge. If organic is your primary use case, email support and we'll get you set up.",
   },
 ];
 
@@ -31,6 +39,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   return (
     <div className="border-b border-border last:border-0">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
         className="w-full flex items-center justify-between py-4 text-left cursor-pointer group"
@@ -61,15 +70,15 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 
 export function Faq() {
   return (
-    <section id="faq" className="px-5 sm:px-8 py-16 sm:py-24 bg-surface-alt">
+    <section id="faq" className="px-5 sm:px-8 py-14 sm:py-20 bg-surface-alt">
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-10">
-            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+          <div className="text-center mb-8">
+            <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3">
               FAQ
             </p>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em]">
-              Common questions
+            <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em]">
+              Quick answers
             </h2>
           </div>
           <div>

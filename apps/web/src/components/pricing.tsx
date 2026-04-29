@@ -1,66 +1,129 @@
+"use client";
+
+import { useState } from "react";
+
+type Billing = "monthly" | "annual";
+
+const PLAN: Record<
+  Billing,
+  {
+    label: string;
+    price: string;
+    billedLine: string;
+    description: string;
+    rateLimit: string;
+  }
+> = {
+  monthly: {
+    label: "Pro",
+    price: "$99",
+    billedLine: "Billed monthly",
+    description:
+      "Full API access. Get a compliance report on every creative before it goes to Meta or TikTok review.",
+    rateLimit: "20 video reports / day · 100 text reports / day",
+  },
+  annual: {
+    label: "Pro Annual",
+    price: "$59",
+    billedLine: "Billed annually as $708 · 40% off",
+    description:
+      "Full API access with triple the rate limits. Get a compliance report on every creative before it goes to Meta or TikTok review.",
+    rateLimit: "60 video reports / day · 300 text reports / day",
+  },
+};
+
 export function Pricing() {
+  const [billing, setBilling] = useState<Billing>("annual");
+  const plan = PLAN[billing];
+  const isAnnual = billing === "annual";
+
   return (
-    <section id="pricing" className="px-5 sm:px-8 py-16 sm:py-24">
+    <section id="pricing" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
+        <div className="text-center mb-8">
+          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3">
             Pricing
           </p>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-[-0.02em] mb-3">
-            Simple, predictable pricing
+          <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-2">
+            One plan. Full API access.
           </h2>
-          <p className="text-ink-muted text-sm">
-            One plan. No tiers to compare.
+          <p className="text-ink-muted text-sm max-w-md mx-auto">
+            40% off on annual. Launch offer. A single paused campaign costs
+            more than a year of this.
           </p>
         </div>
 
+        <div
+          role="radiogroup"
+          aria-label="Billing period"
+          className="flex justify-center mb-8"
+        >
+          <div className="inline-flex p-1 rounded border border-border bg-surface-alt">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={billing === "monthly"}
+              onClick={() => setBilling("monthly")}
+              className={`px-4 py-1.5 text-[13px] font-medium rounded transition-colors cursor-pointer ${
+                billing === "monthly"
+                  ? "bg-surface text-ink shadow-sm"
+                  : "text-ink-muted hover:text-ink"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={billing === "annual"}
+              onClick={() => setBilling("annual")}
+              className={`px-4 py-1.5 text-[13px] font-medium rounded transition-colors cursor-pointer ${
+                billing === "annual"
+                  ? "bg-surface text-ink shadow-sm"
+                  : "text-ink-muted hover:text-ink"
+              }`}
+            >
+              Annual{" "}
+              <span
+                className={
+                  billing === "annual" ? "text-brand" : "text-ink-light"
+                }
+              >
+                · save 40%
+              </span>
+            </button>
+          </div>
+        </div>
+
         <div className="max-w-md mx-auto">
-          <div className="p-8 rounded border border-brand bg-brand/5">
+          <div className="relative p-8 rounded border border-brand bg-brand/5">
+            {isAnnual && (
+              <div className="absolute -top-3 left-6">
+                <span className="inline-block px-2.5 py-1 bg-brand text-white text-[10px] font-semibold tracking-[0.1em] uppercase rounded">
+                  Launch offer
+                </span>
+              </div>
+            )}
+
             <div className="mb-6">
               <h3 className="text-sm font-medium text-ink-muted mb-2">
-                Pro
+                {plan.label}
               </h3>
               <div className="text-[2.5rem] font-bold tracking-[-0.03em] leading-none">
-                $99
+                {plan.price}
                 <span className="text-base font-normal text-ink-muted">
                   /mo
                 </span>
               </div>
+              <p className="text-xs text-ink-light mt-2">{plan.billedLine}</p>
             </div>
 
-            <ul className="space-y-3 text-sm text-ink-muted mb-6">
-              <li className="flex justify-between">
-                <span>Included credits</span>
-                <span className="font-medium text-ink">1,000/mo</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Watch</span>
-                <span className="font-medium text-ink">10 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Extract</span>
-                <span className="font-medium text-ink">5 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Transcribe</span>
-                <span className="font-medium text-ink">10 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Check</span>
-                <span className="font-medium text-ink">5 credits/call</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Upload / accounts / posts</span>
-                <span className="font-medium text-ink">0 credits</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Additional credits</span>
-                <span className="font-medium text-ink">$0.10 each</span>
-              </li>
-            </ul>
+            <p className="text-sm text-ink-muted mb-4 leading-relaxed">
+              {plan.description}
+            </p>
 
-            <p className="text-xs text-ink-light mb-6">
-              That&apos;s ~100 video analyses per month included.
+            <p className="text-[12px] text-ink-light font-mono mb-6">
+              {plan.rateLimit}
             </p>
 
             <a
@@ -69,6 +132,14 @@ export function Pricing() {
             >
               Get API Key
             </a>
+            <p className="text-xs text-ink-light mt-4 text-center">
+              <a
+                href="https://docs.vidjutsu.ai/credits-and-billing"
+                className="underline hover:text-ink-muted transition-colors"
+              >
+                Rate limits and billing details
+              </a>
+            </p>
           </div>
         </div>
       </div>

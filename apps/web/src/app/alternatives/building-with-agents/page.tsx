@@ -22,7 +22,7 @@ export default function BuildingWithAgents() {
           Playbook
         </p>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-          You could build video intelligence yourself. Or you could call
+          You could build video compliance yourself. Or you could call
           VidJutsu.
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-16">
