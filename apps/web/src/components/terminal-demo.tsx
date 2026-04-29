@@ -2,20 +2,22 @@
 
 const LINES = [
   "$ vidjutsu compliance video \\",
-  "    --video-url https://example.com/your-video.mp4 \\",
-  "    --platform youtube",
+  "    --video-url https://cdn.example.com/creative-v3.mp4 \\",
+  "    --platform meta-ads",
   "",
   "risk_score: 88/100",
   "level: high",
   "",
   "flags:",
-  "  profanity_in_audio  strong_language  count:7  span:00:00:04-00:00:18",
+  "  unrealistic_outcome_claim  voiceover  span:00:00:07-00:00:11",
   "",
   "primary_reason:",
-  "  repeated_uncensored_expletives_in_voiceover",
+  "  implied_guaranteed_financial_return_in_voiceover",
   "",
   "cited_rules:",
-  "  community_guidelines / harassment_and_abuse / profanity_and_slurs",
+  "  meta_advertising_standards / misleading_claims / unrealistic_outcomes",
+  "",
+  "policy_snapshot: 2026-04-23",
 ];
 
 export function TerminalDemo() {
@@ -27,11 +29,12 @@ export function TerminalDemo() {
             Example
           </p>
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            See the risk before you post
+            See the risk before you submit
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Sample output: high score from profanity in the audio track — no extra
-            narration from the tool.
+            Sample Meta Ads report: high risk flagged on an unrealistic
+            outcome claim at 0:07, with the cited clause from Meta's current
+            advertising standards.
           </p>
         </div>
 

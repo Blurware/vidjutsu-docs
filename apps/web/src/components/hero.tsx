@@ -18,17 +18,17 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
-            Scan your video before you post
+            Ad compliance for Meta and TikTok
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Catch strikes and shadowbans before they happen.
+            Let your AI agent flag violations. Not your ad platform.
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto">
-            Platforms often strike or cut your reach after you post. VidJutsu
-            scores your video against hundreds of rules first — so you see what to
-            fix before you post.
+            VidJutsu is the Meta and TikTok ad-policy intelligence your AI
+            agent uses to flag the exact clause you&rsquo;ll fail before you
+            submit.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">

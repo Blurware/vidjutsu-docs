@@ -9,26 +9,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "VidJutsu — Video Intelligence API",
+    default: "VidJutsu | Ad compliance for Meta and TikTok",
     template: "%s | VidJutsu",
   },
   description:
-    "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
+    "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VidJutsu — Video Intelligence API",
+    title: "VidJutsu | Ad compliance for Meta and TikTok",
     description:
-      "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
+      "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VidJutsu — Video Intelligence API",
+    title: "VidJutsu | Ad compliance for Meta and TikTok",
     description:
-      "Video intelligence API — watch, extract, transcribe, check. Four primitives your agent acts on.",
+      "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
   },
   robots: {
     index: true,

@@ -1,7 +1,6 @@
 import { Hero } from "@/components/hero";
 import { HowItWorks } from "@/components/how-it-works";
 import { IcpQuotes } from "@/components/icp-quotes";
-import { WhoItsFor } from "@/components/who-its-for";
 import { TerminalDemo } from "@/components/terminal-demo";
 import { Pricing } from "@/components/pricing";
 import { Faq } from "@/components/faq";
@@ -14,7 +13,6 @@ export default function Home() {
         <Hero />
         <HowItWorks />
         <IcpQuotes />
-        <WhoItsFor />
         <TerminalDemo />
         <Pricing />
         <Faq />

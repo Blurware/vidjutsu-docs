@@ -4,16 +4,32 @@ import { useState } from "react";
 
 const FAQS = [
   {
-    q: "What does VidJutsu check?",
-    a: "Your video file, end to end, against the platform rules we track for the network you choose. You get a risk score and citations so you know what to change before you post.",
+    q: "Who is this for?",
+    a: "Anyone running paid creative on Meta or TikTok. DTC brands, performance marketers, agencies managing client accounts, UGC studios, affiliate teams. If your livelihood depends on ad accounts staying healthy, this is for you.",
   },
   {
-    q: "Why scan before I post?",
-    a: "Many networks react after the fact — strikes, removed videos, or reach that drops with little warning. Scanning first turns that into a fix list while you still control the file.",
+    q: "Why can't my agent just do this already?",
+    a: "Fair question. Your agent could do this. You'd just need to stitch three-plus things together: a way to watch video, a live corpus of each platform's ad policies, and a retrieval + citation layer that keeps pace with weekly policy updates. If you're technical and have the time, go for it. VidJutsu is that whole stack behind a single entry point, updated for you. Total cost of ownership ends up lower unless building compliance infrastructure is already what you do.",
+  },
+  {
+    q: "What does VidJutsu check?",
+    a: "Your agent runs the creative against VidJutsu's policy intelligence. Audio, frames, on-screen text, caption: all scored against current Meta Advertising Standards and TikTok Ads Policies. You get a risk score and the exact clause behind each flag.",
+  },
+  {
+    q: "Does this guarantee my ads get approved?",
+    a: "No. And anyone who tells you otherwise is lying. Platforms make the final call, and their reviewers have discretion. What VidJutsu does is make the risk clear before you submit: which clauses you're likely violating, which moments triggered the flag, and how severe each one is. You decide whether to ship, edit, or kill the creative. It's informational, not a guarantee or a legal opinion. See our Terms of Service for the full posture.",
+  },
+  {
+    q: "What if Meta or TikTok update their policies?",
+    a: "We re-ingest both policy sets weekly. Every response includes the policy snapshot date it's based on, so you know exactly what your risk score was checked against.",
   },
   {
     q: "How do I start?",
-    a: "Grab an API key and call the compliance video endpoint from your code or the CLI. Full steps are in the quickstart.",
+    a: "Install VidJutsu from the CLI, then install the Claude plugin. Now you can tell Claude to check any creative before you submit, or call it from the CLI directly. Full steps are in the quickstart.",
+  },
+  {
+    q: "What about organic video?",
+    a: "VidJutsu works on organic short-form video too, we just don't pitch it here. Ad safety is the wedge. If organic is your primary use case, email support and we'll get you set up.",
   },
 ];
 

@@ -1,15 +1,15 @@
 ---
 title: "Quickstart"
-description: "Make your first watch, extract, and transcribe calls"
+description: "Scan your video against platform rules before you post"
 ---
 
 <Info>
 Need an API key? Follow the [Get your API key](/get-api-key) guide first.
 </Info>
 
-## Watch a video (10 credits)
+## Scan a video (20 credits)
 
-Ask AI anything about a video. The response shape follows your prompt.
+Score a video against the target platform's community guidelines or ad standards. You get a 0–100 risk score, each violation, and the verbatim policy clause it's based on — so you know what to change before you post.
 
 <Tabs>
   <Tab title="SDK">
@@ -17,38 +17,27 @@ Ask AI anything about a video. The response shape follows your prompt.
     import { createClient } from "vidjutsu";
     const vj = createClient();
 
-    const { data } = await vj.watchMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-      prompt: "Is the hook strong enough for fitness TikTok?",
+    const { data } = await vj.complianceVideo({
+      videoUrl: "https://cdn.example.com/video.mp4",
+      platform: "tiktok",
     });
     ```
   </Tab>
   <Tab title="CLI">
     ```bash
-    vidjutsu watch \
-      --mediaUrl "https://cdn.example.com/video.mp4" \
-      --prompt "Is the hook strong enough for fitness TikTok?"
-    ```
-  </Tab>
-  <Tab title="SDK">
-    ```typescript
-    import { createClient } from "vidjutsu";
-    const vj = createClient();
-
-    const { data } = await vj.watchMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-      prompt: "Is the hook strong enough for fitness TikTok?",
-    });
+    vidjutsu compliance video \
+      --video-url "https://cdn.example.com/video.mp4" \
+      --platform tiktok
     ```
   </Tab>
   <Tab title="curl">
     ```bash
-    curl -X POST https://api.vidjutsu.ai/v1/watch \
+    curl -X POST https://api.vidjutsu.ai/v1/compliance/video \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
       -d '{
-        "mediaUrl": "https://cdn.example.com/video.mp4",
-        "prompt": "Is the hook strong enough for fitness TikTok?"
+        "videoUrl": "https://cdn.example.com/video.mp4",
+        "platform": "tiktok"
       }'
     ```
   </Tab>
@@ -56,124 +45,45 @@ Ask AI anything about a video. The response shape follows your prompt.
 
 ```json
 {
-  "response": "The hook lands in the first 1.2 seconds — direct address to camera with a bold claim. Strong for fitness TikTok. Consider adding a text overlay to reinforce for silent viewers."
+  "riskScore": 88,
+  "verdict": "high-risk",
+  "violations": [
+    {
+      "ruleId": "tiktok-profanity-in-audio",
+      "category": "community-guidelines",
+      "severity": "high",
+      "explanation": "Profanity in the spoken audio at 0:04 violates TikTok's community guidelines on mature content for the For You feed.",
+      "citation": {
+        "text": "...",
+        "sourceUrl": "https://www.tiktok.com/community-guidelines",
+        "policyVersion": "2026-04-23"
+      },
+      "evidence": { "transcriptExcerpt": "...", "timestamp": 4.2 }
+    }
+  ],
+  "platform": "tiktok",
+  "policySnapshotDate": "2026-04-23",
+  "disclaimer": "This response is informational only and does not constitute legal advice..."
 }
 ```
 
-## Extract frames and audio (5 credits)
+**Supported platforms:** `youtube`, `tiktok`, `instagram`, `facebook-ads`.
 
-Pull frames, audio track, and metadata from any video.
-
-<Tabs>
-  <Tab title="SDK">
-    ```typescript
-    const { data } = await vj.extractMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-      frames: "auto",
-      audio: true,
-    });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu extract \
-      --mediaUrl "https://cdn.example.com/video.mp4" \
-      --frames auto --audio
-    ```
-  </Tab>
-  <Tab title="SDK">
-    ```typescript
-    const { data } = await vj.extractMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-      frames: "auto",
-      audio: true,
-    });
-    ```
-  </Tab>
-  <Tab title="curl">
-    ```bash
-    curl -X POST https://api.vidjutsu.ai/v1/extract \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-      -d '{
-        "mediaUrl": "https://cdn.example.com/video.mp4",
-        "frames": "auto",
-        "audio": true
-      }'
-    ```
-  </Tab>
-</Tabs>
-
-```json
-{
-  "frames": [{ "index": 0, "url": "https://cdn.vidjutsu.ai/..." }],
-  "audio": { "url": "https://cdn.vidjutsu.ai/...", "duration": 10.2 },
-  "metadata": { "width": 1080, "height": 1920, "fps": 30, "duration": 10.0 }
-}
-```
-
-## Transcribe speech (10 credits)
-
-Speech-to-text with word-level timing.
-
-<Tabs>
-  <Tab title="SDK">
-    ```typescript
-    const { data } = await vj.transcribeMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-    });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu transcribe \
-      --mediaUrl "https://cdn.example.com/video.mp4"
-    ```
-  </Tab>
-  <Tab title="SDK">
-    ```typescript
-    const { data } = await vj.transcribeMedia({
-      mediaUrl: "https://cdn.example.com/video.mp4",
-    });
-    ```
-  </Tab>
-  <Tab title="curl">
-    ```bash
-    curl -X POST https://api.vidjutsu.ai/v1/transcribe \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-      -d '{
-        "mediaUrl": "https://cdn.example.com/video.mp4"
-      }'
-    ```
-  </Tab>
-</Tabs>
-
-```json
-{
-  "transcript": "the one thing nobody tells you about creatine",
-  "words": [{ "word": "the", "start": 0.1, "end": 0.2 }],
-  "language": "en",
-  "duration": 10.2
-}
-```
+**Rate limit:** 20 video scans per day. Check remaining capacity with `vidjutsu usage`.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Features" icon="sparkles" href="/features">
-    See everything VidJutsu can do.
-  </Card>
-  <Card title="SDK Reference" icon="js" href="/sdk/index">
-    Typed TypeScript client with all methods.
+  <Card title="Compliance CLI" icon="terminal" href="/cli/compliance">
+    All flags, output shape, and caption/text scanning.
   </Card>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
     Full endpoint reference with interactive playground.
   </Card>
-  <Card title="CLI Reference" icon="terminal" href="/cli/index">
-    All CLI commands and options.
-  </Card>
   <Card title="Credits & Billing" icon="credit-card" href="/credits-and-billing">
     Pricing, subscription management, and limits.
+  </Card>
+  <Card title="Terms of Service" icon="scale-balanced" href="/legal/terms">
+    Informational only — not legal advice.
   </Card>
 </CardGroup>

@@ -4,7 +4,7 @@ import { CopyCommand } from "@/components/copy-command";
 export const metadata: Metadata = {
   title: "Skills Directory",
   description:
-    "Browse all VidJutsu skills — video intelligence, video formats, production tools, and content quality.",
+    "Browse all VidJutsu skills — video watching and compliance, video formats, production tools, and content quality.",
 };
 
 const GITHUB_BASE = "https://github.com/tfcbot/vidjutsu-skills/tree/main/skills";
@@ -234,7 +234,7 @@ export default function Directory() {
         </div>
 
         <Section
-          title="Video Intelligence"
+          title="Video API"
           description="Watch, Extract, Transcribe, Check, and the VidJutsu API. The core of automated video QA."
           skills={INFRASTRUCTURE}
         />

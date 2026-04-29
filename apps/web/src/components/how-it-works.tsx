@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Paste your video URL",
-    desc: "Send the hosted file you plan to post. One URL is enough.",
+    title: "Hand your agent the creative",
+    desc: "Drop a URL into Claude or the CLI. Video ad, UGC clip, whatever you're about to submit.",
   },
   {
     num: "02",
-    title: "We scan the whole clip",
-    desc: "We watch your video and check it against hundreds of platform rules for the network you pick.",
+    title: "Your agent calls the policy brain",
+    desc: "VidJutsu is the ad-policy intelligence trained on current Meta and TikTok ad standards, refreshed weekly. Your agent runs the creative through it and checks every clause that applies.",
   },
   {
     num: "03",
-    title: "Fix it, then post",
-    desc: "You get a risk score, plain reasons, and the policy line behind each flag — before you post.",
+    title: "Fix it, then submit",
+    desc: "Risk score, flagged moment, exact policy line. No more finding out from a paused campaign. Or a restricted account.",
   },
 ];
 
@@ -24,7 +24,7 @@ export function HowItWorks() {
           How it works
         </p>
         <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
-          URL in. Risk out. Then you post.
+          URL in. Risk out. Then you submit.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">
