@@ -1,0 +1,112 @@
+---
+title: "Scrape"
+description: "Twenty-four primitive endpoints for fetching public posts, profiles, comments, transcripts, and ad-library data from TikTok, Instagram, X, YouTube, and the major ad libraries — without managing scraper accounts or signing third-party ToS."
+---
+
+The `/v1/scrape/*` endpoints are thin, typed wrappers over the public-data surfaces of TikTok, Instagram, X, YouTube, and the Meta / Google / LinkedIn / Reddit ad libraries.
+
+**You don't sign up for a scraper.** VidJutsu holds the upstream master credentials and meters the calls through your existing API key. One key, one bill, one ToS.
+
+## Why a wrap
+
+Building a creator-research, ad-research, or content-intelligence product normally means juggling a separate ScrapeCreators (or equivalent) account, a separate bill, a separate set of rate limits, and a separate ToS surface. The scrape primitives collapse that into your VidJutsu key — same auth, same balance, same operational logging — and stay typed in our OpenAPI spec so they generate clean SDK methods.
+
+## `download_media` — opt-in CDN staging
+
+Most endpoints accept an optional `download_media: boolean` (default `false`).
+
+- **`false` (default)** — Response contains raw source CDN URLs (TikTok / IG / X / YouTube / ad-library host URLs). Cheapest. Caveat: these URLs are often gatekept and not fetchable downstream from VidJutsu Watch / Transcribe / external tools like Gemini.
+- **`true`** — VidJutsu fetches every media URL in the response, stages it to our public CDN, and **replaces the source URLs with VidJutsu URLs in the response**. Use this when you need to pipe the media into a downstream pipeline (Watch, Transcribe, an LLM video tool, your own CDN, etc.).
+
+This matches the same staging pattern used by `POST /v1/upload/url`.
+
+## Op-counting
+
+| Cost | Trigger |
+|---|---|
+| **1 credit** | Base cost per call. Always charged. |
+| **+1 credit per staged media file** | Only when `download_media: true` and the response contains media URLs that VidJutsu pulled onto its CDN. |
+
+A `scrapeInstagramUserPosts` call that returns 12 posts with `download_media: true` and stages 12 videos costs `1 + 12 = 13` credits. The same call with `download_media: false` costs `1` credit.
+
+## Auth & rate limits
+
+- **Auth:** Paid (subscription required, same as Watch / Extract / Transcribe).
+- **Rate group:** `scrape` — **500 calls per day**, shared across all 24 endpoints. Separate bucket from `intelligence` (Watch / Extract / Transcribe / Check) and `compliance`.
+- Check remaining capacity with `vidjutsu usage` or `GET /v1/usage`.
+
+## The 24 endpoints
+
+All are `POST` and accept a JSON body. Full request/response schemas in the OpenAPI spec.
+
+### TikTok
+
+| Endpoint | Body | What it returns |
+|---|---|---|
+| `POST /v1/scrape/tiktok/profile` | `handle`, `trim?`, `download_media?` | Profile metadata for a single TikTok user |
+| `POST /v1/scrape/tiktok/profile/videos` | `handle`, `cursor?`, `download_media?` | Paginated list of a user's videos |
+| `POST /v1/scrape/tiktok/video` | `url`, `trim?`, `download_media?` | Full metadata for a single video |
+| `POST /v1/scrape/tiktok/video/transcript` | `url` | ASR transcript for a single video |
+| `POST /v1/scrape/tiktok/video/comments` | `url`, `cursor?` | Paginated comments on a video |
+| `POST /v1/scrape/tiktok/search/users` | `query`, `cursor?` | User-search results for a query |
+| `POST /v1/scrape/tiktok/trending` | `country?`, `download_media?` | Trending feed for a country |
+
+### Instagram
+
+| Endpoint | Body | What it returns |
+|---|---|---|
+| `POST /v1/scrape/instagram/profile` | `handle`, `download_media?` | Profile metadata for an IG user |
+| `POST /v1/scrape/instagram/user/posts` | `handle`, `cursor?`, `download_media?` | Paginated posts for a user |
+| `POST /v1/scrape/instagram/post` | `url`, `download_media?` | Full metadata for a single post or reel |
+| `POST /v1/scrape/instagram/post/comments` | `url`, `cursor?` | Paginated comments on a post |
+| `POST /v1/scrape/instagram/user/reels` | `handle`, `cursor?`, `download_media?` | Paginated reels for a user |
+
+### X (Twitter)
+
+| Endpoint | Body | What it returns |
+|---|---|---|
+| `POST /v1/scrape/twitter/profile` | `handle`, `download_media?` | Profile metadata for an X user |
+| `POST /v1/scrape/twitter/user-tweets` | `handle`, `cursor?`, `trim?`, `download_media?` | Paginated tweets for a user |
+| `POST /v1/scrape/twitter/tweet` | `url`, `trim?`, `download_media?` | Full metadata for a single tweet |
+| `POST /v1/scrape/twitter/tweet/transcript` | `url` | Transcript for a tweet that contains a video |
+
+### YouTube
+
+| Endpoint | Body | What it returns |
+|---|---|---|
+| `POST /v1/scrape/youtube/channel` | `handle?` or `channel_id?`, `download_media?` | Channel metadata |
+| `POST /v1/scrape/youtube/channel-videos` | `handle?` or `channel_id?`, `cursor?`, `download_media?` | Paginated videos for a channel |
+| `POST /v1/scrape/youtube/video` | `url`, `download_media?` | Full metadata for a single video |
+| `POST /v1/scrape/youtube/video/comments` | `url`, `cursor?` | Paginated comments on a video |
+
+### Ad libraries
+
+| Endpoint | Body | What it returns |
+|---|---|---|
+| `POST /v1/scrape/ads/meta` | `query`, `country?`, `download_media?` | Active ads from the Meta Ad Library for a keyword or page name |
+| `POST /v1/scrape/ads/google` | `company`, `download_media?` | Active ads from Google's Ad Transparency Center for an advertiser |
+| `POST /v1/scrape/ads/linkedin` | `query`, `download_media?` | Active ads from the LinkedIn Ad Library for a keyword |
+| `POST /v1/scrape/ads/reddit` | `query`, `download_media?` | Active ads from the Reddit Ad Library for a keyword |
+
+## CLI
+
+Every endpoint is exposed as a hyphenated `vidjutsu scrape <subcommand>`:
+
+```bash
+vidjutsu scrape tiktok-profile --handle mrbeast
+vidjutsu scrape instagram-user-posts --handle nike --download-media
+vidjutsu scrape meta-ads --query "ai video" --country us
+```
+
+See the [CLI reference](/cli/scrape) for the full list.
+
+## Example
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/scrape/instagram/user/reels \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "handle": "nike", "download_media": true }'
+```
+
+Returns up to ~12 reels with every `video_url` and `thumbnail_url` rewritten to a stable VidJutsu CDN URL you can hand to `/v1/watch`, `/v1/transcribe`, or any third-party tool.

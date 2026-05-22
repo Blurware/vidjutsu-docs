@@ -1,0 +1,92 @@
+---
+title: "vidjutsu scrape"
+description: "Fetch public profiles, posts, comments, transcripts, and ad-library data from TikTok, Instagram, X, YouTube, and the major ad libraries — through your VidJutsu API key."
+---
+
+Twenty-four primitive subcommands that wrap the public-data surfaces of TikTok, Instagram, X, YouTube, and the Meta / Google / LinkedIn / Reddit ad libraries. One key, one bill, one ToS — see the [API reference](/api-reference/scrape) for the wrap rationale and op-counting model.
+
+```bash
+vidjutsu scrape <subcommand> [flags]
+```
+
+**Rate group:** `scrape` — 500 calls per day, shared across all 24 subcommands.
+**Cost:** 1 credit base + 1 per staged media file (only when `--download-media` is set).
+
+## `--download-media`
+
+Most subcommands accept `--download-media`. When set, VidJutsu fetches every media URL in the response, stages it to our public CDN, and returns VidJutsu URLs in place of the source URLs. Defaults to `false` (raw source URLs returned as-is).
+
+Use it whenever you need to feed the media into a downstream pipeline like `vidjutsu watch`, `vidjutsu transcribe`, or a third-party LLM tool — TikTok / IG / X / YouTube source URLs are gatekept and typically not fetchable downstream.
+
+## Subcommands
+
+### TikTok
+
+| Subcommand | Required flags | Optional flags |
+|---|---|---|
+| `tiktok-profile` | `--handle` | `--trim`, `--download-media` |
+| `tiktok-profile-videos` | `--handle` | `--cursor`, `--download-media` |
+| `tiktok-video` | `--url` | `--trim`, `--download-media` |
+| `tiktok-video-transcript` | `--url` | — |
+| `tiktok-video-comments` | `--url` | `--cursor` |
+| `tiktok-search-users` | `--query` | `--cursor` |
+| `tiktok-trending` | — | `--country`, `--download-media` |
+
+### Instagram
+
+| Subcommand | Required flags | Optional flags |
+|---|---|---|
+| `instagram-profile` | `--handle` | `--download-media` |
+| `instagram-user-posts` | `--handle` | `--cursor`, `--download-media` |
+| `instagram-post` | `--url` | `--download-media` |
+| `instagram-post-comments` | `--url` | `--cursor` |
+| `instagram-user-reels` | `--handle` | `--cursor`, `--download-media` |
+
+### X (Twitter)
+
+| Subcommand | Required flags | Optional flags |
+|---|---|---|
+| `twitter-profile` | `--handle` | `--download-media` |
+| `twitter-user-tweets` | `--handle` | `--cursor`, `--trim`, `--download-media` |
+| `twitter-tweet` | `--url` | `--trim`, `--download-media` |
+| `twitter-tweet-transcript` | `--url` | — |
+
+### YouTube
+
+| Subcommand | Required flags | Optional flags |
+|---|---|---|
+| `youtube-channel` | — | `--handle`, `--channel-id`, `--download-media` |
+| `youtube-channel-videos` | — | `--handle`, `--channel-id`, `--cursor`, `--download-media` |
+| `youtube-video` | `--url` | `--download-media` |
+| `youtube-video-comments` | `--url` | `--cursor` |
+
+### Ad libraries
+
+| Subcommand | Required flags | Optional flags |
+|---|---|---|
+| `meta-ads` | `--query` | `--country`, `--download-media` |
+| `google-ads` | `--company` | `--download-media` |
+| `linkedin-ads` | `--query` | `--download-media` |
+| `reddit-ads` | `--query` | `--download-media` |
+
+## Examples
+
+```bash
+# Pull a creator's recent reels and stage them on our CDN
+vidjutsu scrape instagram-user-reels --handle nike --download-media
+
+# Mine active ads for a keyword
+vidjutsu scrape meta-ads --query "ai video" --country us
+
+# Get an ASR transcript for a TikTok
+vidjutsu scrape tiktok-video-transcript --url https://www.tiktok.com/@scout2015/video/6718335390845095173
+
+# Pipe a YouTube video into Watch
+URL=$(vidjutsu scrape youtube-video --url "https://youtu.be/dQw4w9WgXcQ" --download-media | jq -r '.video.video_url')
+vidjutsu watch --url "$URL"
+```
+
+## Rate limits
+
+- `scrape` rate group: **500 calls / day**, shared across all 24 subcommands.
+- Check remaining capacity with `vidjutsu usage`.
