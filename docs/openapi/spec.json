@@ -3952,7 +3952,6 @@
       },
       "ScrapeTikTokTrendingRequest": {
         "type": "object",
-        "required": [],
         "properties": {
           "country": {
             "type": "string",
@@ -4134,7 +4133,6 @@
       },
       "ScrapeYouTubeChannelRequest": {
         "type": "object",
-        "required": [],
         "properties": {
           "handle": {
             "type": "string",
@@ -4153,7 +4151,6 @@
       },
       "ScrapeYouTubeChannelVideosRequest": {
         "type": "object",
-        "required": [],
         "properties": {
           "handle": {
             "type": "string",
