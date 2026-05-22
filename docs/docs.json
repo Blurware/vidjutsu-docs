@@ -36,6 +36,12 @@
             ]
           },
           {
+            "group": "Recipes",
+            "pages": [
+              "guides/scrape"
+            ]
+          },
+          {
             "group": "Legal",
             "pages": [
               "legal/terms"
@@ -50,36 +56,6 @@
             "group": "Overview",
             "pages": [
               "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Scrape",
-            "pages": [
-              "api-reference/scrape",
-              "POST /v1/scrape/tiktok/profile",
-              "POST /v1/scrape/tiktok/profile/videos",
-              "POST /v1/scrape/tiktok/video",
-              "POST /v1/scrape/tiktok/video/transcript",
-              "POST /v1/scrape/tiktok/video/comments",
-              "POST /v1/scrape/tiktok/search/users",
-              "POST /v1/scrape/tiktok/trending",
-              "POST /v1/scrape/instagram/profile",
-              "POST /v1/scrape/instagram/user/posts",
-              "POST /v1/scrape/instagram/post",
-              "POST /v1/scrape/instagram/post/comments",
-              "POST /v1/scrape/instagram/user/reels",
-              "POST /v1/scrape/twitter/profile",
-              "POST /v1/scrape/twitter/user-tweets",
-              "POST /v1/scrape/twitter/tweet",
-              "POST /v1/scrape/twitter/tweet/transcript",
-              "POST /v1/scrape/youtube/channel",
-              "POST /v1/scrape/youtube/channel-videos",
-              "POST /v1/scrape/youtube/video",
-              "POST /v1/scrape/youtube/video/comments",
-              "POST /v1/scrape/ads/meta",
-              "POST /v1/scrape/ads/google",
-              "POST /v1/scrape/ads/linkedin",
-              "POST /v1/scrape/ads/reddit"
             ]
           },
           {
@@ -168,6 +144,36 @@
               "PUT /v1/references",
               "DELETE /v1/references"
             ]
+          },
+          {
+            "group": "Scrape",
+            "pages": [
+              "api-reference/scrape",
+              "POST /v1/scrape/tiktok/profile",
+              "POST /v1/scrape/tiktok/profile/videos",
+              "POST /v1/scrape/tiktok/video",
+              "POST /v1/scrape/tiktok/video/transcript",
+              "POST /v1/scrape/tiktok/video/comments",
+              "POST /v1/scrape/tiktok/search/users",
+              "POST /v1/scrape/tiktok/trending",
+              "POST /v1/scrape/instagram/profile",
+              "POST /v1/scrape/instagram/user/posts",
+              "POST /v1/scrape/instagram/post",
+              "POST /v1/scrape/instagram/post/comments",
+              "POST /v1/scrape/instagram/user/reels",
+              "POST /v1/scrape/twitter/profile",
+              "POST /v1/scrape/twitter/user-tweets",
+              "POST /v1/scrape/twitter/tweet",
+              "POST /v1/scrape/twitter/tweet/transcript",
+              "POST /v1/scrape/youtube/channel",
+              "POST /v1/scrape/youtube/channel-videos",
+              "POST /v1/scrape/youtube/video",
+              "POST /v1/scrape/youtube/video/comments",
+              "POST /v1/scrape/ads/meta",
+              "POST /v1/scrape/ads/google",
+              "POST /v1/scrape/ads/linkedin",
+              "POST /v1/scrape/ads/reddit"
+            ]
           }
         ],
         "openapi": "openapi/spec.json"
@@ -201,6 +207,12 @@
               "sdk/assets",
               "sdk/references"
             ]
+          },
+          {
+            "group": "Scrape",
+            "pages": [
+              "sdk/scrape"
+            ]
           }
         ]
       },
@@ -225,8 +237,7 @@
               "cli/check",
               "cli/overlay",
               "cli/disclaimer",
-              "cli/compliance",
-              "cli/scrape"
+              "cli/compliance"
             ]
           },
           {
@@ -246,6 +257,12 @@
               "cli/status",
               "cli/info",
               "cli/version"
+            ]
+          },
+          {
+            "group": "Scrape",
+            "pages": [
+              "cli/scrape"
             ]
           }
         ]
