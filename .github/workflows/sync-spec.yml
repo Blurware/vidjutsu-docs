@@ -2,6 +2,11 @@ name: Sync OpenAPI Spec
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [openapi-updated]
+
+permissions:
+  contents: write
 
 jobs:
   sync:
@@ -9,11 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Trigger Mintlify rebuild
+      - name: Fetch latest spec from vidjutsu-openapi
+        run: |
+          mkdir -p docs/openapi
+          curl -fsSL "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json" \
+            -o docs/openapi/spec.json
+          ls -la docs/openapi/spec.json
+
+      - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          date -u > .last-spec-sync
-          git add .last-spec-sync
-          git commit -m "chore: trigger rebuild for updated OpenAPI spec"
+          if git diff --quiet docs/openapi/spec.json; then
+            echo "Spec unchanged — nothing to commit."
+            exit 0
+          fi
+          git add docs/openapi/spec.json
+          git commit -m "chore: sync OpenAPI spec from vidjutsu-openapi"
           git push
