@@ -32,7 +32,8 @@
             "group": "Reference",
             "pages": [
               "authentication",
-              "credits-and-billing"
+              "credits-and-billing",
+              "auth"
             ]
           },
           {
@@ -75,6 +76,15 @@
             "pages": [
               "POST /v1/auth/verify/request",
               "POST /v1/auth/verify/confirm"
+            ]
+          },
+          {
+            "group": "Agent Auth (auth.md)",
+            "pages": [
+              "POST /v1/auth/agent",
+              "POST /v1/auth/agent/claim",
+              "POST /v1/auth/agent/claim/complete",
+              "POST /v1/auth/agent/revoke"
             ]
           },
           {

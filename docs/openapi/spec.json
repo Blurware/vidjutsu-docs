@@ -2,11 +2,17 @@
   "openapi": "3.0.0",
   "info": {
     "title": "VidJutsu API",
-    "version": "2026-05-22"
+    "version": "2026-05-24"
   },
   "tags": [
     {
       "name": "Assets"
+    },
+    {
+      "name": "Editor Projects"
+    },
+    {
+      "name": "Scrape"
     },
     {
       "name": "Credits"
@@ -63,8 +69,7 @@
       "name": "Disclaimer"
     },
     {
-      "name": "Scrape",
-      "description": "Proxy endpoints to Scrape Creators for TikTok, Instagram, X, YouTube, and ad libraries. Optional download_media param stages media through VidJutsu CDN."
+      "name": "Agent"
     }
   ],
   "paths": {
@@ -411,6 +416,150 @@
         ]
       }
     },
+    "/v1/auth/agent": {
+      "post": {
+        "operationId": "signupAgent",
+        "summary": "Agent registration (auth.md)",
+        "description": "Register a machine client per the auth.md protocol. Three identity types are supported: `anonymous` (returns an API key immediately with pre-claim scopes), `verified_email` (kicks off OTP, returns a claim_token), and `identity_assertion` with assertion_type=`urn:ietf:params:oauth:token-type:id-jag` (verifies a signed ID-JAG and issues a key bound to the asserted identity).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentSignupResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentSignupBody"
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/v1/auth/agent/claim": {
+      "post": {
+        "operationId": "agentClaim",
+        "summary": "Initiate claim flow",
+        "description": "Initiate the email-verification claim flow for a previously-issued anonymous registration. Sends a 6-digit OTP to the supplied email and returns a claim_attempt_id.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentClaimResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentClaimRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/v1/auth/agent/claim/complete": {
+      "post": {
+        "operationId": "agentClaimComplete",
+        "summary": "Complete claim flow",
+        "description": "Complete the email-verification claim flow by submitting the OTP. On success the registration's claimStatus flips to email_verified, post-claim scopes are unlocked, and an API key credential is returned.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentClaimCompleteResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentClaimCompleteRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
+    "/v1/auth/agent/revoke": {
+      "post": {
+        "operationId": "agentRevoke",
+        "summary": "Revoke credential (logout+jwt)",
+        "description": "Accept a logout+jwt push from a trusted assertion provider to revoke a previously-issued credential. Body is a signed JWT with media type application/logout+jwt per RFC 8417.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentRevokeResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/logout+jwt": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "security": [
+          {}
+        ]
+      }
+    },
     "/v1/auth/verify/confirm": {
       "post": {
         "operationId": "confirmVerification",
@@ -477,6 +626,29 @@
         }
       }
     },
+    "/v1/balance": {
+      "get": {
+        "operationId": "getBalance",
+        "summary": "Get credit balance",
+        "description": "Returns the authenticated client's current credit balance and the last 10 ledger entries.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Credits"
+        ]
+      }
+    },
     "/v1/check": {
       "post": {
         "operationId": "checkSpec",
@@ -490,6 +662,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CheckResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -580,6 +762,16 @@
                 }
               }
             }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -610,6 +802,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ComplianceCheckResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -678,6 +880,16 @@
                 }
               }
             }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -708,6 +920,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ExtractResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -763,6 +985,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OverlayResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -954,6 +1186,155 @@
         ]
       }
     },
+    "/v1/projects": {
+      "post": {
+        "operationId": "createEditorProject",
+        "summary": "Create editor project",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "The request has succeeded and a new resource has been created as a result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditorProjectCreateResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Editor Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditorProjectCreateRequest"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateEditorProject",
+        "summary": "Update editor project",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditorProjectUpdateResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Editor Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditorProjectUpdateRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listOrGetEditorProjects",
+        "summary": "List projects or get by ID",
+        "description": "Returns a single project if ?id= is provided, or a list. Filter by ?status= or ?tag.key=value.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/EditorProject"
+                    },
+                    {
+                      "$ref": "#/components/schemas/EditorProjectListResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Editor Projects"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteEditorProject",
+        "summary": "Archive editor project (soft)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditorProjectDeleteResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Editor Projects"
+        ]
+      }
+    },
     "/v1/references": {
       "post": {
         "operationId": "createReference",
@@ -1103,10 +1484,1069 @@
         ]
       }
     },
+    "/v1/scrape/ads/google": {
+      "post": {
+        "operationId": "scrapeGoogleAds",
+        "summary": "Scrape Google Ad Transparency",
+        "description": "Ads for a company in the Google Ad Transparency Library. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeGoogleAdsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/ads/linkedin": {
+      "post": {
+        "operationId": "scrapeLinkedInAds",
+        "summary": "Scrape LinkedIn Ad Library",
+        "description": "Active LinkedIn ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeLinkedInAdsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/ads/meta": {
+      "post": {
+        "operationId": "scrapeMetaAds",
+        "summary": "Scrape Meta (Facebook) Ad Library",
+        "description": "Active Meta ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeMetaAdsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/ads/reddit": {
+      "post": {
+        "operationId": "scrapeRedditAds",
+        "summary": "Scrape Reddit Ad Library",
+        "description": "Active Reddit ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeRedditAdsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/instagram/post": {
+      "post": {
+        "operationId": "scrapeInstagramPost",
+        "summary": "Scrape Instagram post or reel",
+        "description": "Single Instagram post or reel + media URLs. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeInstagramPostRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/instagram/post/comments": {
+      "post": {
+        "operationId": "scrapeInstagramPostComments",
+        "summary": "Scrape Instagram post comments",
+        "description": "Comments on an Instagram post or reel. 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeInstagramPostCommentsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/instagram/profile": {
+      "post": {
+        "operationId": "scrapeInstagramProfile",
+        "summary": "Scrape Instagram profile",
+        "description": "Public Instagram profile + recent reels. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeInstagramProfileRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/instagram/user/posts": {
+      "post": {
+        "operationId": "scrapeInstagramUserPosts",
+        "summary": "Scrape Instagram user posts",
+        "description": "Paginated posts for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeInstagramUserPostsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/instagram/user/reels": {
+      "post": {
+        "operationId": "scrapeInstagramUserReels",
+        "summary": "Scrape Instagram user reels",
+        "description": "Paginated reels for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeInstagramUserReelsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/profile": {
+      "post": {
+        "operationId": "scrapeTikTokProfile",
+        "summary": "Scrape TikTok profile",
+        "description": "Fetch public TikTok profile data via Scrape Creators. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokProfileRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/profile/videos": {
+      "post": {
+        "operationId": "scrapeTikTokProfileVideos",
+        "summary": "Scrape TikTok profile videos",
+        "description": "Paginated videos for a TikTok profile. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokProfileVideosRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/search/users": {
+      "post": {
+        "operationId": "scrapeTikTokSearchUsers",
+        "summary": "Scrape TikTok user search",
+        "description": "Search TikTok users by keyword. 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokSearchUsersRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/trending": {
+      "post": {
+        "operationId": "scrapeTikTokTrending",
+        "summary": "Scrape TikTok trending feed",
+        "description": "Trending feed by region. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokTrendingRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/video": {
+      "post": {
+        "operationId": "scrapeTikTokVideo",
+        "summary": "Scrape TikTok video",
+        "description": "Single TikTok video metadata + media URLs. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokVideoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/video/comments": {
+      "post": {
+        "operationId": "scrapeTikTokVideoComments",
+        "summary": "Scrape TikTok video comments",
+        "description": "Comments on a TikTok video. 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokVideoCommentsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/tiktok/video/transcript": {
+      "post": {
+        "operationId": "scrapeTikTokVideoTranscript",
+        "summary": "Scrape TikTok video transcript",
+        "description": "Spoken transcript for a TikTok video. 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTikTokVideoTranscriptRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/twitter/profile": {
+      "post": {
+        "operationId": "scrapeTwitterProfile",
+        "summary": "Scrape X profile",
+        "description": "Public X/Twitter profile + stats. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTwitterProfileRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/twitter/tweet": {
+      "post": {
+        "operationId": "scrapeTwitterTweet",
+        "summary": "Scrape X tweet",
+        "description": "Single tweet + media. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTwitterTweetRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/twitter/tweet/transcript": {
+      "post": {
+        "operationId": "scrapeTwitterTweetTranscript",
+        "summary": "Scrape X tweet video transcript",
+        "description": "Transcript of the video in a tweet (when present). 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTwitterTweetTranscriptRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/twitter/user-tweets": {
+      "post": {
+        "operationId": "scrapeTwitterUserTweets",
+        "summary": "Scrape X user tweets",
+        "description": "Recent tweets for a handle. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeTwitterUserTweetsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/youtube/channel": {
+      "post": {
+        "operationId": "scrapeYouTubeChannel",
+        "summary": "Scrape YouTube channel",
+        "description": "YouTube channel info + stats. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeYouTubeChannelRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/youtube/channel-videos": {
+      "post": {
+        "operationId": "scrapeYouTubeChannelVideos",
+        "summary": "Scrape YouTube channel videos",
+        "description": "Paginated videos for a channel. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeYouTubeChannelVideosRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/youtube/video": {
+      "post": {
+        "operationId": "scrapeYouTubeVideo",
+        "summary": "Scrape YouTube video",
+        "description": "Single YouTube video info, including transcript. 1 op + 1 op per staged media file when download_media is true.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeYouTubeVideoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/scrape/youtube/video/comments": {
+      "post": {
+        "operationId": "scrapeYouTubeVideoComments",
+        "summary": "Scrape YouTube video comments",
+        "description": "Comments on a YouTube video. 1 op.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScrapeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Scrape"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScrapeYouTubeVideoCommentsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/signup": {
+      "post": {
+        "operationId": "signup",
+        "summary": "Anonymous signup",
+        "description": "Creates a new anonymous machine client and returns a fresh API key + clientId. No authentication required. Returned client starts with 0 credits and claimStatus=anonymous; credits can be granted by an admin or topped up later.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Credits"
+        ],
+        "security": [
+          {}
+        ]
+      }
+    },
     "/v1/subscribe": {
       "post": {
         "operationId": "createSubscription",
         "summary": "Create subscription",
+        "description": "DEPRECATED (PR 2 of credit-billing pivot, 2026-05-23): subscription gating has been removed from the API. Anyone can sign up for free via POST /v1/signup and pay per call via credits — a 403 subscription_required response will no longer be returned by any endpoint. This endpoint is retained as a Stripe Checkout entry point and will be reworked in PR 3 to mint credit packs instead of subscriptions. Do not build new integrations against the existing subscription semantics.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1135,6 +2575,72 @@
         }
       }
     },
+    "/v1/topup": {
+      "post": {
+        "operationId": "createTopup",
+        "summary": "Create one-time credit pack checkout",
+        "description": "Creates a Stripe Checkout Session for a one-time credit pack. The returned checkoutUrl completes payment via Stripe-hosted checkout; credits are granted via webhook on payment success.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopupResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Credits"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopupRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/topup/auto": {
+      "post": {
+        "operationId": "createAutoRefill",
+        "summary": "Create auto-refill subscription",
+        "description": "Creates a recurring Stripe Subscription that auto-tops-up credits each month at the requested dollar amount. The returned checkoutUrl confirms the recurring subscription; credits are granted via webhook on each billing cycle.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutoRefillResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Credits"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AutoRefillRequest"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/transcribe": {
       "post": {
         "operationId": "transcribeMedia",
@@ -1148,6 +2654,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TranscribeResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -1183,6 +2699,16 @@
                 }
               }
             }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1213,6 +2739,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
                 }
               }
             }
@@ -1272,6 +2808,16 @@
                 }
               }
             }
+          },
+          "402": {
+            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1283,798 +2829,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/WatchRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/profile": {
-      "post": {
-        "operationId": "scrapeTikTokProfile",
-        "summary": "Scrape TikTok profile",
-        "description": "Fetch public TikTok profile data via Scrape Creators. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokProfileRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/profile/videos": {
-      "post": {
-        "operationId": "scrapeTikTokProfileVideos",
-        "summary": "Scrape TikTok profile videos",
-        "description": "Paginated videos for a TikTok profile. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokProfileVideosRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/video": {
-      "post": {
-        "operationId": "scrapeTikTokVideo",
-        "summary": "Scrape TikTok video",
-        "description": "Single TikTok video metadata + media URLs. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokVideoRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/video/transcript": {
-      "post": {
-        "operationId": "scrapeTikTokVideoTranscript",
-        "summary": "Scrape TikTok video transcript",
-        "description": "Spoken transcript for a TikTok video. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokVideoTranscriptRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/video/comments": {
-      "post": {
-        "operationId": "scrapeTikTokVideoComments",
-        "summary": "Scrape TikTok video comments",
-        "description": "Comments on a TikTok video. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokVideoCommentsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/search/users": {
-      "post": {
-        "operationId": "scrapeTikTokSearchUsers",
-        "summary": "Scrape TikTok user search",
-        "description": "Search TikTok users by keyword. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokSearchUsersRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/tiktok/trending": {
-      "post": {
-        "operationId": "scrapeTikTokTrending",
-        "summary": "Scrape TikTok trending feed",
-        "description": "Trending feed by region. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTikTokTrendingRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/instagram/profile": {
-      "post": {
-        "operationId": "scrapeInstagramProfile",
-        "summary": "Scrape Instagram profile",
-        "description": "Public Instagram profile + recent reels. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeInstagramProfileRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/instagram/user/posts": {
-      "post": {
-        "operationId": "scrapeInstagramUserPosts",
-        "summary": "Scrape Instagram user posts",
-        "description": "Paginated posts for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeInstagramUserPostsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/instagram/post": {
-      "post": {
-        "operationId": "scrapeInstagramPost",
-        "summary": "Scrape Instagram post or reel",
-        "description": "Single Instagram post or reel + media URLs. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeInstagramPostRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/instagram/post/comments": {
-      "post": {
-        "operationId": "scrapeInstagramPostComments",
-        "summary": "Scrape Instagram post comments",
-        "description": "Comments on an Instagram post or reel. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeInstagramPostCommentsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/instagram/user/reels": {
-      "post": {
-        "operationId": "scrapeInstagramUserReels",
-        "summary": "Scrape Instagram user reels",
-        "description": "Paginated reels for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeInstagramUserReelsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/profile": {
-      "post": {
-        "operationId": "scrapeTwitterProfile",
-        "summary": "Scrape X profile",
-        "description": "Public X/Twitter profile + stats. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterProfileRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/user-tweets": {
-      "post": {
-        "operationId": "scrapeTwitterUserTweets",
-        "summary": "Scrape X user tweets",
-        "description": "Recent tweets for a handle. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterUserTweetsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/tweet": {
-      "post": {
-        "operationId": "scrapeTwitterTweet",
-        "summary": "Scrape X tweet",
-        "description": "Single tweet + media. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterTweetRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/tweet/transcript": {
-      "post": {
-        "operationId": "scrapeTwitterTweetTranscript",
-        "summary": "Scrape X tweet video transcript",
-        "description": "Transcript of the video in a tweet (when present). 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterTweetTranscriptRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/channel": {
-      "post": {
-        "operationId": "scrapeYouTubeChannel",
-        "summary": "Scrape YouTube channel",
-        "description": "YouTube channel info + stats. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeChannelRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/channel-videos": {
-      "post": {
-        "operationId": "scrapeYouTubeChannelVideos",
-        "summary": "Scrape YouTube channel videos",
-        "description": "Paginated videos for a channel. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeChannelVideosRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/video": {
-      "post": {
-        "operationId": "scrapeYouTubeVideo",
-        "summary": "Scrape YouTube video",
-        "description": "Single YouTube video info, including transcript. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeVideoRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/video/comments": {
-      "post": {
-        "operationId": "scrapeYouTubeVideoComments",
-        "summary": "Scrape YouTube video comments",
-        "description": "Comments on a YouTube video. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeVideoCommentsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/meta": {
-      "post": {
-        "operationId": "scrapeMetaAds",
-        "summary": "Scrape Meta (Facebook) Ad Library",
-        "description": "Active Meta ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeMetaAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/google": {
-      "post": {
-        "operationId": "scrapeGoogleAds",
-        "summary": "Scrape Google Ad Transparency",
-        "description": "Ads for a company in the Google Ad Transparency Library. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeGoogleAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/linkedin": {
-      "post": {
-        "operationId": "scrapeLinkedInAds",
-        "summary": "Scrape LinkedIn Ad Library",
-        "description": "Active LinkedIn ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeLinkedInAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/reddit": {
-      "post": {
-        "operationId": "scrapeRedditAds",
-        "summary": "Scrape Reddit Ad Library",
-        "description": "Active Reddit ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeRedditAdsRequest"
               }
             }
           }
@@ -2293,6 +3047,259 @@
             "enum": [
               true
             ]
+          }
+        }
+      },
+      "AgentClaimCompleteRequest": {
+        "type": "object",
+        "required": [
+          "claim_token",
+          "code"
+        ],
+        "properties": {
+          "claim_token": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "description": "6-digit verification code emailed to the principal."
+          }
+        }
+      },
+      "AgentClaimCompleteResponse": {
+        "type": "object",
+        "required": [
+          "credential",
+          "credential_type",
+          "scopes"
+        ],
+        "properties": {
+          "credential": {
+            "type": "string"
+          },
+          "credential_type": {
+            "type": "string",
+            "enum": [
+              "api_key"
+            ]
+          },
+          "credential_expires": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AgentClaimRequest": {
+        "type": "object",
+        "required": [
+          "claim_token",
+          "email"
+        ],
+        "properties": {
+          "claim_token": {
+            "type": "string",
+            "description": "Opaque claim_token returned from the initial /v1/auth/agent call."
+          },
+          "email": {
+            "type": "string",
+            "description": "Email address to send the verification code to."
+          }
+        }
+      },
+      "AgentClaimResponse": {
+        "type": "object",
+        "required": [
+          "registration_id",
+          "claim_attempt_id",
+          "status",
+          "expires_at"
+        ],
+        "properties": {
+          "registration_id": {
+            "type": "string"
+          },
+          "claim_attempt_id": {
+            "type": "string",
+            "description": "Identifier for this claim attempt."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "initiated"
+            ]
+          },
+          "expires_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix epoch ms when this claim attempt expires."
+          }
+        }
+      },
+      "AgentRevokeResponse": {
+        "type": "object",
+        "required": [
+          "revoked"
+        ],
+        "properties": {
+          "revoked": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AgentSignupAnonymousBody": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "anonymous"
+            ]
+          },
+          "requested_credential_type": {
+            "type": "string",
+            "enum": [
+              "api_key"
+            ],
+            "description": "Requested credential type. Currently only api_key is supported."
+          }
+        }
+      },
+      "AgentSignupBody": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AgentSignupAnonymousBody"
+          },
+          {
+            "$ref": "#/components/schemas/AgentSignupVerifiedEmailBody"
+          },
+          {
+            "$ref": "#/components/schemas/AgentSignupIdJagBody"
+          }
+        ]
+      },
+      "AgentSignupIdJagBody": {
+        "type": "object",
+        "required": [
+          "type",
+          "assertion_type",
+          "assertion"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "identity_assertion"
+            ]
+          },
+          "assertion_type": {
+            "type": "string",
+            "enum": [
+              "urn:ietf:params:oauth:token-type:id-jag"
+            ]
+          },
+          "assertion": {
+            "type": "string",
+            "description": "Signed identity-assertion JWT (ID-JAG) issued by a trusted assertion provider."
+          }
+        }
+      },
+      "AgentSignupResponse": {
+        "type": "object",
+        "required": [
+          "registration_id",
+          "registration_type"
+        ],
+        "properties": {
+          "registration_id": {
+            "type": "string",
+            "description": "Server-generated registration id (rgn_...)."
+          },
+          "registration_type": {
+            "type": "string",
+            "enum": [
+              "anonymous",
+              "email-verification",
+              "agentic"
+            ],
+            "description": "How the registration was initiated."
+          },
+          "credential_type": {
+            "type": "string",
+            "enum": [
+              "api_key"
+            ],
+            "description": "Credential type returned, when issued immediately. Omitted on flows that require claim_token first."
+          },
+          "credential": {
+            "type": "string",
+            "description": "Live credential (API key) issued by the server, when one is issued immediately."
+          },
+          "credential_expires": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix epoch ms when the credential expires, or null/undefined for non-expiring keys."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scopes the credential is authorized for at issue time."
+          },
+          "post_claim_scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scopes that will be added after the claim flow completes."
+          },
+          "claim_url": {
+            "type": "string",
+            "description": "URL the agent should direct the principal to in order to complete claim/verification."
+          },
+          "claim_token": {
+            "type": "string",
+            "description": "Opaque token used to complete the claim flow."
+          },
+          "claim_token_expires": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix epoch ms when the claim_token expires."
+          }
+        }
+      },
+      "AgentSignupVerifiedEmailBody": {
+        "type": "object",
+        "required": [
+          "type",
+          "assertion_type",
+          "assertion"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "identity_assertion"
+            ]
+          },
+          "assertion_type": {
+            "type": "string",
+            "enum": [
+              "verified_email"
+            ]
+          },
+          "assertion": {
+            "type": "string",
+            "description": "Email address the agent asserts on behalf of the principal."
           }
         }
       },
@@ -2569,6 +3576,57 @@
             "enum": [
               true
             ]
+          }
+        }
+      },
+      "AutoRefillRequest": {
+        "type": "object",
+        "required": [
+          "monthlyAmount"
+        ],
+        "properties": {
+          "monthlyAmount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Monthly dollar amount to auto-charge for credit top-ups. Maps to the closest credit pack rate."
+          }
+        }
+      },
+      "AutoRefillResponse": {
+        "type": "object",
+        "required": [
+          "subscriptionId",
+          "checkoutUrl"
+        ],
+        "properties": {
+          "subscriptionId": {
+            "type": "string",
+            "description": "Stripe Subscription id (sub_...). Recurring credit top-ups will fire monthly from webhook."
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "description": "Stripe Checkout URL to confirm the recurring subscription."
+          }
+        }
+      },
+      "BalanceResponse": {
+        "type": "object",
+        "required": [
+          "balance",
+          "ledger"
+        ],
+        "properties": {
+          "balance": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Current credit balance for the authenticated client."
+          },
+          "ledger": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LedgerEntry"
+            },
+            "description": "Most recent ledger entries (newest first), up to 10."
           }
         }
       },
@@ -2998,6 +4056,180 @@
           }
         }
       },
+      "EditorProject": {
+        "type": "object",
+        "required": [
+          "projectId",
+          "clientId",
+          "name",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "The serializable timeline document (Twick ProjectJSON: tracks, assets,\nmetadata, version). Stored opaquely; the editor owns its shape."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "status": {
+            "$ref": "#/components/schemas/EditorProjectStatus"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "updatedAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "EditorProjectCreateRequest": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "project": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "EditorProjectCreateResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "draft"
+            ]
+          }
+        }
+      },
+      "EditorProjectDeleteResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "archived"
+            ]
+          }
+        }
+      },
+      "EditorProjectListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EditorProject"
+            }
+          }
+        }
+      },
+      "EditorProjectStatus": {
+        "type": "string",
+        "enum": [
+          "draft",
+          "active",
+          "archived"
+        ]
+      },
+      "EditorProjectUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EditorProjectStatus"
+          },
+          "project": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "EditorProjectUpdateResponse": {
+        "type": "object",
+        "required": [
+          "projectId",
+          "updated"
+        ],
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          }
+        }
+      },
       "ExtractAudio": {
         "type": "object",
         "required": [
@@ -3125,6 +4357,43 @@
           }
         }
       },
+      "LedgerEntry": {
+        "type": "object",
+        "required": [
+          "delta",
+          "reason",
+          "createdAt"
+        ],
+        "properties": {
+          "delta": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Signed credit delta: positive for grants/topups/refunds, negative for charges."
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "grant",
+              "topup",
+              "charge",
+              "refund"
+            ]
+          },
+          "operationId": {
+            "type": "string",
+            "description": "Operation that produced this entry (for charge rows)."
+          },
+          "note": {
+            "type": "string",
+            "description": "Free-form admin note (for grant rows)."
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix epoch milliseconds."
+          }
+        }
+      },
       "OverlayRequest": {
         "type": "object",
         "required": [
@@ -3177,6 +4446,55 @@
             "description": "CDN URL of the overlaid video"
           }
         }
+      },
+      "PaymentRequiredProblem": {
+        "type": "object",
+        "required": [
+          "type",
+          "title",
+          "status",
+          "detail",
+          "required",
+          "balance",
+          "topupUrl"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Problem type URI.",
+            "default": "https://paymentauth.org/problems/payment-required"
+          },
+          "title": {
+            "type": "string",
+            "description": "Short human-readable summary.",
+            "default": "Payment Required"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "description": "HTTP status code (always 402 here).",
+            "default": 402
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure."
+          },
+          "required": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Credits required to perform this call."
+          },
+          "balance": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Caller's current credit balance."
+          },
+          "topupUrl": {
+            "type": "string",
+            "description": "URL the caller (or a payment-capable agent) should visit to top up credits."
+          }
+        },
+        "description": "RFC 7807 Problem Details body returned with HTTP 402 when the caller's credit balance is insufficient for the requested operation. Content-Type: application/problem+json."
       },
       "Post": {
         "type": "object",
@@ -3541,6 +4859,467 @@
           }
         }
       },
+      "ScrapeGoogleAdsRequest": {
+        "type": "object",
+        "required": [
+          "company"
+        ],
+        "properties": {
+          "company": {
+            "type": "string",
+            "description": "Company / advertiser name"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeInstagramPostCommentsRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Instagram post URL"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      },
+      "ScrapeInstagramPostRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Instagram post or reel URL"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeInstagramProfileRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Instagram username (without @)"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeInstagramUserPostsRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Instagram username"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeInstagramUserReelsRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Instagram username"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeLinkedInAdsRequest": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeMetaAdsRequest": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword or page name"
+          },
+          "country": {
+            "type": "string",
+            "description": "Two-letter ISO country (default: US)"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeRedditAdsRequest": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search keyword"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "description": "Pass-through response from Scrape Creators. Shape varies per endpoint. When download_media was true, all media URLs are replaced with VidJutsu CDN URLs."
+          }
+        }
+      },
+      "ScrapeTikTokProfileRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "TikTok username (without @)"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Reduce response size by trimming large fields"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTikTokProfileVideosRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "TikTok username"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTikTokSearchUsersRequest": {
+        "type": "object",
+        "required": [
+          "query"
+        ],
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      },
+      "ScrapeTikTokTrendingRequest": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "type": "string",
+            "description": "Two-letter ISO country code (e.g. 'us')"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTikTokVideoCommentsRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "TikTok video URL"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      },
+      "ScrapeTikTokVideoRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "TikTok video URL"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Reduce response size"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTikTokVideoTranscriptRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "TikTok video URL"
+          }
+        }
+      },
+      "ScrapeTwitterProfileRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "X username (without @)"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTwitterTweetRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Tweet URL or status URL"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Reduce response size"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeTwitterTweetTranscriptRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Tweet URL"
+          }
+        }
+      },
+      "ScrapeTwitterUserTweetsRequest": {
+        "type": "object",
+        "required": [
+          "handle"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "X username"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          },
+          "trim": {
+            "type": "boolean",
+            "description": "Reduce response size"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeYouTubeChannelRequest": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Channel handle, e.g. @MrBeast"
+          },
+          "channel_id": {
+            "type": "string",
+            "description": "Channel ID, e.g. UC..."
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeYouTubeChannelVideosRequest": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "string",
+            "description": "Channel handle"
+          },
+          "channel_id": {
+            "type": "string",
+            "description": "Channel ID"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "ScrapeYouTubeVideoCommentsRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "YouTube video URL"
+          },
+          "cursor": {
+            "type": "string",
+            "description": "Pagination cursor"
+          }
+        }
+      },
+      "ScrapeYouTubeVideoRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "YouTube video URL"
+          },
+          "download_media": {
+            "type": "boolean",
+            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
+            "default": false
+          }
+        }
+      },
+      "SignupResponse": {
+        "type": "object",
+        "required": [
+          "apiKey",
+          "clientId"
+        ],
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "description": "Fresh API key, format vj_anon_<hex>. Send as Authorization: Bearer <apiKey>."
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Client identifier, format mc_anon_<hex>."
+          }
+        }
+      },
       "SubscriptionCreateRequest": {
         "type": "object",
         "required": [
@@ -3599,6 +5378,50 @@
           },
           "value": {
             "type": "string"
+          }
+        }
+      },
+      "TopupRequest": {
+        "type": "object",
+        "required": [
+          "packId"
+        ],
+        "properties": {
+          "packId": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "pro",
+              "max"
+            ],
+            "description": "Credit pack identifier. starter=$19/1000, pro=$99/7000, max=$497/50000."
+          }
+        }
+      },
+      "TopupResponse": {
+        "type": "object",
+        "required": [
+          "checkoutUrl",
+          "packId",
+          "credits"
+        ],
+        "properties": {
+          "checkoutUrl": {
+            "type": "string",
+            "description": "Stripe Checkout URL — direct the user (or open programmatically) to complete payment. Credits are granted via webhook after successful payment."
+          },
+          "packId": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "pro",
+              "max"
+            ]
+          },
+          "credits": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Credits that will be added to the balance once payment completes."
           }
         }
       },
@@ -3829,450 +5652,6 @@
             "type": "object",
             "additionalProperties": {},
             "description": "Structured JSON response from AI based on the prompt"
-          }
-        }
-      },
-      "ScrapeResponse": {
-        "type": "object",
-        "required": [
-          "data"
-        ],
-        "properties": {
-          "data": {
-            "description": "Pass-through response from Scrape Creators. Shape varies per endpoint. When download_media was true, all media URLs are replaced with VidJutsu CDN URLs."
-          }
-        }
-      },
-      "ScrapeTikTokProfileRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "TikTok username (without @)"
-          },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size by trimming large fields"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTikTokProfileVideosRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "TikTok username"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTikTokVideoRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "TikTok video URL"
-          },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTikTokVideoTranscriptRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "TikTok video URL"
-          }
-        }
-      },
-      "ScrapeTikTokVideoCommentsRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "TikTok video URL"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          }
-        }
-      },
-      "ScrapeTikTokSearchUsersRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search query"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          }
-        }
-      },
-      "ScrapeTikTokTrendingRequest": {
-        "type": "object",
-        "properties": {
-          "country": {
-            "type": "string",
-            "description": "Two-letter ISO country code (e.g. 'us')"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeInstagramProfileRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Instagram username (without @)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeInstagramUserPostsRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Instagram username"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeInstagramPostRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "Instagram post or reel URL"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeInstagramPostCommentsRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "Instagram post URL"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          }
-        }
-      },
-      "ScrapeInstagramUserReelsRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Instagram username"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTwitterProfileRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "X username (without @)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTwitterUserTweetsRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "X username"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTwitterTweetRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "Tweet URL or status URL"
-          },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTwitterTweetTranscriptRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "Tweet URL"
-          }
-        }
-      },
-      "ScrapeYouTubeChannelRequest": {
-        "type": "object",
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Channel handle, e.g. @MrBeast"
-          },
-          "channel_id": {
-            "type": "string",
-            "description": "Channel ID, e.g. UC..."
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeChannelVideosRequest": {
-        "type": "object",
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Channel handle"
-          },
-          "channel_id": {
-            "type": "string",
-            "description": "Channel ID"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeVideoRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "YouTube video URL"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeVideoCommentsRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "YouTube video URL"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          }
-        }
-      },
-      "ScrapeMetaAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword or page name"
-          },
-          "country": {
-            "type": "string",
-            "description": "Two-letter ISO country (default: US)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeGoogleAdsRequest": {
-        "type": "object",
-        "required": [
-          "company"
-        ],
-        "properties": {
-          "company": {
-            "type": "string",
-            "description": "Company / advertiser name"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeLinkedInAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeRedditAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       }
