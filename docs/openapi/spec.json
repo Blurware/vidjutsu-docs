@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "VidJutsu API",
-    "version": "2026-05-24"
+    "version": "2026-05-24-2"
   },
   "tags": [
     {
@@ -420,7 +420,7 @@
       "post": {
         "operationId": "signupAgent",
         "summary": "Agent registration (auth.md)",
-        "description": "Register a machine client per the auth.md protocol. Three identity types are supported: `anonymous` (returns an API key immediately with pre-claim scopes), `verified_email` (kicks off OTP, returns a claim_token), and `identity_assertion` with assertion_type=`urn:ietf:params:oauth:token-type:id-jag` (verifies a signed ID-JAG and issues a key bound to the asserted identity).",
+        "description": "Register a machine client per the auth.md protocol. Two identity types are supported: `anonymous` (returns an API key immediately with pre-claim scopes) and `verified_email` (kicks off OTP, returns only a claim_token). Both flows are user-claimed — the agent and user run the entire ceremony with no agent-provider participation required.",
         "parameters": [],
         "responses": {
           "200": {
@@ -492,7 +492,7 @@
       "post": {
         "operationId": "agentClaimComplete",
         "summary": "Complete claim flow",
-        "description": "Complete the email-verification claim flow by submitting the OTP. On success the registration's claimStatus flips to email_verified, post-claim scopes are unlocked, and an API key credential is returned.",
+        "description": "Complete the email-verification claim flow by submitting the OTP. On success the registration's claimStatus flips to email_verified, post-claim scopes are unlocked, and a freshly-rotated API key is returned. The original pre-claim `vj_anon_*` key is invalidated server-side as a hygiene measure — agents MUST swap it for the new credential.",
         "parameters": [],
         "responses": {
           "200": {
@@ -527,8 +527,8 @@
     "/v1/auth/agent/revoke": {
       "post": {
         "operationId": "agentRevoke",
-        "summary": "Revoke credential (logout+jwt)",
-        "description": "Accept a logout+jwt push from a trusted assertion provider to revoke a previously-issued credential. Body is a signed JWT with media type application/logout+jwt per RFC 8417.",
+        "summary": "Revoke credential",
+        "description": "Revoke a previously-issued credential. Accepts a logout JWT body (application/logout+jwt) for future provider-driven revocation; currently a no-op receiver, returns 200.",
         "parameters": [],
         "responses": {
           "200": {
@@ -3600,7 +3600,8 @@
         ],
         "properties": {
           "credential": {
-            "type": "string"
+            "type": "string",
+            "description": "Freshly-rotated API key. For anonymous registrations the original `vj_anon_*` key returned at signup is now invalid; agents MUST replace it with this value."
           },
           "credential_type": {
             "type": "string",
@@ -3705,37 +3706,8 @@
           },
           {
             "$ref": "#/components/schemas/AgentSignupVerifiedEmailBody"
-          },
-          {
-            "$ref": "#/components/schemas/AgentSignupIdJagBody"
           }
         ]
-      },
-      "AgentSignupIdJagBody": {
-        "type": "object",
-        "required": [
-          "type",
-          "assertion_type",
-          "assertion"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "identity_assertion"
-            ]
-          },
-          "assertion_type": {
-            "type": "string",
-            "enum": [
-              "urn:ietf:params:oauth:token-type:id-jag"
-            ]
-          },
-          "assertion": {
-            "type": "string",
-            "description": "Signed identity-assertion JWT (ID-JAG) issued by a trusted assertion provider."
-          }
-        }
       },
       "AgentSignupResponse": {
         "type": "object",
@@ -3752,8 +3724,7 @@
             "type": "string",
             "enum": [
               "anonymous",
-              "email-verification",
-              "agentic"
+              "email-verification"
             ],
             "description": "How the registration was initiated."
           },

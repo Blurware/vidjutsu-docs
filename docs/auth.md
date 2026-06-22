@@ -2,6 +2,8 @@
 
 This document is the canonical, agent-readable manifest for registering with the VidJutsu API. It follows the [auth.md protocol](https://github.com/workos/auth.md) so any agent that speaks auth.md can self-onboard without a human in the loop.
 
+VidJutsu implements the **User-Claimed** flow from auth.md ([flow reference](https://workos.com/auth-md/docs/flows/claimed)): the agent and the user run the entire OTP ceremony directly with VidJutsu — no agent provider participates in the handshake. This is the simplest, lowest-friction path and works for any agent regardless of which model or runtime is hosting it.
+
 ## Resource
 
 - **Resource URL:** `https://api.vidjutsu.ai`
@@ -45,12 +47,8 @@ Returns the standard AS metadata plus an `agent_auth` block specific to auth.md:
   "agent_auth": {
     "manifest_url": "https://docs.vidjutsu.ai/auth.md",
     "registration_endpoint": "https://api.vidjutsu.ai/v1/auth/agent",
-    "identity_types_supported": [
-      "anonymous",
-      "verified_email",
-      "urn:ietf:params:oauth:token-type:id-jag"
-    ],
-    "trusted_assertion_issuers": ["anthropic.com"],
+    "identity_types_supported": ["anonymous", "verified_email"],
+    "assertion_types_supported": ["verified_email"],
     "claim_endpoint": "https://api.vidjutsu.ai/v1/auth/agent/claim",
     "claim_complete_endpoint": "https://api.vidjutsu.ai/v1/auth/agent/claim/complete",
     "revocation_endpoint": "https://api.vidjutsu.ai/v1/auth/agent/revoke"
@@ -60,19 +58,20 @@ Returns the standard AS metadata plus an `agent_auth` block specific to auth.md:
 
 ## Identity types
 
-Pick the path that matches the agent's identity context.
+Two entrypoints, both run end-to-end by the agent and the user — no agent-provider participation required.
 
-### Decision tree
+| Flow | When to use | Credential at signup? |
+|------|-------------|------------------------|
+| [anonymous](#1-anonymous) | The agent wants a usable key immediately and the user will verify their email later. | Yes (pre-claim scopes). |
+| [verified_email](#2-verified_email) | The agent already has the user's email and wants to gate the credential behind OTP verification. | No — only a `claim_token`. |
 
-1. **Does the agent provider issue a signed ID-JAG bound to a verified email?** → use [identity_assertion / id-jag](#3-identity_assertion--id-jag).
-2. **Do you have a verified email for the principal but no signed assertion?** → use [identity_assertion / verified_email](#2-identity_assertion--verified_email) (kicks off OTP).
-3. **Neither?** → use [anonymous](#1-anonymous) (immediate key, claimable later).
+Both flows converge at the same [claim flow](#claim-flow), which exchanges a `claim_token` + OTP for a fully-scoped, freshly-minted API key.
 
 ---
 
 ### 1. anonymous
 
-Immediate API key with pre-claim scopes (`api.read`). The agent can call read-only endpoints right away, and the returned `claim_token` can be redeemed later to upgrade to a verified identity.
+Immediate API key with pre-claim scopes (`api.read`). The agent can call read-only endpoints right away, and the returned `claim_token` can be redeemed later to upgrade to a fully-scoped key once the user verifies an email.
 
 ```http
 POST /v1/auth/agent
@@ -100,9 +99,9 @@ Response:
 
 To upgrade this credential to full scopes, run the [claim flow](#claim-flow) with the returned `claim_token`.
 
-### 2. identity_assertion / verified_email
+### 2. verified_email
 
-The agent asserts an email on behalf of the principal. VidJutsu emails a 6-digit OTP to that address and returns a `claim_token`. Complete the OTP via [claim_complete](#claim-flow) to receive the credential.
+The agent asserts an email on behalf of the principal. VidJutsu emails a 6-digit OTP to that address and returns a `claim_token`. No credential is issued at this step — the agent must complete the OTP via [claim/complete](#claim-flow) to receive the key.
 
 ```http
 POST /v1/auth/agent
@@ -128,43 +127,9 @@ Response:
 }
 ```
 
-No credential is issued at this step. The agent must complete the OTP via `claim/complete`.
-
-### 3. identity_assertion / id-jag
-
-The agent passes a signed identity-assertion JWT (ID-JAG, [token-type URN](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining)) issued by a trusted assertion provider. VidJutsu validates the signature against the issuer's JWKS, enforces `email_verified=true`, checks `aud`/`exp`, and rejects replays.
-
-```http
-POST /v1/auth/agent
-Content-Type: application/json
-
-{
-  "type": "identity_assertion",
-  "assertion_type": "urn:ietf:params:oauth:token-type:id-jag",
-  "assertion": "<JAG signed JWT>"
-}
-```
-
-Response (immediate credential, no claim flow needed):
-
-```json
-{
-  "registration_id": "rgn_…",
-  "registration_type": "agentic",
-  "credential_type": "api_key",
-  "credential": "vj_live_…",
-  "credential_expires": null,
-  "scopes": ["api.read", "api.write"]
-}
-```
-
-**Trusted issuers** are advertised in the `agent_auth.trusted_assertion_issuers` discovery field. Current trust list: `anthropic.com`.
-
-The JAG payload must include: `iss`, `sub`, `aud` (matching the resource URL), `exp`, `jti` (for replay protection), `email`, and `email_verified: true`. The header must carry a `kid` that resolves in the issuer's JWKS.
-
 ## Claim flow
 
-For the `anonymous` and `verified_email` flows, complete the registration with two calls.
+Run the same two-call ceremony to finish either flow.
 
 ### 1. Initiate claim (anonymous only — `verified_email` already kicks off OTP)
 
@@ -206,7 +171,7 @@ Response:
 }
 ```
 
-The credential replaces any pre-claim key issued in the anonymous flow.
+> **Key rotation on claim.** For anonymous registrations, the pre-claim `vj_anon_*` key returned at signup is **invalidated server-side** as soon as the claim succeeds. The freshly-returned `vj_live_*` key is the only valid credential going forward — agents MUST swap to the new value. This is a hygiene measure consistent with the auth.md spec's guidance on User-Claimed credential lifecycles.
 
 ## Using the credential
 
@@ -220,7 +185,7 @@ API access requires an active `$99/mo` subscription. Calls made without one resp
 
 ## Revocation
 
-Providers may push a logout JWT (RFC 8417 SET) to revoke a credential:
+The protocol reserves a logout-JWT push endpoint for future provider-driven revocation:
 
 ```http
 POST /v1/auth/agent/revoke
@@ -235,15 +200,15 @@ Response:
 { "revoked": true }
 ```
 
-> The receiver is in place as of this release. Provider-side verification (validating the SET against the provider's JWKS) lands in a follow-up release; today the endpoint accepts and logs the SET and returns 200.
+> The user-claimed flow has no provider in the loop, so this endpoint is a no-op receiver today. It is kept for protocol surface-area.
 
 ## Errors
 
 All errors follow `application/problem+json` (RFC 7807). Notable cases:
 
 - `400 Bad Request` — unsupported `type` or `assertion_type`, missing fields.
-- `401 Unauthorized` — ID-JAG verification failed (untrusted issuer, bad signature, expired, replayed, `email_verified` false, wrong `aud`, missing claims).
 - `404 Not Found` — claim_token unknown or expired.
+- `401 Unauthorized` — invalid or expired OTP on claim/complete.
 - `403 Forbidden` — `subscription_required`: a valid key with no active subscription called a gated endpoint.
 - `429 Too Many Requests` — a per-endpoint daily rate limit was exceeded; includes a `retryAfter` hint.
 
