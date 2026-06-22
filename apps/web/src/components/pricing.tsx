@@ -1,42 +1,15 @@
 "use client";
 
-import { useState } from "react";
-
-type Billing = "monthly" | "annual";
-
-const PLAN: Record<
-  Billing,
-  {
-    label: string;
-    price: string;
-    billedLine: string;
-    description: string;
-    rateLimit: string;
-  }
-> = {
-  monthly: {
-    label: "Pro",
-    price: "$99",
-    billedLine: "Billed monthly",
-    description:
-      "Full API access. Get a compliance report on every creative before it goes to Meta or TikTok review.",
-    rateLimit: "20 video reports / day · 100 text reports / day",
-  },
-  annual: {
-    label: "Pro Annual",
-    price: "$59",
-    billedLine: "Billed annually as $708 · 40% off",
-    description:
-      "Full API access with triple the rate limits. Get a compliance report on every creative before it goes to Meta or TikTok review.",
-    rateLimit: "60 video reports / day · 300 text reports / day",
-  },
+const plan = {
+  label: "Pro",
+  price: "$99",
+  billedLine: "Billed monthly · cancel anytime",
+  description:
+    "Full API access. Every intelligence endpoint plus unmetered storage operations. Get a compliance report on every creative before it goes to Meta or TikTok review.",
+  rateLimit: "Per-endpoint daily rate limits · 50 video analyses / day · reset midnight UTC",
 };
 
 export function Pricing() {
-  const [billing, setBilling] = useState<Billing>("annual");
-  const plan = PLAN[billing];
-  const isAnnual = billing === "annual";
-
   return (
     <section id="pricing" className="px-5 sm:px-8 py-14 sm:py-20">
       <div className="max-w-6xl mx-auto">
@@ -48,63 +21,13 @@ export function Pricing() {
             One plan. Full API access.
           </h2>
           <p className="text-ink-muted text-sm max-w-md mx-auto">
-            40% off on annual. Launch offer. A single paused campaign costs
-            more than a year of this.
+            Flat rate. No credits, no metered billing, no overage. A single
+            paused campaign costs more than a year of this.
           </p>
-        </div>
-
-        <div
-          role="radiogroup"
-          aria-label="Billing period"
-          className="flex justify-center mb-8"
-        >
-          <div className="inline-flex p-1 rounded border border-border bg-surface-alt">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={billing === "monthly"}
-              onClick={() => setBilling("monthly")}
-              className={`px-4 py-1.5 text-[13px] font-medium rounded transition-colors cursor-pointer ${
-                billing === "monthly"
-                  ? "bg-surface text-ink shadow-sm"
-                  : "text-ink-muted hover:text-ink"
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              type="button"
-              role="radio"
-              aria-checked={billing === "annual"}
-              onClick={() => setBilling("annual")}
-              className={`px-4 py-1.5 text-[13px] font-medium rounded transition-colors cursor-pointer ${
-                billing === "annual"
-                  ? "bg-surface text-ink shadow-sm"
-                  : "text-ink-muted hover:text-ink"
-              }`}
-            >
-              Annual{" "}
-              <span
-                className={
-                  billing === "annual" ? "text-brand" : "text-ink-light"
-                }
-              >
-                · save 40%
-              </span>
-            </button>
-          </div>
         </div>
 
         <div className="max-w-md mx-auto">
           <div className="relative p-8 rounded border border-brand bg-brand/5">
-            {isAnnual && (
-              <div className="absolute -top-3 left-6">
-                <span className="inline-block px-2.5 py-1 bg-brand text-white text-[10px] font-semibold tracking-[0.1em] uppercase rounded">
-                  Launch offer
-                </span>
-              </div>
-            )}
-
             <div className="mb-6">
               <h3 className="text-sm font-medium text-ink-muted mb-2">
                 {plan.label}

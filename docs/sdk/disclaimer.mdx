@@ -31,6 +31,6 @@ const { data, error } = await vj.createDisclaimer({
 
 Text is always centered at the bottom with a subtle 1px outline. For FTC-style disclosures: results-not-typical, paid-endorsement, AI-generated labels.
 
-## Credits
+## Rate limit
 
-5 credits per call.
+Counts toward the daily `disclaimer` limit (50/day). Resets at 00:00 UTC; exceeding it returns HTTP 429.

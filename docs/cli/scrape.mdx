@@ -9,8 +9,7 @@ Twenty-four primitive subcommands that wrap the public-data surfaces of TikTok, 
 vidjutsu scrape <subcommand> [flags]
 ```
 
-**Rate group:** `scrape` — 500 calls per day, shared across all 24 subcommands.
-**Cost:** 1 credit base + 1 per staged media file (only when `--download-media` is set).
+**Rate group:** `scrape` — 500 calls per day, shared across all 24 subcommands. Each subcommand call counts as one request against that limit, regardless of `--download-media`.
 
 ## `--download-media`
 

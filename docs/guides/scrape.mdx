@@ -47,10 +47,7 @@ vidjutsu scrape instagram-user-posts --handle natgeo --download-media
 
 ## Cost
 
-- **1 credit** per call (always)
-- **+1 credit per staged media file** (only when `download_media: true`)
-
-Shared `scrape` rate group: **500 calls / day** across all 24 endpoints.
+Every call counts as **one request** against the shared `scrape` rate group: **500 calls / day** across all 24 endpoints. Staging media with `download_media: true` does not consume extra quota — it is still a single request.
 
 ## Recipe — research a creator end-to-end
 

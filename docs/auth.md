@@ -181,7 +181,7 @@ Send it as a standard bearer token on every authenticated request:
 Authorization: Bearer vj_live_…
 ```
 
-API calls deduct from the client's credit balance and respond with `HTTP 402 Payment Required` plus `WWW-Authenticate: Payment` when the balance is exhausted. See `credits-and-billing` in the Guides tab for the credit + top-up surface.
+API access requires an active `$99/mo` subscription. Calls made without one respond with `HTTP 403` and `subscription_required`. Per-endpoint daily rate limits then apply — exceeding a limit returns `HTTP 429` with a `retryAfter` hint. See `credits-and-billing` (Pricing & Rate Limits) in the Guides tab for the limits table.
 
 ## Revocation
 
@@ -209,7 +209,8 @@ All errors follow `application/problem+json` (RFC 7807). Notable cases:
 - `400 Bad Request` — unsupported `type` or `assertion_type`, missing fields.
 - `404 Not Found` — claim_token unknown or expired.
 - `401 Unauthorized` — invalid or expired OTP on claim/complete.
-- `402 Payment Required` — returned on metered API calls after successful registration when the credit balance is empty.
+- `403 Forbidden` — `subscription_required`: a valid key with no active subscription called a gated endpoint.
+- `429 Too Many Requests` — a per-endpoint daily rate limit was exceeded; includes a `retryAfter` hint.
 
 ## Notes on this manifest
 

@@ -9,7 +9,7 @@ The `/v1/scrape/*` endpoints are thin, typed wrappers over the public-data surfa
 
 ## Why a wrap
 
-Building a creator-research, ad-research, or content-intelligence product normally means juggling a separate ScrapeCreators (or equivalent) account, a separate bill, a separate set of rate limits, and a separate ToS surface. The scrape primitives collapse that into your VidJutsu key — same auth, same balance, same operational logging — and stay typed in our OpenAPI spec so they generate clean SDK methods.
+Building a creator-research, ad-research, or content-intelligence product normally means juggling a separate ScrapeCreators (or equivalent) account, a separate bill, a separate set of rate limits, and a separate ToS surface. The scrape primitives collapse that into your VidJutsu key — same auth, same rate limits, same operational logging — and stay typed in our OpenAPI spec so they generate clean SDK methods.
 
 ## `download_media` — opt-in CDN staging
 
@@ -20,14 +20,9 @@ Most endpoints accept an optional `download_media: boolean` (default `false`).
 
 This matches the same staging pattern used by `POST /v1/upload/url`.
 
-## Op-counting
+## Request-counting
 
-| Cost | Trigger |
-|---|---|
-| **1 credit** | Base cost per call. Always charged. |
-| **+1 credit per staged media file** | Only when `download_media: true` and the response contains media URLs that VidJutsu pulled onto its CDN. |
-
-A `scrapeInstagramUserPosts` call that returns 12 posts with `download_media: true` and stages 12 videos costs `1 + 12 = 13` credits. The same call with `download_media: false` costs `1` credit.
+Every scrape subcommand call counts as **one request** against the shared `scrape` daily rate limit (500/day), regardless of how many media files `download_media: true` stages. There is no per-file or per-credit charge — staging extra media does not consume additional quota beyond the single request.
 
 ## Auth & rate limits
 
