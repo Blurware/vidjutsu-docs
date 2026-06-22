@@ -7,8 +7,7 @@ Twenty-four typed methods that wrap the public-data surfaces of TikTok, Instagra
 
 See the [API reference](/api-reference/scrape) for the wrap rationale and op-counting model.
 
-**Rate group:** `scrape` — 500 calls per day, shared across all 24 methods.
-**Cost:** 1 credit base + 1 per staged media file (only when `download_media: true`).
+**Rate group:** `scrape` — 500 calls per day, shared across all 24 methods. Each method call counts as one request against that limit, regardless of `download_media`.
 
 ## `download_media` — opt-in CDN staging
 

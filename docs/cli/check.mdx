@@ -72,6 +72,6 @@ vidjutsu check rules list
 vidjutsu check rules set "ai-reveal-required: Dialogue must contain a clear AI reveal,first-person-dialogue: All dialogue must be first-person"
 ```
 
-## Credits
+## Rate limit
 
-5 credits per check call. Custom rule CRUD is free.
+Counts toward the daily `check` limit (100/day). Resets at 00:00 UTC; exceeding it returns HTTP 429. Custom rule CRUD is unmetered.

@@ -36,6 +36,6 @@ const { data, error } = await vj.createOverlay({
 
 TikTok-safe zone margins are calculated automatically based on video dimensions.
 
-## Credits
+## Rate limit
 
-5 credits per call.
+Counts toward the daily `overlay` limit (50/day). Resets at 00:00 UTC; exceeding it returns HTTP 429.
