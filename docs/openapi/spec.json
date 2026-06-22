@@ -15,7 +15,7 @@
       "name": "Scrape"
     },
     {
-      "name": "Credits"
+      "name": "Billing"
     },
     {
       "name": "API Keys"
@@ -626,34 +626,11 @@
         }
       }
     },
-    "/v1/balance": {
-      "get": {
-        "operationId": "getBalance",
-        "summary": "Get credit balance",
-        "description": "Returns the authenticated client's current credit balance and the last 10 ledger entries.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BalanceResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Credits"
-        ]
-      }
-    },
     "/v1/check": {
       "post": {
         "operationId": "checkSpec",
         "summary": "Check spec",
-        "description": "Validate a VidLang spec against enabled rules. Rules are off by default — caller must enable at least one. 5 credits.",
+        "description": "Validate a VidLang spec against enabled rules. Rules are off by default — caller must enable at least one. Daily limit: 100/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -666,12 +643,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -696,7 +692,7 @@
       "get": {
         "operationId": "getCheckRules",
         "summary": "Get check rules",
-        "description": "Load per-client custom rules. 0 credits.",
+        "description": "Load per-client custom rules. Unmetered — no daily limit.",
         "parameters": [],
         "responses": {
           "200": {
@@ -717,7 +713,7 @@
       "put": {
         "operationId": "updateCheckRules",
         "summary": "Update check rules",
-        "description": "Save per-client custom rules. 0 credits.",
+        "description": "Save per-client custom rules. Unmetered — no daily limit.",
         "parameters": [],
         "responses": {
           "200": {
@@ -763,12 +759,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -806,12 +821,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -836,6 +870,7 @@
       "get": {
         "operationId": "getCheckoutStatus",
         "summary": "Check checkout status",
+        "description": "Poll after starting a /v1/subscribe checkout. Once payment completes, returns the minted API key and clientId. (The /v1/credits route prefix is historical; this endpoint retrieves the subscription key, not a credit balance.)",
         "parameters": [
           {
             "name": "session",
@@ -860,7 +895,7 @@
           }
         },
         "tags": [
-          "Credits"
+          "Billing"
         ]
       }
     },
@@ -868,7 +903,7 @@
       "post": {
         "operationId": "createDisclaimer",
         "summary": "Burn fine-print disclaimer onto video",
-        "description": "Burns a fine-print disclaimer centered at the bottom of a video using FFmpeg ASS subtitles. Use for FTC-style disclosures like results-not-typical, paid-endorsement, or AI-generated labels. Returns CDN URL of the result. 5 credits.",
+        "description": "Burns a fine-print disclaimer centered at the bottom of a video using FFmpeg ASS subtitles. Use for FTC-style disclosures like results-not-typical, paid-endorsement, or AI-generated labels. Returns CDN URL of the result. Daily limit: 50/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -881,12 +916,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -911,7 +965,7 @@
       "post": {
         "operationId": "extractMedia",
         "summary": "Extract from media",
-        "description": "Pull frames, audio, and metadata from a video via server-side processing. 5 credits.",
+        "description": "Pull frames, audio, and metadata from a video via server-side processing. Daily limit: 100/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -924,12 +978,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -976,7 +1049,7 @@
       "post": {
         "operationId": "createOverlay",
         "summary": "Burn text overlay onto video",
-        "description": "Burns text overlay onto a video using FFmpeg ASS subtitles. Supports TikTok-safe zones, configurable font size, stroke thickness, and top/center/bottom positioning. Returns CDN URL of the result. 5 credits.",
+        "description": "Burns text overlay onto a video using FFmpeg ASS subtitles. Supports TikTok-safe zones, configurable font size, stroke thickness, and top/center/bottom positioning. Returns CDN URL of the result. Daily limit: 50/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -989,12 +1062,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1488,7 +1580,7 @@
       "post": {
         "operationId": "scrapeGoogleAds",
         "summary": "Scrape Google Ad Transparency",
-        "description": "Ads for a company in the Google Ad Transparency Library. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Ads for a company in the Google Ad Transparency Library. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1501,12 +1593,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1531,7 +1642,7 @@
       "post": {
         "operationId": "scrapeLinkedInAds",
         "summary": "Scrape LinkedIn Ad Library",
-        "description": "Active LinkedIn ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Active LinkedIn ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1544,12 +1655,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1574,7 +1704,7 @@
       "post": {
         "operationId": "scrapeMetaAds",
         "summary": "Scrape Meta (Facebook) Ad Library",
-        "description": "Active Meta ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Active Meta ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1587,12 +1717,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1617,7 +1766,7 @@
       "post": {
         "operationId": "scrapeRedditAds",
         "summary": "Scrape Reddit Ad Library",
-        "description": "Active Reddit ads matching keyword. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Active Reddit ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1630,12 +1779,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1660,7 +1828,7 @@
       "post": {
         "operationId": "scrapeInstagramPost",
         "summary": "Scrape Instagram post or reel",
-        "description": "Single Instagram post or reel + media URLs. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Single Instagram post or reel + media URLs. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1673,12 +1841,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1716,12 +1903,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1746,7 +1952,7 @@
       "post": {
         "operationId": "scrapeInstagramProfile",
         "summary": "Scrape Instagram profile",
-        "description": "Public Instagram profile + recent reels. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Public Instagram profile + recent reels. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1759,12 +1965,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1789,7 +2014,7 @@
       "post": {
         "operationId": "scrapeInstagramUserPosts",
         "summary": "Scrape Instagram user posts",
-        "description": "Paginated posts for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Paginated posts for an Instagram profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1802,12 +2027,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1832,7 +2076,7 @@
       "post": {
         "operationId": "scrapeInstagramUserReels",
         "summary": "Scrape Instagram user reels",
-        "description": "Paginated reels for an Instagram profile. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Paginated reels for an Instagram profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1845,12 +2089,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1875,7 +2138,7 @@
       "post": {
         "operationId": "scrapeTikTokProfile",
         "summary": "Scrape TikTok profile",
-        "description": "Fetch public TikTok profile data via Scrape Creators. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Fetch public TikTok profile data via Scrape Creators. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1888,12 +2151,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1918,7 +2200,7 @@
       "post": {
         "operationId": "scrapeTikTokProfileVideos",
         "summary": "Scrape TikTok profile videos",
-        "description": "Paginated videos for a TikTok profile. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Paginated videos for a TikTok profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1931,12 +2213,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -1974,12 +2275,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2004,7 +2324,7 @@
       "post": {
         "operationId": "scrapeTikTokTrending",
         "summary": "Scrape TikTok trending feed",
-        "description": "Trending feed by region. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Trending feed by region. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2017,12 +2337,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2047,7 +2386,7 @@
       "post": {
         "operationId": "scrapeTikTokVideo",
         "summary": "Scrape TikTok video",
-        "description": "Single TikTok video metadata + media URLs. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Single TikTok video metadata + media URLs. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2060,12 +2399,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2103,12 +2461,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2146,12 +2523,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2176,7 +2572,7 @@
       "post": {
         "operationId": "scrapeTwitterProfile",
         "summary": "Scrape X profile",
-        "description": "Public X/Twitter profile + stats. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Public X/Twitter profile + stats. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2189,12 +2585,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2219,7 +2634,7 @@
       "post": {
         "operationId": "scrapeTwitterTweet",
         "summary": "Scrape X tweet",
-        "description": "Single tweet + media. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Single tweet + media. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2232,12 +2647,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2275,12 +2709,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2305,7 +2758,7 @@
       "post": {
         "operationId": "scrapeTwitterUserTweets",
         "summary": "Scrape X user tweets",
-        "description": "Recent tweets for a handle. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Recent tweets for a handle. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2318,12 +2771,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2348,7 +2820,7 @@
       "post": {
         "operationId": "scrapeYouTubeChannel",
         "summary": "Scrape YouTube channel",
-        "description": "YouTube channel info + stats. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "YouTube channel info + stats. Provide handle or channel_id. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2361,12 +2833,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2391,7 +2882,7 @@
       "post": {
         "operationId": "scrapeYouTubeChannelVideos",
         "summary": "Scrape YouTube channel videos",
-        "description": "Paginated videos for a channel. Provide handle or channel_id. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Paginated videos for a channel. Provide handle or channel_id. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2404,12 +2895,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2434,7 +2944,7 @@
       "post": {
         "operationId": "scrapeYouTubeVideo",
         "summary": "Scrape YouTube video",
-        "description": "Single YouTube video info, including transcript. 1 op + 1 op per staged media file when download_media is true.",
+        "description": "Single YouTube video info, including transcript. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2447,12 +2957,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2490,12 +3019,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2516,37 +3064,11 @@
         }
       }
     },
-    "/v1/signup": {
-      "post": {
-        "operationId": "signup",
-        "summary": "Anonymous signup",
-        "description": "Creates a new anonymous machine client and returns a fresh API key + clientId. No authentication required. Returned client starts with 0 credits and claimStatus=anonymous; credits can be granted by an admin or topped up later.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SignupResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Credits"
-        ],
-        "security": [
-          {}
-        ]
-      }
-    },
     "/v1/subscribe": {
       "post": {
         "operationId": "createSubscription",
         "summary": "Create subscription",
-        "description": "DEPRECATED (PR 2 of credit-billing pivot, 2026-05-23): subscription gating has been removed from the API. Anyone can sign up for free via POST /v1/signup and pay per call via credits — a 403 subscription_required response will no longer be returned by any endpoint. This endpoint is retained as a Stripe Checkout entry point and will be reworked in PR 3 to mint credit packs instead of subscriptions. Do not build new integrations against the existing subscription semantics.",
+        "description": "Starts a Stripe Checkout session for the flat $99/mo subscription. Returns the hosted checkout `url` and a `claimToken`. After payment, poll GET /v1/credits/status with the session id to retrieve the minted API key. An active subscription is required for all gated intelligence endpoints; calls without one return 403 subscription_required.",
         "parameters": [],
         "responses": {
           "200": {
@@ -2575,77 +3097,11 @@
         }
       }
     },
-    "/v1/topup": {
-      "post": {
-        "operationId": "createTopup",
-        "summary": "Create one-time credit pack checkout",
-        "description": "Creates a Stripe Checkout Session for a one-time credit pack. The returned checkoutUrl completes payment via Stripe-hosted checkout; credits are granted via webhook on payment success.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TopupResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Credits"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TopupRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/topup/auto": {
-      "post": {
-        "operationId": "createAutoRefill",
-        "summary": "Create auto-refill subscription",
-        "description": "Creates a recurring Stripe Subscription that auto-tops-up credits each month at the requested dollar amount. The returned checkoutUrl confirms the recurring subscription; credits are granted via webhook on each billing cycle.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AutoRefillResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Credits"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AutoRefillRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/transcribe": {
       "post": {
         "operationId": "transcribeMedia",
         "summary": "Transcribe media",
-        "description": "Speech-to-text with word-level timing. 10 credits.",
+        "description": "Speech-to-text with word-level timing. Daily limit: 30/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2658,12 +3114,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2700,12 +3175,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2743,12 +3237,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2796,7 +3309,7 @@
       "post": {
         "operationId": "watchMedia",
         "summary": "Watch media",
-        "description": "AI watches a video or image and answers your freeform prompt. Returns structured JSON. 10 credits.",
+        "description": "AI watches a video or image and answers your freeform prompt. Returns structured JSON. Daily limit: 50/day (resets 00:00 UTC).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2809,12 +3322,31 @@
               }
             }
           },
-          "402": {
-            "description": "HTTP 402 Payment Required — insufficient credits to perform this call. Response body follows RFC 7807 (application/problem+json) and includes the credit cost, current balance, and a top-up URL. PR 3 of the credit-billing pivot will pair this with WWW-Authenticate: Payment headers to enable agent-driven (MPP / x402) inline payment resolution.",
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
             "content": {
-              "application/problem+json": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaymentRequiredProblem"
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
                 }
               }
             }
@@ -2942,8 +3474,7 @@
         "type": "object",
         "required": [
           "id",
-          "status",
-          "creditsCharged"
+          "status"
         ],
         "properties": {
           "id": {
@@ -2953,12 +3484,6 @@
             "type": "string",
             "enum": [
               "draft"
-            ]
-          },
-          "creditsCharged": {
-            "type": "number",
-            "enum": [
-              0
             ]
           }
         }
@@ -3381,10 +3906,6 @@
           "clientId": {
             "type": "string"
           },
-          "balance": {
-            "type": "integer",
-            "format": "int32"
-          },
           "isNew": {
             "type": "boolean"
           }
@@ -3576,57 +4097,6 @@
             "enum": [
               true
             ]
-          }
-        }
-      },
-      "AutoRefillRequest": {
-        "type": "object",
-        "required": [
-          "monthlyAmount"
-        ],
-        "properties": {
-          "monthlyAmount": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Monthly dollar amount to auto-charge for credit top-ups. Maps to the closest credit pack rate."
-          }
-        }
-      },
-      "AutoRefillResponse": {
-        "type": "object",
-        "required": [
-          "subscriptionId",
-          "checkoutUrl"
-        ],
-        "properties": {
-          "subscriptionId": {
-            "type": "string",
-            "description": "Stripe Subscription id (sub_...). Recurring credit top-ups will fire monthly from webhook."
-          },
-          "checkoutUrl": {
-            "type": "string",
-            "description": "Stripe Checkout URL to confirm the recurring subscription."
-          }
-        }
-      },
-      "BalanceResponse": {
-        "type": "object",
-        "required": [
-          "balance",
-          "ledger"
-        ],
-        "properties": {
-          "balance": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Current credit balance for the authenticated client."
-          },
-          "ledger": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LedgerEntry"
-            },
-            "description": "Most recent ledger entries (newest first), up to 10."
           }
         }
       },
@@ -3974,48 +4444,13 @@
           }
         }
       },
-      "CreditCosts": {
+      "DailyLimits": {
         "type": "object",
-        "required": [
-          "accounts.create",
-          "posts.create",
-          "watch",
-          "extract",
-          "transcribe",
-          "check"
-        ],
-        "properties": {
-          "accounts.create": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Create account (free)"
-          },
-          "posts.create": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Create post (free)"
-          },
-          "watch": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Watch media via Gemini"
-          },
-          "extract": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Extract frames/audio/metadata"
-          },
-          "transcribe": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Transcribe speech to text"
-          },
-          "check": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Check spec against rules"
-          }
-        }
+        "additionalProperties": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "description": "Per-endpoint daily request limits, keyed by endpoint name (fixed window, resets 00:00 UTC)."
       },
       "DisclaimerRequest": {
         "type": "object",
@@ -4336,7 +4771,7 @@
           "version",
           "endpoints",
           "auth",
-          "credits"
+          "dailyLimits"
         ],
         "properties": {
           "name": {
@@ -4352,45 +4787,13 @@
             }
           },
           "auth": {},
-          "credits": {
-            "$ref": "#/components/schemas/CreditCosts"
-          }
-        }
-      },
-      "LedgerEntry": {
-        "type": "object",
-        "required": [
-          "delta",
-          "reason",
-          "createdAt"
-        ],
-        "properties": {
-          "delta": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Signed credit delta: positive for grants/topups/refunds, negative for charges."
-          },
-          "reason": {
-            "type": "string",
-            "enum": [
-              "grant",
-              "topup",
-              "charge",
-              "refund"
-            ]
-          },
-          "operationId": {
-            "type": "string",
-            "description": "Operation that produced this entry (for charge rows)."
-          },
-          "note": {
-            "type": "string",
-            "description": "Free-form admin note (for grant rows)."
-          },
-          "createdAt": {
-            "type": "integer",
-            "format": "int64",
-            "description": "Unix epoch milliseconds."
+          "dailyLimits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DailyLimits"
+              }
+            ],
+            "description": "Per-endpoint daily request limits (fixed window, resets 00:00 UTC)."
           }
         }
       },
@@ -4446,55 +4849,6 @@
             "description": "CDN URL of the overlaid video"
           }
         }
-      },
-      "PaymentRequiredProblem": {
-        "type": "object",
-        "required": [
-          "type",
-          "title",
-          "status",
-          "detail",
-          "required",
-          "balance",
-          "topupUrl"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "Problem type URI.",
-            "default": "https://paymentauth.org/problems/payment-required"
-          },
-          "title": {
-            "type": "string",
-            "description": "Short human-readable summary.",
-            "default": "Payment Required"
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32",
-            "description": "HTTP status code (always 402 here).",
-            "default": 402
-          },
-          "detail": {
-            "type": "string",
-            "description": "Human-readable explanation of the failure."
-          },
-          "required": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Credits required to perform this call."
-          },
-          "balance": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Caller's current credit balance."
-          },
-          "topupUrl": {
-            "type": "string",
-            "description": "URL the caller (or a payment-capable agent) should visit to top up credits."
-          }
-        },
-        "description": "RFC 7807 Problem Details body returned with HTTP 402 when the caller's credit balance is insufficient for the requested operation. Content-Type: application/problem+json."
       },
       "Post": {
         "type": "object",
@@ -4567,8 +4921,7 @@
         "type": "object",
         "required": [
           "id",
-          "status",
-          "creditsCharged"
+          "status"
         ],
         "properties": {
           "id": {
@@ -4578,12 +4931,6 @@
             "type": "string",
             "enum": [
               "draft"
-            ]
-          },
-          "creditsCharged": {
-            "type": "number",
-            "enum": [
-              0
             ]
           }
         }
@@ -4674,23 +5021,25 @@
         "type": "object",
         "required": [
           "subscription",
-          "pricePerCredit",
           "maxAccounts",
-          "costs"
+          "dailyLimits"
         ],
         "properties": {
           "subscription": {
             "$ref": "#/components/schemas/SubscriptionInfo"
           },
-          "pricePerCredit": {
-            "type": "string"
-          },
           "maxAccounts": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "description": "Maximum managed accounts per subscription."
           },
-          "costs": {
-            "$ref": "#/components/schemas/CreditCosts"
+          "dailyLimits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DailyLimits"
+              }
+            ],
+            "description": "Per-endpoint daily request limits (fixed window, resets 00:00 UTC)."
           }
         }
       },
@@ -4767,8 +5116,7 @@
         "type": "object",
         "required": [
           "id",
-          "status",
-          "creditsCharged"
+          "status"
         ],
         "properties": {
           "id": {
@@ -4778,12 +5126,6 @@
             "type": "string",
             "enum": [
               "active"
-            ]
-          },
-          "creditsCharged": {
-            "type": "number",
-            "enum": [
-              0
             ]
           }
         }
@@ -5303,23 +5645,6 @@
           }
         }
       },
-      "SignupResponse": {
-        "type": "object",
-        "required": [
-          "apiKey",
-          "clientId"
-        ],
-        "properties": {
-          "apiKey": {
-            "type": "string",
-            "description": "Fresh API key, format vj_anon_<hex>. Send as Authorization: Bearer <apiKey>."
-          },
-          "clientId": {
-            "type": "string",
-            "description": "Client identifier, format mc_anon_<hex>."
-          }
-        }
-      },
       "SubscriptionCreateRequest": {
         "type": "object",
         "required": [
@@ -5350,19 +5675,16 @@
         "type": "object",
         "required": [
           "price",
-          "includedCredits",
           "required"
         ],
         "properties": {
           "price": {
-            "type": "string"
-          },
-          "includedCredits": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string",
+            "description": "Flat subscription price, e.g. \"$99/mo\"."
           },
           "required": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether an active subscription is required for gated endpoints."
           }
         }
       },
@@ -5378,50 +5700,6 @@
           },
           "value": {
             "type": "string"
-          }
-        }
-      },
-      "TopupRequest": {
-        "type": "object",
-        "required": [
-          "packId"
-        ],
-        "properties": {
-          "packId": {
-            "type": "string",
-            "enum": [
-              "starter",
-              "pro",
-              "max"
-            ],
-            "description": "Credit pack identifier. starter=$19/1000, pro=$99/7000, max=$497/50000."
-          }
-        }
-      },
-      "TopupResponse": {
-        "type": "object",
-        "required": [
-          "checkoutUrl",
-          "packId",
-          "credits"
-        ],
-        "properties": {
-          "checkoutUrl": {
-            "type": "string",
-            "description": "Stripe Checkout URL — direct the user (or open programmatically) to complete payment. Credits are granted via webhook after successful payment."
-          },
-          "packId": {
-            "type": "string",
-            "enum": [
-              "starter",
-              "pro",
-              "max"
-            ]
-          },
-          "credits": {
-            "type": "integer",
-            "format": "int32",
-            "description": "Credits that will be added to the balance once payment completes."
           }
         }
       },
