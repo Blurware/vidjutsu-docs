@@ -4781,7 +4781,7 @@
           },
           "text": {
             "type": "string",
-            "description": "Overlay text. Use \\\\n for line breaks."
+            "description": "Overlay text. Lines auto-balance to even widths: spaces and single newlines flow together, so you don't need to hand-break lines. Use a blank line (two newlines) to force a hard break, e.g. for bullet lists."
           },
           "position": {
             "type": "string",

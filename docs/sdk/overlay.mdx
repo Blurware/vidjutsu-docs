@@ -20,7 +20,7 @@ const { data, error } = await vj.createOverlay({
 | Field | Type | Required | Default | Description |
 |-------|------|----------|---------|-------------|
 | `videoUrl` | `string` | Yes | — | URL of the source video |
-| `text` | `string` | Yes | — | Overlay text. Use `\n` for line breaks |
+| `text` | `string` | Yes | — | Overlay text. Lines auto-balance to even widths; spaces and single newlines flow together. Use a blank line (`\n\n`) for a hard break, e.g. bullet lists |
 | `position` | `"top"` \| `"center"` \| `"bottom"` | No | `"bottom"` | Vertical text placement |
 | `fontSize` | `number` | No | 4% of video height | Font size in pixels |
 | `strokeThickness` | `number` | No | `2` | Text outline thickness (0–10) |
