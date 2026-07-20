@@ -171,19 +171,7 @@
               "POST /v1/scrape/instagram/user/posts",
               "POST /v1/scrape/instagram/post",
               "POST /v1/scrape/instagram/post/comments",
-              "POST /v1/scrape/instagram/user/reels",
-              "POST /v1/scrape/twitter/profile",
-              "POST /v1/scrape/twitter/user-tweets",
-              "POST /v1/scrape/twitter/tweet",
-              "POST /v1/scrape/twitter/tweet/transcript",
-              "POST /v1/scrape/youtube/channel",
-              "POST /v1/scrape/youtube/channel-videos",
-              "POST /v1/scrape/youtube/video",
-              "POST /v1/scrape/youtube/video/comments",
-              "POST /v1/scrape/ads/meta",
-              "POST /v1/scrape/ads/google",
-              "POST /v1/scrape/ads/linkedin",
-              "POST /v1/scrape/ads/reddit"
+              "POST /v1/scrape/instagram/user/reels"
             ]
           }
         ],

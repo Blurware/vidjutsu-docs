@@ -1,134 +1,22 @@
 ---
 title: "scrape"
-description: "Fetch public profiles, posts, comments, transcripts, and ad-library data from TikTok, Instagram, X, YouTube, and the major ad libraries — through your VidJutsu key."
+description: "Typed TikTok and Instagram import methods for clone references."
 ---
 
-Twenty-four typed methods that wrap the public-data surfaces of TikTok, Instagram, X, YouTube, and the Meta / Google / LinkedIn / Reddit ad libraries. You don't sign up for a scraper — VidJutsu holds the upstream master credentials and meters calls through your existing API key.
-
-See the [API reference](/api-reference/scrape) for the wrap rationale and op-counting model.
-
-**Rate group:** `scrape` — 500 calls per day, shared across all 24 methods. Each method call counts as one request against that limit, regardless of `download_media`.
-
-## `download_media` — opt-in CDN staging
-
-Every method that returns media URLs accepts an optional `download_media: boolean` (default `false`).
-
-- **`false`** — Response contains raw source CDN URLs (TikTok / IG / X / YT / ad-library hosts). These URLs are often gatekept and can't be fetched by downstream tools like [`watchMedia`](/sdk/watch), [`transcribeMedia`](/sdk/transcribe), or external LLM video tools.
-- **`true`** — VidJutsu fetches every media URL, stages it to our public CDN, and replaces source URLs with VidJutsu URLs in the response. Use whenever you'll pipe the media downstream.
+The SDK exposes TikTok and Instagram import methods only. Use the result as the source for clone check and the subsequent character, starting-image, clone-video, overlay, and job-polling stages.
 
 ```typescript
 import { createClient } from "vidjutsu";
-const vj = createClient();
 
-const { data } = await vj.scrapeInstagramUserPosts({
-  handle: "natgeo",
-  download_media: true,
-});
-// Every post.media_url now points at cdn.vidjutsu.ai — safe to pass into watchMedia.
-```
-
-## Methods
-
-### TikTok
-
-| Method | Required | Optional |
-|---|---|---|
-| `scrapeTikTokProfile` | `handle` | `trim`, `download_media` |
-| `scrapeTikTokProfileVideos` | `handle` | `cursor`, `download_media` |
-| `scrapeTikTokVideo` | `url` | `trim`, `download_media` |
-| `scrapeTikTokVideoTranscript` | `url` | — |
-| `scrapeTikTokVideoComments` | `url` | `cursor` |
-| `scrapeTikTokSearchUsers` | `query` | `cursor` |
-| `scrapeTikTokTrending` | — | `country`, `download_media` |
-
-### Instagram
-
-| Method | Required | Optional |
-|---|---|---|
-| `scrapeInstagramProfile` | `handle` | `download_media` |
-| `scrapeInstagramUserPosts` | `handle` | `cursor`, `download_media` |
-| `scrapeInstagramPost` | `url` | `download_media` |
-| `scrapeInstagramPostComments` | `url` | `cursor` |
-| `scrapeInstagramUserReels` | `handle` | `cursor`, `download_media` |
-
-### X (Twitter)
-
-| Method | Required | Optional |
-|---|---|---|
-| `scrapeTwitterProfile` | `handle` | `download_media` |
-| `scrapeTwitterUserTweets` | `handle` | `cursor`, `trim`, `download_media` |
-| `scrapeTwitterTweet` | `url` | `trim`, `download_media` |
-| `scrapeTwitterTweetTranscript` | `url` | — |
-
-### YouTube
-
-| Method | Required | Optional |
-|---|---|---|
-| `scrapeYouTubeChannel` | — | `handle`, `channel_id`, `download_media` |
-| `scrapeYouTubeChannelVideos` | — | `handle`, `channel_id`, `cursor`, `download_media` |
-| `scrapeYouTubeVideo` | `url` | `download_media` |
-| `scrapeYouTubeVideoComments` | `url` | `cursor` |
-
-### Ad libraries
-
-| Method | Required | Optional |
-|---|---|---|
-| `scrapeMetaAds` | `query` | `country`, `download_media` |
-| `scrapeGoogleAds` | `company` | `download_media` |
-| `scrapeLinkedInAds` | `query` | `download_media` |
-| `scrapeRedditAds` | `query` | `download_media` |
-
-## Example — research a niche end-to-end
-
-```typescript
-// 1) Find recent posts from a creator
-const { data: posts } = await vj.scrapeInstagramUserPosts({
-  handle: "fitness_account",
-  download_media: true,  // stage so we can pipe into watchMedia
-});
-
-// 2) Score the top post for hook strength
-const top = posts.items[0];
-const { data: review } = await vj.watchMedia({
-  mediaUrl: top.media_url,
-  prompt: "Rate the hook 1-10 and explain in one sentence.",
-});
-
-console.log(review.response);
-```
-
-## Example — competitive ad teardown
-
-```typescript
-const { data: ads } = await vj.scrapeMetaAds({
-  query: "AG1",
-  country: "US",
+const client = createClient();
+const { data, error } = await client.scrapeInstagramPost({
+  url: "https://www.instagram.com/reel/example/",
   download_media: true,
 });
 
-for (const ad of ads.items.slice(0, 5)) {
-  const { data } = await vj.watchMedia({
-    mediaUrl: ad.media_url,
-    prompt: "What's the offer, the hook, and the CTA?",
-  });
-  console.log(ad.advertiser, data.response);
-}
+if (error) throw error;
 ```
 
-## Errors
+Available methods cover TikTok profiles, videos, transcripts, comments, user search, and trending; plus Instagram profiles, posts, reels, and comments. Every method uses the shared `scrape` rate group.
 
-Every method returns the standard VidJutsu envelope:
-
-```typescript
-const { data, error } = await vj.scrapeTikTokProfile({ handle: "..." });
-if (error) {
-  // error.code, error.message
-}
-```
-
-| Code | Meaning |
-|---|---|
-| `rate_limit` | 500/day shared scrape limit hit |
-| `bad_request` | Invalid input (e.g. malformed URL or handle) |
-| `upstream_unavailable` | Upstream provider timed out or returned 5xx |
-| `subscription_required` | Active subscription required for the `scrape` rate group |
+VidJutsu does not expose X, YouTube, or ad-library scrape methods.

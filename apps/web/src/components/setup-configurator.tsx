@@ -11,12 +11,12 @@ const connections: { id: Connection; label: string }[] = [
   { id: "skill", label: "SKILL" },
 ];
 
-const agents: { id: Agent; label: string; mark: string }[] = [
-  { id: "claude", label: "Claude", mark: "✦" },
-  { id: "claude-code", label: "Claude Code", mark: "✦" },
-  { id: "chatgpt", label: "ChatGPT", mark: "◉" },
-  { id: "openclaw", label: "OpenClaw", mark: "⌘" },
-  { id: "hermes", label: "Hermes", mark: "H" },
+const agents: { id: Agent; label: string; icon: string }[] = [
+  { id: "claude", label: "Claude", icon: "/agent-icons/claude.svg" },
+  { id: "claude-code", label: "Claude Code", icon: "/agent-icons/claude.svg" },
+  { id: "chatgpt", label: "ChatGPT", icon: "/agent-icons/chatgpt.svg" },
+  { id: "openclaw", label: "OpenClaw", icon: "/agent-icons/openclaw.svg" },
+  { id: "hermes", label: "Hermes", icon: "/agent-icons/hermes.svg" },
 ];
 
 function label(agent: Agent) {
@@ -107,7 +107,7 @@ export function SetupConfigurator() {
           <div className="vj-agent-tabs" role="tablist" aria-label="Agent runtime">
             {agents.map((item) => (
               <button key={item.id} type="button" role="tab" aria-selected={agent === item.id} className={agent === item.id ? "active" : ""} onClick={() => setAgent(item.id)}>
-                <i aria-hidden="true">{item.mark}</i>{item.label}
+                <span className="vj-agent-icon" aria-hidden="true"><img src={item.icon} alt="" /></span>{item.label}
               </button>
             ))}
           </div>

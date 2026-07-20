@@ -1,151 +1,27 @@
 ---
-title: "Scrape primitives"
-description: "Public-data fetching across TikTok, Instagram, X, YouTube, and the major ad libraries — through your VidJutsu API key."
+title: "Import TikTok and Instagram references"
+description: "Bring a public TikTok or Instagram meme reference into a durable VidJutsu workflow."
 ---
 
-VidJutsu ships 24 primitive `/v1/scrape/*` endpoints that wrap the public-data surfaces of the major creator + ad platforms. You don't manage a separate scraper account — we hold the upstream master credentials and meter the calls through your existing API key.
+VidJutsu imports public TikTok and Instagram references for brand meme cloning. It does not provide ad-library, X, YouTube, Reddit, Google, or LinkedIn scraping.
 
-<Info>
-**One key, one bill, one ToS.** No ScrapeCreators / Apify / RapidAPI signup, no duplicate billing, no second rate-limit page to babysit.
-</Info>
-
-## When to use it
-
-- **Creator research** — pull a profile + recent posts, then pipe each into [`watchMedia`](/sdk/watch) for hook + format analysis
-- **Ad research** — sweep Meta / Google / LinkedIn / Reddit ad libraries for a competitor or keyword and score the creative
-- **Content repurposing** — fetch a long-form YouTube video and run it through transcribe + watch to find clip-worthy moments
-- **Social listening** — keyword-search across TikTok / IG / X, classify sentiment, rank by reach
-- **Influencer scouting** — filter profiles by engagement rate, then watch their last 5 posts for fit
-
-## What you get
-
-| Category | Endpoints |
-|---|---|
-| TikTok | profile, profile videos, video, video transcript, video comments, user search, trending |
-| Instagram | profile, user posts, post, post comments, user reels |
-| X (Twitter) | profile, user tweets, tweet, tweet transcript |
-| YouTube | channel, channel videos, video, video comments |
-| Ad libraries | Meta, Google, LinkedIn, Reddit |
-
-All 24 endpoints, methods, and CLI subcommands are documented separately:
-
-- [API Reference → Scrape](/api-reference/scrape)
-- [SDK → scrape](/sdk/scrape)
-- [CLI → scrape](/cli/scrape)
-
-## `download_media` — the one flag that matters
-
-Most endpoints accept an optional `download_media: boolean` (default `false`).
-
-- **Off (default)** — Response contains raw source CDN URLs. Cheapest, but those URLs (e.g. `tiktokcdn-us.com`, `cdninstagram.com`) are typically gatekept — you usually can't fetch them from another tool without auth.
-- **On** — VidJutsu fetches every media URL in the response, stages it to our CDN, and **replaces source URLs with VidJutsu URLs in the response**. Now you can pipe directly into `watchMedia`, `transcribeMedia`, or any external LLM video tool.
+Use `download_media: true` when the next stage needs a durable VidJutsu-hosted file. Then pass that asset or URL to clone check.
 
 ```bash
-# Stage all media so the result is downstream-ready
-vidjutsu scrape instagram-user-posts --handle natgeo --download-media
+vidjutsu scrape instagram-post \
+  --url "https://www.instagram.com/reel/example/" \
+  --download-media
 ```
 
-## Cost
+The supported operations are TikTok profile, profile videos, video, transcript, comments, user search, and trending; and Instagram profile, posts, reels, post, and comments. All share the `scrape` rate group.
 
-Every call counts as **one request** against the shared `scrape` rate group: **500 calls / day** across all 24 endpoints. Staging media with `download_media: true` does not consume extra quota — it is still a single request.
+## Continue with the clone workflow
 
-## Recipe — research a creator end-to-end
+1. Import a TikTok or Instagram reference.
+2. Run clone check before paid generation.
+3. Create or select a character.
+4. Create a clean starting image.
+5. Submit the video clone with an idempotency key.
+6. Apply the overlay and poll the durable job until final QA completes.
 
-<Tabs>
-  <Tab title="SDK">
-    ```typescript
-    import { createClient } from "vidjutsu";
-    const vj = createClient();
-
-    // 1) Recent posts (staged so we can watch them)
-    const { data: posts } = await vj.scrapeInstagramUserPosts({
-      handle: "natgeo",
-      download_media: true,
-    });
-
-    // 2) Score the top post
-    const top = posts.items[0];
-    const { data: review } = await vj.watchMedia({
-      mediaUrl: top.media_url,
-      prompt: "Rate the hook 1-10 and explain in one sentence.",
-    });
-
-    console.log(review.response);
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    # 1) Fetch posts (staged)
-    POSTS=$(vidjutsu scrape instagram-user-posts \
-      --handle natgeo --download-media)
-
-    # 2) Top post URL
-    URL=$(echo "$POSTS" | jq -r '.items[0].media_url')
-
-    # 3) Watch it
-    vidjutsu watch \
-      --media-url "$URL" \
-      --prompt "Rate the hook 1-10 and explain in one sentence."
-    ```
-  </Tab>
-  <Tab title="curl">
-    ```bash
-    # 1) Fetch posts
-    curl -X POST https://api.vidjutsu.ai/v1/scrape/instagram/user/posts \
-      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"handle":"natgeo","download_media":true}' \
-      > posts.json
-
-    # 2) Watch top
-    URL=$(jq -r '.items[0].media_url' posts.json)
-    curl -X POST https://api.vidjutsu.ai/v1/watch \
-      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d "{\"mediaUrl\":\"$URL\",\"prompt\":\"Rate the hook 1-10.\"}"
-    ```
-  </Tab>
-</Tabs>
-
-## Recipe — competitive ad teardown
-
-<Tabs>
-  <Tab title="SDK">
-    ```typescript
-    const { data: ads } = await vj.scrapeMetaAds({
-      query: "AG1",
-      country: "US",
-      download_media: true,
-    });
-
-    for (const ad of ads.items.slice(0, 5)) {
-      const { data } = await vj.watchMedia({
-        mediaUrl: ad.media_url,
-        prompt: "What's the offer, the hook, and the CTA?",
-      });
-      console.log(ad.advertiser, data.response);
-    }
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu scrape meta-ads \
-      --query "AG1" \
-      --country US \
-      --download-media \
-    | jq -r '.items[:5][] | "\(.advertiser)\t\(.media_url)"' \
-    | while IFS=$'\t' read -r brand url; do
-        echo "=== $brand ==="
-        vidjutsu watch --media-url "$url" \
-          --prompt "What's the offer, the hook, and the CTA?"
-      done
-    ```
-  </Tab>
-</Tabs>
-
-## Limits and caveats
-
-- **No private-content access.** Scrape only resolves public posts, profiles, and ad-library entries. Anything behind a follower lock, age gate, or login wall is out of scope.
-- **Best-effort upstream.** Platforms occasionally throttle or restructure their public surfaces; expect occasional `upstream_unavailable` errors and retry with a small delay.
-- **Not legal advice.** You're responsible for how you use scraped public data — respect the source platform's ToS for downstream uses, and never republish private personal data.
-- **No background polling.** Don't tight-loop the same endpoint; if you need fresh data, hit it at a sane interval (5+ minutes for the same key/handle).
+See the [clone meme videos guide](/guides/clone-meme-videos) for the complete workflow.

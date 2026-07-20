@@ -1,23 +1,23 @@
 "use client";
 
 const LINES = [
-  "$ vidjutsu compliance video \\",
-  "    --video-url https://cdn.example.com/creative-v3.mp4 \\",
-  "    --platform meta-ads",
+  "$ vidjutsu clone check \\",
+  "    --url https://cdn.vidjutsu.ai/reference.mp4 \\",
+  "    --idempotency-key brand-meme-001",
   "",
-  "risk_score: 88/100",
-  "level: high",
+  "cloneability_score: 92/100",
+  "decision: pass",
   "",
-  "flags:",
-  "  unrealistic_outcome_claim  voiceover  span:00:00:07-00:00:11",
+  "next_stage:",
+  "  create_character",
   "",
-  "primary_reason:",
-  "  implied_guaranteed_financial_return_in_voiceover",
+  "job:",
+  "  job_brand_meme_001",
   "",
-  "cited_rules:",
-  "  meta_advertising_standards / misleading_claims / unrealistic_outcomes",
+  "poll:",
+  "  vidjutsu jobs get --id job_brand_meme_001",
   "",
-  "policy_snapshot: 2026-04-23",
+  "status: ready_for_character",
 ];
 
 export function TerminalDemo() {
@@ -29,12 +29,11 @@ export function TerminalDemo() {
             Example
           </p>
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            See the risk before you submit
+            See the workflow before you generate
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Sample Meta Ads report: high risk flagged on an unrealistic
-            outcome claim at 0:07, with the cited clause from Meta's current
-            advertising standards.
+            A clone check returns a clear decision and a durable job context
+            before you pay for the next generation stage.
           </p>
         </div>
 
