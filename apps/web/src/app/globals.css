@@ -52,9 +52,11 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .vj-connection-tabs button, .vj-agent-tabs button { display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--vj-muted); cursor: pointer; font-family: var(--vj-sans); font-weight: 700; transition: color .16s, border-color .16s, background .16s; }
 .vj-connection-tabs button { min-width: 96px; justify-content: center; padding: 14px 17px; font-size: 13px; }
 .vj-agent-tabs button { padding: 11px 9px; font-size: 12px; }
-.vj-agent-tabs i { width: 19px; height: 19px; display: inline-grid; place-items: center; border-radius: 5px; background: #263d5c; color: #9fc1ff; font: 700 10px/1 var(--vj-mono); font-style: normal; }
+.vj-agent-icon { width: 19px; height: 19px; display: inline-grid; place-items: center; border-radius: 5px; background: #263d5c; color: #9fc1ff; overflow: hidden; }
+.vj-agent-icon img { width: 15px; height: 15px; display: block; object-fit: contain; }
 .vj-connection-tabs button:hover, .vj-agent-tabs button:hover, .vj-connection-tabs button.active, .vj-agent-tabs button.active { border-color: #3775db; background: #142540; color: #fff; }
-.vj-agent-tabs button.active i { background: #244f97; color: #fff; }
+.vj-agent-tabs button.active .vj-agent-icon { background: #244f97; color: #fff; }
+@media (prefers-reduced-motion: reduce) { .vj-agent-icon img { animation: none; } }
 .vj-setup-content { padding: 34px; animation: vj-enter .2s ease both; }
 .vj-setup-content > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .vj-setup-content header > div > span, .vj-message > span { color: #a9bacb; font: 800 10px/1 var(--vj-mono); letter-spacing: .11em; text-transform: uppercase; }

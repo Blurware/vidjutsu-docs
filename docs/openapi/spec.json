@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "VidJutsu API",
-    "version": "2026-05-24-2"
+    "version": "2026-07-18-2"
   },
   "tags": [
     {
@@ -13,6 +13,9 @@
     },
     {
       "name": "Scrape"
+    },
+    {
+      "name": "Videos"
     },
     {
       "name": "Billing"
@@ -70,6 +73,21 @@
     },
     {
       "name": "Agent"
+    },
+    {
+      "name": "Clips"
+    },
+    {
+      "name": "Jobs"
+    },
+    {
+      "name": "Cloning"
+    },
+    {
+      "name": "Characters"
+    },
+    {
+      "name": "Agent Tasks"
     }
   ],
   "paths": {
@@ -210,6 +228,137 @@
         },
         "tags": [
           "Accounts"
+        ]
+      }
+    },
+    "/v1/agent/tasks": {
+      "post": {
+        "operationId": "createAgentTask",
+        "summary": "Create an asynchronous agent media task",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentTaskAccepted"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent Tasks"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAgentTaskRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agent/tasks/events": {
+      "get": {
+        "operationId": "listAgentTaskEvents",
+        "summary": "Tail structured agent task events",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentTaskEventPage"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Agent Tasks"
         ]
       }
     },
@@ -626,6 +775,57 @@
         }
       }
     },
+    "/v1/characters": {
+      "post": {
+        "operationId": "createCharacter",
+        "summary": "Create a reusable generated character",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Characters"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterRequest"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/check": {
       "post": {
         "operationId": "checkSpec",
@@ -736,6 +936,316 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CheckRulesUpdateRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clips/broll": {
+      "post": {
+        "operationId": "addClipBroll",
+        "summary": "Create a B-roll-treated clip artifact",
+        "description": "Creates a new immutable clip whose parent is the input clip. Assets, edit planning, and render providers remain internal.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistributionJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clips"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBrollRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clips/captions": {
+      "post": {
+        "operationId": "addClipCaptions",
+        "summary": "Create a captioned clip artifact",
+        "description": "Creates a new immutable clip whose parent is the input clip.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistributionJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clips"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCaptionsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clips/generate": {
+      "post": {
+        "operationId": "generateClips",
+        "summary": "Generate a bounded batch of 9:16 clips from a video source or video ID",
+        "description": "One semantic job may resolve the source, transcribe it, find moments, and reframe clips. Returns a durable job; provider and model choices remain internal.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistributionJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clips"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateClipsRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/check": {
+      "post": {
+        "operationId": "cloneCheck",
+        "summary": "Evaluate whether a source video can be cloned reliably",
+        "description": "Starts a durable EVE-backed analysis job. The result contains a deterministic cloneability score grounded in prompted VidJutsu watch evidence.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneCheckRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/starting-image": {
+      "post": {
+        "operationId": "cloneStartingImage",
+        "summary": "Create a clean character-swapped starting frame",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneStartingImageRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/video": {
+      "post": {
+        "operationId": "cloneVideo",
+        "summary": "Clone source motion with Seedance or Kling motion control",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneVideoRequest"
               }
             }
           }
@@ -961,6 +1471,106 @@
         }
       }
     },
+    "/v1/distribution/clips": {
+      "get": {
+        "operationId": "listOrGetDistributionClips",
+        "summary": "List generated clips or get one by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "videoId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/ClipResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ClipListResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Clips"
+        ]
+      }
+    },
+    "/v1/distribution/jobs": {
+      "get": {
+        "operationId": "getDistributionJob",
+        "summary": "Inspect a distribution job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistributionJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Jobs"
+        ]
+      }
+    },
     "/v1/extract": {
       "post": {
         "operationId": "extractMedia",
@@ -1042,6 +1652,48 @@
         },
         "tags": [
           "Info"
+        ]
+      }
+    },
+    "/v1/jobs": {
+      "get": {
+        "operationId": "getJob",
+        "summary": "Inspect a durable VidJutsu media job",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Jobs"
         ]
       }
     },
@@ -1574,254 +2226,6 @@
         "tags": [
           "References"
         ]
-      }
-    },
-    "/v1/scrape/ads/google": {
-      "post": {
-        "operationId": "scrapeGoogleAds",
-        "summary": "Scrape Google Ad Transparency",
-        "description": "Ads for a company in the Google Ad Transparency Library. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeGoogleAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/linkedin": {
-      "post": {
-        "operationId": "scrapeLinkedInAds",
-        "summary": "Scrape LinkedIn Ad Library",
-        "description": "Active LinkedIn ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeLinkedInAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/meta": {
-      "post": {
-        "operationId": "scrapeMetaAds",
-        "summary": "Scrape Meta (Facebook) Ad Library",
-        "description": "Active Meta ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeMetaAdsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/ads/reddit": {
-      "post": {
-        "operationId": "scrapeRedditAds",
-        "summary": "Scrape Reddit Ad Library",
-        "description": "Active Reddit ads matching keyword. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeRedditAdsRequest"
-              }
-            }
-          }
-        }
       }
     },
     "/v1/scrape/instagram/post": {
@@ -2568,502 +2972,6 @@
         }
       }
     },
-    "/v1/scrape/twitter/profile": {
-      "post": {
-        "operationId": "scrapeTwitterProfile",
-        "summary": "Scrape X profile",
-        "description": "Public X/Twitter profile + stats. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterProfileRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/tweet": {
-      "post": {
-        "operationId": "scrapeTwitterTweet",
-        "summary": "Scrape X tweet",
-        "description": "Single tweet + media. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterTweetRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/tweet/transcript": {
-      "post": {
-        "operationId": "scrapeTwitterTweetTranscript",
-        "summary": "Scrape X tweet video transcript",
-        "description": "Transcript of the video in a tweet (when present). 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterTweetTranscriptRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/twitter/user-tweets": {
-      "post": {
-        "operationId": "scrapeTwitterUserTweets",
-        "summary": "Scrape X user tweets",
-        "description": "Recent tweets for a handle. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeTwitterUserTweetsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/channel": {
-      "post": {
-        "operationId": "scrapeYouTubeChannel",
-        "summary": "Scrape YouTube channel",
-        "description": "YouTube channel info + stats. Provide handle or channel_id. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeChannelRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/channel-videos": {
-      "post": {
-        "operationId": "scrapeYouTubeChannelVideos",
-        "summary": "Scrape YouTube channel videos",
-        "description": "Paginated videos for a channel. Provide handle or channel_id. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeChannelVideosRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/video": {
-      "post": {
-        "operationId": "scrapeYouTubeVideo",
-        "summary": "Scrape YouTube video",
-        "description": "Single YouTube video info, including transcript. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeVideoRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/scrape/youtube/video/comments": {
-      "post": {
-        "operationId": "scrapeYouTubeVideoComments",
-        "summary": "Scrape YouTube video comments",
-        "description": "Comments on a YouTube video. 1 op.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScrapeResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
-            "headers": {
-              "Retry-After": {
-                "required": false,
-                "schema": {
-                  "type": "integer",
-                  "format": "int32"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Scrape"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ScrapeYouTubeVideoCommentsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/subscribe": {
       "post": {
         "operationId": "createSubscription",
@@ -3303,6 +3211,182 @@
         "tags": [
           "Usage"
         ]
+      }
+    },
+    "/v1/videos/add": {
+      "post": {
+        "operationId": "addVideo",
+        "summary": "Add a video from an uploaded asset or direct MP4 URL",
+        "description": "Creates or reuses a normalized Vidjutsu video. Provider ingest, downloading, indexing, and storage are implementation details.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DistributionJob"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Videos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddVideoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/download/instagram": {
+      "post": {
+        "operationId": "downloadInstagramVideo",
+        "summary": "Import an Instagram video into VidJutsu",
+        "description": "Imports the primary video from an Instagram post or reel into tenant-owned VidJutsu storage. Repeated imports reuse the same immutable asset.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialVideoDownloadResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Videos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocialVideoDownloadRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/videos/download/tiktok": {
+      "post": {
+        "operationId": "downloadTikTokVideo",
+        "summary": "Import a TikTok video into VidJutsu",
+        "description": "Imports the primary video from a TikTok post into tenant-owned VidJutsu storage. Repeated imports reuse the same immutable asset.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SocialVideoDownloadResult"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Videos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SocialVideoDownloadRequest"
+              }
+            }
+          }
+        }
       }
     },
     "/v1/watch": {
@@ -3575,6 +3659,68 @@
           }
         }
       },
+      "AddBrollRequest": {
+        "type": "object",
+        "required": [
+          "clipId",
+          "mode"
+        ],
+        "properties": {
+          "clipId": {
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "#/components/schemas/BrollMode"
+          },
+          "assetIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Optional approved asset IDs. Required when mode is supplied."
+          },
+          "intent": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AddCaptionsRequest": {
+        "type": "object",
+        "required": [
+          "clipId"
+        ],
+        "properties": {
+          "clipId": {
+            "type": "string"
+          },
+          "preset": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AddVideoRequest": {
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/VideoSource"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
       "AgentClaimCompleteRequest": {
         "type": "object",
         "required": [
@@ -3796,6 +3942,202 @@
           "assertion": {
             "type": "string",
             "description": "Email address the agent asserts on behalf of the principal."
+          }
+        }
+      },
+      "AgentTaskAccepted": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "statusUrl",
+          "eventsUrl"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/AgentTaskStatus"
+          },
+          "statusUrl": {
+            "type": "string"
+          },
+          "eventsUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "AgentTaskAssetInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "assetId"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "assetId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "AgentTaskEvent": {
+        "type": "object",
+        "required": [
+          "id",
+          "taskId",
+          "sequence",
+          "type",
+          "data",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/AgentTaskEventType"
+          },
+          "data": {},
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AgentTaskEventPage": {
+        "type": "object",
+        "required": [
+          "taskId",
+          "events",
+          "terminal"
+        ],
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentTaskEvent"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          },
+          "terminal": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AgentTaskEventType": {
+        "type": "string",
+        "enum": [
+          "task.created",
+          "agent.started",
+          "stage.started",
+          "stage.completed",
+          "stage.failed",
+          "checkpoint.created",
+          "provider.submitted",
+          "task.waiting",
+          "task.retrying",
+          "task.rejected",
+          "task.completed",
+          "task.failed",
+          "task.cancelled"
+        ]
+      },
+      "AgentTaskInputSource": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AgentTaskUrlInput"
+          },
+          {
+            "$ref": "#/components/schemas/AgentTaskAssetInput"
+          }
+        ]
+      },
+      "AgentTaskResult": {
+        "type": "object",
+        "required": [
+          "kind",
+          "outcome"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "agent_task"
+            ]
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "rejected"
+            ]
+          },
+          "finalAssetId": {
+            "type": "string"
+          },
+          "finalUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "reasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "costMicros": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "AgentTaskStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "waiting_provider",
+          "retrying",
+          "rejected",
+          "completed",
+          "failed",
+          "cancelled"
+        ]
+      },
+      "AgentTaskUrlInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "url"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
           }
         }
       },
@@ -4071,6 +4413,24 @@
           }
         }
       },
+      "AssetVideoSource": {
+        "type": "object",
+        "required": [
+          "kind",
+          "assetId"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "asset"
+            ]
+          },
+          "assetId": {
+            "type": "string"
+          }
+        }
+      },
       "BearerAuth": {
         "type": "object",
         "required": [
@@ -4094,6 +4454,36 @@
           }
         },
         "description": ""
+      },
+      "BrollMode": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "supplied",
+          "none"
+        ]
+      },
+      "CharacterResult": {
+        "type": "object",
+        "required": [
+          "kind",
+          "characterId",
+          "identityImageAssetId"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "character"
+            ]
+          },
+          "characterId": {
+            "type": "string"
+          },
+          "identityImageAssetId": {
+            "type": "string"
+          }
+        }
       },
       "CheckRequest": {
         "type": "object",
@@ -4183,6 +4573,277 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "Clip": {
+        "type": "object",
+        "required": [
+          "clipId",
+          "rootVideoId",
+          "transformKind",
+          "status",
+          "aspectRatio",
+          "createdAt"
+        ],
+        "properties": {
+          "clipId": {
+            "type": "string"
+          },
+          "rootVideoId": {
+            "type": "string"
+          },
+          "parentClipId": {
+            "type": "string"
+          },
+          "transformKind": {
+            "$ref": "#/components/schemas/ClipTransformKind"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ClipStatus"
+          },
+          "aspectRatio": {
+            "type": "string",
+            "enum": [
+              "9:16"
+            ]
+          },
+          "durationSeconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "assetId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ClipListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Clip"
+            }
+          }
+        }
+      },
+      "ClipResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Clip"
+          }
+        }
+      },
+      "ClipStatus": {
+        "type": "string",
+        "enum": [
+          "processing",
+          "ready",
+          "failed"
+        ]
+      },
+      "ClipTransformKind": {
+        "type": "string",
+        "enum": [
+          "generated",
+          "timestamps",
+          "captions",
+          "broll"
+        ]
+      },
+      "CloneCheckEvidence": {
+        "type": "object",
+        "required": [
+          "criterion",
+          "observation",
+          "timestamps"
+        ],
+        "properties": {
+          "criterion": {
+            "type": "string"
+          },
+          "observation": {
+            "type": "string"
+          },
+          "timestamps": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      },
+      "CloneCheckRequest": {
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/VideoSource"
+          },
+          "rubricVersion": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CloneCheckResult": {
+        "type": "object",
+        "required": [
+          "kind",
+          "checkId",
+          "successPercent",
+          "verdict",
+          "evidence",
+          "failedCriteria",
+          "recommendedModel",
+          "rubricVersion"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "clone_check"
+            ]
+          },
+          "checkId": {
+            "type": "string"
+          },
+          "successPercent": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/CloneCheckVerdict"
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CloneCheckEvidence"
+            }
+          },
+          "failedCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommendedModel": {
+            "$ref": "#/components/schemas/VideoCloneModel"
+          },
+          "rubricVersion": {
+            "type": "string"
+          }
+        }
+      },
+      "CloneCheckVerdict": {
+        "type": "string",
+        "enum": [
+          "recommended",
+          "marginal",
+          "not_recommended"
+        ]
+      },
+      "CloneStartingImageRequest": {
+        "type": "object",
+        "required": [
+          "source",
+          "characterId"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/VideoSource"
+          },
+          "characterId": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CloneVideoRequest": {
+        "type": "object",
+        "required": [
+          "source",
+          "startingImageAssetId",
+          "model",
+          "cloneCheckId"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/VideoSource"
+          },
+          "startingImageAssetId": {
+            "type": "string"
+          },
+          "model": {
+            "$ref": "#/components/schemas/VideoCloneModel"
+          },
+          "cloneCheckId": {
+            "type": "string"
+          },
+          "override": {
+            "$ref": "#/components/schemas/LowScoreOverride"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CloneVideoResult": {
+        "type": "object",
+        "required": [
+          "kind",
+          "assetId",
+          "model",
+          "cloneCheckId"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "clone_video"
+            ]
+          },
+          "assetId": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "model": {
+            "$ref": "#/components/schemas/VideoCloneModel"
+          },
+          "cloneCheckId": {
+            "type": "string"
+          },
+          "qaScore": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -4415,6 +5076,45 @@
           }
         }
       },
+      "CreateAgentTaskRequest": {
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentTaskInputSource"
+            }
+          }
+        }
+      },
+      "CreateCharacterRequest": {
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "referenceImageAssetIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
       "DailyLimits": {
         "type": "object",
         "additionalProperties": {
@@ -4461,6 +5161,82 @@
             "description": "CDN URL of the disclaimed video"
           }
         }
+      },
+      "DistributionJob": {
+        "type": "object",
+        "required": [
+          "jobId",
+          "operation",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/DistributionJobOperation"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DistributionJobStatus"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobOutputResource"
+            }
+          },
+          "error": {
+            "$ref": "#/components/schemas/DistributionJobError"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "DistributionJobError": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "retryable"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DistributionJobOperation": {
+        "type": "string",
+        "enum": [
+          "addVideo",
+          "generateClips",
+          "addCaptions",
+          "addBroll",
+          "schedulePost"
+        ]
+      },
+      "DistributionJobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "completed",
+          "failed",
+          "cancelled"
+        ]
       },
       "EditorProject": {
         "type": "object",
@@ -4735,6 +5511,74 @@
           }
         }
       },
+      "GenerateClipsRequest": {
+        "type": "object",
+        "required": [
+          "aspectRatio",
+          "count"
+        ],
+        "properties": {
+          "source": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VideoSource"
+              }
+            ],
+            "description": "Provide source or videoId. Exactly one is required."
+          },
+          "videoId": {
+            "type": "string",
+            "description": "Existing normalized Vidjutsu video. Provide this or source, not both."
+          },
+          "aspectRatio": {
+            "type": "string",
+            "enum": [
+              "9:16"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "minDurationSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 5
+          },
+          "maxDurationSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 180
+          },
+          "intent": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HttpVideoSource": {
+        "type": "object",
+        "required": [
+          "kind",
+          "url"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "http"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
       "InfoResponse": {
         "type": "object",
         "required": [
@@ -4768,6 +5612,157 @@
           }
         }
       },
+      "JobOutputResource": {
+        "type": "object",
+        "required": [
+          "kind",
+          "id"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "video",
+              "clip",
+              "post",
+              "image",
+              "character",
+              "clone_check"
+            ]
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "LowScoreOverride": {
+        "type": "object",
+        "required": [
+          "allowLowScore",
+          "reason"
+        ],
+        "properties": {
+          "allowLowScore": {
+            "type": "boolean",
+            "enum": [
+              true
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "MediaJob": {
+        "type": "object",
+        "required": [
+          "jobId",
+          "operation",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "parentJobId": {
+            "type": "string"
+          },
+          "operation": {
+            "$ref": "#/components/schemas/MediaJobOperation"
+          },
+          "status": {
+            "$ref": "#/components/schemas/MediaJobStatus"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobOutputResource"
+            }
+          },
+          "result": {
+            "$ref": "#/components/schemas/MediaJobResult"
+          },
+          "error": {
+            "$ref": "#/components/schemas/MediaJobError"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "MediaJobError": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "retryable"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MediaJobOperation": {
+        "type": "string",
+        "enum": [
+          "addVideo",
+          "generateClips",
+          "addCaptions",
+          "addBroll",
+          "schedulePost",
+          "cloneCheck",
+          "createCharacter",
+          "cloneStartingImage",
+          "cloneVideo",
+          "agentTask"
+        ]
+      },
+      "MediaJobResult": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/CloneCheckResult"
+          },
+          {
+            "$ref": "#/components/schemas/CharacterResult"
+          },
+          {
+            "$ref": "#/components/schemas/StartingImageResult"
+          },
+          {
+            "$ref": "#/components/schemas/CloneVideoResult"
+          },
+          {
+            "$ref": "#/components/schemas/AgentTaskResult"
+          }
+        ]
+      },
+      "MediaJobStatus": {
+        "type": "string",
+        "enum": [
+          "queued",
+          "running",
+          "waiting_provider",
+          "retrying",
+          "rejected",
+          "completed",
+          "failed",
+          "cancelled"
+        ]
+      },
       "OverlayRequest": {
         "type": "object",
         "required": [
@@ -4781,7 +5776,7 @@
           },
           "text": {
             "type": "string",
-            "description": "Overlay text. Lines auto-balance to even widths: spaces and single newlines flow together, so you don't need to hand-break lines. Use a blank line (two newlines) to force a hard break, e.g. for bullet lists."
+            "description": "Overlay text. Use \\\\n for line breaks."
           },
           "position": {
             "type": "string",
@@ -5172,23 +6167,6 @@
           }
         }
       },
-      "ScrapeGoogleAdsRequest": {
-        "type": "object",
-        "required": [
-          "company"
-        ],
-        "properties": {
-          "company": {
-            "type": "string",
-            "description": "Company / advertiser name"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
       "ScrapeInstagramPostCommentsRequest": {
         "type": "object",
         "required": [
@@ -5273,61 +6251,6 @@
           "cursor": {
             "type": "string",
             "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeLinkedInAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeMetaAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword or page name"
-          },
-          "country": {
-            "type": "string",
-            "description": "Two-letter ISO country (default: US)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeRedditAdsRequest": {
-        "type": "object",
-        "required": [
-          "query"
-        ],
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "Search keyword"
           },
           "download_media": {
             "type": "boolean",
@@ -5468,24 +6391,7 @@
           }
         }
       },
-      "ScrapeTwitterProfileRequest": {
-        "type": "object",
-        "required": [
-          "handle"
-        ],
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "X username (without @)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeTwitterTweetRequest": {
+      "SocialVideoDownloadRequest": {
         "type": "object",
         "required": [
           "url"
@@ -5493,126 +6399,93 @@
         "properties": {
           "url": {
             "type": "string",
-            "description": "Tweet URL or status URL"
-          },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
+            "format": "uri"
           }
         }
       },
-      "ScrapeTwitterTweetTranscriptRequest": {
+      "SocialVideoDownloadResult": {
         "type": "object",
         "required": [
-          "url"
+          "assetId",
+          "url",
+          "platform",
+          "externalId",
+          "sourceUrl",
+          "contentType",
+          "size",
+          "sha256",
+          "reused"
         ],
         "properties": {
+          "assetId": {
+            "type": "string"
+          },
           "url": {
             "type": "string",
-            "description": "Tweet URL"
+            "format": "uri"
+          },
+          "platform": {
+            "$ref": "#/components/schemas/SocialVideoPlatform"
+          },
+          "externalId": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "video/mp4"
+            ]
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "reused": {
+            "type": "boolean"
           }
         }
       },
-      "ScrapeTwitterUserTweetsRequest": {
+      "SocialVideoPlatform": {
+        "type": "string",
+        "enum": [
+          "tiktok",
+          "instagram"
+        ]
+      },
+      "StartingImageResult": {
         "type": "object",
         "required": [
-          "handle"
+          "kind",
+          "assetId",
+          "characterId",
+          "sourceFingerprint"
         ],
         "properties": {
-          "handle": {
+          "kind": {
             "type": "string",
-            "description": "X username"
+            "enum": [
+              "starting_image"
+            ]
           },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
+          "assetId": {
+            "type": "string"
           },
-          "trim": {
-            "type": "boolean",
-            "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeChannelRequest": {
-        "type": "object",
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Channel handle, e.g. @MrBeast"
-          },
-          "channel_id": {
-            "type": "string",
-            "description": "Channel ID, e.g. UC..."
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeChannelVideosRequest": {
-        "type": "object",
-        "properties": {
-          "handle": {
-            "type": "string",
-            "description": "Channel handle"
-          },
-          "channel_id": {
-            "type": "string",
-            "description": "Channel ID"
-          },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
-          }
-        }
-      },
-      "ScrapeYouTubeVideoCommentsRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
           "url": {
             "type": "string",
-            "description": "YouTube video URL"
+            "format": "uri"
           },
-          "cursor": {
-            "type": "string",
-            "description": "Pagination cursor"
-          }
-        }
-      },
-      "ScrapeYouTubeVideoRequest": {
-        "type": "object",
-        "required": [
-          "url"
-        ],
-        "properties": {
-          "url": {
-            "type": "string",
-            "description": "YouTube video URL"
+          "characterId": {
+            "type": "string"
           },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
+          "sourceFingerprint": {
+            "type": "string"
           }
         }
       },
@@ -5874,6 +6747,87 @@
           }
         }
       },
+      "Video": {
+        "type": "object",
+        "required": [
+          "videoId",
+          "sourceKind",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "videoId": {
+            "type": "string"
+          },
+          "sourceKind": {
+            "type": "string",
+            "enum": [
+              "asset",
+              "http"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/VideoStatus"
+          },
+          "title": {
+            "type": "string"
+          },
+          "durationSeconds": {
+            "type": "number",
+            "format": "double"
+          },
+          "fingerprint": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "VideoCloneModel": {
+        "type": "string",
+        "enum": [
+          "seedance",
+          "kling-motion-control"
+        ]
+      },
+      "VideoResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Video"
+          }
+        }
+      },
+      "VideoSource": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/AssetVideoSource"
+          },
+          {
+            "$ref": "#/components/schemas/HttpVideoSource"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "asset": "#/components/schemas/AssetVideoSource",
+            "http": "#/components/schemas/HttpVideoSource"
+          }
+        }
+      },
+      "VideoStatus": {
+        "type": "string",
+        "enum": [
+          "processing",
+          "ready",
+          "failed"
+        ]
+      },
       "WatchRequest": {
         "type": "object",
         "required": [
@@ -5887,6 +6841,7 @@
           },
           "prompt": {
             "type": "string",
+            "minLength": 1,
             "description": "Freeform prompt — tell AI what to look for"
           }
         }

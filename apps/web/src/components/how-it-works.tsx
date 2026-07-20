@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Hand your agent the creative",
-    desc: "Drop a URL into Claude or the CLI. Video ad, UGC clip, whatever you're about to submit.",
+    title: "Import the reference",
+    desc: "Give your agent a public TikTok or Instagram meme reference.",
   },
   {
     num: "02",
-    title: "Your agent calls the policy brain",
-    desc: "VidJutsu is the ad-policy intelligence trained on current Meta and TikTok ad standards, refreshed weekly. Your agent runs the creative through it and checks every clause that applies.",
+    title: "Build the brand version",
+    desc: "Run clone check, create your character and starting image, then submit the video clone.",
   },
   {
     num: "03",
-    title: "Fix it, then submit",
-    desc: "Risk score, flagged moment, exact policy line. No more finding out from a paused campaign. Or a restricted account.",
+    title: "Overlay and verify",
+    desc: "Apply the final text, poll the durable job, and review the completed output.",
   },
 ];
 
@@ -24,7 +24,7 @@ export function HowItWorks() {
           How it works
         </p>
         <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
-          URL in. Risk out. Then you submit.
+          Reference in. Brand-ready meme out.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">
