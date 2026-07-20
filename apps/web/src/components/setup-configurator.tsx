@@ -48,7 +48,7 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         "Install the VidJutsu CLI in the agent’s terminal environment.",
         "Set VIDJUTSU_API_KEY as an environment secret.",
-        "Ask your agent to import a source, check it, and run the workflow.",
+        "Ask your agent to clone a meme video for your brand.",
       ],
       command: "curl -fsSL https://vidjutsu.ai/install.sh | bash",
       copy: "COPY INSTALL",
@@ -63,7 +63,7 @@ function setup(connection: Connection, agent: Agent) {
     steps: [
       "Install the VidJutsu skill in the agent workspace.",
       "Set VIDJUTSU_API_KEY in the trusted environment.",
-      "Ask your agent to make a source video into a verified new clip.",
+      "Ask your agent to clone a meme video for your brand.",
     ],
     command: "npx skills add tfcbot/vidjutsu-skills",
     copy: "COPY SKILL",
