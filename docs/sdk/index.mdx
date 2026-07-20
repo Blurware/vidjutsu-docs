@@ -1,9 +1,9 @@
 ---
 title: "SDK Overview"
-description: "TypeScript SDK for the VidJutsu video intelligence API"
+description: "TypeScript SDK for brand meme video workflows."
 ---
 
-The VidJutsu SDK is a typed TypeScript client auto-generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). Every method is fully typed — request bodies, response shapes, and query parameters.
+The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It supports durable agent tasks as well as each atomic import, clone, overlay, watch, and job operation.
 
 ## Install
 
@@ -16,54 +16,34 @@ npm install vidjutsu
 ```typescript
 import { createClient } from "vidjutsu";
 
-const vj = createClient();
+const client = createClient();
 
-// Watch a video
-const { data } = await vj.watchMedia({
-  mediaUrl: "https://cdn.example.com/video.mp4",
-  prompt: "Is the hook strong enough for fitness TikTok?",
-});
-console.log(data.response);
+const task = await client.agentTasks.create(
+  {
+    prompt: "Clone this meme video for our brand with our character and wall text.",
+    inputs: [{ name: "source_video", url: sourceVideoUrl }],
+  },
+  { idempotencyKey: "brand-meme-001" },
+);
 
-// Extract frames and audio
-const { data: extract } = await vj.extractMedia({
-  mediaUrl: "https://cdn.example.com/video.mp4",
-  frames: "auto",
-  audio: true,
-});
-
-// Transcribe speech
-const { data: transcript } = await vj.transcribeMedia({
-  mediaUrl: "https://cdn.example.com/video.mp4",
-});
-console.log(transcript.transcript);
-
-// Scan a caption against Instagram's policies
-const { data: compliance } = await vj.checkCompliancePrompt({
-  text: "Get rich in 30 days guaranteed",
-  platform: "instagram",
-});
+for await (const event of client.agentTasks.tail(task.id)) {
+  console.log(event.type, event.data);
+}
 ```
 
-## Methods
-
-Each intelligence call counts against the endpoint's daily rate-limit bucket. Storage methods are unmetered. See [Pricing & Rate Limits](/credits-and-billing) for limits.
+## Core methods
 
 | Method | Description |
-|--------|-------------|
-| [`watchMedia`](/sdk/watch) | AI watches a video/image, answers your prompt |
-| [`extractMedia`](/sdk/extract) | Extract frames, audio, and metadata |
-| [`transcribeMedia`](/sdk/transcribe) | Speech-to-text with word-level timing |
-| [`checkSpec`](/sdk/check) | Validate a VidLang spec against rules |
-| `checkComplianceVideo` | Scan a video against platform TOS |
-| `checkCompliancePrompt` | Scan text against platform TOS |
-| [`createOverlay`](/sdk/overlay) | Burn text overlay onto video |
-| [`uploadFile`](/sdk/upload) / `uploadFromUrl` | Upload to CDN |
-| [`createAccount`](/sdk/accounts) / `listOrGetAccounts` / `updateAccount` / `deleteAccount` | Manage accounts |
-| [`createPost`](/sdk/posts) / `listOrGetPosts` / `updatePost` / `deletePost` | Manage posts |
-| [`createAsset`](/sdk/assets) / `listOrGetAssets` / `updateAsset` / `deleteAsset` | Manage assets |
-| [`createReference`](/sdk/references) / `listOrGetReferences` / `updateReference` / `deleteReference` | Manage references |
-| `getUsage` | Remaining daily capacity per endpoint |
+| --- | --- |
+| `agentTasks.create` / `agentTasks.tail` | Submit a goal-oriented workflow and tail durable events. |
+| `downloadTikTokVideo` / `downloadInstagramVideo` | Import a social reference into a stable asset. |
+| `clones.check` | Evaluate reference cloneability before generation. |
+| `characters.create` | Create a reusable brand character. |
+| `clones.createStartingImage` | Create a clean character-swapped starting frame. |
+| `clones.createVideo` | Clone motion with Seedance or Kling motion control. |
+| `createOverlay` | Apply final brand wall text. |
+| `watchMedia` | Run prompted video or image understanding. |
+| `awaitJob` / `mediaJobs.get` | Poll a durable media job. |
 
 ## Authentication
 
@@ -74,28 +54,7 @@ The client resolves your API key in order:
 3. **Config file** — `~/.vidjutsu/config.json` (shared with the [CLI](/cli/auth))
 
 ```typescript
-// Reads from env var or config file automatically
-const vj = createClient();
-
-// Or pass explicitly
-const vj = createClient({ apiKey: "vj_live_..." });
-
-// Custom base URL (for staging, self-hosted, etc.)
-const vj = createClient({ baseUrl: "https://staging.api.vidjutsu.ai" });
+const client = createClient();
 ```
 
-## Raw client
-
-For endpoints not covered by convenience methods, or for advanced usage, access the raw `openapi-fetch` client:
-
-```typescript
-const { data, error } = await vj.api.GET("/v1/usage");
-const { data, error } = await vj.api.POST("/v1/watch", {
-  body: { mediaUrl: "...", prompt: "..." },
-});
-```
-
-## Source
-
-- [npm](https://www.npmjs.com/package/vidjutsu)
-- [GitHub](https://github.com/tfcbot/vidjutsu-sdk)
+Use a tenant-scoped key in a trusted environment. Do not place a key in a prompt, skill file, or public client bundle.

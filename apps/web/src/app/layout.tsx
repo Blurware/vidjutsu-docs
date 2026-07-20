@@ -9,26 +9,26 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "VidJutsu | Verified AI video workflows for agents",
+    default: "VidJutsu | Clone meme videos for your brand",
     template: "%s | VidJutsu",
   },
   description:
-    "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
+    "Give your agent typed primitives to turn a short meme reference into a brand-ready video: clone check, character, motion, overlay, and final QA.",
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VidJutsu | Verified AI video workflows for agents",
+    title: "VidJutsu | Clone meme videos for your brand",
     description:
-      "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
+      "Give your agent typed primitives to turn a short meme reference into a brand-ready video: clone check, character, motion, overlay, and final QA.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VidJutsu | Verified AI video workflows for agents",
+    title: "VidJutsu | Clone meme videos for your brand",
     description:
-      "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
+      "Give your agent typed primitives to turn a short meme reference into a brand-ready video: clone check, character, motion, overlay, and final QA.",
   },
   robots: {
     index: true,

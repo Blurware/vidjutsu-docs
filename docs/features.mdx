@@ -1,37 +1,36 @@
 ---
 title: Features
-description: Everything your agent gets with VidJutsu.
+description: The primitives behind brand-ready meme video workflows.
 ---
 
-## Watch — AI video understanding
+## Social video import
 
-Send a video and a freeform prompt. AI watches the full video and answers whatever you ask — hook quality, pacing issues, content summary, brand safety. No rigid schema, just a question and an answer.
+Import TikTok and Instagram video posts into stable, tenant-owned VidJutsu assets. Repeated imports reuse the same asset so retries and downstream jobs do not download the reference again.
 
-## Extract — server-side processing
+## Clone check
 
-Pull frames, audio tracks, and metadata from any video. Server-side processing — no local install required. Auto-select keyframes or request specific frame counts. Get resolution, duration, FPS, and codec info.
+Clone check watches the whole reference and produces evidence for a deterministic score. It is a hard gate: references that are too long, have more than one primary subject, or are otherwise unsuitable stop before paid generation begins.
 
-## Transcribe — speech-to-text with timing
+## Characters and clean starting images
 
-Full speech-to-text with word-level timestamps. Know exactly what was said and when. Use it for subtitle generation, content verification, or feeding transcripts into downstream analysis.
+Create a reusable character identity for your brand. VidJutsu can then produce a clean starting image that replaces the source performer and removes the original wall text before motion generation.
 
-## Check — spec validation
+## Motion clone
 
-Validate specs against built-in rules and your own custom rules. Define rules like `hook-required`, `max-duration-60s`, or `aspect-ratio-9-16`. Save per-client custom rules via the API and run checks programmatically.
+Clone source timing and movement with an explicit model selection: `seedance` or `kling-motion-control`. VidJutsu never silently changes model families.
 
-## Compliance — platform TOS pre-flight
+## Overlay and final QA
 
-Scan any video or caption against the target platform's current policies before you publish. Covers **YouTube, TikTok (consumer + ads), Instagram / Meta, Facebook Ads**. Returns a deterministic 0–100 risk score, a verdict, and each violation with the **verbatim policy clause** and source URL it's based on.
+Apply the final brand wall text after motion generation. A final prompted QA pass checks subject count, identity continuity, framing, duration, and the finished overlay before the workflow completes.
 
-- Anti-hallucination validator — every cited rule is resolved against our DB before returning; the LLM can't invent clauses
-- Two inputs: `POST /v1/compliance/video` (scans a hosted video URL, 20/day) and `POST /v1/compliance/prompt` (scans caption or ad copy, 100/day)
-- Every response includes a `policySnapshotDate` timestamp and a disclaimer field
-- Informational only — not legal advice, and no freshness or accuracy guarantee. The citation reflects what we last ingested from the platform's own published text; you're expected to verify the live source before acting on the result. See [Terms of Service](/legal/terms)
+## Durable agent tasks and jobs
 
-## Storage — CDN and tagging
+Submit an agent task for goal-oriented work, or compose atomic public primitives yourself. Jobs retain ordered checkpoints, provider attempts, retries, final artifacts, and lineage so an agent can resume without repeating finished work.
 
-Upload videos to a global CDN with `POST /v1/upload`. Organize your content library with accounts, posts, and AWS-style key-value tags. Filter anything by tag — `?tag.brand=acme`, `?tag.batch=week-12`.
+## Watch
 
-## Composable
+Use `POST /v1/watch` for prompted video or image understanding. Every watch request requires a prompt describing the evidence you need back from the model.
 
-Use the full stack or just parts. Watch a video without storing anything. Extract frames without transcribing. Every endpoint works on its own — no required workflow, no orchestration layer. Build the pipeline that fits your agent.
+## Interfaces
+
+VidJutsu supports REST, a generated TypeScript SDK, the CLI, public agent skills, and an agent-readable auth manifest. A public MCP server is not configured today.

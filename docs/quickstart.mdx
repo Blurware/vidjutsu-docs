@@ -1,89 +1,59 @@
 ---
 title: "Quickstart"
-description: "Scan your video against platform rules before you post"
+description: "Clone a meme video for your brand with an agent task."
 ---
 
 <Info>
-Need an API key? Follow the [Get your API key](/get-api-key) guide first.
+Need an API key? Follow [Get your API key](/get-api-key) first.
 </Info>
 
-## Scan a video (20 / day)
+## Submit a brand meme task
 
-Score a video against the target platform's community guidelines or ad standards. You get a 0–100 risk score, each violation, and the verbatim policy clause it's based on — so you know what to change before you post.
+Give VidJutsu a clear goal and a source video. The task records checkpoints while the private workflow imports the reference, checks cloneability, creates the character and starting image, generates motion, applies your wall text, and runs final QA.
 
-<Tabs>
-  <Tab title="SDK">
-    ```typescript
-    import { createClient } from "vidjutsu";
-    const vj = createClient();
+```typescript
+import { createClient } from "vidjutsu";
 
-    const { data } = await vj.complianceVideo({
-      videoUrl: "https://cdn.example.com/video.mp4",
-      platform: "tiktok",
-    });
-    ```
-  </Tab>
-  <Tab title="CLI">
-    ```bash
-    vidjutsu compliance video \
-      --video-url "https://cdn.example.com/video.mp4" \
-      --platform tiktok
-    ```
-  </Tab>
-  <Tab title="curl">
-    ```bash
-    curl -X POST https://api.vidjutsu.ai/v1/compliance/video \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-      -d '{
-        "videoUrl": "https://cdn.example.com/video.mp4",
-        "platform": "tiktok"
-      }'
-    ```
-  </Tab>
-</Tabs>
+const client = createClient();
 
-```json
-{
-  "riskScore": 88,
-  "verdict": "high-risk",
-  "violations": [
-    {
-      "ruleId": "tiktok-profanity-in-audio",
-      "category": "community-guidelines",
-      "severity": "high",
-      "explanation": "Profanity in the spoken audio at 0:04 violates TikTok's community guidelines on mature content for the For You feed.",
-      "citation": {
-        "text": "...",
-        "sourceUrl": "https://www.tiktok.com/community-guidelines",
-        "policyVersion": "2026-04-23"
+const task = await client.agentTasks.create(
+  {
+    prompt: "Clone this meme video for our brand with our character. Keep the timing and sound, then add the exact wall text: When our product finally clicks.",
+    inputs: [
+      {
+        name: "source_video",
+        url: "https://www.tiktok.com/@creator/video/123456789",
       },
-      "evidence": { "transcriptExcerpt": "...", "timestamp": 4.2 }
-    }
-  ],
-  "platform": "tiktok",
-  "policySnapshotDate": "2026-04-23",
-  "disclaimer": "This response is informational only and does not constitute legal advice..."
+    ],
+  },
+  { idempotencyKey: "brand-meme-001" },
+);
+
+for await (const event of client.agentTasks.tail(task.id)) {
+  console.log(event.type, event.data);
 }
 ```
 
-**Supported platforms:** `youtube`, `tiktok`, `instagram`, `facebook-ads`.
+## What happens next
 
-**Rate limit:** 20 video scans per day. Check remaining capacity with `vidjutsu usage`.
+1. **Import** — a TikTok or Instagram reference becomes a stable tenant-owned asset.
+2. **Clone check** — the workflow stops immediately if the reference is a poor fit.
+3. **Brand production** — VidJutsu creates the selected character, clean starting image, motion clone, and overlay.
+4. **Final QA** — the workflow checks identity continuity, framing, duration, and the final wall text before returning the output.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Compliance CLI" icon="terminal" href="/cli/compliance">
-    All flags, output shape, and caption/text scanning.
+  <Card title="Meme cloning guide" icon="film" href="/guides/clone-meme-videos">
+    Understand the task stages, inputs, and final artifacts.
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/introduction">
-    Full endpoint reference with interactive playground.
+  <Card title="SDK reference" icon="braces" href="/sdk/index">
+    Use typed SDK methods for imports, clone jobs, overlays, and polling.
   </Card>
-  <Card title="Credits & Billing" icon="credit-card" href="/credits-and-billing">
-    Pricing, subscription management, and limits.
+  <Card title="Agent authentication" icon="key-round" href="/auth">
+    Configure an agent-readable registration and key-claim flow.
   </Card>
-  <Card title="Terms of Service" icon="scale-balanced" href="/legal/terms">
-    Informational only — not legal advice.
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Explore every public operation and response schema.
   </Card>
 </CardGroup>

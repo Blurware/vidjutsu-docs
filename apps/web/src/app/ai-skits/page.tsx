@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Skits with Agent Tasks",
+  title: "Clone Meme Videos for Your Brand",
   description:
-    "Submit goal-oriented short-form video work through durable VidJutsu agent tasks.",
+    "Turn a short meme reference into a brand-ready video through durable VidJutsu agent tasks.",
 };
 
 const ENDPOINTS = [
@@ -23,8 +23,8 @@ const sdkExample = `import { createClient } from "vidjutsu";
 const client = createClient();
 const task = await client.agentTasks.create(
   {
-    prompt: \`Clone the source performer with a new character.
-Preserve motion and sound, add the exact requested wall text,
+    prompt: \`Clone this meme video for my brand with our character.
+Preserve the timing and source sound, add the requested brand text,
 and verify the final overlaid video.\`,
     inputs: [{ name: "source_video", url: sourceVideoUrl }],
   },
@@ -47,13 +47,13 @@ export default function AiSkitsPage() {
           Developer API
         </p>
         <h1 className="text-3xl sm:text-5xl font-bold tracking-tight mb-4">
-          AI skits, assembled from durable primitives
+          Clone meme videos, without wiring the pipeline
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed max-w-3xl mb-14">
-          Turn a short source performance into a reusable-character, lipsync-style
-          wall-of-text skit. Submit the goal once, then tail a durable task while
-          the private agent composes typed VidJutsu primitives, provider waits,
-          overlay, and prompted QA.
+          Turn a short meme reference into a brand-ready video with your character,
+          your wall text, and the source&apos;s timing. Submit the goal once, then tail a
+          durable task while the private agent composes typed VidJutsu primitives,
+          provider waits, overlay, and prompted QA.
         </p>
 
         <section className="mb-14">
@@ -82,8 +82,8 @@ export default function AiSkitsPage() {
 
         <section className="grid sm:grid-cols-3 gap-5 mb-14">
           {[
+            ["Brand-safe gate", "Clone check rejects a bad reference before any paid media is generated."],
             ["Explicit models", "Every video clone names Seedance or Kling motion control. Model families never change silently."],
-            ["Safe retries", "Task submission supports idempotency keys, durable checkpoints, bounded retries, and provider deferral."],
             ["Traceable output", "Completed jobs retain intermediate artifacts, parent/child relationships, attempts, and final lineage."],
           ].map(([title, detail]) => (
             <div key={title} className="border border-border p-5">
@@ -94,8 +94,8 @@ export default function AiSkitsPage() {
         </section>
 
         <p className="text-sm text-ink-muted">
-          Clone workflows stop immediately when the source fails the cloneability
-          gate. Successful tasks return the final overlaid asset plus intermediate
+          Clone workflows stop immediately when the reference fails the cloneability
+          gate. Successful tasks return the final branded asset plus intermediate
           lineage through the job record.
         </p>
       </div>

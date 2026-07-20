@@ -27,17 +27,17 @@ function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
     return {
-      title: `Add VidJutsu to ${agentLabel}`,
-      description: "Give your agent the VidJutsu media workflow through one authenticated, agent-readable connection.",
+      title: `VidJutsu MCP is coming soon`,
+      description: "A public remote MCP server is not configured yet. Use the Skill or CLI today to give your agent the same typed video workflow.",
       steps: [
-        "Open your agent’s connector or remote-tool settings.",
-        "Use the VidJutsu auth manifest to configure the API connection.",
-        "Keep the tenant key in the agent’s secret store, then request the workflow.",
+        "Install the VidJutsu Skill in your agent workspace.",
+        "Keep VIDJUTSU_API_KEY in the workspace secret store.",
+        "Ask your agent to clone a meme video for your brand.",
       ],
-      command: "https://docs.vidjutsu.ai/auth.md",
-      copy: "COPY MANIFEST",
-      note: "Use a tenant-scoped key. Never paste it into chat.",
-      guide: "Agent connection guide ↗",
+      command: "npx skills add tfcbot/vidjutsu-skills",
+      copy: "COPY SKILL",
+      note: "This tab is a roadmap preview, not a live MCP endpoint.",
+      guide: "Agent auth guide ↗",
       href: "https://docs.vidjutsu.ai/auth.md",
     };
   }
@@ -74,7 +74,7 @@ function setup(connection: Connection, agent: Agent) {
 }
 
 export function SetupConfigurator() {
-  const [connection, setConnection] = useState<Connection>("mcp");
+  const [connection, setConnection] = useState<Connection>("skill");
   const [agent, setAgent] = useState<Agent>("claude");
   const [copied, setCopied] = useState(false);
   const current = setup(connection, agent);
@@ -89,10 +89,10 @@ export function SetupConfigurator() {
     <section className="vj-setup" id="start" aria-labelledby="setup-heading">
       <div className="vj-frame">
         <div className="vj-setup-heading">
-          <h1 id="setup-heading">Your agent makes the video.</h1>
+          <h1 id="setup-heading">Clone meme videos for your brand.</h1>
           <p>
-            Start with a short source. VidJutsu gives your agent the primitives to import it,
-            recreate the performance, add the wall text, and verify the result.
+            Start with a short reference. VidJutsu gives your agent the primitives to check it,
+            recreate the performance with your character, add your text, and verify the result.
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export function SetupConfigurator() {
             <footer><span>{current.note}</span><a href={current.href}>{current.guide}</a></footer>
           </div>
         </div>
-        <p className="vj-setup-note">Not sure which one to choose? Start with the <strong>Skill</strong>. Use <strong>MCP</strong> when your agent supports remote tools, or the <strong>CLI</strong> for its terminal workspace.</p>
+        <p className="vj-setup-note">Start with the <strong>Skill</strong>. Use the <strong>CLI</strong> for a terminal workspace. <strong>MCP</strong> is not public yet.</p>
       </div>
     </section>
   );

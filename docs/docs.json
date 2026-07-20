@@ -25,7 +25,8 @@
               "index",
               "get-api-key",
               "quickstart",
-              "features"
+              "features",
+              "guides/clone-meme-videos"
             ]
           },
           {
@@ -306,7 +307,6 @@
       "chatgpt",
       "claude",
       "perplexity",
-      "mcp",
       "cursor",
       "vscode"
     ]

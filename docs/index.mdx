@@ -1,87 +1,49 @@
 ---
-title: "VidJutsu — Video Intelligence API"
-description: "The feedback loop your agent is missing."
+title: "VidJutsu — Brand Meme Video API"
+description: "Clone meme videos for your brand."
 ---
 
-Watch, extract, transcribe, check, and **pre-flight platform compliance** on any AI-generated video or caption. Plus storage and tagging for your content library.
+VidJutsu gives your agent a typed media workflow for turning a short meme reference into a brand-ready video.
 
-## Catch violations before you post
+Import the source, run clone check, create your character and starting image, generate motion, add your wall text, and finish only after QA passes.
 
-Every creator who's been demonetized, shadow-banned, or suspended knows the feeling. **VidJutsu Compliance** scans a video or caption against each platform's current Community Guidelines and ad policies, returns a deterministic risk score, and cites the exact policy clause behind every flag.
+## The brand meme workflow
 
-- **Four platforms** — YouTube, TikTok (consumer + ads), Instagram / Meta, Facebook Ads
-- **Verbatim citations** — every violation links back to the platform's own policy page, with the exact quoted clause; you can verify against the live source
-- **Deterministic scoring** — severity weights sum to a 0–100 score, capped at 100
-- **Informational, not legal advice** — you still own the publish decision, we just surface what the platforms' own published text says
+<CardGroup cols={2}>
+  <Card title="Import a reference" icon="arrow-down-to-line" href="/api-reference/videos/download/tiktok/create">
+    Turn a TikTok or Instagram post into a stable, tenant-owned VidJutsu asset.
+  </Card>
+  <Card title="Check cloneability" icon="badge-check" href="/api-reference/clones/check/create">
+    Gate the workflow before paid generation. One clear subject and a short, reproducible performance are the best fit.
+  </Card>
+  <Card title="Create the brand character" icon="user-round" href="/api-reference/characters/create">
+    Create a reusable character identity, then generate a clean starting image for the reference.
+  </Card>
+  <Card title="Generate and verify" icon="film" href="/api-reference/clones/video/create">
+    Clone the reference motion, add your overlay, and inspect the final asset through a durable job.
+  </Card>
+</CardGroup>
 
-<Card title="Scan a caption in one line" icon="terminal" href="/cli/compliance">
-```bash
-vidjutsu compliance prompt \
-  --text "Get rich in 30 days guaranteed — insider tip" \
-  --platform instagram
-```
+## Quick start
+
+<Card title="Clone a meme video for your brand" icon="sparkles" href="/guides/clone-meme-videos">
+  Submit one agent task and tail its durable events while VidJutsu composes the workflow.
 </Card>
-
-## Base URL
-
-```
-https://api.vidjutsu.ai
-```
-
-## Intelligence endpoints
-
-Five endpoints that close the loop between generation and publishing:
-
-<CardGroup cols={2}>
-  <Card title="Watch" icon="eye" href="/api-reference/watch/watch">
-    AI watches your video with a freeform prompt. Ask any question about what it sees.
-  </Card>
-  <Card title="Extract" icon="scissors" href="/api-reference/extract/create">
-    Pull frames, audio, and metadata from any video via server-side processing.
-  </Card>
-  <Card title="Transcribe" icon="microphone" href="/api-reference/transcribe/create">
-    Speech-to-text with word-level timing for every spoken word.
-  </Card>
-  <Card title="Check" icon="shield-check" href="/api-reference/check/check">
-    Validate a spec against rules. QA gate before publishing.
-  </Card>
-  <Card title="Compliance" icon="scale-balanced" href="/cli/compliance">
-    Pre-flight any video or caption against platform TOS. Cited policy clauses, deterministic risk score.
-  </Card>
-</CardGroup>
-
-## Storage and CRUD
-
-Organize your content library with accounts, posts, assets, references, and tags — all free.
-
-<CardGroup cols={2}>
-  <Card title="Accounts" icon="user" href="/api-reference/accounts/create">
-    Pure data records for your social accounts. Tag and filter by niche, platform, or any custom key.
-  </Card>
-  <Card title="Posts" icon="file-video" href="/api-reference/posts/create">
-    Track videos, captions, and briefs. Link posts to accounts and filter by tag.
-  </Card>
-  <Card title="Assets" icon="image" href="/api-reference/assets/create">
-    Upload and manage media files — images, videos, and audio clips for your content pipeline.
-  </Card>
-  <Card title="References" icon="bookmark" href="/api-reference/references/create">
-    Save reference URLs and inspiration links. Tag and retrieve by niche, format, or campaign.
-  </Card>
-</CardGroup>
-
-## How it works
-
-1. **Get your API key** — `POST /v1/subscribe` with your email, then pay the $99/mo via Stripe. Poll `GET /v1/credits/status` after payment to retrieve your key.
-2. **Analyze your content** — Call `/v1/watch`, `/v1/extract`, `/v1/transcribe`, `/v1/check`, or `/v1/compliance/*` on any public video URL or text input.
-3. **Store and organize** — Create accounts, posts, assets, and references as data records. Tag them for filtering.
 
 ## Choose your interface
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="REST API" icon="code" href="/api-reference/introduction">
-    Direct HTTP calls to `api.vidjutsu.ai`. Works from any language or agent.
+    Call typed public primitives directly from any runtime.
   </Card>
-  <Card title="CLI" icon="terminal" href="/cli/index">
-    Install the `vidjutsu` CLI and run intelligence calls from your terminal.
+  <Card title="TypeScript SDK" icon="braces" href="/sdk/index">
+    Use the generated SDK for agent tasks, social imports, clone jobs, and polling.
+  </Card>
+  <Card title="CLI and Skills" icon="terminal" href="/cli/index">
+    Install the CLI or public skill package in an agent workspace.
   </Card>
 </CardGroup>
+
+## MCP status
+
+VidJutsu does **not** currently expose a public remote MCP server. Use the SDK, CLI, public skills, or agent authentication manifest today. A future MCP endpoint will be documented here when it is available.
