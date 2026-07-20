@@ -4,31 +4,31 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FAFAF8",
+  themeColor: "#101721",
 };
 
 export const metadata: Metadata = {
   title: {
-    default: "VidJutsu | Ad compliance for Meta and TikTok",
+    default: "VidJutsu | Verified AI video workflows for agents",
     template: "%s | VidJutsu",
   },
   description:
-    "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
+    "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VidJutsu | Ad compliance for Meta and TikTok",
+    title: "VidJutsu | Verified AI video workflows for agents",
     description:
-      "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
+      "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VidJutsu | Ad compliance for Meta and TikTok",
+    title: "VidJutsu | Verified AI video workflows for agents",
     description:
-      "Let your AI agent flag ad policy violations before Meta or TikTok does. VidJutsu is the policy intelligence trained on current Meta Advertising Standards and TikTok Ads Policies, updated weekly, with verbatim citations.",
+      "Give your agent typed primitives to import social video, check cloneability, create a character, generate motion, apply overlays, and verify the final clip.",
   },
   robots: {
     index: true,
