@@ -12,8 +12,9 @@ export function Hero() {
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
-            Point your agent at a video that is already working. It puts your
-            character in it and hands you one back, ready to post.
+            Set up your character once. Then point your agent at any video
+            that is already working, and it clones that character into it,
+            ready to post.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3">

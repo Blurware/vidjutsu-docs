@@ -15,7 +15,7 @@ export function LandingSections() {
           <div className="vj-section-heading"><div><span>02 / THE DIFFERENCE</span><h2>Skip the editing. Keep the views.</h2></div><p>Your agent does the work. You post more of what is already winning.</p></div>
           <div className="vj-comparison-grid">
             <article><span>THE OLD WAY</span><h3>You do it all by hand.</h3><ul><li>Hunt for a video worth copying</li><li>Guess whether it will land</li><li>Reshoot or edit it yourself</li><li>Wait days for one video</li><li>Post one, hope it works</li></ul></article>
-            <article className="with"><span>WITH VIDJUTSU</span><h3>Your agent ships the clone.</h3><ul><li>Score a video before you spend</li><li>Put your own character in it</li><li>Get a finished clone in minutes</li><li>Post at the pace an agent works</li></ul><footer>ONE KEY · YOUR AGENT DOES IT</footer></article>
+            <article className="with"><span>WITH VIDJUTSU</span><h3>Your agent ships the clone.</h3><ul><li>Score a video before you spend</li><li>Put your own character in it</li><li>Get a finished clone back, ready to post</li><li>Post at the pace an agent works</li></ul><footer>ONE KEY · YOUR AGENT DOES IT</footer></article>
           </div>
         </div>
       </section>

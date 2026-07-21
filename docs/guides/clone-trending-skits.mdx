@@ -5,7 +5,7 @@ description: "Take a TikTok skit, check it's cloneable, and generate your own ve
 
 # Your agent can Clone Viral Trending Skits Now
 
-Cloning takes a public TikTok or Instagram skit, evaluates whether its motion and framing will transfer cleanly, and generates a new video with a character of your choosing performing the same motion. Six typed calls, about 5 minutes end to end on the default Kling model.
+Cloning takes a public TikTok or Instagram skit, evaluates whether its motion and framing will transfer cleanly, and generates a new video with your character performing the same motion. Create your character once, then reuse its id on every clone.
 
 <Info>
 Need an API key? Follow [Get your API key](/get-api-key) first.
@@ -19,8 +19,48 @@ Need an API key? Follow [Get your API key](/get-api-key) first.
 - `POST /v1/clones/check` accepts source videos up to about 2 minutes for the cloneability read, but the actual clone call is still capped at 15 seconds, so trim or pick a short segment before generating.
 - Starting images returned by `POST /v1/clones/starting-image` are guaranteed clean: no captions, watermarks, or platform UI, regardless of what the source frame or your prompt asked for.
 - `model` defaults to `"kling"` (Kling motion control, keeps the original sound). Pass `model: "seedance"` for the alternate model, which renders 9:16 at 480p through video-edit.
+- Characters are a persisted, reusable resource. Create one once, keep its `id`, and pass that `id` into every clone from then on instead of regenerating a character each time.
 
-## The six calls
+## Create your character first
+
+Before you clone anything, create the character you want to appear in your clones. This only needs to happen once.
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/characters \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A friendly host in their late 20s, casual streetwear, warm studio lighting"
+  }'
+```
+
+```json
+{
+  "id": "char_2a91b7f4",
+  "imageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
+  "model": "nano-banana-2"
+}
+```
+
+`referenceImageUrl` is optional if you already have a face or identity image to guide the generation; without it, the character comes purely from `prompt`. The call is synchronous and shares the daily clone admission limit. Save `id`: it is what you pass to every clone that should use this character, so you only create it once.
+
+To see the characters you've already created, list them:
+
+```bash
+curl https://api.vidjutsu.ai/v1/characters \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY"
+```
+
+Or fetch one directly by id:
+
+```bash
+curl https://api.vidjutsu.ai/v1/characters/char_2a91b7f4 \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY"
+```
+
+**Errors**: `403 subscription_required`, `429` on the shared clone admission limit. `404` if the character id doesn't exist or belongs to another tenant.
+
+## The clone calls
 
 ### 1. Stage the source video
 
@@ -80,36 +120,16 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
 
 **Errors**: `403 subscription_required`, `429` with `Retry-After` on the shared clone admission limit.
 
-### 3. Generate the character
+### 3. Compose the starting frame
 
-```bash
-curl -X POST https://api.vidjutsu.ai/v1/characters \
-  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "A friendly host in their late 20s, casual streetwear, warm studio lighting"
-  }'
-```
-
-```json
-{
-  "imageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
-  "model": "nano-banana-2"
-}
-```
-
-`referenceImageUrl` is optional if you already have a face or identity image to guide the generation; without it, the character comes purely from `prompt`. This is synchronous, typically under a minute, and shares the daily clone admission limit.
-
-**Errors**: `403 subscription_required`, `429` on the shared clone admission limit.
-
-### 4. Compose the starting frame
+Pass the `id` from [Create your character first](#create-your-character-first) as `characterId`. `POST /v1/clones/starting-image` accepts either `characterId` (reuse the character you already created) or `characterImageUrl` (a one-off image), but exactly one of the two.
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
   -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "characterImageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
+    "characterId": "char_2a91b7f4",
     "prompt": "Standing at a kitchen counter, mid-gesture, facing camera",
     "sourceVideoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
   }'
@@ -122,11 +142,11 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
 }
 ```
 
-`sourceVideoUrl` is optional; passing it grounds the composition in the source clip's opening frame so the pose and framing line up with the motion you're about to clone. The returned frame is always clean, no overlays or platform UI, no matter what the source or prompt included. Synchronous, typically under a minute, shares the clone admission limit.
+`sourceVideoUrl` is optional; passing it grounds the composition in the source clip's opening frame so the pose and framing line up with the motion you're about to clone. The returned frame is always clean, no overlays or platform UI, no matter what the source or prompt included. Synchronous and shares the clone admission limit.
 
-**Errors**: `403 subscription_required`, `429` on the shared clone admission limit.
+**Errors**: `403 subscription_required`, `429` on the shared clone admission limit. `422` if both or neither of `characterId` / `characterImageUrl` are provided, or if `characterId` doesn't resolve to a character you own.
 
-### 5. Submit the clone
+### 4. Submit the clone
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/clones/video \
@@ -150,7 +170,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/video \
 
 **Errors**: `403 subscription_required`. `422 video_too_long` if `sourceVideoUrl` runs past 15 seconds. `429` with `Retry-After` on the shared clone admission limit.
 
-### 6. Poll for the result
+### 5. Poll for the result
 
 ```bash
 curl https://api.vidjutsu.ai/v1/clones/video/clone_9c7a1e \
@@ -167,19 +187,25 @@ curl https://api.vidjutsu.ai/v1/clones/video/clone_9c7a1e \
 
 Poll while `status` is `"processing"`. On `"completed"`, `videoUrl` carries the finished clip. On `"failed"`, `error` explains why. Status reads are not billed and not rate-limited. Unknown ids, or ids owned by another tenant, return `404`.
 
-For the strong/95 canary above, the whole run from the first `download/tiktok` call to a `completed` status was about 5 minutes on the default Kling model.
-
 ## SDK and CLI
 
 <Info>
-The `vidjutsu clone run` CLI command requires the CLI's clone release. If you're on an older CLI version, run the six calls directly against the API or the TypeScript SDK below until you upgrade.
+The `vidjutsu clone run` CLI command requires the CLI's clone release. If you're on an older CLI version, run the calls directly against the API or the TypeScript SDK below until you upgrade.
 </Info>
 
+Create your character once:
+
 ```bash
-vidjutsu clone run https://www.tiktok.com/@creator/video/123456789
+vidjutsu clone character --prompt "A friendly host in their late 20s, casual streetwear"
 ```
 
-The CLI command wraps the same six calls: stage, check, character, starting image, submit, poll, printing the verdict and score before it commits to generation.
+This prints the character's `id`. Reuse that id on every clone:
+
+```bash
+vidjutsu clone run https://www.tiktok.com/@creator/video/123456789 --character char_2a91b7f4
+```
+
+The CLI command wraps the remaining calls: stage, check, starting image (using the character id you passed), submit, poll, printing the verdict and score before it commits to generation.
 
 ## Continue the workflow
 

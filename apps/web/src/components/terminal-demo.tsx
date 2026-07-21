@@ -1,13 +1,17 @@
 "use client";
 
 const LINES = [
-  "$ vidjutsu clone run https://tiktok.com/@creator/video/7534210998821",
+  '$ vidjutsu clone character --prompt "friendly host, casual streetwear"',
+  "",
+  "character created: char_9f1a3e7c",
+  "",
+  "$ vidjutsu clone run https://tiktok.com/@creator/video/7534210998821 \\",
+  "    --character char_9f1a3e7c",
   "",
   "clone score: 95 / 100  (strong)",
-  "swapping in your character...",
+  "putting your character in the scene...",
   "rendering...",
   "",
-  "done in about 5 minutes:",
   "https://cdn.vidjutsu.ai/clones/clone_9f1a3e7c.mp4",
 ];
 
@@ -17,10 +21,11 @@ export function TerminalDemo() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            One command, a finished clone
+            Set up your character once, then clone any video
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Your agent runs it. You get a video you can post.
+            Create your character, keep its id, and reuse it on every clone
+            your agent runs.
           </p>
         </div>
 
