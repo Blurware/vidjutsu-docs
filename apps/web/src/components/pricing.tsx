@@ -5,7 +5,7 @@ const plan = {
   price: "$99",
   billedLine: "Billed monthly · cancel anytime",
   description:
-    "Full API access for scraping and downloading TikTok and Instagram references, watch, transcribe, compliance checks, overlays, disclaimers, and durable jobs.",
+    "Full API access for the clone pipeline: download the source clip, check cloneability, build a character, generate a clean starting frame, render the clone with Kling motion-control or Seedance, and poll the job.",
   rateLimit: "Per-endpoint daily rate limits · 50 video analyses / day · reset midnight UTC",
 };
 

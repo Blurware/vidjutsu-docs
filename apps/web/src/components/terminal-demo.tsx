@@ -1,21 +1,30 @@
 "use client";
 
 const LINES = [
-  "$ vidjutsu transcribe \\",
-  "    --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4",
+  "$ vidjutsu clone run \\",
+  "    https://www.tiktok.com/@creator/video/7534210998821",
   "",
-  "Transcribing...",
+  "Checking cloneability...",
+  "  verdict: strong",
+  "  score: 95 / 100",
+  "  evidence: clear single-subject skit, stable framing, no overlay text",
   "",
-  "Words: 47",
-  "Duration: 14.2s",
+  "Building character...  done",
+  "Generating starting frame...  done (clean, no overlays)",
   "",
-  '[0.00 - 0.82]  "The"',
-  '[0.82 - 1.10]  "one"',
-  '[1.10 - 1.40]  "thing"',
-  '[1.40 - 1.92]  "nobody"',
-  '[1.92 - 2.30]  "tells"',
-  '[2.30 - 2.60]  "you"',
-  "...",
+  "Rendering clone (kling motion-control)...",
+  "  202 Accepted",
+  "  task_id: clone_9f1a3e7c",
+  "",
+  "Polling GET /v1/clones/video/clone_9f1a3e7c",
+  "  status: processing",
+  "  status: processing",
+  "  status: complete",
+  "",
+  "videoUrl:",
+  "  https://d2h7xmz5gqybh9.cloudfront.net/clones/clone_9f1a3e7c.mp4",
+  "",
+  "Done in about 5 minutes.",
 ];
 
 export function TerminalDemo() {
@@ -27,11 +36,11 @@ export function TerminalDemo() {
             Example
           </p>
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            One typed call, a clear result
+            One command, a finished clone
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            Every primitive returns a plain result you can read or hand to
-            the next step, no orchestration required.
+            Under the hood it is five typed calls and a poll. From the
+            terminal, it is one command.
           </p>
         </div>
 
@@ -45,7 +54,7 @@ export function TerminalDemo() {
                 key={i}
                 className={`whitespace-pre-wrap break-words ${line.startsWith("$") ? "text-ink-muted" : "text-ink-light"}`}
               >
-                {line || "\u00A0"}
+                {line || " "}
               </div>
             ))}
           </div>
