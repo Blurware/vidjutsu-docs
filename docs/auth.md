@@ -2,7 +2,7 @@
 
 This document is the canonical, agent-readable manifest for registering with the VidJutsu API. It follows the [auth.md protocol](https://github.com/workos/auth.md) so any agent that speaks auth.md can self-onboard without a human in the loop.
 
-> VidJutsu does not currently expose a public remote MCP server. This manifest configures API authentication; it is not an MCP endpoint.
+> This manifest configures API authentication for the REST API and the SDK/CLI. It is not itself an MCP endpoint. VidJutsu also runs an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp` (OAuth 2.1 + bearer); see the [MCP section of the docs home](/index#mcp) for how to connect it.
 
 VidJutsu implements the **User-Claimed** flow from auth.md ([flow reference](https://workos.com/auth-md/docs/flows/claimed)): the agent and the user run the entire OTP ceremony directly with VidJutsu — no agent provider participates in the handshake. This is the simplest, lowest-friction path and works for any agent regardless of which model or runtime is hosting it.
 

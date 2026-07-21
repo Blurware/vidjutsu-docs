@@ -49,6 +49,18 @@ Each primitive is a single typed call with a durable job you can poll. No orches
   </Card>
 </CardGroup>
 
-## MCP status
+## MCP
 
-VidJutsu does **not** currently expose a public remote MCP server. Use the SDK, CLI, public skills, or agent authentication manifest today. A future MCP endpoint will be documented here when it is available.
+VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes the clone pipeline as typed tools: `download_tiktok_video`, `clone_check`, `create_character`, `clone_starting_image`, `clone_video`, and `get_clone_video`.
+
+**Claude Code (CLI):**
+
+```bash
+claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp
+```
+
+The `--transport http` flag is required for a remote server. After adding, run `/mcp` in a session, select `vidjutsu`, and choose Authenticate. A browser opens for the OAuth 2.1 flow.
+
+**Claude (desktop app and claude.ai):** add a custom connector. In the desktop app: Settings, Connectors, Add custom connector. On the web: [claude.ai/customize/connectors](https://claude.ai/customize/connectors). Enter `https://api.vidjutsu.ai/mcp` and authorize in the browser. There is no command to run.
+
+The SDK, CLI, public skills, and the agent authentication manifest remain available as alternatives.
