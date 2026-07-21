@@ -1,35 +1,35 @@
 ---
 title: Features
-description: The primitives behind brand-ready meme video workflows.
+description: The deterministic video primitives behind VidJutsu.
 ---
 
 ## Social video import
 
 Import TikTok and Instagram video posts into stable, tenant-owned VidJutsu assets. Repeated imports reuse the same asset so retries and downstream jobs do not download the reference again.
 
-## Clone check
+## Scrape
 
-Clone check watches the whole reference and produces evidence for a deterministic score. It is a hard gate: references that are too long, have more than one primary subject, or are otherwise unsuitable stop before paid generation begins.
-
-## Characters and clean starting images
-
-Create a reusable character identity for your brand. VidJutsu can then produce a clean starting image that replaces the source performer and removes the original wall text before motion generation.
-
-## Motion clone
-
-Clone source timing and movement with an explicit model selection: `seedance` or `kling-motion-control`. VidJutsu never silently changes model families.
-
-## Overlay and final QA
-
-Apply the final brand wall text after motion generation. A final prompted QA pass checks subject count, identity continuity, framing, duration, and the finished overlay before the workflow completes.
-
-## Durable agent tasks and jobs
-
-Submit an agent task for goal-oriented work, or compose atomic public primitives yourself. Jobs retain ordered checkpoints, provider attempts, retries, final artifacts, and lineage so an agent can resume without repeating finished work.
+Pull structured profile, post, comment, and search data from TikTok and Instagram without downloading media. Useful for research before you decide what to download.
 
 ## Watch
 
 Use `POST /v1/watch` for prompted video or image understanding. Every watch request requires a prompt describing the evidence you need back from the model.
+
+## Transcribe
+
+Get a speech-to-text transcript with word-level timing for any video or audio URL.
+
+## Compliance check
+
+Run a TOS/compliance check against configurable rules before you publish. Rules are tenant-owned and can be read and updated through `GET/PUT /v1/check/rules`.
+
+## Overlay and disclaimer
+
+Burn a text overlay onto a video in TikTok-safe zones, or add a disclaimer card. Both return a durable output URL.
+
+## Jobs and distribution
+
+Media operations return a durable job you can poll for status, retries, and final artifacts. Distribution primitives (`/v1/distribution/clips`, `/v1/distribution/jobs`) hand finished assets off downstream.
 
 ## Interfaces
 

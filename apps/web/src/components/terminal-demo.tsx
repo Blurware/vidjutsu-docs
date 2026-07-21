@@ -1,23 +1,21 @@
 "use client";
 
 const LINES = [
-  "$ vidjutsu clone check \\",
-  "    --url https://cdn.vidjutsu.ai/reference.mp4 \\",
-  "    --idempotency-key brand-meme-001",
+  "$ vidjutsu transcribe \\",
+  "    --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4",
   "",
-  "cloneability_score: 92/100",
-  "decision: pass",
+  "Transcribing...",
   "",
-  "next_stage:",
-  "  create_character",
+  "Words: 47",
+  "Duration: 14.2s",
   "",
-  "job:",
-  "  job_brand_meme_001",
-  "",
-  "poll:",
-  "  vidjutsu jobs get --id job_brand_meme_001",
-  "",
-  "status: ready_for_character",
+  '[0.00 - 0.82]  "The"',
+  '[0.82 - 1.10]  "one"',
+  '[1.10 - 1.40]  "thing"',
+  '[1.40 - 1.92]  "nobody"',
+  '[1.92 - 2.30]  "tells"',
+  '[2.30 - 2.60]  "you"',
+  "...",
 ];
 
 export function TerminalDemo() {
@@ -29,11 +27,11 @@ export function TerminalDemo() {
             Example
           </p>
           <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-3">
-            See the workflow before you generate
+            One typed call, a clear result
           </h2>
           <p className="text-ink-muted text-sm leading-relaxed max-w-md mx-auto">
-            A clone check returns a clear decision and a durable job context
-            before you pay for the next generation stage.
+            Every primitive returns a plain result you can read or hand to
+            the next step, no orchestration required.
           </p>
         </div>
 

@@ -1,13 +1,13 @@
 ---
 title: "vidjutsu scrape"
-description: "Import TikTok and Instagram reference videos for cloning."
+description: "Import TikTok and Instagram data and reference videos."
 ---
 
 ```bash
 vidjutsu scrape <subcommand> [flags]
 ```
 
-Use the `scrape` commands to import public TikTok or Instagram references. Add `--download-media` where supported to stage media for the clone workflow.
+Use the `scrape` commands to import public TikTok or Instagram references. Add `--download-media` where supported to stage a durable VidJutsu-hosted file for a downstream command such as `watch`, `transcribe`, or `overlay`.
 
 ```bash
 vidjutsu scrape tiktok-video \
@@ -20,4 +20,4 @@ Supported subcommands:
 - TikTok: `tiktok-profile`, `tiktok-profile-videos`, `tiktok-video`, `tiktok-video-transcript`, `tiktok-video-comments`, `tiktok-search-users`, `tiktok-trending`
 - Instagram: `instagram-profile`, `instagram-user-posts`, `instagram-post`, `instagram-post-comments`, `instagram-user-reels`
 
-Continue with `vidjutsu clone check`, create a character and starting image, submit `vidjutsu clone video`, then poll the job and apply the final overlay. X, YouTube, and ad-library commands are not supported.
+X, YouTube, and ad-library commands are not supported.

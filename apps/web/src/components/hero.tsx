@@ -18,16 +18,17 @@ export function Hero() {
       <div className="max-w-6xl mx-auto">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
-            Brand meme cloning for agents
+            Video primitives for agents
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Clone meme videos for your brand.
+            Deterministic video primitives, one typed call at a time.
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto">
-            Import a TikTok or Instagram reference, recreate it with your
-            character, add your copy, and keep every stage durable.
+            Pull a TikTok or Instagram post, watch or transcribe it, check
+            compliance, burn an overlay, and poll a durable job for each
+            step.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">

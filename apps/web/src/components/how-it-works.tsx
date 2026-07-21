@@ -1,18 +1,18 @@
 const STEPS = [
   {
     num: "01",
-    title: "Import the reference",
-    desc: "Give your agent a public TikTok or Instagram meme reference.",
+    title: "Pull the source",
+    desc: "Scrape or download a public TikTok or Instagram post into a stable asset.",
   },
   {
     num: "02",
-    title: "Build the brand version",
-    desc: "Run clone check, create your character and starting image, then submit the video clone.",
+    title: "Watch, transcribe, or check",
+    desc: "Ask what's in the video, get a word-level transcript, or run a compliance check.",
   },
   {
     num: "03",
     title: "Overlay and verify",
-    desc: "Apply the final text, poll the durable job, and review the completed output.",
+    desc: "Burn the final overlay or disclaimer, poll the durable job, and review the output.",
   },
 ];
 
@@ -24,7 +24,7 @@ export function HowItWorks() {
           How it works
         </p>
         <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
-          Reference in. Brand-ready meme out.
+          Source in. Verified output out.
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">

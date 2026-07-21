@@ -1,9 +1,9 @@
 ---
 title: "SDK Overview"
-description: "TypeScript SDK for brand meme video workflows."
+description: "TypeScript SDK for VidJutsu's video primitives."
 ---
 
-The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It supports durable agent tasks as well as each atomic import, clone, overlay, watch, and job operation.
+The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It covers social import, scrape, watch, transcribe, overlay, disclaimer, compliance, and job polling.
 
 ## Install
 
@@ -16,34 +16,31 @@ npm install vidjutsu
 ```typescript
 import { createClient } from "vidjutsu";
 
-const client = createClient();
+const vj = createClient();
 
-const task = await client.agentTasks.create(
-  {
-    prompt: "Clone this meme video for our brand with our character and wall text.",
-    inputs: [{ name: "source_video", url: sourceVideoUrl }],
-  },
-  { idempotencyKey: "brand-meme-001" },
-);
+const { data: download } = await vj.downloadTikTokVideo({
+  url: sourceVideoUrl,
+});
 
-for await (const event of client.agentTasks.tail(task.id)) {
-  console.log(event.type, event.data);
-}
+const { data: transcript } = await vj.transcribeMedia({
+  mediaUrl: download.videoUrl,
+});
+
+console.log(transcript.transcript);
 ```
 
 ## Core methods
 
 | Method | Description |
 | --- | --- |
-| `agentTasks.create` / `agentTasks.tail` | Submit a goal-oriented workflow and tail durable events. |
 | `downloadTikTokVideo` / `downloadInstagramVideo` | Import a social reference into a stable asset. |
-| `clones.check` | Evaluate reference cloneability before generation. |
-| `characters.create` | Create a reusable brand character. |
-| `clones.createStartingImage` | Create a clean character-swapped starting frame. |
-| `clones.createVideo` | Clone motion with Seedance or Kling motion control. |
-| `createOverlay` | Apply final brand wall text. |
+| `scrapeTikTokProfile` / `scrapeInstagramProfile` and related `scrape*` methods | Pull structured profile, post, comment, and search data. |
 | `watchMedia` | Run prompted video or image understanding. |
-| `awaitJob` / `mediaJobs.get` | Poll a durable media job. |
+| `transcribeMedia` | Speech-to-text with word-level timing. |
+| `checkSpec` | Run a TOS/compliance check against configured rules. |
+| `createOverlay` | Burn a text overlay onto a video. |
+| `createDisclaimer` | Add a disclaimer card to a video. |
+| `mediaJobs.get` / `awaitJob` | Poll a durable media job to completion. |
 
 ## Authentication
 
@@ -54,7 +51,7 @@ The client resolves your API key in order:
 3. **Config file** — `~/.vidjutsu/config.json` (shared with the [CLI](/cli/auth))
 
 ```typescript
-const client = createClient();
+const vj = createClient();
 ```
 
 Use a tenant-scoped key in a trusted environment. Do not place a key in a prompt, skill file, or public client bundle.
