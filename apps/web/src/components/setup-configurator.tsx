@@ -27,16 +27,16 @@ function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
     return {
-      title: `VidJutsu MCP is coming soon`,
-      description: "A public remote MCP server is not configured yet. Use the Skill or CLI today to give your agent the same typed video workflow.",
+      title: `Connect ${agentLabel} over MCP`,
+      description: "The VidJutsu MCP server is live at api.vidjutsu.ai/mcp. It authenticates with OAuth 2.1 and a bearer token, and exposes the clone pipeline as typed tools: download_tiktok_video, clone_check, create_character, clone_starting_image, clone_video, get_clone_video.",
       steps: [
-        "Install the VidJutsu Skill in your agent workspace.",
-        "Keep VIDJUTSU_API_KEY in the workspace secret store.",
-        "Ask your agent to download, transcribe, or overlay a video.",
+        "Run the connect command below to register the server.",
+        "Complete the OAuth 2.1 flow when your agent prompts for it.",
+        "Ask your agent to check, character, starting image, render, or poll a clone.",
       ],
-      command: "npx skills add tfcbot/vidjutsu-skills",
-      copy: "COPY SKILL",
-      note: "This tab is a roadmap preview, not a live MCP endpoint.",
+      command: "claude mcp add vidjutsu https://api.vidjutsu.ai/mcp",
+      copy: "COPY COMMAND",
+      note: "Bearer tokens are scoped per agent and can be revoked at any time.",
       guide: "Agent auth guide ↗",
       href: "https://docs.vidjutsu.ai/auth.md",
     };
@@ -127,7 +127,7 @@ export function SetupConfigurator() {
             <footer><span>{current.note}</span><a href={current.href}>{current.guide}</a></footer>
           </div>
         </div>
-        <p className="vj-setup-note">Start with the <strong>Skill</strong>. Use the <strong>CLI</strong> for a terminal workspace. <strong>MCP</strong> is not public yet.</p>
+        <p className="vj-setup-note">Start with the <strong>Skill</strong>. Use the <strong>CLI</strong> for a terminal workspace. Use <strong>MCP</strong> to connect an agent runtime directly.</p>
       </div>
     </section>
   );
