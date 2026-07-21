@@ -26,17 +26,34 @@ function label(agent: Agent) {
 function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
+    const mcpDescription = "The VidJutsu MCP server is live at api.vidjutsu.ai/mcp. It authenticates with OAuth 2.1 and a bearer token, and exposes the clone pipeline as typed tools: download_tiktok_video, clone_check, create_character, clone_starting_image, clone_video, get_clone_video.";
+    if (agent === "claude-code") {
+      return {
+        title: `Connect ${agentLabel} over MCP`,
+        description: mcpDescription,
+        steps: [
+          "Run the command below. The http transport is required for a remote server.",
+          "Run /mcp in a session, select vidjutsu, and choose Authenticate. A browser opens for the OAuth 2.1 flow.",
+          "Ask your agent to check, character, starting image, render, or poll a clone.",
+        ],
+        command: "claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp",
+        copy: "COPY COMMAND",
+        note: "Bearer tokens are scoped per agent and can be revoked at any time.",
+        guide: "Agent auth guide ↗",
+        href: "https://docs.vidjutsu.ai/auth.md",
+      };
+    }
     return {
       title: `Connect ${agentLabel} over MCP`,
-      description: "The VidJutsu MCP server is live at api.vidjutsu.ai/mcp. It authenticates with OAuth 2.1 and a bearer token, and exposes the clone pipeline as typed tools: download_tiktok_video, clone_check, create_character, clone_starting_image, clone_video, get_clone_video.",
+      description: mcpDescription,
       steps: [
-        "Run the connect command below to register the server.",
-        "Complete the OAuth 2.1 flow when your agent prompts for it.",
+        "Add a custom connector in your agent settings. In the Claude desktop app: Settings, Connectors, Add custom connector. On claude.ai: claude.ai/customize/connectors.",
+        "Paste the server URL below and authorize the OAuth 2.1 flow in the browser. There is no command to run.",
         "Ask your agent to check, character, starting image, render, or poll a clone.",
       ],
-      command: "claude mcp add vidjutsu https://api.vidjutsu.ai/mcp",
-      copy: "COPY COMMAND",
-      note: "Bearer tokens are scoped per agent and can be revoked at any time.",
+      command: "https://api.vidjutsu.ai/mcp",
+      copy: "COPY URL",
+      note: "The connector authorizes over OAuth 2.1. Bearer tokens are scoped per agent and can be revoked at any time.",
       guide: "Agent auth guide ↗",
       href: "https://docs.vidjutsu.ai/auth.md",
     };
