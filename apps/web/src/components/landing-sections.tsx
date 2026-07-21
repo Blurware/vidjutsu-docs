@@ -20,7 +20,7 @@ export function LandingSections() {
         </div>
       </section>
       <section className="vj-workflow" id="workflow">
-        <div className="vj-frame"><div className="vj-section-heading"><div><span>03 / HOW IT WORKS</span><h2>One call in. A durable job out.</h2></div><p>Each primitive is a single typed call. Your agent handles the sequencing.</p></div><WorkflowChat /></div>
+        <div className="vj-frame"><div className="vj-section-heading"><div><span>03 / IN ACTION</span><h2>What a session looks like.</h2></div><p>The same six calls from the previous section, run end to end by an agent.</p></div><WorkflowChat /></div>
       </section>
       <section className="vj-pricing" id="pricing"><div className="vj-frame"><div className="vj-pricing-heading"><h2>Simple access.</h2><p>One API key for every video primitive.</p></div><article className="vj-price-card"><div><span>VIDJUTSU API</span><h3>$99 <small>/ month</small></h3><p>API access for scrape, download, watch, transcribe, compliance checks, overlays, and jobs.</p></div><a href="https://docs.vidjutsu.ai/get-api-key">Get API key</a></article></div></section>
       <section className="vj-faq vj-frame" id="faq"><div><span>05 / FAQ</span><h2>The short version.</h2></div><div>{faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></section>
