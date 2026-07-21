@@ -1,13 +1,13 @@
 const finishedStages = [
-  "Downloading the source into a stable VidJutsu asset",
-  "Transcribing the video with word-level timing",
-  "Running a compliance check against your rules",
+  "Checking cloneability against the source clip",
+  "Building the character",
+  "Generating a clean starting frame",
 ] as const;
 
 const resultRows = [
-  "download complete · asset stored",
-  "transcript returned · 12.4s duration",
-  "overlay applied · job completed",
+  "verdict strong · score 95",
+  "starting frame ready · no overlays",
+  "clone rendered · videoUrl ready",
 ] as const;
 
 export function WorkflowChat() {
@@ -20,7 +20,7 @@ export function WorkflowChat() {
       <div className="vj-chat-body">
         <article className="vj-message vj-message-user">
           <span>01 · YOU</span>
-          <p>Download this TikTok post, transcribe it, then burn the first line as an overlay: <strong>“When our product finally clicks.”</strong></p>
+          <p>Clone this trending skit: <strong>https://www.tiktok.com/@creator/video/7534210998821</strong></p>
         </article>
         <article className="vj-message vj-message-agent">
           <span>02 · AGENT</span>
@@ -31,7 +31,7 @@ export function WorkflowChat() {
         </article>
         <article className="vj-message vj-message-result">
           <span>03 · AGENT</span>
-          <p>The finished video is ready with the requested overlay:</p>
+          <p>The clone is rendered and ready:</p>
           <div className="vj-result-list">
             {resultRows.map((row, index) => <div key={row}><span>{String(index + 1).padStart(2, "0")}</span><code>{row}</code><i>↗</i></div>)}
           </div>

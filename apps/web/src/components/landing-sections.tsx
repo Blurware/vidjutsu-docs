@@ -1,10 +1,10 @@
 import { WorkflowChat } from "@/components/workflow-chat";
 
 const faqs = [
-  ["What does VidJutsu do?", "VidJutsu gives agents typed video primitives: scrape and download TikTok or Instagram posts, watch or transcribe a video, run a compliance check, and burn an overlay or disclaimer."],
-  ["Do I need to chain the calls myself?", "You call each primitive directly, in whatever order your workflow needs. Every media operation returns a durable job you can poll for status and final output."],
-  ["What social sources are supported?", "Public TikTok and Instagram posts. X, YouTube, Reddit, and ad-library sources are not supported."],
-  ["What happens while a job is running?", "The job tracks status and retries. Your agent polls it and gets the final artifact back once it completes."],
+  ["What does VidJutsu do?", "VidJutsu lets your agent clone a trending TikTok skit. It pulls the source clip, checks whether it can be cloned, builds a character, generates a clean starting frame, and renders the clone."],
+  ["How much does it cost?", "API calls are metered per call. Access is billed on a flat monthly plan, no separate credit purchases."],
+  ["What resolution and model do I get by default?", "Clones render at 480p in 9:16 by default. Kling motion-control is the default model, with Seedance available as an option."],
+  ["Do I need to host anything?", "No. VidJutsu runs the pipeline and returns a hosted video URL. There is nothing to deploy or host on your side."],
 ] as const;
 
 export function LandingSections() {

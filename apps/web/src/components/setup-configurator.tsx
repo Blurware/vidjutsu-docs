@@ -89,10 +89,10 @@ export function SetupConfigurator() {
     <section className="vj-setup" id="start" aria-labelledby="setup-heading">
       <div className="vj-frame">
         <div className="vj-setup-heading">
-          <h1 id="setup-heading">Video primitives for your agent.</h1>
+          <h2 id="setup-heading">Connect your agent.</h2>
           <p>
-            Start with a source video. VidJutsu gives your agent the primitives to pull it,
-            watch or transcribe it, check compliance, and burn the overlay you need.
+            Give your agent the VidJutsu CLI, MCP, or Skill, and it can call the
+            clone pipeline directly: check, character, starting image, render, poll.
           </p>
         </div>
 

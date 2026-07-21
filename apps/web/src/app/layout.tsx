@@ -7,28 +7,29 @@ export const viewport: Viewport = {
   themeColor: "#101721",
 };
 
+const HEADLINE = "Your agent can Clone Viral Trending Skits Now";
+const DESCRIPTION =
+  "Paste a link to a trending skit. VidJutsu checks whether it can be cloned, builds a character and a clean starting frame, then renders the clone. About 5 minutes end to end.";
+
 export const metadata: Metadata = {
   title: {
-    default: "VidJutsu | Video primitives for agents",
+    default: `${HEADLINE} | VidJutsu`,
     template: "%s | VidJutsu",
   },
-  description:
-    "Give your agent typed video primitives: scrape and download social posts, watch and transcribe video, check compliance, burn overlays and disclaimers, then distribute.",
+  description: DESCRIPTION,
   metadataBase: new URL("https://vidjutsu.ai"),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VidJutsu | Video primitives for agents",
-    description:
-      "Give your agent typed video primitives: scrape and download social posts, watch and transcribe video, check compliance, burn overlays and disclaimers, then distribute.",
+    title: HEADLINE,
+    description: DESCRIPTION,
     url: "https://vidjutsu.ai",
     siteName: "VidJutsu",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "VidJutsu | Video primitives for agents",
-    description:
-      "Give your agent typed video primitives: scrape and download social posts, watch and transcribe video, check compliance, burn overlays and disclaimers, then distribute.",
+    title: HEADLINE,
+    description: DESCRIPTION,
   },
   robots: {
     index: true,

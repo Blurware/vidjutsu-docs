@@ -22,13 +22,13 @@ export function Hero() {
           </p>
 
           <h1 className="text-[clamp(1.75rem,4.5vw,2.75rem)] font-bold leading-[1.15] tracking-[-0.02em] mb-4 max-w-2xl mx-auto">
-            Deterministic video primitives, one typed call at a time.
+            Your agent can Clone Viral Trending Skits Now
           </h1>
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-8 max-w-lg mx-auto">
-            Pull a TikTok or Instagram post, watch or transcribe it, check
-            compliance, burn an overlay, and poll a durable job for each
-            step.
+            Paste a link to a trending skit. VidJutsu checks whether it can be
+            cloned, builds a character and a clean starting frame, then
+            renders the clone. About 5 minutes end to end.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
