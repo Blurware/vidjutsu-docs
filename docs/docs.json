@@ -75,8 +75,7 @@
             "group": "Download",
             "pages": [
               "POST /v1/videos/download/tiktok",
-              "POST /v1/videos/download/instagram",
-              "POST /v1/videos/add"
+              "POST /v1/videos/download/instagram"
             ]
           },
           {
