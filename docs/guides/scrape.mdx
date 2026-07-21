@@ -1,16 +1,15 @@
 ---
 title: "Import TikTok and Instagram references"
-description: "Bring a public TikTok or Instagram post into a durable VidJutsu asset."
+description: "Discover public TikTok or Instagram references and their metadata."
 ---
 
 VidJutsu imports public TikTok and Instagram references. It does not provide ad-library, X, YouTube, Reddit, Google, or LinkedIn scraping.
 
-Use `download_media: true` when a downstream call needs a durable VidJutsu-hosted file, such as `watch`, `transcribe`, or `overlay`.
+Scrape returns discovery data and the provider's raw source media URLs. It does not stage media. When a downstream call needs a durable VidJutsu-hosted file, call the single-video download endpoint on one video at a time.
 
 ```bash
 vidjutsu scrape instagram-post \
-  --url "https://www.instagram.com/reel/example/" \
-  --download-media
+  --url "https://www.instagram.com/reel/example/"
 ```
 
 The supported operations are TikTok profile, profile videos, video, transcript, comments, user search, and trending; and Instagram profile, posts, reels, post, and comments. All share the `scrape` rate group.

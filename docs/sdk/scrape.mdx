@@ -11,11 +11,12 @@ import { createClient } from "vidjutsu";
 const client = createClient();
 const { data, error } = await client.scrapeInstagramPost({
   url: "https://www.instagram.com/reel/example/",
-  download_media: true,
 });
 
 if (error) throw error;
 ```
+
+Scrape methods return the provider's raw source media URLs and never stage media. To turn one video into a durable VidJutsu-hosted file, use the single-video download method, one video per call.
 
 Available methods cover TikTok profiles, videos, transcripts, comments, user search, and trending; plus Instagram profiles, posts, reels, and comments. Every method uses the shared `scrape` rate group.
 
