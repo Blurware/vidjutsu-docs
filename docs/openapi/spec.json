@@ -76,9 +76,6 @@
       "name": "Agent"
     },
     {
-      "name": "Jobs"
-    },
-    {
       "name": "Characters"
     },
     {
@@ -1338,48 +1335,6 @@
         }
       }
     },
-    "/v1/distribution/jobs": {
-      "get": {
-        "operationId": "getDistributionJob",
-        "summary": "Inspect a distribution job",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DistributionJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Jobs"
-        ]
-      }
-    },
     "/v1/extract": {
       "post": {
         "operationId": "extractMedia",
@@ -1461,48 +1416,6 @@
         },
         "tags": [
           "Info"
-        ]
-      }
-    },
-    "/v1/jobs": {
-      "get": {
-        "operationId": "getJob",
-        "summary": "Inspect a durable VidJutsu media job",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MediaJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Jobs"
         ]
       }
     },
@@ -3022,58 +2935,6 @@
         ]
       }
     },
-    "/v1/videos/add": {
-      "post": {
-        "operationId": "addVideo",
-        "summary": "Add a video from an uploaded asset or direct MP4 URL",
-        "description": "Creates or reuses a normalized Vidjutsu video. Provider ingest, downloading, indexing, and storage are implementation details.",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "The request has been accepted for processing, but processing has not yet completed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DistributionJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Videos"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddVideoRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/videos/download/instagram": {
       "post": {
         "operationId": "downloadInstagramVideo",
@@ -3465,20 +3326,6 @@
             "enum": [
               true
             ]
-          }
-        }
-      },
-      "AddVideoRequest": {
-        "type": "object",
-        "required": [
-          "source"
-        ],
-        "properties": {
-          "source": {
-            "$ref": "#/components/schemas/VideoSource"
-          },
-          "dryRun": {
-            "type": "boolean"
           }
         }
       },
@@ -3975,24 +3822,6 @@
             "enum": [
               true
             ]
-          }
-        }
-      },
-      "AssetVideoSource": {
-        "type": "object",
-        "required": [
-          "kind",
-          "assetId"
-        ],
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "asset"
-            ]
-          },
-          "assetId": {
-            "type": "string"
           }
         }
       },
@@ -4643,79 +4472,6 @@
           }
         }
       },
-      "DistributionJob": {
-        "type": "object",
-        "required": [
-          "jobId",
-          "operation",
-          "status",
-          "createdAt"
-        ],
-        "properties": {
-          "jobId": {
-            "type": "string"
-          },
-          "operation": {
-            "$ref": "#/components/schemas/DistributionJobOperation"
-          },
-          "status": {
-            "$ref": "#/components/schemas/DistributionJobStatus"
-          },
-          "outputs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/JobOutputResource"
-            }
-          },
-          "error": {
-            "$ref": "#/components/schemas/DistributionJobError"
-          },
-          "createdAt": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "completedAt": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "DistributionJobError": {
-        "type": "object",
-        "required": [
-          "code",
-          "message",
-          "retryable"
-        ],
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "retryable": {
-            "type": "boolean"
-          }
-        }
-      },
-      "DistributionJobOperation": {
-        "type": "string",
-        "enum": [
-          "addVideo",
-          "schedulePost"
-        ]
-      },
-      "DistributionJobStatus": {
-        "type": "string",
-        "enum": [
-          "queued",
-          "running",
-          "completed",
-          "failed",
-          "cancelled"
-        ]
-      },
       "EditorProject": {
         "type": "object",
         "required": [
@@ -5007,25 +4763,6 @@
           }
         }
       },
-      "HttpVideoSource": {
-        "type": "object",
-        "required": [
-          "kind",
-          "url"
-        ],
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "http"
-            ]
-          },
-          "url": {
-            "type": "string",
-            "format": "uri"
-          }
-        }
-      },
       "InfoResponse": {
         "type": "object",
         "required": [
@@ -5059,28 +4796,6 @@
           }
         }
       },
-      "JobOutputResource": {
-        "type": "object",
-        "required": [
-          "kind",
-          "id"
-        ],
-        "properties": {
-          "kind": {
-            "type": "string",
-            "enum": [
-              "video",
-              "post",
-              "image",
-              "character",
-              "clone_check"
-            ]
-          },
-          "id": {
-            "type": "string"
-          }
-        }
-      },
       "ListCharactersResponse": {
         "type": "object",
         "required": [
@@ -5095,85 +4810,6 @@
             "description": "Characters owned by the caller, most recent first."
           }
         }
-      },
-      "MediaJob": {
-        "type": "object",
-        "required": [
-          "jobId",
-          "operation",
-          "status",
-          "createdAt"
-        ],
-        "properties": {
-          "jobId": {
-            "type": "string"
-          },
-          "parentJobId": {
-            "type": "string"
-          },
-          "operation": {
-            "$ref": "#/components/schemas/MediaJobOperation"
-          },
-          "status": {
-            "$ref": "#/components/schemas/MediaJobStatus"
-          },
-          "outputs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/JobOutputResource"
-            }
-          },
-          "error": {
-            "$ref": "#/components/schemas/MediaJobError"
-          },
-          "createdAt": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "completedAt": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "MediaJobError": {
-        "type": "object",
-        "required": [
-          "code",
-          "message",
-          "retryable"
-        ],
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          },
-          "retryable": {
-            "type": "boolean"
-          }
-        }
-      },
-      "MediaJobOperation": {
-        "type": "string",
-        "enum": [
-          "addVideo",
-          "schedulePost"
-        ]
-      },
-      "MediaJobStatus": {
-        "type": "string",
-        "enum": [
-          "queued",
-          "running",
-          "waiting_provider",
-          "retrying",
-          "rejected",
-          "completed",
-          "failed",
-          "cancelled"
-        ]
       },
       "OverlayRequest": {
         "type": "object",
@@ -6088,80 +5724,6 @@
             "type": "boolean"
           }
         }
-      },
-      "Video": {
-        "type": "object",
-        "required": [
-          "videoId",
-          "sourceKind",
-          "status",
-          "createdAt"
-        ],
-        "properties": {
-          "videoId": {
-            "type": "string"
-          },
-          "sourceKind": {
-            "type": "string",
-            "enum": [
-              "asset",
-              "http"
-            ]
-          },
-          "status": {
-            "$ref": "#/components/schemas/VideoStatus"
-          },
-          "title": {
-            "type": "string"
-          },
-          "durationSeconds": {
-            "type": "number",
-            "format": "double"
-          },
-          "fingerprint": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "VideoResponse": {
-        "type": "object",
-        "required": [
-          "data"
-        ],
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Video"
-          }
-        }
-      },
-      "VideoSource": {
-        "anyOf": [
-          {
-            "$ref": "#/components/schemas/AssetVideoSource"
-          },
-          {
-            "$ref": "#/components/schemas/HttpVideoSource"
-          }
-        ],
-        "discriminator": {
-          "propertyName": "kind",
-          "mapping": {
-            "asset": "#/components/schemas/AssetVideoSource",
-            "http": "#/components/schemas/HttpVideoSource"
-          }
-        }
-      },
-      "VideoStatus": {
-        "type": "string",
-        "enum": [
-          "processing",
-          "ready",
-          "failed"
-        ]
       },
       "WatchRequest": {
         "type": "object",
