@@ -30,9 +30,9 @@ Use `POST /v1/watch` for prompted video or image understanding. Every watch requ
 
 Run a TOS/compliance check against configurable, tenant-owned rules with `POST /v1/compliance/video` and `POST /v1/compliance/prompt` before you publish. Burn a text overlay onto a video in TikTok-safe zones with `POST /v1/overlay`, or add a disclaimer card with `POST /v1/disclaimer`. Both return a durable output URL.
 
-## Jobs
+## Clone tasks
 
-Media operations return a durable job you can poll for status, retries, and final artifacts through `GET /v1/jobs`.
+The clone video call is asynchronous: `POST /v1/clones/video` returns a task id, which you poll with `GET /v1/clones/video/{id}` until the finished video URL is ready. Every other endpoint returns synchronously.
 
 ## Interfaces
 
