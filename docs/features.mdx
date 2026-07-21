@@ -23,6 +23,10 @@ Get a speech-to-text transcript with word-level timing for any video or audio UR
 
 Run a TOS/compliance check against configurable rules before you publish. Rules are tenant-owned and can be read and updated through `GET/PUT /v1/check/rules`.
 
+## Cloning
+
+Clone a public TikTok or Instagram skit into your own version with a swapped identity. `POST /v1/clones/check` scores whether a staged source video will clone reliably (verdict plus a 0-100 score and evidence). `POST /v1/characters` and `POST /v1/clones/starting-image` generate the identity and a clean starting frame. `POST /v1/clones/video` submits the motion clone (Kling motion control by default, Seedance as the alternate model) and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds. See the [clone a trending skit guide](/guides/clone-trending-skits) for the full call sequence.
+
 ## Overlay and disclaimer
 
 Burn a text overlay onto a video in TikTok-safe zones, or add a disclaimer card. Both return a durable output URL.

@@ -2,7 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "VidJutsu API",
-    "version": "2026-07-18-2"
+    "version": "2026-07-20",
+    "description": "VidJutsu is a video API built for agents to operate directly. Your agent can clone viral trending skits now: stage a trending clip with /v1/videos/download/tiktok or /v1/videos/download/instagram, check it for cloneability, generate a character and a clean starting frame, then render the clone. The pipeline runs end to end in about 5 minutes, measured. Kling motion control is the default video model; Seedance is the alternate. Clone video output is 480p 9:16."
   },
   "tags": [
     {
@@ -79,6 +80,13 @@
     },
     {
       "name": "Jobs"
+    },
+    {
+      "name": "Characters"
+    },
+    {
+      "name": "Cloning",
+      "description": "Your agent can Clone Viral Trending Skits Now. These endpoints check whether a staged source video is worth cloning, generate the character and starting frame, and render and poll the final clone video."
     }
   ],
   "paths": {
@@ -635,6 +643,68 @@
         }
       }
     },
+    "/v1/characters": {
+      "post": {
+        "operationId": "createCharacter",
+        "summary": "Create a reusable generated character image",
+        "description": "Generates a photoreal character identity image from a text prompt, optionally guided by one HTTPS reference image. Returns a CDN-hosted image URL to feed into the starting-image step. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratedImageResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Characters"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterRequest"
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/check": {
       "post": {
         "operationId": "checkSpec",
@@ -905,6 +975,234 @@
             }
           }
         }
+      }
+    },
+    "/v1/clones/check": {
+      "post": {
+        "operationId": "cloneCheck",
+        "summary": "Evaluate whether a source video can be cloned reliably",
+        "description": "Runs a synchronous, deterministic cloneability analysis of a staged source video and returns a verdict (strong, possible, or weak), a 0-100 score, and the evidence behind them, so the agent can branch on the result, for example stopping on a weak verdict. The videoUrl must be public HTTPS and staged first: provider CDNs cannot fetch TikTok or Instagram links directly, so download the source with /v1/videos/download/tiktok or /v1/videos/download/instagram before checking it. The source video must be at most ~2 minutes long. Shares the daily clone admission limit.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneCheckResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneCheckRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/starting-image": {
+      "post": {
+        "operationId": "cloneStartingImage",
+        "summary": "Create a character-swapped starting frame",
+        "description": "Composes a clean starting frame for a clone by applying the prompt to the character image, optionally grounded in the source video's first frame. The returned image is guaranteed to be a clean cinematic frame with no text overlays, captions, subtitles, watermarks, or platform UI, regardless of what is present in the source video or requested prompt. All URLs must be public HTTPS. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneratedImageResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneStartingImageRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/video": {
+      "post": {
+        "operationId": "cloneVideo",
+        "summary": "Clone source motion with Kling motion control or Seedance",
+        "description": "Submits an asynchronous motion-clone generation. The default kling model uses Kling motion control to puppet the starting-image identity with the source video's motion, keeping the original sound; model=\"seedance\" is the alternate model, rendering 9:16 at 480p via video-edit. All URLs must be public HTTPS. Source clips are capped at 15 seconds; a longer sourceVideoUrl is rejected with a 422 and an error of \"video_too_long\". Returns 202 with a task id to poll via GET /v1/clones/video/{id}.",
+        "parameters": [],
+        "responses": {
+          "202": {
+            "description": "The request has been accepted for processing, but processing has not yet completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneVideoAccepted"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "HTTP 429 Too Many Requests — a per-endpoint daily rate limit was exceeded. The limit window is fixed and resets at 00:00 UTC. Body is the standard ApiError; a Retry-After header carries the seconds until reset.",
+            "headers": {
+              "Retry-After": {
+                "required": false,
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneVideoRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/clones/video/{id}": {
+      "get": {
+        "operationId": "getCloneVideo",
+        "summary": "Poll a clone video task",
+        "description": "Returns the current status of a clone video task owned by the caller. While status is \"processing\", poll again later; on \"completed\" the videoUrl field carries the HTTPS result URL, and on \"failed\" the error field explains why. Unknown ids and other tenants' ids return 404. Status reads are not billed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneVideoStatusResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloning"
+        ]
       }
     },
     "/v1/compliance/prompt": {
@@ -4104,6 +4402,189 @@
           "broll"
         ]
       },
+      "CloneCheckRequest": {
+        "type": "object",
+        "required": [
+          "videoUrl"
+        ],
+        "properties": {
+          "videoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public HTTPS URL of the source video to evaluate. http:// URLs are rejected."
+          },
+          "context": {
+            "type": "string",
+            "description": "Optional freeform context about the intended clone (product, character, constraints) to sharpen the analysis."
+          }
+        }
+      },
+      "CloneCheckResponse": {
+        "type": "object",
+        "required": [
+          "verdict",
+          "score",
+          "evidence",
+          "model"
+        ],
+        "properties": {
+          "verdict": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CloneCheckVerdict"
+              }
+            ],
+            "description": "Overall cloneability verdict: \"strong\" clones reliably, \"possible\" may need retries or manual QA, \"weak\" is unlikely to clone well."
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Cloneability score from 0 (unusable) to 100 (ideal source)."
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Concrete observations from the video that support the verdict."
+          },
+          "model": {
+            "type": "string",
+            "description": "Provider model id that produced the analysis."
+          }
+        }
+      },
+      "CloneCheckVerdict": {
+        "type": "string",
+        "enum": [
+          "strong",
+          "possible",
+          "weak"
+        ]
+      },
+      "CloneStartingImageRequest": {
+        "type": "object",
+        "required": [
+          "characterImageUrl",
+          "prompt"
+        ],
+        "properties": {
+          "characterImageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public HTTPS URL of the character identity image. http:// URLs are rejected."
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Instructions for composing the starting frame (pose, framing, scene)."
+          },
+          "sourceVideoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional public HTTPS URL of the source video whose opening frame should ground the composition."
+          }
+        }
+      },
+      "CloneVideoAccepted": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Clone task id. Poll GET /v1/clones/video/{id} with it."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "processing"
+            ],
+            "description": "Always \"processing\" on acceptance."
+          }
+        }
+      },
+      "CloneVideoModel": {
+        "type": "string",
+        "enum": [
+          "seedance",
+          "kling"
+        ]
+      },
+      "CloneVideoRequest": {
+        "type": "object",
+        "required": [
+          "startingImageUrl",
+          "sourceVideoUrl"
+        ],
+        "properties": {
+          "startingImageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public HTTPS URL of the starting frame that carries the target identity. http:// URLs are rejected."
+          },
+          "sourceVideoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public HTTPS URL of the source video whose motion is cloned. http:// URLs are rejected."
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CloneVideoModel"
+              }
+            ],
+            "description": "Generation model. Defaults to \"kling\": Kling motion control puppets the character image with the source video's motion and keeps the original sound. \"seedance\" is the alternate model (9:16 at 480p, video-edit).",
+            "default": "kling"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Optional override for the default identity-swap prompt (seedance only)."
+          }
+        }
+      },
+      "CloneVideoStatus": {
+        "type": "string",
+        "enum": [
+          "processing",
+          "completed",
+          "failed"
+        ]
+      },
+      "CloneVideoStatusResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Clone task id."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CloneVideoStatus"
+              }
+            ],
+            "description": "Current task status."
+          },
+          "videoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS URL of the finished clone. Present only when status is \"completed\"."
+          },
+          "error": {
+            "type": "string",
+            "description": "Failure explanation. Present only when status is \"failed\"."
+          }
+        }
+      },
       "ComplianceCheckResponse": {
         "type": "object",
         "required": [
@@ -4330,6 +4811,24 @@
           },
           "evidence": {
             "$ref": "#/components/schemas/ComplianceEvidence"
+          }
+        }
+      },
+      "CreateCharacterRequest": {
+        "type": "object",
+        "required": [
+          "prompt"
+        ],
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Text description of the character to generate."
+          },
+          "referenceImageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional public HTTPS URL of a reference image to guide identity. http:// URLs are rejected."
           }
         }
       },
@@ -4775,6 +5274,24 @@
           },
           "dryRun": {
             "type": "boolean"
+          }
+        }
+      },
+      "GeneratedImageResponse": {
+        "type": "object",
+        "required": [
+          "imageUrl",
+          "model"
+        ],
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS CDN URL of the generated image."
+          },
+          "model": {
+            "type": "string",
+            "description": "Provider model id that produced the image."
           }
         }
       },

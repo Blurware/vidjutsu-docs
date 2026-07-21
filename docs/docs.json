@@ -39,7 +39,8 @@
           {
             "group": "Recipes",
             "pages": [
-              "guides/scrape"
+              "guides/scrape",
+              "guides/clone-trending-skits"
             ]
           },
           {

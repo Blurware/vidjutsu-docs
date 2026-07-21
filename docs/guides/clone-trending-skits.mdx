@@ -1,0 +1,199 @@
+---
+title: "Clone a trending skit"
+description: "Take a TikTok skit, check it's cloneable, and generate your own version with a swapped identity."
+---
+
+# Your agent can Clone Viral Trending Skits Now
+
+Cloning takes a public TikTok or Instagram skit, evaluates whether its motion and framing will transfer cleanly, and generates a new video with a character of your choosing performing the same motion. Six typed calls, about 5 minutes end to end on the default Kling model.
+
+<Info>
+Need an API key? Follow [Get your API key](/get-api-key) first.
+</Info>
+
+## Before you start
+
+- All URLs passed between steps must be `https://`. Plain `http://` is rejected.
+- TikTok and Instagram links are not directly fetchable by the generation providers. Stage the source first with `POST /v1/videos/download/tiktok` or `POST /v1/videos/download/instagram` — every later step takes the staged VidJutsu URL, not the original platform link.
+- Source clips are capped at 15 seconds. A longer `sourceVideoUrl` passed to `POST /v1/clones/video` is rejected with a 422 and `error: "video_too_long"`.
+- `POST /v1/clones/check` accepts source videos up to about 2 minutes for the cloneability read, but the actual clone call is still capped at 15 seconds, so trim or pick a short segment before generating.
+- Starting images returned by `POST /v1/clones/starting-image` are guaranteed clean: no captions, watermarks, or platform UI, regardless of what the source frame or your prompt asked for.
+- `model` defaults to `"kling"` (Kling motion control, keeps the original sound). Pass `model: "seedance"` for the alternate model, which renders 9:16 at 480p through video-edit.
+
+## The six calls
+
+### 1. Stage the source video
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/videos/download/tiktok \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://www.tiktok.com/@creator/video/123456789"
+  }'
+```
+
+```json
+{
+  "assetId": "asset_8f2c...",
+  "url": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
+  "platform": "tiktok",
+  "externalId": "123456789",
+  "sourceUrl": "https://www.tiktok.com/@creator/video/123456789",
+  "contentType": "video/mp4",
+  "size": 4213880,
+  "sha256": "b7e2...",
+  "reused": false
+}
+```
+
+Repeated imports of the same post reuse the same asset (`reused: true`), so restaging is cheap. Use `url` from the response as the `videoUrl` / `sourceVideoUrl` for every step below.
+
+**Errors**: `403 subscription_required` if the key has no active subscription. `429` with a `Retry-After` header if the daily import limit for the endpoint is hit; the window resets at 00:00 UTC.
+
+### 2. Check whether it will clone well
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/clones/check \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "videoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
+    "context": "Two-person kitchen skit, single continuous take, minimal camera movement"
+  }'
+```
+
+```json
+{
+  "verdict": "strong",
+  "score": 95,
+  "evidence": [
+    "Single continuous shot with a stable, mostly static camera",
+    "One clearly framed subject occupying the center third",
+    "No fast cuts or overlaid text obscuring the motion"
+  ],
+  "model": "gemini-3.5-flash"
+}
+```
+
+`verdict` is `strong`, `possible`, or `weak`, backed by a 0-100 `score` and the `evidence` behind it. Branch on the result: a `strong` or `possible` verdict is worth continuing, `weak` usually is not. This call is synchronous and shares the same daily clone admission limit as the character, starting-image, and video steps.
+
+**Errors**: `403 subscription_required`, `429` with `Retry-After` on the shared clone admission limit.
+
+### 3. Generate the character
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/characters \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A friendly host in their late 20s, casual streetwear, warm studio lighting"
+  }'
+```
+
+```json
+{
+  "imageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
+  "model": "nano-banana-2"
+}
+```
+
+`referenceImageUrl` is optional if you already have a face or identity image to guide the generation; without it, the character comes purely from `prompt`. This is synchronous, typically under a minute, and shares the daily clone admission limit.
+
+**Errors**: `403 subscription_required`, `429` on the shared clone admission limit.
+
+### 4. Compose the starting frame
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "characterImageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
+    "prompt": "Standing at a kitchen counter, mid-gesture, facing camera",
+    "sourceVideoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
+  }'
+```
+
+```json
+{
+  "imageUrl": "https://cdn.vidjutsu.ai/clones/frame_5d0e.../frame.png",
+  "model": "nano-banana-2"
+}
+```
+
+`sourceVideoUrl` is optional; passing it grounds the composition in the source clip's opening frame so the pose and framing line up with the motion you're about to clone. The returned frame is always clean, no overlays or platform UI, no matter what the source or prompt included. Synchronous, typically under a minute, shares the clone admission limit.
+
+**Errors**: `403 subscription_required`, `429` on the shared clone admission limit.
+
+### 5. Submit the clone
+
+```bash
+curl -X POST https://api.vidjutsu.ai/v1/clones/video \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "startingImageUrl": "https://cdn.vidjutsu.ai/clones/frame_5d0e.../frame.png",
+    "sourceVideoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
+    "model": "kling"
+  }'
+```
+
+```json
+{
+  "id": "clone_9c7a1e",
+  "status": "processing"
+}
+```
+
+`model` defaults to `"kling"`; pass `"seedance"` for the 480p 9:16 alternate. `prompt` is an optional override of the default identity-swap prompt and only applies to `seedance`. This call is asynchronous: it returns `202` immediately with a task `id` to poll.
+
+**Errors**: `403 subscription_required`. `422 video_too_long` if `sourceVideoUrl` runs past 15 seconds. `429` with `Retry-After` on the shared clone admission limit.
+
+### 6. Poll for the result
+
+```bash
+curl https://api.vidjutsu.ai/v1/clones/video/clone_9c7a1e \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY"
+```
+
+```json
+{
+  "id": "clone_9c7a1e",
+  "status": "completed",
+  "videoUrl": "https://d2h7xmz5gqybh9.cloudfront.net/clones/clone_9c7a1e/output.mp4"
+}
+```
+
+Poll while `status` is `"processing"`. On `"completed"`, `videoUrl` carries the finished clip. On `"failed"`, `error` explains why. Status reads are not billed and not rate-limited. Unknown ids, or ids owned by another tenant, return `404`.
+
+For the strong/95 canary above, the whole run from the first `download/tiktok` call to a `completed` status was about 5 minutes on the default Kling model.
+
+## SDK and CLI
+
+<Info>
+The `vidjutsu clone run` CLI command requires the CLI's clone release. If you're on an older CLI version, run the six calls directly against the API or the TypeScript SDK below until you upgrade.
+</Info>
+
+```bash
+vidjutsu clone run https://www.tiktok.com/@creator/video/123456789
+```
+
+The CLI command wraps the same six calls: stage, check, character, starting image, submit, poll, printing the verdict and score before it commits to generation.
+
+## Continue the workflow
+
+<CardGroup cols={2}>
+  <Card title="Scrape guide" icon="magnifying-glass" href="/guides/scrape">
+    Preview a TikTok or Instagram post's engagement before you decide what to clone.
+  </Card>
+  <Card title="API reference" icon="code" href="/api-reference/introduction">
+    Full request and response schemas for every clone endpoint.
+  </Card>
+  <Card title="Overlay and disclaimer" icon="film" href="/sdk/overlay">
+    Add a text overlay or disclaimer card to the finished clone before you publish.
+  </Card>
+  <Card title="Agent authentication" icon="key-round" href="/auth">
+    Configure an agent-readable registration and key-claim flow.
+  </Card>
+</CardGroup>
