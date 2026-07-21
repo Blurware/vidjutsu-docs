@@ -6,8 +6,8 @@ const BENEFITS = [
   },
   {
     num: "02",
-    title: "Swap in your own characters",
-    desc: "Keep the motion that is already winning. Put your own face or brand character in it.",
+    title: "Reuse your own character",
+    desc: "Set up your character once, then put it in any clone. Keep the motion that is already winning.",
   },
   {
     num: "03",

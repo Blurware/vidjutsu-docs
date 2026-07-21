@@ -1,12 +1,13 @@
 const finishedStages = [
   "Scored the video: strong, 95 / 100",
+  "Loaded your character (char_9f1a3e7c)",
   "Put your character in the scene",
   "Rendered the clone",
 ] as const;
 
 const resultRows = [
   "clone score · 95 / 100 strong",
-  "your character · swapped in",
+  "character · char_9f1a3e7c",
   "clone · ready to post",
 ] as const;
 
@@ -24,7 +25,7 @@ export function WorkflowChat() {
         </article>
         <article className="vj-message vj-message-agent">
           <span>02 · AGENT</span>
-          <p>On it. Scoring it first, then swapping you in.</p>
+          <p>On it. Scoring it first, then using your existing character.</p>
           <div className="vj-work-log">
             {finishedStages.map((item) => <div key={item}><i>✓</i>{item}</div>)}
           </div>
