@@ -1,54 +1,55 @@
 ---
 title: "Quickstart"
-description: "Clone a meme video for your brand with an agent task."
+description: "Download a video, transcribe it, and burn an overlay in three calls."
 ---
 
 <Info>
 Need an API key? Follow [Get your API key](/get-api-key) first.
 </Info>
 
-## Submit a brand meme task
+## Download, transcribe, overlay
 
-Give VidJutsu a clear goal and a source video. The task records checkpoints while the private workflow imports the reference, checks cloneability, creates the character and starting image, generates motion, applies your wall text, and runs final QA.
+Three typed calls: pull a TikTok post into a stable VidJutsu asset, transcribe it with word-level timing, then burn a text overlay on the result.
 
 ```typescript
 import { createClient } from "vidjutsu";
 
-const client = createClient();
+const vj = createClient();
 
-const task = await client.agentTasks.create(
-  {
-    prompt: "Clone this meme video for our brand with our character. Keep the timing and sound, then add the exact wall text: When our product finally clicks.",
-    inputs: [
-      {
-        name: "source_video",
-        url: "https://www.tiktok.com/@creator/video/123456789",
-      },
-    ],
-  },
-  { idempotencyKey: "brand-meme-001" },
-);
+// 1. Download the source video into a tenant-owned asset
+const { data: download } = await vj.downloadTikTokVideo({
+  url: "https://www.tiktok.com/@creator/video/123456789",
+});
 
-for await (const event of client.agentTasks.tail(task.id)) {
-  console.log(event.type, event.data);
-}
+// 2. Transcribe it
+const { data: transcript } = await vj.transcribeMedia({
+  mediaUrl: download.videoUrl,
+});
+
+// 3. Burn an overlay using the first line of the transcript
+const { data: overlay } = await vj.createOverlay({
+  videoUrl: download.videoUrl,
+  text: transcript.transcript.slice(0, 60),
+  position: "bottom",
+});
+
+console.log(overlay.resultUrl);
 ```
 
-## What happens next
+## What happens
 
-1. **Import** — a TikTok or Instagram reference becomes a stable tenant-owned asset.
-2. **Clone check** — the workflow stops immediately if the reference is a poor fit.
-3. **Brand production** — VidJutsu creates the selected character, clean starting image, motion clone, and overlay.
-4. **Final QA** — the workflow checks identity continuity, framing, duration, and the final wall text before returning the output.
+1. **Download** — the TikTok post becomes a stable, tenant-owned VidJutsu asset with a durable URL.
+2. **Transcribe** — you get back the full transcript plus word-level timing.
+3. **Overlay** — VidJutsu burns the text onto the video in TikTok-safe zones and returns the finished asset URL.
 
 ## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Meme cloning guide" icon="film" href="/guides/clone-meme-videos">
-    Understand the task stages, inputs, and final artifacts.
+  <Card title="Scrape guide" icon="magnifying-glass" href="/guides/scrape">
+    Pull profile, post, and comment data before you decide what to download.
   </Card>
   <Card title="SDK reference" icon="braces" href="/sdk/index">
-    Use typed SDK methods for imports, clone jobs, overlays, and polling.
+    Use typed SDK methods for downloads, watch, transcribe, overlay, and job polling.
   </Card>
   <Card title="Agent authentication" icon="key-round" href="/auth">
     Configure an agent-readable registration and key-claim flow.

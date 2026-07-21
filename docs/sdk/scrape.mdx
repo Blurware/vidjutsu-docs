@@ -1,9 +1,9 @@
 ---
 title: "scrape"
-description: "Typed TikTok and Instagram import methods for clone references."
+description: "Typed TikTok and Instagram import methods."
 ---
 
-The SDK exposes TikTok and Instagram import methods only. Use the result as the source for clone check and the subsequent character, starting-image, clone-video, overlay, and job-polling stages.
+The SDK exposes TikTok and Instagram import methods only. Use the result as the input for downstream calls such as `watchMedia`, `transcribeMedia`, or `createOverlay`.
 
 ```typescript
 import { createClient } from "vidjutsu";

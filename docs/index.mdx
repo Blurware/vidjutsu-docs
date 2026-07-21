@@ -1,33 +1,33 @@
 ---
-title: "VidJutsu — Brand Meme Video API"
-description: "Clone meme videos for your brand."
+title: "VidJutsu — Video Primitives for Agents"
+description: "Deterministic video primitives your agent can call directly: scrape, download, watch, transcribe, check compliance, overlay, and distribute."
 ---
 
-VidJutsu gives your agent a typed media workflow for turning a short meme reference into a brand-ready video.
+VidJutsu gives your agent a typed set of video primitives: pull social posts, download the media, transcribe or watch a video for what's in it, run a compliance check, burn an overlay or disclaimer, and hand the result off to distribution.
 
-Import the source, run clone check, create your character and starting image, generate motion, add your wall text, and finish only after QA passes.
+Each primitive is a single typed call with a durable job you can poll. No orchestration required on your side.
 
-## The brand meme workflow
+## The core workflow
 
 <CardGroup cols={2}>
-  <Card title="Import a reference" icon="arrow-down-to-line" href="/api-reference/videos/download/tiktok/create">
-    Turn a TikTok or Instagram post into a stable, tenant-owned VidJutsu asset.
+  <Card title="Pull the source" icon="arrow-down-to-line" href="/api-reference/scrape">
+    Scrape a TikTok or Instagram post, or download it into a stable, tenant-owned VidJutsu asset.
   </Card>
-  <Card title="Check cloneability" icon="badge-check" href="/api-reference/clones/check/create">
-    Gate the workflow before paid generation. One clear subject and a short, reproducible performance are the best fit.
+  <Card title="Watch or transcribe" icon="eye" href="/sdk/watch">
+    Ask a video what's in it, or get a word-level transcript.
   </Card>
-  <Card title="Create the brand character" icon="user-round" href="/api-reference/characters/create">
-    Create a reusable character identity, then generate a clean starting image for the reference.
+  <Card title="Check compliance" icon="badge-check" href="/api-reference/introduction">
+    Run a TOS/compliance check against configurable rules before you publish.
   </Card>
-  <Card title="Generate and verify" icon="film" href="/api-reference/clones/video/create">
-    Clone the reference motion, add your overlay, and inspect the final asset through a durable job.
+  <Card title="Overlay and distribute" icon="film" href="/sdk/overlay">
+    Burn a text overlay or disclaimer, then hand the finished asset to distribution.
   </Card>
 </CardGroup>
 
 ## Quick start
 
-<Card title="Clone a meme video for your brand" icon="sparkles" href="/guides/clone-meme-videos">
-  Submit one agent task and tail its durable events while VidJutsu composes the workflow.
+<Card title="Download, transcribe, overlay" icon="sparkles" href="/quickstart">
+  Three calls: pull a video, transcribe it, burn an overlay on the result.
 </Card>
 
 ## Choose your interface
@@ -37,7 +37,7 @@ Import the source, run clone check, create your character and starting image, ge
     Call typed public primitives directly from any runtime.
   </Card>
   <Card title="TypeScript SDK" icon="braces" href="/sdk/index">
-    Use the generated SDK for agent tasks, social imports, clone jobs, and polling.
+    Use the generated SDK for scrape, watch, transcribe, overlay, and job polling.
   </Card>
   <Card title="CLI and Skills" icon="terminal" href="/cli/index">
     Install the CLI or public skill package in an agent workspace.

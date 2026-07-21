@@ -1,11 +1,11 @@
 ---
 title: "Import TikTok and Instagram references"
-description: "Bring a public TikTok or Instagram meme reference into a durable VidJutsu workflow."
+description: "Bring a public TikTok or Instagram post into a durable VidJutsu asset."
 ---
 
-VidJutsu imports public TikTok and Instagram references for brand meme cloning. It does not provide ad-library, X, YouTube, Reddit, Google, or LinkedIn scraping.
+VidJutsu imports public TikTok and Instagram references. It does not provide ad-library, X, YouTube, Reddit, Google, or LinkedIn scraping.
 
-Use `download_media: true` when the next stage needs a durable VidJutsu-hosted file. Then pass that asset or URL to clone check.
+Use `download_media: true` when a downstream call needs a durable VidJutsu-hosted file, such as `watch`, `transcribe`, or `overlay`.
 
 ```bash
 vidjutsu scrape instagram-post \
@@ -15,13 +15,8 @@ vidjutsu scrape instagram-post \
 
 The supported operations are TikTok profile, profile videos, video, transcript, comments, user search, and trending; and Instagram profile, posts, reels, post, and comments. All share the `scrape` rate group.
 
-## Continue with the clone workflow
+## Continue the workflow
 
-1. Import a TikTok or Instagram reference.
-2. Run clone check before paid generation.
-3. Create or select a character.
-4. Create a clean starting image.
-5. Submit the video clone with an idempotency key.
-6. Apply the overlay and poll the durable job until final QA completes.
-
-See the [clone meme videos guide](/guides/clone-meme-videos) for the complete workflow.
+1. Import a TikTok or Instagram reference, downloading media if you need a VidJutsu-hosted URL.
+2. Pass the resulting URL to `watch`, `transcribe`, `check`, `overlay`, or `disclaimer`.
+3. Poll the returned job with `mediaJobs.get` (SDK) or `vidjutsu status` (CLI) until it completes.

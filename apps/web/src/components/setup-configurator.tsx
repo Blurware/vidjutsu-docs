@@ -32,7 +32,7 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         "Install the VidJutsu Skill in your agent workspace.",
         "Keep VIDJUTSU_API_KEY in the workspace secret store.",
-        "Ask your agent to clone a meme video for your brand.",
+        "Ask your agent to download, transcribe, or overlay a video.",
       ],
       command: "npx skills add tfcbot/vidjutsu-skills",
       copy: "COPY SKILL",
@@ -48,7 +48,7 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         "Install the VidJutsu CLI in the agent’s terminal environment.",
         "Set VIDJUTSU_API_KEY as an environment secret.",
-        "Ask your agent to clone a meme video for your brand.",
+        "Ask your agent to download, transcribe, or overlay a video.",
       ],
       command: "curl -fsSL https://vidjutsu.ai/install.sh | bash",
       copy: "COPY INSTALL",
@@ -63,7 +63,7 @@ function setup(connection: Connection, agent: Agent) {
     steps: [
       "Install the VidJutsu skill in the agent workspace.",
       "Set VIDJUTSU_API_KEY in the trusted environment.",
-      "Ask your agent to clone a meme video for your brand.",
+      "Ask your agent to download, transcribe, or overlay a video.",
     ],
     command: "npx skills add tfcbot/vidjutsu-skills",
     copy: "COPY SKILL",
@@ -89,10 +89,10 @@ export function SetupConfigurator() {
     <section className="vj-setup" id="start" aria-labelledby="setup-heading">
       <div className="vj-frame">
         <div className="vj-setup-heading">
-          <h1 id="setup-heading">Clone meme videos for your brand.</h1>
+          <h1 id="setup-heading">Video primitives for your agent.</h1>
           <p>
-            Start with a short reference. VidJutsu gives your agent the primitives to check it,
-            recreate the performance with your character, add your text, and verify the result.
+            Start with a source video. VidJutsu gives your agent the primitives to pull it,
+            watch or transcribe it, check compliance, and burn the overlay you need.
           </p>
         </div>
 

@@ -5,7 +5,7 @@ const plan = {
   price: "$99",
   billedLine: "Billed monthly · cancel anytime",
   description:
-    "Full API access for importing TikTok and Instagram references, clone checks, character and image creation, video cloning, overlays, and durable jobs.",
+    "Full API access for scraping and downloading TikTok and Instagram references, watch, transcribe, compliance checks, overlays, disclaimers, and durable jobs.",
   rateLimit: "Per-endpoint daily rate limits · 50 video analyses / day · reset midnight UTC",
 };
 
@@ -21,8 +21,8 @@ export function Pricing() {
             One plan. Full API access.
           </h2>
           <p className="text-ink-muted text-sm max-w-md mx-auto">
-            Flat rate. No credits, no metered billing, no overage. A single
-            A repeatable brand-meme workflow without a stack of disconnected tools.
+            Flat rate. No credits, no metered billing, no overage. One key
+            for every primitive.
           </p>
         </div>
 
