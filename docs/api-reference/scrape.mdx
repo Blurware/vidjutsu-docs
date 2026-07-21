@@ -5,6 +5,6 @@ description: "Supported social reference imports."
 
 VidJutsu supports public TikTok and Instagram reference imports only. Use the generated endpoint pages for each exact request and response contract.
 
-Set `download_media` to `true` when you need VidJutsu-hosted media for a downstream call such as watch, transcribe, or overlay.
+Scrape returns discovery data and the provider's raw source media URLs. It does not stage media. To turn one video into a durable VidJutsu-hosted file, call the single-video download endpoint (`POST /v1/videos/download/tiktok` or `POST /v1/videos/download/instagram`), one video per call.
 
 Unsupported public surfaces: X/Twitter, YouTube, Google Ads, Meta Ads, LinkedIn Ads, and Reddit.

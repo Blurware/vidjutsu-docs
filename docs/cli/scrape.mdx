@@ -7,12 +7,11 @@ description: "Import TikTok and Instagram data and reference videos."
 vidjutsu scrape <subcommand> [flags]
 ```
 
-Use the `scrape` commands to import public TikTok or Instagram references. Add `--download-media` where supported to stage a durable VidJutsu-hosted file for a downstream command such as `watch`, `transcribe`, or `overlay`.
+Use the `scrape` commands to discover public TikTok or Instagram references and their metadata. Scrape returns the provider's raw source media URLs and never stages media. To turn one video into a durable VidJutsu-hosted file, use the single-video download command, one video per call.
 
 ```bash
 vidjutsu scrape tiktok-video \
-  --url "https://www.tiktok.com/@creator/video/123456789" \
-  --download-media
+  --url "https://www.tiktok.com/@creator/video/123456789"
 ```
 
 Supported subcommands:
