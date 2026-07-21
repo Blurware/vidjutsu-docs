@@ -23,70 +23,80 @@ function label(agent: Agent) {
   return agents.find((item) => item.id === agent)?.label ?? "your agent";
 }
 
+const connectorHints: Record<Agent, string> = {
+  claude:
+    "In the Claude app: Settings, Connectors, Add custom connector. On claude.ai: claude.ai/customize/connectors.",
+  "claude-code": "",
+  chatgpt: "In ChatGPT: Settings, Connectors, add a custom connector.",
+  openclaw: "In OpenClaw: add an MCP server in your connector settings.",
+  hermes: "In Hermes: add an MCP server in your connector settings.",
+};
+
 function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
-    const mcpDescription = "The VidJutsu MCP server is live at api.vidjutsu.ai/mcp. It authenticates with OAuth 2.1 and a bearer token, and exposes the clone pipeline as typed tools: download_tiktok_video, clone_check, create_character, clone_starting_image, clone_video, get_clone_video.";
+    const description =
+      "Connect once and your agent can clone videos through VidJutsu. The server is live at api.vidjutsu.ai/mcp and signs in with OAuth.";
     if (agent === "claude-code") {
       return {
         title: `Connect ${agentLabel} over MCP`,
-        description: mcpDescription,
+        description,
         steps: [
           "Run the command below. The http transport is required for a remote server.",
-          "Run /mcp in a session, select vidjutsu, and choose Authenticate. A browser opens for the OAuth 2.1 flow.",
-          "Ask your agent to check, character, starting image, render, or poll a clone.",
+          "Run /mcp in a session, pick vidjutsu, and choose Authenticate. A browser opens to sign in.",
+          "Ask your agent to clone a video.",
         ],
         command: "claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp",
         copy: "COPY COMMAND",
-        note: "Bearer tokens are scoped per agent and can be revoked at any time.",
-        guide: "Agent auth guide ↗",
-        href: "https://docs.vidjutsu.ai/auth.md",
+        note: "Your access is scoped to your key and can be revoked any time.",
+        guide: "Connection guide ↗",
+        href: "https://docs.vidjutsu.ai#mcp",
       };
     }
     return {
       title: `Connect ${agentLabel} over MCP`,
-      description: mcpDescription,
+      description,
       steps: [
-        "Add a custom connector in your agent settings. In the Claude desktop app: Settings, Connectors, Add custom connector. On claude.ai: claude.ai/customize/connectors.",
-        "Paste the server URL below and authorize the OAuth 2.1 flow in the browser. There is no command to run.",
-        "Ask your agent to check, character, starting image, render, or poll a clone.",
+        connectorHints[agent] || "Add a custom MCP connector in your agent settings.",
+        "Paste the server URL below and sign in when the browser opens. There is no command to run.",
+        "Ask your agent to clone a video.",
       ],
       command: "https://api.vidjutsu.ai/mcp",
       copy: "COPY URL",
-      note: "The connector authorizes over OAuth 2.1. Bearer tokens are scoped per agent and can be revoked at any time.",
-      guide: "Agent auth guide ↗",
-      href: "https://docs.vidjutsu.ai/auth.md",
+      note: "Your access is scoped to your key and can be revoked any time.",
+      guide: "Connection guide ↗",
+      href: "https://docs.vidjutsu.ai#mcp",
     };
   }
   if (connection === "cli") {
     return {
       title: `Use VidJutsu from ${agentLabel}`,
-      description: "Install the CLI in the workspace your agent can use, then call deterministic media primitives.",
+      description: "Install the CLI where your agent works, then it can clone videos from the terminal.",
       steps: [
-        "Install the VidJutsu CLI in the agent’s terminal environment.",
-        "Set VIDJUTSU_API_KEY as an environment secret.",
-        "Ask your agent to download, transcribe, or overlay a video.",
+        "Install the VidJutsu CLI.",
+        "Set VIDJUTSU_API_KEY in the environment.",
+        "Ask your agent to clone a video.",
       ],
-      command: "curl -fsSL https://vidjutsu.ai/install.sh | bash",
+      command: "npm install -g vidjutsu",
       copy: "COPY INSTALL",
-      note: "The installer works on macOS and Linux.",
+      note: "Works anywhere your agent has a terminal.",
       guide: "CLI guide ↗",
       href: "https://docs.vidjutsu.ai/cli/install",
     };
   }
   return {
-    title: `Give ${agentLabel} the VidJutsu workflow`,
-    description: "Install the public workflow instructions so your agent uses typed primitives instead of guessing HTTP calls.",
+    title: `Give ${agentLabel} the clone skill`,
+    description: "Add the vidjutsu-clone skill so your agent knows the whole clone workflow out of the box.",
     steps: [
-      "Install the VidJutsu skill in the agent workspace.",
-      "Set VIDJUTSU_API_KEY in the trusted environment.",
-      "Ask your agent to download, transcribe, or overlay a video.",
+      "Add the vidjutsu-clone skill to your agent.",
+      "Set VIDJUTSU_API_KEY in the environment.",
+      "Ask your agent to clone a video.",
     ],
-    command: "npx skills add tfcbot/vidjutsu-skills",
+    command: "npx skills add vidjutsu-clone",
     copy: "COPY SKILL",
-    note: "Keys stay in the environment, not in the skill instructions.",
+    note: "Your key stays in the environment, never in the skill.",
     guide: "Skill guide ↗",
-    href: "https://docs.vidjutsu.ai/auth.md",
+    href: "https://docs.vidjutsu.ai",
   };
 }
 
@@ -108,8 +118,8 @@ export function SetupConfigurator() {
         <div className="vj-setup-heading">
           <h2 id="setup-heading">Connect your agent.</h2>
           <p>
-            Give your agent the VidJutsu CLI, MCP, or Skill, and it can call the
-            clone pipeline directly: check, character, starting image, render, poll.
+            Connect once with MCP, the CLI, or the skill. From then on your
+            agent can clone videos on its own.
           </p>
         </div>
 

@@ -1,65 +1,34 @@
-const STEPS = [
+const BENEFITS = [
   {
     num: "01",
-    title: "Pull the source",
-    endpoint: "POST /v1/videos/download/tiktok",
-    desc: "Download the trending TikTok clip into a stable VidJutsu asset.",
+    title: "Get a clone score",
+    desc: "Know a video is worth cloning before you spend anything. Every clone starts with a score.",
   },
   {
     num: "02",
-    title: "Check cloneability",
-    endpoint: "POST /v1/clones/check",
-    desc: "Get a verdict (strong, possible, or weak), a 0-100 score, and the evidence behind it.",
+    title: "Swap in your own characters",
+    desc: "Keep the motion that is already winning. Put your own face or brand character in it.",
   },
   {
     num: "03",
-    title: "Build the character",
-    endpoint: "POST /v1/characters",
-    desc: "Create the character your clone will use for the render.",
-  },
-  {
-    num: "04",
-    title: "Generate the starting frame",
-    endpoint: "POST /v1/clones/starting-image",
-    desc: "Produce a clean starting frame with no overlays or on-screen text.",
-  },
-  {
-    num: "05",
-    title: "Render the clone",
-    endpoint: "POST /v1/clones/video",
-    desc: "Kick off the render. Kling motion-control by default, Seedance as an option. Returns 202 with a task id.",
-  },
-  {
-    num: "06",
-    title: "Poll for the result",
-    endpoint: "GET /v1/clones/video/{id}",
-    desc: "Poll the task until it completes and you get the finished video URL back.",
+    title: "Get views",
+    desc: "Post what is already trending, at the pace an agent can work. More at bats, more hits.",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="px-5 sm:px-8 py-14 sm:py-20">
-      <div className="max-w-6xl mx-auto">
-        <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-3 text-center">
-          How it works
-        </p>
-        <h2 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] mb-10 text-center max-w-md mx-auto">
-          A link in. A clone out.
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-16">
-          {STEPS.map((s) => (
-            <div key={s.num} className="text-center">
-              <div className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-[-0.04em] text-ink-light/40 leading-none mb-4">
-                {s.num}
+    <section id="how-it-works" className="px-5 sm:px-8 py-16 sm:py-24">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-14">
+          {BENEFITS.map((b) => (
+            <div key={b.num} className="text-center">
+              <div className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold tracking-[-0.04em] text-brand/25 leading-none mb-4">
+                {b.num}
               </div>
-              <h3 className="text-lg font-semibold mb-1">{s.title}</h3>
-              <p className="font-mono text-[11px] text-ink-light mb-2">
-                {s.endpoint}
-              </p>
+              <h3 className="text-xl font-semibold mb-2">{b.title}</h3>
               <p className="text-ink-muted text-sm leading-relaxed max-w-xs mx-auto">
-                {s.desc}
+                {b.desc}
               </p>
             </div>
           ))}

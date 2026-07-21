@@ -21,8 +21,8 @@ export function Pricing() {
             One plan. Full API access.
           </h2>
           <p className="text-ink-muted text-sm max-w-md mx-auto">
-            Flat rate. No credits, no metered billing, no overage. One key
-            for every primitive.
+            Flat rate. No credits, no metered billing, no overage. One key,
+            clone as often as your agent can work.
           </p>
         </div>
 
