@@ -1,0 +1,45 @@
+---
+title: "cloneStartingImage"
+description: "Composes the clean starting frame for a clone from a character and a prompt."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.cloneStartingImage({
+  characterId: "char_abc123",
+  prompt: "Character seated at a kitchen counter, holding the product",
+  sourceVideoUrl: "https://cdn.example.com/source.mp4",
+});
+```
+
+## Parameters
+
+Provide exactly one of `characterId` or `characterImageUrl`, not both.
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `characterId` | `string` | Yes* | A stored `char_...` id |
+| `characterImageUrl` | `string` | Yes* | A one-off public HTTPS character image |
+| `prompt` | `string` | Yes | How to compose the starting frame |
+| `sourceVideoUrl` | `string` | No | Public HTTPS staged source video URL; grounds the composition in the source's opening frame |
+| `model` | `string` | No | `"kling"` (default) or `"seedance"` |
+
+*Provide one of `characterId` or `characterImageUrl`.
+
+## Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `imageUrl` | `string` | CDN URL of the starting frame |
+| `model` | `string` | Model that produced the frame |
+
+The returned frame is always clean, with no captions, watermarks, or platform UI.
+
+## Errors
+
+Returns 422 if both or neither of `characterId` and `characterImageUrl` are given, or if `characterId` does not resolve to a character you own.
+
+## Rate limit
+
+Shares the daily clone admission limit. Resets at 00:00 UTC; exceeding it returns HTTP 429.

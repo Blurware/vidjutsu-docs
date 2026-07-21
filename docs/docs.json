@@ -32,15 +32,14 @@
             "group": "Reference",
             "pages": [
               "authentication",
-              "credits-and-billing",
-              "auth"
+              "credits-and-billing"
             ]
           },
           {
             "group": "Recipes",
             "pages": [
-              "guides/scrape",
-              "guides/clone-trending-skits"
+              "guides/clone-viral-videos",
+              "guides/scrape"
             ]
           },
           {
@@ -58,6 +57,26 @@
             "group": "Overview",
             "pages": [
               "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Clone",
+            "pages": [
+              "POST /v1/clones/check",
+              "POST /v1/characters",
+              "GET /v1/characters",
+              "GET /v1/characters/{id}",
+              "POST /v1/clones/starting-image",
+              "POST /v1/clones/video",
+              "GET /v1/clones/video/{id}"
+            ]
+          },
+          {
+            "group": "Download",
+            "pages": [
+              "POST /v1/videos/download/tiktok",
+              "POST /v1/videos/download/instagram",
+              "POST /v1/videos/add"
             ]
           },
           {
@@ -89,7 +108,7 @@
             ]
           },
           {
-            "group": "Intelligence",
+            "group": "Processing",
             "pages": [
               "POST /v1/watch",
               "POST /v1/extract",
@@ -187,7 +206,17 @@
             ]
           },
           {
-            "group": "Intelligence",
+            "group": "Clone",
+            "pages": [
+              "sdk/clone-check",
+              "sdk/characters",
+              "sdk/clone-starting-image",
+              "sdk/clone-video",
+              "sdk/download"
+            ]
+          },
+          {
+            "group": "Processing",
             "pages": [
               "sdk/watch",
               "sdk/extract",
@@ -228,14 +257,19 @@
             ]
           },
           {
-            "group": "Intelligence",
+            "group": "Clone",
+            "pages": [
+              "cli/clone"
+            ]
+          },
+          {
+            "group": "Processing",
             "pages": [
               "cli/watch",
               "cli/extract",
               "cli/transcribe",
               "cli/check",
               "cli/overlay",
-              "cli/disclaimer",
               "cli/compliance"
             ]
           },
@@ -256,12 +290,6 @@
               "cli/status",
               "cli/info",
               "cli/version"
-            ]
-          },
-          {
-            "group": "Scrape",
-            "pages": [
-              "cli/scrape"
             ]
           }
         ]

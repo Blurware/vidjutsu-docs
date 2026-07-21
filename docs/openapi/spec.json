@@ -76,9 +76,6 @@
       "name": "Agent"
     },
     {
-      "name": "Clips"
-    },
-    {
       "name": "Jobs"
     },
     {
@@ -646,8 +643,8 @@
     "/v1/characters": {
       "post": {
         "operationId": "createCharacter",
-        "summary": "Create a reusable generated character image",
-        "description": "Generates a photoreal character identity image from a text prompt, optionally guided by one HTTPS reference image. Returns a CDN-hosted image URL to feed into the starting-image step. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
+        "summary": "Create a reusable, persisted character image",
+        "description": "Generates a photoreal character identity image from a text prompt, optionally guided by one HTTPS reference image, and persists it durably under an id. Returns the character id plus a CDN-hosted image URL; reuse the id later via cloneStartingImage's characterId or fetch it again with GET /v1/characters/{id}. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
         "parameters": [],
         "responses": {
           "200": {
@@ -655,7 +652,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GeneratedImageResponse"
+                  "$ref": "#/components/schemas/CreateCharacterResponse"
                 }
               }
             }
@@ -703,6 +700,79 @@
             }
           }
         }
+      },
+      "get": {
+        "operationId": "listCharacters",
+        "summary": "List your persisted characters",
+        "description": "Returns all characters previously created by the caller, most recent first. Status/list reads are not billed.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCharactersResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Characters"
+        ]
+      }
+    },
+    "/v1/characters/{id}": {
+      "get": {
+        "operationId": "getCharacter",
+        "summary": "Fetch a persisted character by id",
+        "description": "Returns a single character owned by the caller. Unknown ids and other tenants' ids return 404. Status reads are not billed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Character"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Characters"
+        ]
       }
     },
     "/v1/check": {
@@ -821,162 +891,6 @@
         }
       }
     },
-    "/v1/clips/broll": {
-      "post": {
-        "operationId": "addClipBroll",
-        "summary": "Create a B-roll-treated clip artifact",
-        "description": "Creates a new immutable clip whose parent is the input clip. Assets, edit planning, and render providers remain internal.",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "The request has been accepted for processing, but processing has not yet completed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DistributionJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Clips"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddBrollRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/clips/captions": {
-      "post": {
-        "operationId": "addClipCaptions",
-        "summary": "Create a captioned clip artifact",
-        "description": "Creates a new immutable clip whose parent is the input clip.",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "The request has been accepted for processing, but processing has not yet completed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DistributionJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Clips"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AddCaptionsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/clips/generate": {
-      "post": {
-        "operationId": "generateClips",
-        "summary": "Generate a bounded batch of 9:16 clips from a video source or video ID",
-        "description": "One semantic job may resolve the source, transcribe it, find moments, and reframe clips. Returns a durable job; provider and model choices remain internal.",
-        "parameters": [
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "202": {
-            "description": "The request has been accepted for processing, but processing has not yet completed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DistributionJob"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Clips"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GenerateClipsRequest"
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/clones/check": {
       "post": {
         "operationId": "cloneCheck",
@@ -1043,7 +957,7 @@
       "post": {
         "operationId": "cloneStartingImage",
         "summary": "Create a character-swapped starting frame",
-        "description": "Composes a clean starting frame for a clone by applying the prompt to the character image, optionally grounded in the source video's first frame. The returned image is guaranteed to be a clean cinematic frame with no text overlays, captions, subtitles, watermarks, or platform UI, regardless of what is present in the source video or requested prompt. All URLs must be public HTTPS. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
+        "description": "Composes a clean starting frame for a clone by applying the prompt to the character image, optionally grounded in the source video's first frame. Supply exactly one of characterImageUrl (a public HTTPS image) or characterId (a previously created character's id, from createCharacter or GET /v1/characters) to identify the character; supplying both or neither is a validation error. The returned image is guaranteed to be a clean cinematic frame with no text overlays, captions, subtitles, watermarks, or platform UI, regardless of what is present in the source video or requested prompt. All other URLs must be public HTTPS. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
         "parameters": [],
         "responses": {
           "200": {
@@ -1422,64 +1336,6 @@
             }
           }
         }
-      }
-    },
-    "/v1/distribution/clips": {
-      "get": {
-        "operationId": "listOrGetDistributionClips",
-        "summary": "List generated clips or get one by ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          },
-          {
-            "name": "videoId",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "explode": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The request has succeeded.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/ClipResponse"
-                    },
-                    {
-                      "$ref": "#/components/schemas/ClipListResponse"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "HTTP 403 Forbidden — a valid API key with no active subscription called a gated endpoint. Body is the standard ApiError with error=\"subscription_required\".",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Clips"
-        ]
       }
     },
     "/v1/distribution/jobs": {
@@ -2185,7 +2041,7 @@
       "post": {
         "operationId": "scrapeInstagramPost",
         "summary": "Scrape Instagram post or reel",
-        "description": "Single Instagram post or reel + media URLs. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Single Instagram post or reel + media URLs. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2309,7 +2165,7 @@
       "post": {
         "operationId": "scrapeInstagramProfile",
         "summary": "Scrape Instagram profile",
-        "description": "Public Instagram profile + recent reels. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Public Instagram profile + recent reels. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2371,7 +2227,7 @@
       "post": {
         "operationId": "scrapeInstagramUserPosts",
         "summary": "Scrape Instagram user posts",
-        "description": "Paginated posts for an Instagram profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Paginated posts for an Instagram profile. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2433,7 +2289,7 @@
       "post": {
         "operationId": "scrapeInstagramUserReels",
         "summary": "Scrape Instagram user reels",
-        "description": "Paginated reels for an Instagram profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Paginated reels for an Instagram profile. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2495,7 +2351,7 @@
       "post": {
         "operationId": "scrapeTikTokProfile",
         "summary": "Scrape TikTok profile",
-        "description": "Fetch public TikTok profile data via Scrape Creators. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Fetch public TikTok profile data via Scrape Creators. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2557,7 +2413,7 @@
       "post": {
         "operationId": "scrapeTikTokProfileVideos",
         "summary": "Scrape TikTok profile videos",
-        "description": "Paginated videos for a TikTok profile. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Paginated videos for a TikTok profile. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2681,7 +2537,7 @@
       "post": {
         "operationId": "scrapeTikTokTrending",
         "summary": "Scrape TikTok trending feed",
-        "description": "Trending feed by region. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Trending feed by region. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -2743,7 +2599,7 @@
       "post": {
         "operationId": "scrapeTikTokVideo",
         "summary": "Scrape TikTok video",
-        "description": "Single TikTok video metadata + media URLs. Counts as 1 request against the shared scrape group (500/day); staging media with download_media does not consume extra quota.",
+        "description": "Single TikTok video metadata + media URLs. Counts as 1 request against the shared scrape group (500/day).",
         "parameters": [],
         "responses": {
           "200": {
@@ -3612,54 +3468,6 @@
           }
         }
       },
-      "AddBrollRequest": {
-        "type": "object",
-        "required": [
-          "clipId",
-          "mode"
-        ],
-        "properties": {
-          "clipId": {
-            "type": "string"
-          },
-          "mode": {
-            "$ref": "#/components/schemas/BrollMode"
-          },
-          "assetIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Optional approved asset IDs. Required when mode is supplied."
-          },
-          "intent": {
-            "type": "string"
-          },
-          "dryRun": {
-            "type": "boolean"
-          }
-        }
-      },
-      "AddCaptionsRequest": {
-        "type": "object",
-        "required": [
-          "clipId"
-        ],
-        "properties": {
-          "clipId": {
-            "type": "string"
-          },
-          "preset": {
-            "type": "string"
-          },
-          "language": {
-            "type": "string"
-          },
-          "dryRun": {
-            "type": "boolean"
-          }
-        }
-      },
       "AddVideoRequest": {
         "type": "object",
         "required": [
@@ -4212,13 +4020,34 @@
         },
         "description": ""
       },
-      "BrollMode": {
-        "type": "string",
-        "enum": [
-          "auto",
-          "supplied",
-          "none"
-        ]
+      "Character": {
+        "type": "object",
+        "required": [
+          "id",
+          "imageUrl",
+          "model",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Persisted character id (char_...)."
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS CDN URL of the character image."
+          },
+          "model": {
+            "type": "string",
+            "description": "Provider model id that produced the image."
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Creation timestamp, epoch milliseconds."
+          }
+        }
       },
       "CheckRequest": {
         "type": "object",
@@ -4311,97 +4140,6 @@
           }
         }
       },
-      "Clip": {
-        "type": "object",
-        "required": [
-          "clipId",
-          "rootVideoId",
-          "transformKind",
-          "status",
-          "aspectRatio",
-          "createdAt"
-        ],
-        "properties": {
-          "clipId": {
-            "type": "string"
-          },
-          "rootVideoId": {
-            "type": "string"
-          },
-          "parentClipId": {
-            "type": "string"
-          },
-          "transformKind": {
-            "$ref": "#/components/schemas/ClipTransformKind"
-          },
-          "status": {
-            "$ref": "#/components/schemas/ClipStatus"
-          },
-          "aspectRatio": {
-            "type": "string",
-            "enum": [
-              "9:16"
-            ]
-          },
-          "durationSeconds": {
-            "type": "number",
-            "format": "double"
-          },
-          "assetId": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "createdAt": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "ClipListResponse": {
-        "type": "object",
-        "required": [
-          "data"
-        ],
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Clip"
-            }
-          }
-        }
-      },
-      "ClipResponse": {
-        "type": "object",
-        "required": [
-          "data"
-        ],
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/Clip"
-          }
-        }
-      },
-      "ClipStatus": {
-        "type": "string",
-        "enum": [
-          "processing",
-          "ready",
-          "failed"
-        ]
-      },
-      "ClipTransformKind": {
-        "type": "string",
-        "enum": [
-          "generated",
-          "timestamps",
-          "captions",
-          "broll"
-        ]
-      },
       "CloneCheckRequest": {
         "type": "object",
         "required": [
@@ -4467,14 +4205,17 @@
       "CloneStartingImageRequest": {
         "type": "object",
         "required": [
-          "characterImageUrl",
           "prompt"
         ],
         "properties": {
           "characterImageUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Public HTTPS URL of the character identity image. http:// URLs are rejected."
+            "description": "Public HTTPS URL of the character identity image. http:// URLs are rejected. Exactly one of characterImageUrl or characterId must be supplied."
+          },
+          "characterId": {
+            "type": "string",
+            "description": "Id of a previously created character (from createCharacter or GET /v1/characters) whose stored image should be used. Exactly one of characterImageUrl or characterId must be supplied."
           },
           "prompt": {
             "type": "string",
@@ -4832,6 +4573,29 @@
           }
         }
       },
+      "CreateCharacterResponse": {
+        "type": "object",
+        "required": [
+          "id",
+          "imageUrl",
+          "model"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Persisted character id (char_...). Reuse it later via cloneStartingImage's characterId or GET /v1/characters/{id}."
+          },
+          "imageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS CDN URL of the generated character image."
+          },
+          "model": {
+            "type": "string",
+            "description": "Provider model id that produced the image."
+          }
+        }
+      },
       "DailyLimits": {
         "type": "object",
         "additionalProperties": {
@@ -4939,9 +4703,6 @@
         "type": "string",
         "enum": [
           "addVideo",
-          "generateClips",
-          "addCaptions",
-          "addBroll",
           "schedulePost"
         ]
       },
@@ -5228,55 +4989,6 @@
           }
         }
       },
-      "GenerateClipsRequest": {
-        "type": "object",
-        "required": [
-          "aspectRatio",
-          "count"
-        ],
-        "properties": {
-          "source": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/VideoSource"
-              }
-            ],
-            "description": "Provide source or videoId. Exactly one is required."
-          },
-          "videoId": {
-            "type": "string",
-            "description": "Existing normalized Vidjutsu video. Provide this or source, not both."
-          },
-          "aspectRatio": {
-            "type": "string",
-            "enum": [
-              "9:16"
-            ]
-          },
-          "count": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 1,
-            "maximum": 20
-          },
-          "minDurationSeconds": {
-            "type": "integer",
-            "format": "int32",
-            "minimum": 5
-          },
-          "maxDurationSeconds": {
-            "type": "integer",
-            "format": "int32",
-            "maximum": 180
-          },
-          "intent": {
-            "type": "string"
-          },
-          "dryRun": {
-            "type": "boolean"
-          }
-        }
-      },
       "GeneratedImageResponse": {
         "type": "object",
         "required": [
@@ -5358,7 +5070,6 @@
             "type": "string",
             "enum": [
               "video",
-              "clip",
               "post",
               "image",
               "character",
@@ -5367,6 +5078,21 @@
           },
           "id": {
             "type": "string"
+          }
+        }
+      },
+      "ListCharactersResponse": {
+        "type": "object",
+        "required": [
+          "characters"
+        ],
+        "properties": {
+          "characters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Character"
+            },
+            "description": "Characters owned by the caller, most recent first."
           }
         }
       },
@@ -5433,9 +5159,6 @@
         "type": "string",
         "enum": [
           "addVideo",
-          "generateClips",
-          "addCaptions",
-          "addBroll",
           "schedulePost"
         ]
       },
@@ -5881,11 +5604,6 @@
           "url": {
             "type": "string",
             "description": "Instagram post or reel URL"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -5898,11 +5616,6 @@
           "handle": {
             "type": "string",
             "description": "Instagram username (without @)"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -5919,11 +5632,6 @@
           "cursor": {
             "type": "string",
             "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -5940,11 +5648,6 @@
           "cursor": {
             "type": "string",
             "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -5955,7 +5658,7 @@
         ],
         "properties": {
           "data": {
-            "description": "Pass-through response from Scrape Creators. Shape varies per endpoint. When download_media was true, all media URLs are replaced with VidJutsu CDN URLs."
+            "description": "Pass-through response from Scrape Creators. Shape varies per endpoint. Media URLs are the raw provider source URLs; scrape never stages media. To stage a specific video's file, call the single-video download endpoint."
           }
         }
       },
@@ -5972,11 +5675,6 @@
           "trim": {
             "type": "boolean",
             "description": "Reduce response size by trimming large fields"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -5993,11 +5691,6 @@
           "cursor": {
             "type": "string",
             "description": "Pagination cursor"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -6023,11 +5716,6 @@
           "country": {
             "type": "string",
             "description": "Two-letter ISO country code (e.g. 'us')"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },
@@ -6060,11 +5748,6 @@
           "trim": {
             "type": "boolean",
             "description": "Reduce response size"
-          },
-          "download_media": {
-            "type": "boolean",
-            "description": "When true, media URLs in the response are staged through VidJutsu CDN and the response contains ONLY VidJutsu URLs. Defaults to false (raw source URLs returned as-is).",
-            "default": false
           }
         }
       },

@@ -1,9 +1,9 @@
 ---
 title: "SDK Overview"
-description: "TypeScript SDK for VidJutsu's video primitives."
+description: "TypeScript SDK for cloning viral videos with VidJutsu."
 ---
 
-The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It covers social import, scrape, watch, transcribe, overlay, disclaimer, compliance, and job polling.
+The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It covers the clone workflow (check, characters, starting image, video) plus the steps around it: discovery, download, watch, transcribe, compliance, overlay, and job polling.
 
 ## Install
 
@@ -13,34 +13,60 @@ npm install vidjutsu
 
 ## Quick start
 
+Create a reusable character once, then clone a video onto it.
+
 ```typescript
 import { createClient } from "vidjutsu";
 
 const vj = createClient();
 
-const { data: download } = await vj.downloadTikTokVideo({
-  url: sourceVideoUrl,
+// 1. Create a reusable character (returns { id: "char_...", imageUrl, model }).
+const { data: character } = await vj.createCharacter({
+  prompt: "A friendly host in their late 20s, casual streetwear",
 });
 
-const { data: transcript } = await vj.transcribeMedia({
-  mediaUrl: download.videoUrl,
+// 2. Stage the source video, then score it.
+const { data: source } = await vj.downloadTikTokVideo({
+  url: "https://www.tiktok.com/@creator/video/123456789",
 });
+const { data: check } = await vj.cloneCheck({ videoUrl: source.url });
+console.log(check.verdict, check.score);
 
-console.log(transcript.transcript);
+// 3. Compose a starting frame, generate the clone, and poll for the result.
+const { data: starting } = await vj.cloneStartingImage({
+  characterId: character.id,
+  sourceVideoUrl: source.url,
+  prompt: "Match the framing and pose of the source's opening frame",
+});
+const { data: task } = await vj.cloneVideo({
+  startingImageUrl: starting.imageUrl,
+  sourceVideoUrl: source.url,
+  model: "kling",
+});
+const { data: result } = await vj.getCloneVideo(task.id);
+console.log(result.videoUrl);
 ```
 
-## Core methods
+## Clone methods
 
 | Method | Description |
 | --- | --- |
-| `downloadTikTokVideo` / `downloadInstagramVideo` | Import a social reference into a stable asset. |
-| `scrapeTikTokProfile` / `scrapeInstagramProfile` and related `scrape*` methods | Pull structured profile, post, comment, and search data. |
-| `watchMedia` | Run prompted video or image understanding. |
-| `transcribeMedia` | Speech-to-text with word-level timing. |
-| `checkSpec` | Run a TOS/compliance check against configured rules. |
-| `createOverlay` | Burn a text overlay onto a video. |
-| `createDisclaimer` | Add a disclaimer card to a video. |
-| `mediaJobs.get` / `awaitJob` | Poll a durable media job to completion. |
+| [`cloneCheck`](/sdk/clone-check) | Score whether a source video will clone well. |
+| [`createCharacter` / `listCharacters` / `getCharacter`](/sdk/characters) | Create and reuse persisted characters. |
+| [`cloneStartingImage`](/sdk/clone-starting-image) | Compose a clean character-swapped starting frame. |
+| [`cloneVideo` / `getCloneVideo`](/sdk/clone-video) | Generate a clone video and poll the task. |
+| [`downloadTikTokVideo` / `downloadInstagramVideo`](/sdk/download) | Stage a single source video to the CDN. |
+
+## Supporting methods
+
+| Method | Description |
+| --- | --- |
+| [`scrapeTikTokProfile` / `scrapeInstagramProfile` and related `scrape*` methods](/sdk/scrape) | Pull structured profile, post, comment, and search data. |
+| [`watchMedia`](/sdk/watch) | Run prompted video or image understanding. |
+| [`transcribeMedia`](/sdk/transcribe) | Speech-to-text with word-level timing. |
+| [`checkComplianceVideo` / `checkCompliancePrompt`](/sdk/check) | Run an ad-compliance check. |
+| [`createOverlay`](/sdk/overlay) / [`createDisclaimer`](/sdk/disclaimer) | Burn a text overlay or disclaimer onto a video. |
+| `getJob` / `getDistributionJob` | Poll a durable job to completion. |
 
 ## Authentication
 

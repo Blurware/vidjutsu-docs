@@ -1,6 +1,6 @@
 ---
 title: "API Reference"
-description: "Complete reference for the VidJutsu Video Intelligence API"
+description: "Complete reference for the VidJutsu API"
 ---
 
 ## Base URL
@@ -14,7 +14,7 @@ https://api.vidjutsu.ai
 Most endpoints require an API key passed as a Bearer token in the `Authorization` header:
 
 ```bash
-curl https://api.vidjutsu.ai/v1/accounts \
+curl https://api.vidjutsu.ai/v1/clones/check \
   -H "Authorization: Bearer vj_live_your_key_here"
 ```
 
@@ -22,19 +22,57 @@ Get your API key by [subscribing](/authentication) with any card via Stripe.
 
 ## Endpoints
 
-### Intelligence
+### Clone
 
-Each intelligence endpoint has its own daily rate-limit bucket. Buckets are independent.
+The clone workflow. Each clone endpoint shares one daily admission limit. See the [clone viral videos guide](/guides/clone-viral-videos) for the full sequence.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/clones/check` | Score whether a source video will clone well (verdict + 0-100 score) |
+| POST | `/v1/characters` | Create a reusable character (`char_...`) |
+| GET | `/v1/characters` | List your characters |
+| GET | `/v1/characters/{id}` | Fetch one character by id |
+| POST | `/v1/clones/starting-image` | Compose a clean character-swapped starting frame |
+| POST | `/v1/clones/video` | Submit the motion clone, returns a task id |
+| GET | `/v1/clones/video/{id}` | Poll the clone task for the finished video |
+
+### Download
+
+Stage one video's file to the CDN, one call per video.
+
+| Method | Endpoint | Description | Calls / day |
+|--------|----------|-------------|-------------|
+| POST | `/v1/videos/download/tiktok` | Stage a TikTok video's file | metered |
+| POST | `/v1/videos/download/instagram` | Stage an Instagram video's file | metered |
+
+### Discovery (scrape)
+
+Metadata and discovery only. Scrape returns raw source URLs and never stages media. All scrape endpoints share one daily rate group (500/day). See [scrape](/api-reference/scrape).
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/v1/scrape/tiktok/trending` | Trending feed by region |
+| POST | `/v1/scrape/tiktok/profile/videos` | Videos for a TikTok profile |
+| POST | `/v1/scrape/tiktok/video` | Single TikTok video metadata |
+| POST | `/v1/scrape/instagram/user/reels` | Reels for an Instagram profile |
+| POST | `/v1/scrape/instagram/post` | Single Instagram post metadata |
+
+Full scrape list on the [scrape page](/api-reference/scrape).
+
+### Processing
+
+Each processing endpoint has its own daily rate-limit bucket. Buckets are independent.
 
 | Method | Endpoint | Description | Calls / day |
 |--------|----------|-------------|-------------|
 | POST | `/v1/watch` | AI watches video, freeform prompt | 50 |
 | POST | `/v1/extract` | Pull frames, audio, metadata | 100 |
 | POST | `/v1/transcribe` | Speech-to-text with word timing | 30 |
-| POST | `/v1/check` | Validate spec against rules | 100 |
 | POST | `/v1/compliance/video` | Scan a video against platform TOS | 20 |
 | POST | `/v1/compliance/prompt` | Scan text against platform TOS | 100 |
 | POST | `/v1/overlay` | Burn text overlay onto a video | 50 |
+| POST | `/v1/disclaimer` | Burn a disclaimer card onto a video | 50 |
+| POST | `/v1/check` | Validate a spec against rules | 100 |
 | GET | `/v1/check/rules` | Load per-client custom rules | unmetered |
 | PUT | `/v1/check/rules` | Save per-client custom rules | unmetered |
 
@@ -44,24 +82,19 @@ Storage endpoints are unmetered under your subscription.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/accounts` | Create an account record |
-| PUT | `/v1/accounts` | Update an account record |
-| GET | `/v1/accounts` | List accounts (supports tag filtering) |
-| DELETE | `/v1/accounts` | Delete an account |
-| POST | `/v1/posts` | Create a post record (200/day) |
-| PUT | `/v1/posts` | Update a post record |
-| GET | `/v1/posts` | List posts (supports tag filtering) |
-| DELETE | `/v1/posts` | Delete a post |
 | POST | `/v1/upload` | Upload media to CDN (100/day) |
 | POST | `/v1/upload/url` | Upload from external URL |
-| POST | `/v1/references` | Create a reference record |
-| PUT | `/v1/references` | Update a reference record |
-| GET | `/v1/references` | List references (supports tag filtering) |
-| DELETE | `/v1/references` | Delete a reference |
-| POST | `/v1/assets` | Create an asset record |
-| PUT | `/v1/assets` | Update an asset record |
-| GET | `/v1/assets` | List assets (supports tag filtering) |
-| DELETE | `/v1/assets` | Delete an asset |
+| POST/GET/PUT/DELETE | `/v1/accounts` | Manage account records (supports tag filtering) |
+| POST/GET/PUT/DELETE | `/v1/posts` | Manage post records (200/day create) |
+| POST/GET/PUT/DELETE | `/v1/references` | Manage reference records |
+| POST/GET/PUT/DELETE | `/v1/assets` | Manage asset records |
+
+### Jobs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/v1/jobs` | Inspect a durable media job |
+| GET | `/v1/distribution/jobs` | Inspect a distribution job |
 
 ### Billing & Keys
 
@@ -100,6 +133,7 @@ Filter on GET requests: `?tag.brand=summer-launch`
 | `400` | Missing or invalid parameters |
 | `401` | Missing or invalid API key |
 | `403` | Subscription inactive or expired (`subscription_required`) |
+| `422` | Unprocessable request (for example `video_too_long` on a clone over 15 seconds) |
 | `429` | Daily rate limit reached |
 
 ## Error format
@@ -115,9 +149,9 @@ All errors return a consistent JSON structure. On `429`, the response includes `
 }
 ```
 
-## Synchronous responses
+## Synchronous and async responses
 
-All intelligence endpoints return synchronous `200` responses with the result in the body. No polling required.
+Most endpoints return a synchronous `200` with the result in the body. The clone video call is asynchronous: `POST /v1/clones/video` returns `202` with a task id, which you poll with `GET /v1/clones/video/{id}`.
 
 ## CORS
 

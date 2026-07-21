@@ -1,0 +1,85 @@
+---
+title: "Characters"
+description: "Create, list, and fetch reusable characters for cloning."
+---
+
+Characters are a persisted, reusable resource. Create one once, then reuse its id on every clone.
+
+## createCharacter
+
+Generates a character and stores it under your tenant.
+
+### Usage
+
+```typescript
+const { data, error } = await vj.createCharacter({
+  prompt: "A calm woman in her 30s, natural light, plain background",
+  referenceImageUrl: "https://cdn.example.com/face.jpg",
+});
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `prompt` | `string` | Yes | Text description of the character |
+| `referenceImageUrl` | `string` | No | Public HTTPS identity/face image to guide generation |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Character id (`"char_..."`) |
+| `imageUrl` | `string` | CDN URL of the generated character image |
+| `model` | `string` | Model that produced the character |
+
+This call is synchronous and shares the daily clone admission limit.
+
+## listCharacters
+
+Lists the characters stored under your tenant.
+
+### Usage
+
+```typescript
+const { data, error } = await vj.listCharacters();
+```
+
+### Parameters
+
+None.
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `characters` | `Array<{ id, model, createdAt }>` | Stored characters, most recent first |
+
+Reads are not billed.
+
+## getCharacter
+
+Fetches a single character record by id.
+
+### Usage
+
+```typescript
+const { data, error } = await vj.getCharacter("char_abc123");
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | `string` | Yes | The `char_...` id |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Character id (`"char_..."`) |
+| `imageUrl` | `string` | CDN URL of the character image |
+| `model` | `string` | Model that produced the character |
+| `createdAt` | `string` | When the character was created |
+
+Returns 404 if the character does not exist or belongs to another tenant.

@@ -1,37 +1,51 @@
 ---
-title: "VidJutsu — Video Primitives for Agents"
-description: "Deterministic video primitives your agent can call directly: scrape, download, watch, transcribe, check compliance, overlay, and distribute."
+title: "VidJutsu — Clone viral videos"
+description: "Your agent can clone viral TikTok and Instagram videos onto your own characters. Get a clone score, swap in your character, get a rendered clone."
 ---
 
-VidJutsu gives your agent a typed set of video primitives: pull social posts, download the media, transcribe or watch a video for what's in it, run a compliance check, burn an overlay or disclaimer, and hand the result off to distribution.
+VidJutsu lets your agent clone viral TikTok and Instagram videos onto your own characters. Point it at a source video and it does three things:
 
-Each primitive is a single typed call with a durable job you can poll. No orchestration required on your side.
-
-## The core workflow
-
-<CardGroup cols={2}>
-  <Card title="Pull the source" icon="arrow-down-to-line" href="/api-reference/scrape">
-    Scrape a TikTok or Instagram post, or download it into a stable, tenant-owned VidJutsu asset.
+<CardGroup cols={3}>
+  <Card title="Get a clone score" icon="gauge" href="/guides/clone-viral-videos">
+    A clone check reads whether a source video will clone well before you spend anything on rendering.
   </Card>
-  <Card title="Watch or transcribe" icon="eye" href="/sdk/watch">
-    Ask a video what's in it, or get a word-level transcript.
+  <Card title="Swap in your character" icon="user" href="/sdk/characters">
+    Create a reusable character once, then use it across every clone.
   </Card>
-  <Card title="Check compliance" icon="badge-check" href="/api-reference/introduction">
-    Run a TOS/compliance check against configurable rules before you publish.
-  </Card>
-  <Card title="Overlay and distribute" icon="film" href="/sdk/overlay">
-    Burn a text overlay or disclaimer, then hand the finished asset to distribution.
+  <Card title="Get a rendered clone" icon="film" href="/sdk/clone-video">
+    Kling motion control maps the source motion onto your character and returns a finished video.
   </Card>
 </CardGroup>
 
-## Quick start
+Each step is a single typed call with a durable task you can poll. Your agent orchestrates the sequence. There is no workflow engine to run on your side.
+
+## Clone a video
 
 <CardGroup cols={2}>
-  <Card title="Download, transcribe, overlay" icon="sparkles" href="/quickstart">
-    Three calls: pull a video, transcribe it, burn an overlay on the result.
+  <Card title="Clone viral videos" icon="clapperboard" href="/guides/clone-viral-videos">
+    Stage a source video, score it, swap in your character, and generate your version.
   </Card>
-  <Card title="Clone a trending skit" icon="clapperboard" href="/guides/clone-trending-skits">
-    Six calls: stage a source video, check it's cloneable, and generate your own version.
+  <Card title="Get an API key" icon="key" href="/get-api-key">
+    Subscribe and start calling in a couple of minutes.
+  </Card>
+</CardGroup>
+
+## Supporting capabilities
+
+Beyond cloning, the same API covers the steps around it.
+
+<CardGroup cols={2}>
+  <Card title="Discover" icon="magnifying-glass" href="/api-reference/scrape">
+    Scrape TikTok and Instagram for trending, profile, and post metadata to find videos worth cloning.
+  </Card>
+  <Card title="Download" icon="arrow-down-to-line" href="/sdk/download">
+    Stage a single video's file to the CDN so the generation steps can fetch it.
+  </Card>
+  <Card title="Understand" icon="eye" href="/sdk/watch">
+    Watch a video for what's in it, or get a word-level transcript.
+  </Card>
+  <Card title="Finish" icon="badge-check" href="/sdk/overlay">
+    Run an ad-compliance check, then burn a text overlay or disclaimer onto the result.
   </Card>
 </CardGroup>
 
@@ -39,19 +53,19 @@ Each primitive is a single typed call with a durable job you can poll. No orches
 
 <CardGroup cols={3}>
   <Card title="REST API" icon="code" href="/api-reference/introduction">
-    Call typed public primitives directly from any runtime.
+    Call typed endpoints directly from any runtime.
   </Card>
   <Card title="TypeScript SDK" icon="braces" href="/sdk/index">
-    Use the generated SDK for scrape, watch, transcribe, overlay, and job polling.
+    Fully typed methods for the clone workflow and everything around it.
   </Card>
-  <Card title="CLI and Skills" icon="terminal" href="/cli/index">
-    Install the CLI or public skill package in an agent workspace.
+  <Card title="CLI" icon="terminal" href="/cli/index">
+    Run `vidjutsu clone` from a terminal or an agent workspace.
   </Card>
 </CardGroup>
 
 ## MCP
 
-VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes the clone pipeline as typed tools: `download_tiktok_video`, `clone_check`, `create_character`, `clone_starting_image`, `clone_video`, and `get_clone_video`.
+VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes the clone workflow as typed tools: `download_tiktok_video`, `clone_check`, `create_character`, `clone_starting_image`, `clone_video`, and `get_clone_video`.
 
 **Claude Code (CLI):**
 
@@ -63,4 +77,4 @@ The `--transport http` flag is required for a remote server. After adding, run `
 
 **Claude (desktop app and claude.ai):** add a custom connector. In the desktop app: Settings, Connectors, Add custom connector. On the web: [claude.ai/customize/connectors](https://claude.ai/customize/connectors). Enter `https://api.vidjutsu.ai/mcp` and authorize in the browser. There is no command to run.
 
-The SDK, CLI, public skills, and the agent authentication manifest remain available as alternatives.
+The SDK, CLI, and REST API remain available as alternatives.

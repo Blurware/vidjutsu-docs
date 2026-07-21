@@ -1,0 +1,47 @@
+---
+title: "cloneCheck"
+description: "Scores whether a source video will clone well before you spend on rendering."
+---
+
+## Usage
+
+```typescript
+const { data, error } = await vj.cloneCheck({
+  videoUrl: "https://cdn.example.com/source.mp4",
+  context: "TikTok UGC — woman reviewing a skincare product",
+});
+```
+
+## Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `videoUrl` | `string` | Yes | Public HTTPS URL of the staged source video |
+| `context` | `string` | No | Short description of the source to aid the read |
+
+## Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `verdict` | `string` | One of `"strong"`, `"possible"`, or `"weak"` |
+| `score` | `number` | Confidence score from 0 to 100 |
+| `evidence` | `string[]` | Reasons behind the verdict |
+| `model` | `string` | Model that produced the read |
+
+## Example — branch on the verdict
+
+```typescript
+const { data } = await vj.cloneCheck({
+  videoUrl: "https://cdn.example.com/source.mp4",
+});
+
+if (data.verdict === "weak") {
+  // Usually not worth continuing — pick another source.
+} else {
+  // "strong" or "possible" — worth continuing to the clone steps.
+}
+```
+
+## Rate limit
+
+Shares the daily clone admission limit. Resets at 00:00 UTC; exceeding it returns HTTP 429.
