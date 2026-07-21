@@ -1,40 +1,39 @@
 ---
 title: Features
-description: The deterministic video primitives behind VidJutsu.
+description: Clone viral videos onto your own characters, plus the steps around it.
 ---
-
-## Social video import
-
-Import TikTok and Instagram video posts into stable, tenant-owned VidJutsu assets. Repeated imports reuse the same asset so retries and downstream jobs do not download the reference again.
-
-## Scrape
-
-Pull structured profile, post, comment, and search data from TikTok and Instagram without downloading media. Useful for research before you decide what to download.
-
-## Watch
-
-Use `POST /v1/watch` for prompted video or image understanding. Every watch request requires a prompt describing the evidence you need back from the model.
-
-## Transcribe
-
-Get a speech-to-text transcript with word-level timing for any video or audio URL.
-
-## Compliance check
-
-Run a TOS/compliance check against configurable rules before you publish. Rules are tenant-owned and can be read and updated through `GET/PUT /v1/check/rules`.
 
 ## Cloning
 
-Clone a public TikTok or Instagram skit into your own version with a swapped identity. `POST /v1/clones/check` scores whether a staged source video will clone reliably (verdict plus a 0-100 score and evidence). `POST /v1/characters` and `POST /v1/clones/starting-image` generate the identity and a clean starting frame. `POST /v1/clones/video` submits the motion clone (Kling motion control by default, Seedance as the alternate model) and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds. See the [clone a trending skit guide](/guides/clone-trending-skits) for the full call sequence.
+Clone a public TikTok or Instagram video into your own version with a swapped identity.
 
-## Overlay and disclaimer
+- `POST /v1/clones/check` scores whether a staged source video will clone reliably. It returns a verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence behind it, so you can decide before you spend on rendering.
+- `POST /v1/characters` generates a reusable character and persists it under a `char_...` id. Create it once and reuse the id on every clone. List with `GET /v1/characters`, fetch one with `GET /v1/characters/{id}`.
+- `POST /v1/clones/starting-image` composes a clean starting frame from your character, with no captions, watermarks, or platform UI.
+- `POST /v1/clones/video` submits the motion clone (Kling motion control by default, Seedance as the alternate model) and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds.
 
-Burn a text overlay onto a video in TikTok-safe zones, or add a disclaimer card. Both return a durable output URL.
+See the [clone viral videos guide](/guides/clone-viral-videos) for the full call sequence.
 
-## Jobs and distribution
+## Discover
 
-Media operations return a durable job you can poll for status, retries, and final artifacts. Distribution primitives (`/v1/distribution/clips`, `/v1/distribution/jobs`) hand finished assets off downstream.
+Pull structured profile, post, comment, and search data from TikTok and Instagram to find videos worth cloning. Scrape returns the provider's raw source URLs and does not stage media.
+
+## Download
+
+Stage one video's file into a stable, tenant-owned VidJutsu asset with `POST /v1/videos/download/tiktok` or `/instagram`, one call per video. Repeated downloads of the same post reuse the same asset, so retries and downstream steps do not fetch the source again. The generation steps take the staged VidJutsu URL, not the original platform link.
+
+## Understand
+
+Use `POST /v1/watch` for prompted video or image understanding. Every watch request takes a prompt describing the evidence you need back from the model. Use `POST /v1/transcribe` for a speech-to-text transcript with word-level timing.
+
+## Compliance and finishing
+
+Run a TOS/compliance check against configurable, tenant-owned rules with `POST /v1/compliance/video` and `POST /v1/compliance/prompt` before you publish. Burn a text overlay onto a video in TikTok-safe zones with `POST /v1/overlay`, or add a disclaimer card with `POST /v1/disclaimer`. Both return a durable output URL.
+
+## Jobs
+
+Media operations return a durable job you can poll for status, retries, and final artifacts through `GET /v1/jobs` and `GET /v1/distribution/jobs`.
 
 ## Interfaces
 
-VidJutsu supports REST, a generated TypeScript SDK, the CLI, public agent skills, an agent-readable auth manifest, and an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp` (OAuth 2.1 + bearer).
+VidJutsu supports REST, a generated TypeScript SDK, the CLI, an agent-readable auth manifest, and an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp` (OAuth 2.1 + bearer).

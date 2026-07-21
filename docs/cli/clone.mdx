@@ -1,0 +1,77 @@
+---
+title: "vidjutsu clone"
+description: "Create reusable characters and clone viral videos onto them."
+---
+
+Characters are reusable. Create one, then clone any number of videos with it. `clone run` never generates a new random character — you pass the id of a character you already made.
+
+## Create a character
+
+```bash
+vidjutsu clone character --prompt "A friendly host in their late 20s, casual streetwear"
+```
+
+Prints a `char_...` id. Save it and reuse it on every clone.
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--prompt` | Yes | Text description of the character to generate |
+| `--reference` | No | Public HTTPS reference image URL to guide identity |
+
+List the characters you have already created:
+
+```bash
+vidjutsu clone character list
+```
+
+## Check a source video
+
+```bash
+vidjutsu clone check "https://www.tiktok.com/@creator/video/123456789"
+```
+
+Scores whether the source video will clone well and prints the verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence.
+
+| Argument / Flag | Required | Description |
+|-----------------|----------|-------------|
+| `<videoUrl>` | Yes | Public HTTPS URL of the source video |
+| `--context` | No | Short description of the source to aid the read |
+
+## Clone a video
+
+```bash
+vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
+  --character char_2a91b7f4
+```
+
+`clone run` downloads the source video, runs the clone check, composes a character-swapped starting frame from the character you passed, generates the clone video, and waits for the final URL. It stops if the check verdict is weak, unless you pass `--force`.
+
+| Argument / Flag | Required | Description |
+|-----------------|----------|-------------|
+| `<tiktokUrl>` | Yes | TikTok video URL to clone |
+| `--character` | Yes | Stored `char_...` id from `clone character` |
+| `--starting-prompt` | No | Prompt for the starting frame composition |
+| `--model` | No | `kling` (default) or `seedance` |
+| `--force` | No | Proceed even if the clone check verdict is weak |
+
+Kling motion control is the default model. Output is 480p 9:16. Source clips are capped at 15 seconds.
+
+## Compose a starting frame
+
+`clone run` does this for you. Run it on its own when you want the frame without generating a video.
+
+```bash
+vidjutsu clone starting-image \
+  --character char_2a91b7f4 \
+  --prompt "Standing at a kitchen counter, mid-gesture, facing camera" \
+  --source "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
+```
+
+| Flag | Required | Description |
+|------|----------|-------------|
+| `--character` | Yes | Stored `char_...` id, or a public HTTPS character image URL |
+| `--prompt` | Yes | Instructions for composing the starting frame |
+| `--source` | No | Public HTTPS source video URL to ground the composition |
+| `--model` | No | `kling` (default) or `seedance` |
+
+The returned frame is always clean, with no overlays or platform UI.

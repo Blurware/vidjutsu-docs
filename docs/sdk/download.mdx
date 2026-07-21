@@ -1,0 +1,58 @@
+---
+title: "Download"
+description: "Stage a TikTok or Instagram video to the VidJutsu CDN for downstream use."
+---
+
+TikTok and Instagram links are not directly fetchable by the generation providers. Stage the source first, then pass the returned `url` to the clone steps. Each call stages one video's file to the VidJutsu CDN.
+
+## downloadTikTokVideo
+
+### Usage
+
+```typescript
+const { data, error } = await vj.downloadTikTokVideo({
+  url: "https://www.tiktok.com/@user/video/1234567890",
+});
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | `string` | Yes | Public TikTok video/post URL |
+
+## downloadInstagramVideo
+
+### Usage
+
+```typescript
+const { data, error } = await vj.downloadInstagramVideo({
+  url: "https://www.instagram.com/reel/AbcDefGhi/",
+});
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `url` | `string` | Yes | Public Instagram video/post URL |
+
+## Returns
+
+Both methods return the same shape.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `assetId` | `string` | Id of the staged asset |
+| `url` | `string` | The staged VidJutsu CDN URL to use downstream |
+| `platform` | `string` | Source platform |
+| `externalId` | `string` | The post's id on the source platform |
+| `sourceUrl` | `string` | The original URL that was staged |
+| `contentType` | `string` | MIME type of the staged file |
+| `size` | `number` | File size in bytes |
+| `sha256` | `string` | SHA-256 hash of the staged file |
+| `reused` | `boolean` | `true` when the same post was already staged |
+
+## Rate limit
+
+Metered per call. Returns HTTP 429 with a `Retry-After` header when the daily limit is hit.

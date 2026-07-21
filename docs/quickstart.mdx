@@ -1,60 +1,82 @@
 ---
 title: "Quickstart"
-description: "Download a video, transcribe it, and burn an overlay in three calls."
+description: "Create a character and clone a viral video onto it."
 ---
 
 <Info>
 Need an API key? Follow [Get your API key](/get-api-key) first.
 </Info>
 
-## Download, transcribe, overlay
+## Clone a video
 
-Three typed calls: pull a TikTok post into a stable VidJutsu asset, transcribe it with word-level timing, then burn a text overlay on the result.
+Create a reusable character once, then clone a viral video onto it. The fastest path is the CLI:
+
+```bash
+# Create a character once. This prints a char_... id.
+vidjutsu clone character --prompt "A friendly host in their late 20s, casual streetwear"
+
+# Clone a TikTok video onto that character.
+vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
+  --character char_2a91b7f4
+```
+
+`clone run` stages the source, scores it with a clone check, composes a character-swapped starting frame, generates the clone, and prints the finished video URL.
+
+## The same flow in the SDK
 
 ```typescript
 import { createClient } from "vidjutsu";
 
 const vj = createClient();
 
-// 1. Download the source video into a tenant-owned asset
-const { data: download } = await vj.downloadTikTokVideo({
+// 1. Create a reusable character (returns { id: "char_...", imageUrl, model }).
+const { data: character } = await vj.createCharacter({
+  prompt: "A friendly host in their late 20s, casual streetwear",
+});
+
+// 2. Stage the source video, then score it.
+const { data: source } = await vj.downloadTikTokVideo({
   url: "https://www.tiktok.com/@creator/video/123456789",
 });
+const { data: check } = await vj.cloneCheck({ videoUrl: source.url });
+console.log(check.verdict, check.score);
 
-// 2. Transcribe it
-const { data: transcript } = await vj.transcribeMedia({
-  mediaUrl: download.videoUrl,
+// 3. Compose a starting frame, generate the clone, and poll for the result.
+const { data: starting } = await vj.cloneStartingImage({
+  characterId: character.id,
+  sourceVideoUrl: source.url,
+  prompt: "Match the framing and pose of the source's opening frame",
 });
-
-// 3. Burn an overlay using the first line of the transcript
-const { data: overlay } = await vj.createOverlay({
-  videoUrl: download.videoUrl,
-  text: transcript.transcript.slice(0, 60),
-  position: "bottom",
+const { data: task } = await vj.cloneVideo({
+  startingImageUrl: starting.imageUrl,
+  sourceVideoUrl: source.url,
+  model: "kling",
 });
-
-console.log(overlay.resultUrl);
+const { data: result } = await vj.getCloneVideo(task.id);
+console.log(result.videoUrl);
 ```
 
 ## What happens
 
-1. **Download** — the TikTok post becomes a stable, tenant-owned VidJutsu asset with a durable URL.
-2. **Transcribe** — you get back the full transcript plus word-level timing.
-3. **Overlay** — VidJutsu burns the text onto the video in TikTok-safe zones and returns the finished asset URL.
+1. **Character** — a persisted, reusable identity you create once and reuse on every clone.
+2. **Download** — the source post becomes a stable, tenant-owned VidJutsu asset with a durable URL.
+3. **Check** — a verdict and 0-100 score for whether the source will clone well, before you spend on rendering.
+4. **Starting image** — a clean character-swapped opening frame, no captions or platform UI.
+5. **Clone video** — Kling motion control maps the source motion onto your character and returns the finished URL.
 
 ## Next steps
 
 <CardGroup cols={2}>
+  <Card title="Clone viral videos guide" icon="clapperboard" href="/guides/clone-viral-videos">
+    The full call sequence with every request and response shape.
+  </Card>
   <Card title="Scrape guide" icon="magnifying-glass" href="/guides/scrape">
-    Pull profile, post, and comment data before you decide what to download.
+    Pull profile, post, and comment data to find videos worth cloning.
   </Card>
   <Card title="SDK reference" icon="braces" href="/sdk/index">
-    Use typed SDK methods for downloads, watch, transcribe, overlay, and job polling.
-  </Card>
-  <Card title="Agent authentication" icon="key-round" href="/auth">
-    Configure an agent-readable registration and key-claim flow.
+    Typed methods for the clone workflow and everything around it.
   </Card>
   <Card title="API reference" icon="code" href="/api-reference/introduction">
-    Explore every public operation and response schema.
+    Every public operation and response schema.
   </Card>
 </CardGroup>

@@ -1,0 +1,63 @@
+---
+title: "cloneVideo"
+description: "Renders a clone video from a starting image and a source, then polls for the result."
+---
+
+## cloneVideo
+
+Starts a clone render. Returns 202 with a task id to poll.
+
+### Usage
+
+```typescript
+const { data, error } = await vj.cloneVideo({
+  startingImageUrl: "https://cdn.example.com/start.jpg",
+  sourceVideoUrl: "https://cdn.example.com/source.mp4",
+  model: "kling",
+});
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `startingImageUrl` | `string` | Yes | Starting frame from `cloneStartingImage` |
+| `sourceVideoUrl` | `string` | Yes | Staged source video URL, capped at 15 seconds |
+| `model` | `string` | No | `"kling"` (default) uses Kling motion control and keeps original sound; `"seedance"` produces a 480p 9:16 alternate |
+| `prompt` | `string` | No | Overrides the default identity-swap prompt; seedance only |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Clone task id (`"clone_..."`) |
+| `status` | `string` | Task status |
+
+This call is asynchronous. Returns 422 `video_too_long` if the source runs past 15 seconds.
+
+## getCloneVideo
+
+Fetches the status and result of a clone task.
+
+### Usage
+
+```typescript
+const { data, error } = await vj.getCloneVideo("clone_abc123");
+```
+
+### Parameters
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | `string` | Yes | The clone task id |
+
+### Returns
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | `string` | Clone task id (`"clone_..."`) |
+| `status` | `string` | One of `"processing"`, `"completed"`, or `"failed"` |
+| `videoUrl` | `string` | CDN URL of the finished video; present on completed |
+| `error` | `string` | Failure reason; present on failed |
+
+Poll while `status` is `"processing"`. Status reads are not billed or rate-limited.

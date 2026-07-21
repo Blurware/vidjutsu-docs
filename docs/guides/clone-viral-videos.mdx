@@ -1,11 +1,11 @@
 ---
-title: "Clone a trending skit"
-description: "Take a TikTok skit, check it's cloneable, and generate your own version with a swapped identity."
+title: "Clone viral videos"
+description: "Take a viral TikTok or Instagram video, check it's cloneable, and generate your own version with a swapped identity."
 ---
 
-# Your agent can Clone Viral Trending Skits Now
+# Your agent can clone viral videos now
 
-Cloning takes a public TikTok or Instagram skit, evaluates whether its motion and framing will transfer cleanly, and generates a new video with your character performing the same motion. Create your character once, then reuse its id on every clone.
+Cloning takes a public TikTok or Instagram video, evaluates whether its motion and framing will transfer cleanly, and generates a new video with your character performing the same motion. Create your character once, then reuse its id on every clone.
 
 <Info>
 Need an API key? Follow [Get your API key](/get-api-key) first.
@@ -99,7 +99,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
   -H "Content-Type: application/json" \
   -d '{
     "videoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
-    "context": "Two-person kitchen skit, single continuous take, minimal camera movement"
+    "context": "Two-person kitchen scene, single continuous take, minimal camera movement"
   }'
 ```
 
@@ -219,7 +219,7 @@ The CLI command wraps the remaining calls: stage, check, starting image (using t
   <Card title="Overlay and disclaimer" icon="film" href="/sdk/overlay">
     Add a text overlay or disclaimer card to the finished clone before you publish.
   </Card>
-  <Card title="Agent authentication" icon="key-round" href="/auth">
-    Configure an agent-readable registration and key-claim flow.
+  <Card title="Authentication" icon="key-round" href="/authentication">
+    Get an API key and pass it as a bearer token.
   </Card>
 </CardGroup>
