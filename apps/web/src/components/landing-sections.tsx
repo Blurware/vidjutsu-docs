@@ -1,10 +1,10 @@
 import { WorkflowChat } from "@/components/workflow-chat";
 
 const faqs = [
-  ["What does VidJutsu do?", "VidJutsu lets your agent clone a trending TikTok skit. It pulls the source clip, checks whether it can be cloned, builds a character, generates a clean starting frame, and renders the clone."],
-  ["How much does it cost?", "API calls are metered per call. Access is billed on a flat monthly plan, no separate credit purchases."],
-  ["What resolution and model do I get by default?", "Clones render at 480p in 9:16 by default. Kling motion-control is the default model, with Seedance available as an option."],
-  ["Do I need to host anything?", "No. VidJutsu runs the pipeline and returns a hosted video URL. There is nothing to deploy or host on your side."],
+  ["What does VidJutsu do?", "It lets your agent clone a video that is already working. Point it at a trending clip, put your own character in it, and get a finished video back."],
+  ["How much does it cost?", "One flat monthly plan. No separate credit purchases and no per-clip math."],
+  ["What do the clones look like?", "Vertical 9:16 video, ready for TikTok, Reels, and Shorts. Your character in the motion that is already getting views."],
+  ["Do I need to host anything?", "No. VidJutsu does the work and hands back a finished video link. Nothing to deploy or host on your side."],
 ] as const;
 
 export function LandingSections() {
@@ -12,20 +12,20 @@ export function LandingSections() {
     <>
       <section className="vj-difference" id="difference">
         <div className="vj-frame">
-          <div className="vj-section-heading"><div><span>02 / THE DIFFERENCE</span><h2>Call the primitive. Skip the glue code.</h2></div><p>Typed video operations for the work your agent already knows how to direct.</p></div>
+          <div className="vj-section-heading"><div><span>02 / THE DIFFERENCE</span><h2>Skip the editing. Keep the views.</h2></div><p>Your agent does the work. You post more of what is already winning.</p></div>
           <div className="vj-comparison-grid">
-            <article><span>WITHOUT VIDJUTSU</span><h3>You become the media pipeline.</h3><ul><li>Find and download a usable source video</li><li>Wire up transcription and watch providers</li><li>Track jobs, retries, and artifacts yourself</li><li>Apply overlays and disclaimers after the fact</li><li>Build your own compliance rules and checks</li></ul></article>
-            <article className="with"><span>WITH VIDJUTSU</span><h3>Your agent calls the primitive it needs.</h3><ul><li>Pull a reference into a stable asset</li><li>Compose typed, durable media primitives</li><li>Poll a job for status and final output</li><li>Check compliance before you publish</li></ul><footer>ONE API · DETERMINISTIC PRIMITIVES</footer></article>
+            <article><span>THE OLD WAY</span><h3>You do it all by hand.</h3><ul><li>Hunt for a video worth copying</li><li>Guess whether it will land</li><li>Reshoot or edit it yourself</li><li>Wait days for one video</li><li>Post one, hope it works</li></ul></article>
+            <article className="with"><span>WITH VIDJUTSU</span><h3>Your agent ships the clone.</h3><ul><li>Score a video before you spend</li><li>Put your own character in it</li><li>Get a finished clone in minutes</li><li>Post at the pace an agent works</li></ul><footer>ONE KEY · YOUR AGENT DOES IT</footer></article>
           </div>
         </div>
       </section>
       <section className="vj-workflow" id="workflow">
-        <div className="vj-frame"><div className="vj-section-heading"><div><span>03 / IN ACTION</span><h2>What a session looks like.</h2></div><p>The same six calls from the previous section, run end to end by an agent.</p></div><WorkflowChat /></div>
+        <div className="vj-frame"><div className="vj-section-heading"><div><span>03 / IN ACTION</span><h2>What a session looks like.</h2></div><p>You ask. Your agent scores it, swaps in your character, and hands back a clone.</p></div><WorkflowChat /></div>
       </section>
-      <section className="vj-pricing" id="pricing"><div className="vj-frame"><div className="vj-pricing-heading"><h2>Simple access.</h2><p>One API key for every video primitive.</p></div><article className="vj-price-card"><div><span>VIDJUTSU API</span><h3>$99 <small>/ month</small></h3><p>API access for scrape, download, watch, transcribe, compliance checks, overlays, and jobs.</p></div><a href="https://docs.vidjutsu.ai/get-api-key">Get API key</a></article></div></section>
+      <section className="vj-pricing" id="pricing"><div className="vj-frame"><div className="vj-pricing-heading"><h2>Simple access.</h2><p>One key, one flat plan. No credit math.</p></div><article className="vj-price-card"><div><span>VIDJUTSU</span><h3>$99 <small>/ month</small></h3><p>Clone trending videos with your own characters, as often as your agent can work.</p></div><a href="https://docs.vidjutsu.ai/get-api-key">Get API key</a></article></div></section>
       <section className="vj-faq vj-frame" id="faq"><div><span>05 / FAQ</span><h2>The short version.</h2></div><div>{faqs.map(([q, a]) => <details key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></section>
-      <section className="vj-closing"><div className="vj-frame"><span>BUILT FOR AGENTS</span><h2>Pull the video. Get the primitive you need.</h2><div><a className="vj-primary" href="https://docs.vidjutsu.ai/get-api-key">Get API key</a><a href="https://docs.vidjutsu.ai">Read the docs ↗</a></div></div></section>
-      <footer className="vj-footer vj-frame"><a href="#main"><b>VJ</b> vidjutsu</a><p>Deterministic video primitives. Built for agents.</p><div><a href="https://docs.vidjutsu.ai">Docs</a><a href="https://api.vidjutsu.ai">API status</a><a href="https://docs.vidjutsu.ai/legal/terms">Terms</a></div></footer>
+      <section className="vj-closing"><div className="vj-frame"><span>BUILT FOR AGENTS</span><h2>Your agent can clone viral videos now.</h2><div><a className="vj-primary" href="https://docs.vidjutsu.ai/get-api-key">Get API key</a><a href="https://docs.vidjutsu.ai">Read the docs ↗</a></div></div></section>
+      <footer className="vj-footer vj-frame"><a href="#main"><b>VJ</b> vidjutsu</a><p>Clone viral videos. Built for agents.</p><div><a href="https://docs.vidjutsu.ai">Docs</a><a href="https://api.vidjutsu.ai">API status</a><a href="https://docs.vidjutsu.ai/legal/terms">Terms</a></div></footer>
     </>
   );
 }

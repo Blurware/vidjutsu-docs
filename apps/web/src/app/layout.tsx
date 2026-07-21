@@ -4,12 +4,12 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#101721",
+  themeColor: "#f2ecdf",
 };
 
-const HEADLINE = "Your agent can Clone Viral Trending Skits Now";
+const HEADLINE = "Your agent can clone viral videos now";
 const DESCRIPTION =
-  "Paste a link to a trending skit. VidJutsu checks whether it can be cloned, builds a character and a clean starting frame, then renders the clone. About 5 minutes end to end.";
+  "Point your agent at a video that is already working. It puts your character in it and hands you one back, ready to post.";
 
 export const metadata: Metadata = {
   title: {

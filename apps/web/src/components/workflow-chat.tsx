@@ -1,13 +1,13 @@
 const finishedStages = [
-  "Checking cloneability against the source clip",
-  "Building the character",
-  "Generating a clean starting frame",
+  "Scored the video: strong, 95 / 100",
+  "Put your character in the scene",
+  "Rendered the clone",
 ] as const;
 
 const resultRows = [
-  "verdict strong · score 95",
-  "starting frame ready · no overlays",
-  "clone rendered · videoUrl ready",
+  "clone score · 95 / 100 strong",
+  "your character · swapped in",
+  "clone · ready to post",
 ] as const;
 
 export function WorkflowChat() {
@@ -20,11 +20,11 @@ export function WorkflowChat() {
       <div className="vj-chat-body">
         <article className="vj-message vj-message-user">
           <span>01 · YOU</span>
-          <p>Clone this trending skit: <strong>https://www.tiktok.com/@creator/video/7534210998821</strong></p>
+          <p>Clone this one with my character: <strong>https://www.tiktok.com/@creator/video/7534210998821</strong></p>
         </article>
         <article className="vj-message vj-message-agent">
           <span>02 · AGENT</span>
-          <p>On it. Each step is a typed call with its own durable job.</p>
+          <p>On it. Scoring it first, then swapping you in.</p>
           <div className="vj-work-log">
             {finishedStages.map((item) => <div key={item}><i>✓</i>{item}</div>)}
           </div>
