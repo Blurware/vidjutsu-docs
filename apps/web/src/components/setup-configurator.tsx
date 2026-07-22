@@ -86,13 +86,13 @@ function setup(connection: Connection, agent: Agent) {
   }
   return {
     title: `Give ${agentLabel} the clone skill`,
-    description: "Add the vidjutsu-clone skill so your agent knows the whole clone workflow out of the box.",
+    description: "Add the VidJutsu video skills so your agent knows the whole clone workflow out of the box.",
     steps: [
-      "Add the vidjutsu-clone skill to your agent.",
+      "Add the VidJutsu video skills to your agent.",
       "Set VIDJUTSU_API_KEY in the environment.",
       "Ask your agent to clone a video.",
     ],
-    command: "npx skills add vidjutsu-clone",
+    command: "npx skills add tfcbot/agent-video-team",
     copy: "COPY SKILL",
     note: "Your key stays in the environment, never in the skill.",
     guide: "Skill guide ↗",
