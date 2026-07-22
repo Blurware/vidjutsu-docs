@@ -2,7 +2,7 @@ const BENEFITS = [
   {
     num: "01",
     title: "Get a clone score",
-    desc: "Know a video is worth cloning before you spend anything. Every clone starts with a score.",
+    desc: "Know a video is worth cloning before you use a generation attempt. Every clone starts with a score.",
   },
   {
     num: "02",

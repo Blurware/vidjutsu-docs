@@ -9,7 +9,7 @@ Need an API key? Follow [Get your API key](/get-api-key) first.
 
 ## Clone a video
 
-Create a reusable character once, then clone a viral video onto it. The fastest path is the CLI:
+Create a reusable character once, then clone a viral video onto it. The CLI flow below requires version 1.4.0 or later:
 
 ```bash
 # Create a character once. This prints a char_... id.
@@ -53,7 +53,13 @@ const { data: task } = await vj.cloneVideo({
   sourceVideoUrl: source.url,
   model: "kling",
 });
-const { data: result } = await vj.getCloneVideo(task.id);
+let result;
+do {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  ({ data: result } = await vj.getCloneVideo(task.id));
+} while (result.status === "processing");
+
+if (result.status === "failed") throw new Error(result.error);
 console.log(result.videoUrl);
 ```
 
@@ -61,7 +67,7 @@ console.log(result.videoUrl);
 
 1. **Character** — a persisted, reusable identity you create once and reuse on every clone.
 2. **Download** — the source post becomes a stable, tenant-owned VidJutsu asset with a durable URL.
-3. **Check** — a verdict and 0-100 score for whether the source will clone well, before you spend on rendering.
+3. **Check** — a verdict and 0-100 score for whether the source will clone well, before you use a generation attempt.
 4. **Starting image** — a clean character-swapped opening frame, no captions or platform UI.
 5. **Clone video** — Kling motion control maps the source motion onto your character and returns the finished URL.
 

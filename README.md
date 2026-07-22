@@ -4,7 +4,7 @@ VidJutsu documentation site, built with [Mintlify](https://mintlify.com).
 
 ## OpenAPI Spec
 
-The API reference is generated from the OpenAPI spec hosted at:
+The API reference uses the vendored snapshot at `docs/openapi/spec.json`. Its authoritative source is:
 
 ```
 https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json
@@ -12,17 +12,15 @@ https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json
 
 Source repo: [tfcbot/vidjutsu-openapi](https://github.com/tfcbot/vidjutsu-openapi)
 
-The `docs.json` config references this URL directly via the `openapi` field on the
-API Reference tab. There is no local copy of the spec in this repo.
+`docs/docs.json` references the local snapshot. `.openapi-sha256` records its expected digest, and `bun run check:docs` verifies the snapshot and documentation contracts.
 
-**Note:** Changes to the remote spec do not trigger automatic Mintlify redeployments.
-To redeploy after a spec update, call the
-[Mintlify Trigger Deployment API](https://mintlify.com/docs/api-playground/openapi-setup)
-or push any commit to this repo.
+The OpenAPI repository dispatches `.github/workflows/sync-spec.yml`, which downloads the latest snapshot, updates its digest, validates the docs, and commits changes. That commit triggers the normal Mintlify deployment. The workflow can also be run manually.
 
 ## Development
 
 ```bash
 bun install
 bun run dev
+bun run check
+bun run build
 ```

@@ -18,7 +18,7 @@ const { data, error } = await vj.extractMedia({
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `mediaUrl` | `string` | Yes | URL of the video to extract from |
-| `frames` | `string` | No | Frame indices (`[0, 75, 150]`), `"auto"` for 3 evenly spaced, or `"last"` for the final frame |
+| `frames` | `number[] \| "auto" \| "last"` | No | Frame indices (`[0, 75, 150]`), `"auto"` for 3 evenly spaced, or `"last"` for the final frame |
 | `audio` | `boolean` | No | Extract audio track as WAV |
 | `metadata` | `boolean` | No | Return video metadata. Defaults to `true` |
 

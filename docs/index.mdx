@@ -7,7 +7,7 @@ VidJutsu lets your agent clone viral TikTok and Instagram videos onto your own c
 
 <CardGroup cols={3}>
   <Card title="Get a clone score" icon="gauge" href="/guides/clone-viral-videos">
-    A clone check reads whether a source video will clone well before you spend anything on rendering.
+    A clone check reads whether a source video will clone well before you use a generation attempt.
   </Card>
   <Card title="Swap in your character" icon="user" href="/sdk/characters">
     Create a reusable character once, then use it across every clone.
@@ -17,7 +17,7 @@ VidJutsu lets your agent clone viral TikTok and Instagram videos onto your own c
   </Card>
 </CardGroup>
 
-Each step is a single typed call with a durable task you can poll. Your agent orchestrates the sequence. There is no workflow engine to run on your side.
+Each step is a typed call that your agent orchestrates. Character, download, check, extraction, and starting-image calls return synchronously; clone-video submission returns a durable task id to poll.
 
 ## Clone a video
 
@@ -65,7 +65,7 @@ Beyond cloning, the same API covers the steps around it.
 
 ## MCP
 
-VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes the clone workflow as typed tools: `download_tiktok_video`, `clone_check`, `create_character`, `clone_starting_image`, `clone_video`, and `get_clone_video`.
+VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes five typed tools: `download_tiktok_video`, `download_instagram_video`, `add_overlay`, `clone_check`, and `get_clone_video`. Create characters, compose starting frames, and submit clone videos through REST, the SDK, or the CLI.
 
 **Claude Code (CLI):**
 

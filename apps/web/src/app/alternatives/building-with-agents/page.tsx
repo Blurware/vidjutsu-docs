@@ -112,7 +112,7 @@ export default function BuildingWithAgents() {
               {
                 label: "Check",
                 detail:
-                  "Validate a video against a spec before it ships. Your agent decides what to publish based on pass/fail.",
+                  "Validate VidLang JSON against explicitly enabled rules before generation.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

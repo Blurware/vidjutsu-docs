@@ -3,7 +3,7 @@ title: "CLI Overview"
 description: "Clone viral videos from the terminal with the VidJutsu CLI."
 ---
 
-The VidJutsu CLI runs the clone workflow and the calls around it from your terminal or an agent workspace. It is a lightweight wrapper around the [REST API](/api-reference/introduction) — every command maps to a call to `api.vidjutsu.ai`.
+The VidJutsu CLI runs the clone workflow and the calls around it from your terminal or an agent workspace. Standalone CLI 0.6.0 and the CLI bundled with SDK 1.4.0 target the current API contract.
 
 ## Install
 
@@ -40,14 +40,17 @@ See [`vidjutsu clone`](/cli/clone) for every subcommand and flag.
 | [`vidjutsu compliance`](/cli/compliance) | Scan a video or caption against platform TOS |
 | [`vidjutsu check`](/cli/check) | Validate a spec against rules |
 | [`vidjutsu overlay`](/cli/overlay) | Burn a text overlay onto a video |
+| `vidjutsu disclaimer` | Burn a fine-print disclaimer onto a video |
 | [`vidjutsu upload`](/cli/upload) | Upload media to the CDN |
 | [`vidjutsu account`](/cli/accounts) | Manage account records |
 | [`vidjutsu post`](/cli/posts) | Manage post records |
 | [`vidjutsu reference`](/cli/reference) | Manage reference records |
 | [`vidjutsu asset`](/cli/asset) | Manage asset records |
+| [`vidjutsu project`](/cli/projects) | Manage editor timeline projects |
 | [`vidjutsu usage`](/cli/usage) | Remaining daily capacity per endpoint |
 | [`vidjutsu subscribe`](/cli/subscribe) | Manage your subscription |
 | [`vidjutsu info`](/cli/info) | Show API discovery info |
+| `vidjutsu update` | Update the installed CLI |
 
 ## Configuration
 
@@ -60,4 +63,4 @@ The CLI stores its config at `~/.vidjutsu/config.json`:
 }
 ```
 
-All output is JSON by default, which makes it easy to pipe into `jq` or other tools.
+Generated endpoint commands print JSON. Workflow-oriented commands such as `clone` and `check` print progress and human-readable summaries.

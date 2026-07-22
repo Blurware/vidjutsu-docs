@@ -82,12 +82,13 @@ Storage endpoints are unmetered under your subscription.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/v1/upload` | Upload media to CDN (100/day) |
+| POST | `/v1/upload` | Upload media to CDN |
 | POST | `/v1/upload/url` | Upload from external URL |
 | POST/GET/PUT/DELETE | `/v1/accounts` | Manage account records (supports tag filtering) |
-| POST/GET/PUT/DELETE | `/v1/posts` | Manage post records (200/day create) |
+| POST/GET/PUT/DELETE | `/v1/posts` | Manage post records |
 | POST/GET/PUT/DELETE | `/v1/references` | Manage reference records |
 | POST/GET/PUT/DELETE | `/v1/assets` | Manage asset records |
+| POST/GET/PUT/DELETE | `/v1/projects` | Manage serializable editor timeline projects |
 
 ### Billing & Keys
 
@@ -148,7 +149,7 @@ Most endpoints return a synchronous `200` with the result in the body. The clone
 
 ## CORS
 
-The API allows cross-origin requests from any origin. Allowed headers: `Content-Type`, `Authorization`.
+The REST API allows cross-origin requests from any origin. Public integrations should send `Content-Type` and `Authorization`; idempotent operations may also use `Idempotency-Key`.
 
 ## Versioning
 

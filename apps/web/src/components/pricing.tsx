@@ -5,8 +5,8 @@ const plan = {
   price: "$99",
   billedLine: "Billed monthly · cancel anytime",
   description:
-    "Full API access for the clone pipeline: download the source clip, check cloneability, build a character, generate a clean starting frame, render the clone with Kling 3.0 Motion Control, and poll the job.",
-  rateLimit: "Per-endpoint daily rate limits · 50 video analyses / day · reset midnight UTC",
+    "Full API access for the clone pipeline: download the source clip, check cloneability, build a character, generate a clean starting frame, render the clone with Kling 3.0 Motion Control, and poll the task.",
+  rateLimit: "Published daily rate groups · 50 watch calls / day · reset midnight UTC",
 };
 
 export function Pricing() {
@@ -22,7 +22,7 @@ export function Pricing() {
           </h2>
           <p className="text-ink-muted text-sm max-w-md mx-auto">
             Flat rate. No credits, no metered billing, no overage. One key,
-            clone as often as your agent can work.
+            with predictable daily limits.
           </p>
         </div>
 

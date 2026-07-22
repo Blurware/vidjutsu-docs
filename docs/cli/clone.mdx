@@ -44,7 +44,7 @@ vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
   --character char_2a91b7f4
 ```
 
-`clone run` downloads the source video, runs the clone check, composes a character-swapped starting frame from the character you passed, generates the clone video, and waits for the final URL. It stops if the check verdict is weak, unless you pass `--force`.
+`clone run` downloads the source video, checks its 15-second cap and cloneability, extracts frame `0`, composes that first frame with the character you passed, submits the Kling 3.0 clone, and polls for the final URL. It stops if the check verdict is weak, unless you pass `--force`.
 
 | Argument / Flag | Required | Description |
 |-----------------|----------|-------------|

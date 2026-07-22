@@ -21,8 +21,8 @@ vidjutsu account create --platform instagram --name "nyc_streetstyle"
 | `--handle` | string | Social media handle |
 | `--bio` | string | Profile biography |
 | `--pfp` | string | Profile picture URL |
-| `--link` | string | Link in bio URL |
-| `--tag` | string | Key-value tag, e.g. `brand=acme` (repeatable) |
+| `--linkInBio` | string | Link in bio URL |
+| `--tags` | string | Comma-separated key-value tags, e.g. `brand=acme,region=northeast` |
 
 **Rate limit:** unmetered — account operations have no daily limit.
 
@@ -31,7 +31,7 @@ vidjutsu account create --platform instagram --name "nyc_streetstyle"
 Update an account record:
 
 ```bash
-vidjutsu account edit acc_8k2x --bio "Updated bio" --link "https://newshop.com"
+vidjutsu account edit acc_8k2x --bio "Updated bio" --linkInBio "https://newshop.com"
 ```
 
 ## List accounts
@@ -40,16 +40,10 @@ vidjutsu account edit acc_8k2x --bio "Updated bio" --link "https://newshop.com"
 vidjutsu account list
 ```
 
-Filter by tag:
-
-```bash
-vidjutsu account list --tag brand=acme
-```
-
 ## Get account details
 
 ```bash
-vidjutsu account get acc_8k2x
+vidjutsu account list --id acc_8k2x
 ```
 
 ## Delete an account

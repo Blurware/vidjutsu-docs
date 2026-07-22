@@ -3,9 +3,11 @@
   "private": true,
   "workspaces": ["apps/*"],
   "scripts": {
-    "dev": "cd apps/web && next dev --turbopack",
-    "build": "cd apps/web && next build",
-    "check:clone-contract": "node scripts/check-clone-contract.mjs"
+    "dev": "cd apps/web && bun run dev",
+    "build": "cd apps/web && bun run build",
+    "check:clone-contract": "node scripts/check-clone-contract.mjs",
+    "check:docs": "node scripts/check-docs.mjs",
+    "check": "bun run check:clone-contract && bun run check:docs"
   },
   "packageManager": "bun@1.3.10",
   "dependencies": {

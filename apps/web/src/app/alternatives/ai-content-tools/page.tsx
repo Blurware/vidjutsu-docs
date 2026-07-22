@@ -77,7 +77,7 @@ export default function AiContentTools() {
               {
                 step: "Generate videos with your tool of choice",
                 detail:
-                  "Opus Clip, Pictory, Descript, any AI generator, or your phone. VidJutsu doesn't generate video — you bring the content.",
+                  "Opus Clip, Pictory, Descript, any AI generator, or your phone. You can bring that content to VidJutsu or use its clone workflow.",
               },
               {
                 step: "Submit video URLs to the Watch endpoint",
@@ -92,7 +92,7 @@ export default function AiContentTools() {
               {
                 step: "Validate specs with Check",
                 detail:
-                  "Run videos against your quality spec. Your agent publishes what passes and flags what doesn't.",
+                  "Validate VidLang JSON against the rules you enable before generation. Use Watch with a QA prompt to review finished video.",
               },
             ].map((item, i) => (
               <li key={i} className="flex gap-4">

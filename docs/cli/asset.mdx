@@ -6,7 +6,7 @@ description: "Manage assets"
 ## Create
 
 ```bash
-vidjutsu asset create --url https://cdn.example.com/video.mp4 --tags "campaign=summer"
+vidjutsu asset create --url https://cdn.example.com/video.mp4 --contentType video/mp4 --tags "campaign=summer"
 ```
 
 ## List
@@ -19,7 +19,7 @@ vidjutsu asset list --type video
 ## Get
 
 ```bash
-vidjutsu asset get asset_abc123
+vidjutsu asset list --id asset_abc123
 ```
 
 ## Edit

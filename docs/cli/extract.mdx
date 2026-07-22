@@ -6,29 +6,31 @@ description: "Pull frames, audio, and metadata from any video. Server-side proce
 ## Usage
 
 ```bash
-vidjutsu extract --video-url <url> [--frames auto] [--audio]
+vidjutsu extract --mediaUrl <url> [--frames auto] [--audio]
 ```
 
 ## Options
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--video-url` | Yes | URL of the video to extract from |
+| `--mediaUrl` | Yes | URL of the video to extract from |
 | `--frames` | No | Frame extraction mode: comma-separated integers, `auto` (3 evenly spaced), or `last` (final frame). Default: `auto` |
 | `--audio` | No | Also extract the audio track |
 
 ## Example
 
 ```bash
-vidjutsu extract --video-url https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4 --frames auto --audio
+vidjutsu extract --mediaUrl https://cdn.vidjutsu.ai/uploads/mc_.../video.mp4 --frames auto --audio
 
-Extracting...
-
-Frames:    12 extracted (auto-selected keyframes)
-Audio:     audio.wav (16kHz mono)
-Duration:  14.2s
-Resolution: 1080x1920
-FPS:       30
+{
+  "frames": [
+    { "index": 0, "url": "https://cdn.vidjutsu.ai/extracts/frame-0.jpg" },
+    { "index": 213, "url": "https://cdn.vidjutsu.ai/extracts/frame-213.jpg" },
+    { "index": 426, "url": "https://cdn.vidjutsu.ai/extracts/frame-426.jpg" }
+  ],
+  "audio": { "url": "https://cdn.vidjutsu.ai/extracts/audio.wav", "duration": 14.2 },
+  "metadata": { "width": 1080, "height": 1920, "fps": 30, "duration": 14.2 }
+}
 ```
 
 ## Rate limit

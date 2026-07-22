@@ -19,11 +19,17 @@ const { data, error } = await vj.watchMedia({
 | `mediaUrl` | `string` | Yes | URL of the video or image to analyze |
 | `prompt` | `string` | Yes | Freeform prompt — tell AI what to look for |
 
+Video inputs must be 15 seconds or shorter.
+
 ## Response
 
 ```json
 {
-  "response": "The hook lands in the first 1.2 seconds — direct address to camera with a bold claim. Strong for fitness TikTok. Consider adding a text overlay to reinforce for silent viewers."
+  "response": {
+    "hookScore": 8,
+    "evidence": ["Direct address begins in the first 1.2 seconds"],
+    "suggestion": "Add a text overlay for silent viewers"
+  }
 }
 ```
 

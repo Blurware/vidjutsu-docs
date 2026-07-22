@@ -32,7 +32,8 @@ export default function MediaAnalysis() {
         </h1>
         <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-14">
           Quality gate before posting. Use the watch endpoint with different
-          prompts for quality scoring, verification, and deep analysis. 10 credits per call.
+          prompts for quality scoring, verification, and deep analysis. The
+          flat subscription includes up to 50 watch calls per day.
         </p>
 
         <section className="mb-14">
@@ -59,7 +60,7 @@ export default function MediaAnalysis() {
               {
                 label: "Check",
                 detail:
-                  "Validate a video against a spec. Pass/fail gate before publishing.",
+                  "Validate VidLang JSON against the rules you enable. Get a structured pass/fail result before generation.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">
@@ -84,8 +85,8 @@ export default function MediaAnalysis() {
           <div className="space-y-4 max-w-2xl">
             {[
               {
-                label: "Runs watch + check on every video before posting",
-                detail: "Nothing goes live without passing QA.",
+                label: "Runs watch on every video before posting",
+                detail: "Uses a QA prompt so nothing goes live without review.",
               },
               {
                 label: "Flags unverifiable claims",

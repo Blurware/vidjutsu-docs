@@ -7,15 +7,16 @@ VidJutsu imports public TikTok and Instagram references. It does not provide ad-
 
 Scrape returns discovery data and the provider's raw source media URLs. It does not stage media. When a downstream call needs a durable VidJutsu-hosted file, call the single-video download endpoint on one video at a time.
 
-```bash
-vidjutsu scrape instagram-post \
-  --url "https://www.instagram.com/reel/example/"
+```typescript
+const { data, error } = await vj.scrapeInstagramPost({
+  url: "https://www.instagram.com/reel/example/",
+});
 ```
 
 The supported operations are TikTok profile, profile videos, video, transcript, comments, user search, and trending; and Instagram profile, posts, reels, post, and comments. All share the `scrape` rate group.
 
 ## Continue the workflow
 
-1. Import a TikTok or Instagram reference, downloading media if you need a VidJutsu-hosted URL.
-2. Pass the resulting URL to `watch`, `transcribe`, `check`, `overlay`, or `disclaimer`.
-3. Poll the returned job with `mediaJobs.get` (SDK) or `vidjutsu status` (CLI) until it completes.
+1. Discover a TikTok or Instagram reference with a `scrape*` SDK method or the corresponding REST endpoint.
+2. If downstream processing needs a durable file, stage one source with `downloadTikTokVideo` or `downloadInstagramVideo`.
+3. Pass the staged URL to `watchMedia`, `transcribeMedia`, `extractMedia`, `createOverlay`, or `createDisclaimer`. These calls return synchronously. `/v1/check` is for VidLang spec validation, not media analysis.

@@ -1,14 +1,16 @@
 ---
 title: "Pricing & Rate Limits"
-description: "Subscription pricing and per-endpoint daily rate limits"
+description: "Subscription pricing and daily rate groups"
 ---
 
 ## Subscription
 
 VidJutsu requires an active **$99/month subscription** to use the API. Access covers:
 
-- All intelligence endpoints (watch, extract, transcribe, check, compliance, overlay)
-- Unlimited storage operations (accounts, posts, assets, references, upload)
+- Clone generation and its supporting character, check, and download endpoints
+- Watch, extract, transcribe, check, compliance, overlay, and disclaimer endpoints
+- Scrape and discovery endpoints
+- Unmetered storage operations (accounts, posts, assets, references, projects, and upload)
 
 <Card title="Subscribe now" icon="credit-card" href="/get-api-key">
   Get your API key and start using VidJutsu.
@@ -23,7 +25,7 @@ VidJutsu requires an active **$99/month subscription** to use the API. Access co
 
 ## Daily rate limits
 
-Each endpoint has its own bucket. Buckets are independent — hitting the `watch` limit doesn't affect `compliance`.
+Each row below is an independent bucket unless it is explicitly labeled shared. Hitting the `watch` limit does not affect `compliance`, while clone steps consume the same clone-admission bucket.
 
 | Endpoint | Calls / day |
 |----------|-------------|
@@ -34,10 +36,10 @@ Each endpoint has its own bucket. Buckets are independent — hitting the `watch
 | `POST /v1/compliance/video` | 20 |
 | `POST /v1/compliance/prompt` | 100 |
 | `POST /v1/overlay` | 50 |
-| `POST /v1/upload` | 100 |
-| `POST /v1/posts` (and related CRUD) | 200 |
+| Clone admission group (`clones/check`, characters, starting image, clone video) | 50 shared |
+| Scrape and single-video download group | 500 shared |
 
-Accounts, assets, references, and read-only endpoints are unmetered.
+Accounts, posts, assets, references, projects, uploads, and read-only endpoints are unmetered.
 
 ## Check your usage
 
@@ -61,8 +63,8 @@ Returns remaining capacity per endpoint for the current UTC day.
 {
   "clientId": "mc_...",
   "usage": {
-    "watch": { "limit": 50, "remaining": 37 },
-    "compliancePrompt": { "limit": 100, "remaining": 98 }
+    "watch": { "limit": 50, "remaining": 50 },
+    "compliancePrompt": { "limit": 100, "remaining": 100 }
   },
   "resetsAt": "2026-04-24T00:00:00.000Z"
 }
@@ -80,8 +82,4 @@ curl https://api.vidjutsu.ai/v1/pricing
 
 ## Media limits
 
-| Media type | Max size | Max duration | Allowed types |
-|------------|----------|--------------|---------------|
-| Video | 32MB | 5 minutes | mp4, mov, webm |
-| Image | 10MB | -- | jpeg, png, webp, gif |
-| Audio | 25MB | 5 minutes | mp3, wav, ogg |
+Limits depend on the operation. Clone-check, clone-video, and video watch inputs are capped at 15 seconds. Extract accepts videos up to 5 minutes. Binary uploads accept videos up to 32MB, images up to 10MB, and audio up to 25MB. Remote-media endpoints may apply their own content-type and fetch-size checks; consult the generated API reference for the exact request.

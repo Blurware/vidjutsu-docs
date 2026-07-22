@@ -73,9 +73,9 @@ export default function Diy() {
                   "Need the raw assets? Extract pulls frames, audio tracks, and metadata from any video.",
               },
               {
-                step: "Validate with Check",
+                step: "Validate the VidLang spec with Check",
                 detail:
-                  "Before a video goes anywhere, run it against your spec. Your agent publishes what passes and flags what doesn't.",
+                  "Before generation, validate VidLang JSON against the rules you enable. Use Watch with a QA prompt on the finished video.",
               },
             ].map((item, i) => (
               <li key={i} className="flex gap-4">

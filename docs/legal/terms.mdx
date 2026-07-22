@@ -44,7 +44,7 @@ You grant VidJutsu a limited license to process your content to provide the serv
 ## 6. API Use
 
 - **Authentication** — keep your API key confidential. You're responsible for all requests made with your key. Rotate via `POST /v1/api_keys/rotate` if compromised.
-- **Rate limits** — each endpoint has a published daily limit ([Pricing & Rate Limits](/credits-and-billing)). Excess requests return HTTP 429. Attempting to circumvent limits with multiple accounts or automated abuse is a termination event.
+- **Rate limits** — metered endpoint groups have published daily limits ([Pricing & Rate Limits](/credits-and-billing)); storage and read-only operations may be unmetered. Excess requests return HTTP 429. Attempting to circumvent limits with multiple accounts or automated abuse is a termination event.
 - **Acceptable use** — do not use the service to evaluate content you do not own or have permission to analyze; to surveil individuals; to reverse-engineer or resell the compliance corpus; or for any illegal purpose.
 
 ## 7. Billing

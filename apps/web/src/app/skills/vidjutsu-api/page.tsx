@@ -58,7 +58,7 @@ export default function VidjutsuApi() {
               {
                 label: "Check",
                 detail:
-                  "Validate a video against a spec. Pass/fail gate for automated QA.",
+                  "Validate VidLang JSON against explicitly enabled rules and get a structured pass/fail result.",
               },
               {
                 label: "File upload",
@@ -71,9 +71,9 @@ export default function VidjutsuApi() {
                   "API key creation via Stripe checkout. Your agent knows how to authenticate.",
               },
               {
-                label: "Balance and credit management",
+                label: "Usage and rate limits",
                 detail:
-                  "Check balance, estimate costs, track usage.",
+                  "Check remaining daily capacity for each metered endpoint group.",
               },
             ].map((item) => (
               <div key={item.label} className="flex gap-3">

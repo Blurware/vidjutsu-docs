@@ -73,7 +73,7 @@ Both flows converge at the same [claim flow](#claim-flow), which exchanges a `cl
 
 ### 1. anonymous
 
-Immediate API key with pre-claim scopes (`api.read`). The agent can call read-only endpoints right away, and the returned `claim_token` can be redeemed later to upgrade to a fully-scoped key once the user verifies an email.
+Immediate API key with an `api.read` lifecycle label. The returned `claim_token` can be redeemed later for a new claimed key after the user verifies an email. REST authorization is determined by the endpoint's authentication and subscription policy; the scope labels describe the claim lifecycle and are not a separate REST permission boundary.
 
 ```http
 POST /v1/auth/agent
@@ -183,17 +183,15 @@ Send it as a standard bearer token on every authenticated request:
 Authorization: Bearer vj_live_…
 ```
 
-API access requires an active `$99/mo` subscription. Calls made without one respond with `HTTP 403` and `subscription_required`. Per-endpoint daily rate limits then apply — exceeding a limit returns `HTTP 429` with a `retryAfter` hint. See `credits-and-billing` (Pricing & Rate Limits) in the Guides tab for the limits table.
+Metered API operations require an active `$99/mo` subscription. Calls made without one respond with `HTTP 403` and `subscription_required`. Published daily rate groups then apply; storage and read-only operations are unmetered. Exceeding a limit returns `HTTP 429` with a `retryAfter` hint. See `credits-and-billing` (Pricing & Rate Limits) in the Guides tab.
 
 ## Revocation
 
-The protocol reserves a logout-JWT push endpoint for future provider-driven revocation:
+Revoke the current API credential by sending it as a bearer token:
 
 ```http
 POST /v1/auth/agent/revoke
-Content-Type: application/logout+jwt
-
-<signed logout+jwt>
+Authorization: Bearer vj_live_…
 ```
 
 Response:
@@ -202,17 +200,17 @@ Response:
 { "revoked": true }
 ```
 
-> The user-claimed flow has no provider in the loop, so this endpoint is a no-op receiver today. It is kept for protocol surface-area.
+The credential is revoked immediately. The endpoint does not currently consume a logout-JWT body.
 
 ## Errors
 
-All errors follow `application/problem+json` (RFC 7807). Notable cases:
+Errors are JSON objects with an `error` or `message` field, depending on where validation failed. Notable cases:
 
 - `400 Bad Request` — unsupported `type` or `assertion_type`, missing fields.
 - `404 Not Found` — claim_token unknown or expired.
 - `401 Unauthorized` — invalid or expired OTP on claim/complete.
 - `403 Forbidden` — `subscription_required`: a valid key with no active subscription called a gated endpoint.
-- `429 Too Many Requests` — a per-endpoint daily rate limit was exceeded; includes a `retryAfter` hint.
+- `429 Too Many Requests` — a daily rate group was exceeded; includes a `retryAfter` hint.
 
 ## Notes on this manifest
 

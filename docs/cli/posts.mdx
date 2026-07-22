@@ -8,28 +8,28 @@ description: "Create, edit, and manage post records"
 Create a post record. The account ID is optional.
 
 ```bash
-vidjutsu post create --video vid_q9f3 --caption "Summer fits"
+vidjutsu post create --videoId vid_q9f3 --caption "Summer fits"
 ```
 
 ### Options
 
 | Flag | Type | Description |
 |------|------|-------------|
-| `--account` | string | Account ID to link to |
-| `--video` | string | Video ID |
-| `--video-url` | string | Video URL |
+| `--accountId` | string | Account ID to link to |
+| `--videoId` | string | Video ID |
+| `--mediaUrl` | string | Video URL |
 | `--caption` | string | Post caption |
 | `--brief` | string | Content brief or notes |
-| `--tag` | string | Key-value tag, e.g. `batch=week-12` (repeatable) |
+| `--tags` | string | Comma-separated key-value tags, e.g. `batch=week-12,format=talking-head` |
 
-**Rate limit:** counts toward the 200/day `posts` limit.
+**Rate limit:** unmetered.
 
 ## Edit a post
 
 Update a post record:
 
 ```bash
-vidjutsu post edit post_m2v1 --caption "Updated caption" --video-url "https://..."
+vidjutsu post edit post_m2v1 --caption "Updated caption" --mediaUrl "https://..."
 ```
 
 ## List posts
@@ -38,22 +38,16 @@ vidjutsu post edit post_m2v1 --caption "Updated caption" --video-url "https://..
 vidjutsu post list
 ```
 
-Filter by tag:
-
-```bash
-vidjutsu post list --tag batch=week-12
-```
-
 Filter by account:
 
 ```bash
-vidjutsu post list --account acc_8k2x
+vidjutsu post list --accountId acc_8k2x
 ```
 
 ## Get post details
 
 ```bash
-vidjutsu post get post_m2v1
+vidjutsu post list --id post_m2v1
 ```
 
 ## Delete a post

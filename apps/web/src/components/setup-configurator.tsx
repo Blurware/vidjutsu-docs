@@ -36,7 +36,7 @@ function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
     const description =
-      "Connect once and your agent can clone videos through VidJutsu. The server is live at api.vidjutsu.ai/mcp and signs in with OAuth.";
+      "Connect once and your agent can stage source videos, add overlays, score cloneability, and poll clone tasks through VidJutsu. The server is live at api.vidjutsu.ai/mcp and signs in with OAuth.";
     if (agent === "claude-code") {
       return {
         title: `Connect ${agentLabel} over MCP`,
@@ -44,7 +44,7 @@ function setup(connection: Connection, agent: Agent) {
         steps: [
           "Run the command below. The http transport is required for a remote server.",
           "Run /mcp in a session, pick vidjutsu, and choose Authenticate. A browser opens to sign in.",
-          "Ask your agent to clone a video.",
+          "Ask your agent to stage and score a video, or poll an existing clone task.",
         ],
         command: "claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp",
         copy: "COPY COMMAND",
@@ -59,7 +59,7 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         connectorHints[agent] || "Add a custom MCP connector in your agent settings.",
         "Paste the server URL below and sign in when the browser opens. There is no command to run.",
-        "Ask your agent to clone a video.",
+        "Ask your agent to stage and score a video, or poll an existing clone task.",
       ],
       command: "https://api.vidjutsu.ai/mcp",
       copy: "COPY URL",
@@ -118,8 +118,8 @@ export function SetupConfigurator() {
         <div className="vj-setup-heading">
           <h2 id="setup-heading">Connect your agent.</h2>
           <p>
-            Connect once with MCP, the CLI, or the skill. From then on your
-            agent can clone videos on its own.
+            Connect with MCP for its typed tools, or use the CLI or skill for
+            the complete clone workflow.
           </p>
         </div>
 

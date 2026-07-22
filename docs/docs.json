@@ -175,6 +175,15 @@
             ]
           },
           {
+            "group": "Editor Projects",
+            "pages": [
+              "POST /v1/projects",
+              "GET /v1/projects",
+              "PUT /v1/projects",
+              "DELETE /v1/projects"
+            ]
+          },
+          {
             "group": "Scrape",
             "pages": [
               "api-reference/scrape",
@@ -232,7 +241,8 @@
               "sdk/accounts",
               "sdk/posts",
               "sdk/assets",
-              "sdk/references"
+              "sdk/references",
+              "sdk/projects"
             ]
           },
           {
@@ -279,7 +289,8 @@
               "cli/asset",
               "cli/accounts",
               "cli/posts",
-              "cli/reference"
+              "cli/reference",
+              "cli/projects"
             ]
           },
           {

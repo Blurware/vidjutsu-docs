@@ -3,12 +3,12 @@ title: "SDK Overview"
 description: "TypeScript SDK for cloning viral videos with VidJutsu."
 ---
 
-The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). It covers the clone workflow (check, characters, starting image, video) plus the steps around it: discovery, download, watch, transcribe, compliance, overlay, and job polling.
+The VidJutsu SDK is a typed TypeScript client generated from the [OpenAPI spec](https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json). Version 1.4.0 covers the clone workflow plus discovery, download, processing, compliance, storage, and editor projects.
 
 ## Install
 
 ```bash
-npm install vidjutsu
+npm install vidjutsu@^1.4.0
 ```
 
 ## Quick start
@@ -44,7 +44,12 @@ const { data: task } = await vj.cloneVideo({
   sourceVideoUrl: source.url,
   model: "kling",
 });
-const { data: result } = await vj.getCloneVideo(task.id);
+let result;
+do {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  ({ data: result } = await vj.getCloneVideo(task.id));
+} while (result.status === "processing");
+if (result.status === "failed") throw new Error(result.error);
 console.log(result.videoUrl);
 ```
 
@@ -65,9 +70,9 @@ console.log(result.videoUrl);
 | [`scrapeTikTokProfile` / `scrapeInstagramProfile` and related `scrape*` methods](/sdk/scrape) | Pull structured profile, post, comment, and search data. |
 | [`watchMedia`](/sdk/watch) | Run prompted video or image understanding. |
 | [`transcribeMedia`](/sdk/transcribe) | Speech-to-text with word-level timing. |
-| [`checkComplianceVideo` / `checkCompliancePrompt`](/sdk/check) | Run an ad-compliance check. |
+| `checkComplianceVideo` / `checkCompliancePrompt` | Run a platform-policy compliance check. |
 | [`createOverlay`](/sdk/overlay) / [`createDisclaimer`](/sdk/disclaimer) | Burn a text overlay or disclaimer onto a video. |
-| `getJob` / `getDistributionJob` | Poll a durable job to completion. |
+| [`createEditorProject` / `listOrGetEditorProjects`](/sdk/projects) | Store serializable editor timeline projects. |
 
 ## Authentication
 

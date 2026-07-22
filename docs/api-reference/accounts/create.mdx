@@ -12,7 +12,7 @@ Create an account record in your content library. Accounts are pure data records
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `platform` | string | Yes | Platform name (e.g. `instagram`, `tiktok`, `youtube`) |
+| `platform` | string | Yes | Must be `instagram` |
 | `name` | string | Yes | Display name for the account |
 | `niche` | string | No | Primary niche (e.g. `fitness`, `fashion`, `tech`) |
 | `handle` | string | No | Social media handle |
@@ -46,16 +46,7 @@ curl -X POST https://api.vidjutsu.ai/v1/accounts \
 ```json
 {
   "id": "acc_8k2x",
-  "platform": "instagram",
-  "name": "nyc_streetstyle",
-  "niche": "fashion",
-  "handle": "nyc_streetstyle",
-  "bio": "NYC street style and fits",
-  "linkInBio": "https://myshop.com",
-  "tags": [
-    { "key": "brand", "value": "acme" },
-    { "key": "region", "value": "northeast" }
-  ]
+  "status": "draft"
 }
 ```
 

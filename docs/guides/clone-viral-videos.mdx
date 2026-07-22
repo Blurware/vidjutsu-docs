@@ -14,9 +14,9 @@ Need an API key? Follow [Get your API key](/get-api-key) first.
 ## Before you start
 
 - All URLs passed between steps must be `https://`. Plain `http://` is rejected.
-- TikTok and Instagram links are not directly fetchable by the generation providers. Stage the source first with `POST /v1/videos/download/tiktok` or `POST /v1/videos/download/instagram` — every later step takes the staged VidJutsu URL, not the original platform link.
+- TikTok and Instagram links are not directly fetchable by the generation providers. Stage the source first with `POST /v1/videos/download/tiktok` or `POST /v1/videos/download/instagram`. Clone-check, extraction, and clone-video use the staged VidJutsu URL; starting-image uses the extracted first-frame image.
 - Source clips are capped at 15 seconds. A longer `sourceVideoUrl` passed to `POST /v1/clones/video` is rejected with a 422 and `error: "video_too_long"`.
-- `POST /v1/clones/check` accepts source videos up to about 2 minutes for the cloneability read, but the actual clone call is still capped at 15 seconds, so trim or pick a short segment before generating.
+- `POST /v1/clones/check` and `POST /v1/clones/video` both cap source videos at 15 seconds. Trim or choose a short segment before checking or generating.
 - Starting images returned by `POST /v1/clones/starting-image` are generated with a server-enforced clean-frame instruction: no captions, watermarks, or platform UI.
 - Kling 3.0 Motion Control is the only supported clone-video model. If you send `model`, its value must be `"kling"`; omitting it uses `"kling"` by default.
 - Characters are a persisted, reusable resource. Create one once, keep its `id`, and pass that `id` into every clone from then on instead of regenerating a character each time.
@@ -38,7 +38,7 @@ curl -X POST https://api.vidjutsu.ai/v1/characters \
 {
   "id": "char_2a91b7f4",
   "imageUrl": "https://cdn.vidjutsu.ai/characters/chr_2a91.../image.png",
-  "model": "nano-banana-2"
+  "model": "google/gemini-3.1-flash-image"
 }
 ```
 
@@ -87,9 +87,9 @@ curl -X POST https://api.vidjutsu.ai/v1/videos/download/tiktok \
 }
 ```
 
-Repeated imports of the same post reuse the same asset (`reused: true`), so restaging is cheap. Use `url` from the response as the `videoUrl` / `sourceVideoUrl` for every step below.
+Repeated imports of the same post reuse the same asset (`reused: true`), so restaging is cheap. Use `url` as `videoUrl` for clone-check and as `mediaUrl` for frame extraction; later, use it as the clone video's `sourceVideoUrl`.
 
-**Errors**: `403 subscription_required` if the key has no active subscription. `429` with a `Retry-After` header if the daily import limit for the endpoint is hit; the window resets at 00:00 UTC.
+**Errors**: `403 subscription_required` if the key has no active subscription. `429` with a `Retry-After` header if the shared 500/day scrape-and-download limit is hit; the window resets at 00:00 UTC.
 
 ### 2. Check whether it will clone well
 
@@ -112,7 +112,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
     "One clearly framed subject occupying the center third",
     "No fast cuts or overlaid text obscuring the motion"
   ],
-  "model": "gemini-3.5-flash"
+  "model": "google/gemini-2.5-flash"
 }
 ```
 
@@ -125,13 +125,33 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
 Extract frame index `0` from the staged video with `POST /v1/extract`, then pass its returned image URL as `firstFrame` together with the stored `characterId`.
 
 ```bash
+curl -X POST https://api.vidjutsu.ai/v1/extract \
+  -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mediaUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
+    "frames": [0],
+    "audio": false,
+    "metadata": false
+  }'
+```
+
+```json
+{
+  "frames": [
+    { "index": 0, "url": "https://cdn.vidjutsu.ai/extracts/tt_8f2c.../frame-0.jpg" }
+  ]
+}
+```
+
+```bash
 curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
   -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "characterId": "char_2a91b7f4",
     "firstFrame": "https://cdn.vidjutsu.ai/extracts/tt_8f2c.../frame-0.jpg",
-    "prompt": "Standing at a kitchen counter, mid-gesture, facing camera",
+    "prompt": "Standing at a kitchen counter, mid-gesture, facing camera"
   }'
 ```
 
@@ -190,7 +210,7 @@ Poll while `status` is `"processing"`. On `"completed"`, `videoUrl` carries the 
 ## SDK and CLI
 
 <Info>
-The `vidjutsu clone run` CLI command requires the CLI's clone release. If you're on an older CLI version, run the calls directly against the API or the TypeScript SDK below until you upgrade.
+The `vidjutsu clone run` command requires CLI 1.4.0 or later. On an older release, use the REST calls above or upgrade before cloning.
 </Info>
 
 Create your character once:

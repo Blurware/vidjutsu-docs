@@ -14,12 +14,12 @@ The installer:
 - Installs prerequisites if missing (Node.js, Bun, TypeScript)
 - Downloads the latest VidJutsu binary from GitHub releases
 - Verifies the SHA-256 checksum
-- Installs to `/usr/local/bin` (or `~/.local/bin` as fallback)
+- Installs to `~/.local/bin` and adds it to your shell path when needed
 
 ## Pin a specific version
 
 ```bash
-VERSION=1.0.0 curl -fsSL https://vidjutsu.ai/install.sh | bash
+VERSION=1.4.0 curl -fsSL https://vidjutsu.ai/install.sh | bash
 ```
 
 ## Manual install
@@ -47,15 +47,17 @@ vidjutsu --help
 ```
 
 ```
-VidJutsu — clone viral videos onto your own characters. (vidjutsu v1.3.0)
+VidJutsu — clone viral videos onto your own characters. (vidjutsu v1.4.0)
 
-USAGE vidjutsu clone|auth|check|upload|subscribe|status|version|update|watch|extract|transcribe|overlay|compliance|account|post|asset|reference|jobs|usage|info
+USAGE vidjutsu clone|auth|check|upload|subscribe|status|version|update|watch|extract|transcribe|overlay|disclaimer|compliance|account|post|asset|reference|project|usage|info
 ```
 
 ## Requirements
 
 - **macOS** 12+ or **Linux** (Ubuntu 20.04+, Debian 11+, Fedora 36+, Arch)
 - The installer handles Node.js, Bun, and TypeScript automatically
+
+The binary installer follows the SDK/bundled CLI release line, currently 1.4.0. The standalone CLI package uses its own 0.6.0 version while exposing the same current API commands.
 
 ## Uninstall
 

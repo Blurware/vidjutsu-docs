@@ -28,7 +28,7 @@ const INFRASTRUCTURE = [
   {
     name: "Check",
     slug: "media-analysis",
-    description: "Validate a video against a spec before it ships.",
+    description: "Validate VidLang JSON against explicitly enabled rules before generation.",
   },
   {
     name: "VidJutsu API",
@@ -43,7 +43,7 @@ const INFRASTRUCTURE = [
   {
     name: "Media Analysis",
     slug: "media-analysis",
-    description: "QA content before publishing with watch, extract, transcribe, and check endpoints.",
+    description: "Review finished media with watch, extract, and transcribe; validate VidLang specs with check.",
   },
 ];
 

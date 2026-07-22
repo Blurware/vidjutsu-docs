@@ -1,6 +1,6 @@
 ---
 title: "cloneCheck"
-description: "Scores whether a source video will clone well before you spend on rendering."
+description: "Scores whether a source video will clone well before you use a generation attempt."
 ---
 
 ## Usage
@@ -18,6 +18,8 @@ const { data, error } = await vj.cloneCheck({
 |-------|------|----------|-------------|
 | `videoUrl` | `string` | Yes | Public HTTPS URL of the staged source video |
 | `context` | `string` | No | Short description of the source to aid the read |
+
+The source video must be 15 seconds or shorter.
 
 ## Returns
 

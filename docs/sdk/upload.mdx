@@ -7,28 +7,40 @@ description: "Upload media to VidJutsu CDN."
 
 ```typescript
 const { data, error } = await vj.uploadFromUrl({
-  url: "https://example.com/video.mp4",
+  sourceUrl: "https://example.com/video.mp4",
 });
 console.log(data.url); // CDN URL
 ```
 
 ## Upload binary file
 
+Binary upload is the one endpoint that does not use a JSON SDK convenience method. Send the bytes directly:
+
 ```typescript
 const file = await fs.readFile("./video.mp4");
-const { data, error } = await vj.uploadFile(file);
-console.log(data.url); // CDN URL
+const response = await fetch("https://api.vidjutsu.ai/v1/upload", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.VIDJUTSU_API_KEY}`,
+    "Content-Type": "video/mp4",
+  },
+  body: file,
+});
+const data = await response.json();
+console.log(data.url);
 ```
 
 ## Response
 
 ```json
 {
-  "id": "upl_...",
-  "url": "https://cdn.vidjutsu.ai/uploads/..."
+  "assetId": "asset_...",
+  "url": "https://cdn.vidjutsu.ai/uploads/...",
+  "key": "uploads/client/video.mp4",
+  "size": 4213880
 }
 ```
 
 ## Rate limit
 
-Unmetered for billing — subject to a 100/day rate limit on the `upload` group.
+Unmetered — uploads require authentication but have no daily billing limit.

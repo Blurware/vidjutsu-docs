@@ -17,13 +17,13 @@ Flags a video or text against the target platform's current community guidelines
 ## `vidjutsu compliance video`
 
 ```bash
-vidjutsu compliance video --video-url <url> --platform <platform>
+vidjutsu compliance video --videoUrl <url> --platform <platform>
 ```
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--video-url` | Yes | Public URL of the video to scan |
-| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `facebook-ads` |
+| `--videoUrl` | Yes | Public URL of the video to scan |
+| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `meta-ads` \| `ftc` |
 | `--format` | No | `shortform` \| `longform`. Inferred from duration when omitted |
 
 **Rate limit:** 20 per day.
@@ -37,7 +37,7 @@ vidjutsu compliance prompt --text "..." --platform <platform>
 | Flag | Required | Description |
 |------|----------|-------------|
 | `--text` | Yes | Caption, ad copy, script, description, etc. |
-| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `facebook-ads` |
+| `--platform` | Yes | `youtube` \| `tiktok` \| `instagram` \| `meta-ads` \| `ftc` |
 | `--kind` | No | `caption` \| `script` \| `ad-copy` \| `description` \| `other` (label only; doesn't affect scoring) |
 
 **Rate limit:** 100 per day.

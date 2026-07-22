@@ -25,13 +25,13 @@ vidjutsu upload --url <source-url>
 ```bash
 # Local file
 vidjutsu upload ./video.mp4
-Uploaded: https://cdn.vidjutsu.ai/uploads/mc_.../abc123.mp4
+{ "assetId": "asset_abc123", "url": "https://cdn.vidjutsu.ai/uploads/mc_.../abc123.mp4", "key": "uploads/abc123.mp4", "size": 4213880 }
 
 # From URL
 vidjutsu upload --url https://example.com/video.mp4
-Uploaded: https://cdn.vidjutsu.ai/uploads/mc_.../def456.mp4
+{ "assetId": "asset_def456", "url": "https://cdn.vidjutsu.ai/uploads/mc_.../def456.mp4", "key": "uploads/def456.mp4", "size": 4213880 }
 ```
 
 ## Rate limit
 
-Unmetered for billing — subject to a 100/day rate limit on the `upload` group.
+Unmetered — uploads require authentication but have no daily billing limit.

@@ -14,21 +14,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+
       - name: Fetch latest spec from vidjutsu-openapi
         run: |
-          mkdir -p docs/openapi
           curl -fsSL "https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json" \
-            -o docs/openapi/spec.json
-          ls -la docs/openapi/spec.json
+            -o /tmp/vidjutsu-spec.json
+          mv /tmp/vidjutsu-spec.json docs/openapi/spec.json
+          shasum -a 256 docs/openapi/spec.json | awk '{print $1}' > .openapi-sha256
+
+      - name: Validate documentation contracts
+        run: bun run check
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet docs/openapi/spec.json; then
+          if git diff --quiet docs/openapi/spec.json .openapi-sha256; then
             echo "Spec unchanged — nothing to commit."
             exit 0
           fi
-          git add docs/openapi/spec.json
+          git add docs/openapi/spec.json .openapi-sha256
           git commit -m "chore: sync OpenAPI spec from vidjutsu-openapi"
           git push

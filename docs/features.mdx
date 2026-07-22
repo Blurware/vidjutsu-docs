@@ -7,7 +7,7 @@ description: Clone viral videos onto your own characters, plus the steps around 
 
 Clone a public TikTok or Instagram video into your own version with a swapped identity.
 
-- `POST /v1/clones/check` scores whether a staged source video will clone reliably. It returns a verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence behind it, so you can decide before you spend on rendering.
+- `POST /v1/clones/check` scores whether a staged source video will clone reliably. It returns a verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence behind it, so you can decide before using a generation attempt.
 - `POST /v1/characters` generates a reusable character and persists it under a `char_...` id. Create it once and reuse the id on every clone. List with `GET /v1/characters`, fetch one with `GET /v1/characters/{id}`.
 - `POST /v1/clones/starting-image` composes a clean starting frame from your character, with no captions, watermarks, or platform UI.
 - `POST /v1/clones/video` submits a Kling 3.0 Motion Control clone and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds.
@@ -20,7 +20,7 @@ Pull structured profile, post, comment, and search data from TikTok and Instagra
 
 ## Download
 
-Stage one video's file into a stable, tenant-owned VidJutsu asset with `POST /v1/videos/download/tiktok` or `/instagram`, one call per video. Repeated downloads of the same post reuse the same asset, so retries and downstream steps do not fetch the source again. The generation steps take the staged VidJutsu URL, not the original platform link.
+Stage one video's file into a stable, tenant-owned VidJutsu asset with `POST /v1/videos/download/tiktok` or `/instagram`, one call per video. Repeated downloads of the same post reuse the same asset. Clone-check, frame extraction, and clone-video use the staged URL; starting-image uses frame `0` returned by extraction.
 
 ## Understand
 

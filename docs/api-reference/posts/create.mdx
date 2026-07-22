@@ -42,17 +42,10 @@ curl -X POST https://api.vidjutsu.ai/v1/posts \
 ```json
 {
   "id": "post_xyz789",
-  "mediaUrl": "https://cdn.example.com/video.mp4",
-  "caption": "3 morning habits that changed my physique",
-  "brief": "Fitness talking-head, 15 seconds, hook-first",
-  "accountId": "acc_8k2x",
-  "tags": [
-    { "key": "batch", "value": "week-12" },
-    { "key": "format", "value": "talking-head" }
-  ]
+  "status": "draft"
 }
 ```
 
 ### Rate limit
 
-Counts toward the 200/day `posts` rate limit. No per-call charge.
+Unmetered — post CRUD has no daily limit and no per-call charge.

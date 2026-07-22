@@ -1,0 +1,26 @@
+---
+title: "Editor projects"
+description: "Store and retrieve serializable editor timeline projects."
+---
+
+Editor projects store an opaque timeline document together with a name, tags, and metadata.
+
+```typescript
+const { data } = await vj.createEditorProject({
+  name: "Summer launch cut",
+  project: { tracks: [], assets: [], version: 1 },
+  tags: [{ key: "campaign", value: "summer" }],
+});
+
+const { data: projects } = await vj.listOrGetEditorProjects();
+const { data: project } = await vj.listOrGetEditorProjects({ id: data.id });
+
+await vj.updateEditorProject(
+  { status: "active", project: { tracks: [], assets: [], version: 2 } },
+  { id: data.id },
+);
+
+await vj.deleteEditorProject({ id: data.id });
+```
+
+Project CRUD is authenticated and unmetered. Delete archives the project rather than removing it permanently.

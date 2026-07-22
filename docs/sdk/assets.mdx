@@ -8,7 +8,7 @@ description: "Create, list, update, and delete asset records."
 ```typescript
 const { data } = await vj.createAsset({
   url: "https://cdn.vidjutsu.ai/uploads/...",
-  type: "video",
+  contentType: "video/mp4",
   tags: [{ key: "project", value: "fitness-campaign" }],
 });
 ```

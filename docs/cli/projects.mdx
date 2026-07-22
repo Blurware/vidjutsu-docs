@@ -1,0 +1,14 @@
+---
+title: "vidjutsu project"
+description: "Manage serializable editor timeline projects."
+---
+
+```bash
+vidjutsu project create --name "Summer launch cut" --project '{"tracks":[],"assets":[],"version":1}'
+vidjutsu project list
+vidjutsu project list --id project_abc123
+vidjutsu project edit project_abc123 --status active --project '{"tracks":[],"assets":[],"version":2}'
+vidjutsu project delete project_abc123
+```
+
+Use `--tags "campaign=summer"` for comma-separated key-value tags. Project CRUD is authenticated and unmetered; delete archives the project.
