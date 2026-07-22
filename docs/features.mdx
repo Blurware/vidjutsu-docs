@@ -10,7 +10,7 @@ Clone a public TikTok or Instagram video into your own version with a swapped id
 - `POST /v1/clones/check` scores whether a staged source video will clone reliably. It returns a verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence behind it, so you can decide before you spend on rendering.
 - `POST /v1/characters` generates a reusable character and persists it under a `char_...` id. Create it once and reuse the id on every clone. List with `GET /v1/characters`, fetch one with `GET /v1/characters/{id}`.
 - `POST /v1/clones/starting-image` composes a clean starting frame from your character, with no captions, watermarks, or platform UI.
-- `POST /v1/clones/video` submits the motion clone (Kling motion control by default, Seedance as the alternate model) and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds.
+- `POST /v1/clones/video` submits a Kling 3.0 Motion Control clone and returns a task id to poll with `GET /v1/clones/video/{id}`. Source clips are capped at 15 seconds.
 
 See the [clone viral videos guide](/guides/clone-viral-videos) for the full call sequence.
 

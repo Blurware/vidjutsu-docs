@@ -51,10 +51,10 @@ vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
 | `<tiktokUrl>` | Yes | TikTok video URL to clone |
 | `--character` | Yes | Stored `char_...` id from `clone character` |
 | `--starting-prompt` | No | Prompt for the starting frame composition |
-| `--model` | No | `kling` (default) or `seedance` |
+| `--model` | No | `kling` (default and only supported value) |
 | `--force` | No | Proceed even if the clone check verdict is weak |
 
-Kling motion control is the default model. Output is 480p 9:16. Source clips are capped at 15 seconds.
+Kling 3.0 Motion Control is the only supported model. Source clips are capped at 15 seconds.
 
 ## Compose a starting frame
 
@@ -72,6 +72,5 @@ vidjutsu clone starting-image \
 | `--character` | Yes | Stored `char_...` id, or a public HTTPS character image URL |
 | `--prompt` | Yes | Instructions for composing the starting frame |
 | `--source` | No | Public HTTPS source video URL to ground the composition |
-| `--model` | No | `kling` (default) or `seedance` |
 
 The returned frame is always clean, with no overlays or platform UI.

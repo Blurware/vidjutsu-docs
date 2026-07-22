@@ -22,8 +22,7 @@ Provide exactly one of `characterId` or `characterImageUrl`, not both.
 | `characterId` | `string` | Yes* | A stored `char_...` id |
 | `characterImageUrl` | `string` | Yes* | A one-off public HTTPS character image |
 | `prompt` | `string` | Yes | How to compose the starting frame |
-| `sourceVideoUrl` | `string` | No | Public HTTPS staged source video URL; grounds the composition in the source's opening frame |
-| `model` | `string` | No | `"kling"` (default) or `"seedance"` |
+| `sourceVideoUrl` | `string` | No | Public HTTPS staged source video URL used as textual context; no source frame is extracted or attached |
 
 *Provide one of `characterId` or `characterImageUrl`.
 
