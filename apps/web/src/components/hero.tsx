@@ -20,7 +20,7 @@ export function Hero() {
           <div className="flex flex-col sm:flex-row justify-center gap-3">
             <a
               href="https://docs.vidjutsu.ai/get-api-key"
-              className="inline-flex items-center justify-center px-6 py-3 bg-brand text-white text-sm font-semibold rounded hover:bg-brand-hover transition-colors"
+              className="vj-hero-primary inline-flex items-center justify-center px-6 py-3 bg-brand text-sm font-semibold rounded hover:bg-brand-hover transition-colors"
             >
               Get API Key
             </a>

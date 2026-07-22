@@ -34,6 +34,7 @@ body { margin: 0; background: var(--vj-page); color: var(--vj-text); font-family
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid #2e65d2; outline-offset: 3px; }
+.vj-hero-primary, .vj-hero-primary:hover { color: #fff; }
 
 .vj-landing {
   min-height: 100vh;
