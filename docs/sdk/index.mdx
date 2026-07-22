@@ -33,9 +33,10 @@ const { data: check } = await vj.cloneCheck({ videoUrl: source.url });
 console.log(check.verdict, check.score);
 
 // 3. Compose a starting frame, generate the clone, and poll for the result.
+const { data: extracted } = await vj.extractMedia({ mediaUrl: source.url, frames: [0] });
 const { data: starting } = await vj.cloneStartingImage({
   characterId: character.id,
-  sourceVideoUrl: source.url,
+  firstFrame: extracted.frames[0].url,
   prompt: "Match the framing and pose of the source's opening frame",
 });
 const { data: task } = await vj.cloneVideo({

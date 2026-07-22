@@ -8,23 +8,20 @@ description: "Composes the clean starting frame for a clone from a character and
 ```typescript
 const { data, error } = await vj.cloneStartingImage({
   characterId: "char_abc123",
+  firstFrame: "https://cdn.example.com/source-first-frame.jpg",
   prompt: "Character seated at a kitchen counter, holding the product",
-  sourceVideoUrl: "https://cdn.example.com/source.mp4",
 });
 ```
 
 ## Parameters
 
-Provide exactly one of `characterId` or `characterImageUrl`, not both.
+Extract frame index `0` from the staged source first. Both that image and a stored character are required.
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `characterId` | `string` | Yes* | A stored `char_...` id |
-| `characterImageUrl` | `string` | Yes* | A one-off public HTTPS character image |
+| `characterId` | `string` | Yes | A stored `char_...` id that supplies replacement identity |
+| `firstFrame` | `string` | Yes | Public HTTPS source first-frame image whose composition is edited |
 | `prompt` | `string` | Yes | How to compose the starting frame |
-| `sourceVideoUrl` | `string` | No | Public HTTPS staged source video URL used as textual context; no source frame is extracted or attached |
-
-*Provide one of `characterId` or `characterImageUrl`.
 
 ## Returns
 
@@ -37,7 +34,7 @@ The returned frame is always clean, with no captions, watermarks, or platform UI
 
 ## Errors
 
-Returns 422 if both or neither of `characterId` and `characterImageUrl` are given, or if `characterId` does not resolve to a character you own.
+Returns 400 if `firstFrame` or `characterId` is missing or invalid, and 404 if `characterId` does not resolve to a character you own.
 
 ## Rate limit
 

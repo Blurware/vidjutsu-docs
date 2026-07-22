@@ -122,7 +122,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
 
 ### 3. Compose the starting frame
 
-Pass the `id` from [Create your character first](#create-your-character-first) as `characterId`. `POST /v1/clones/starting-image` accepts either `characterId` (reuse the character you already created) or `characterImageUrl` (a one-off image), but exactly one of the two.
+Extract frame index `0` from the staged video with `POST /v1/extract`, then pass its returned image URL as `firstFrame` together with the stored `characterId`.
 
 ```bash
 curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
@@ -130,21 +130,21 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
   -H "Content-Type: application/json" \
   -d '{
     "characterId": "char_2a91b7f4",
+    "firstFrame": "https://cdn.vidjutsu.ai/extracts/tt_8f2c.../frame-0.jpg",
     "prompt": "Standing at a kitchen counter, mid-gesture, facing camera",
-    "sourceVideoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
   }'
 ```
 
 ```json
 {
   "imageUrl": "https://cdn.vidjutsu.ai/clones/frame_5d0e.../frame.png",
-  "model": "nano-banana-2"
+  "model": "google/gemini-3.1-flash-image"
 }
 ```
 
-`sourceVideoUrl` is optional and supplies textual source context only; this endpoint does not extract or attach an opening frame. The returned image is generated with a server-enforced no-overlay instruction. The endpoint is synchronous and shares the clone admission limit.
+Gemini edits the actual `firstFrame`: it preserves composition, pose, lighting, and background while replacing the performer identity from `characterId`. The returned image is generated with a server-enforced no-overlay instruction. The endpoint is synchronous and shares the clone admission limit.
 
-**Errors**: `403 subscription_required`, `429` on the shared clone admission limit. `422` if both or neither of `characterId` / `characterImageUrl` are provided, or if `characterId` doesn't resolve to a character you own.
+**Errors**: `400` for missing or invalid `firstFrame`/`characterId`, `404` if the character is unknown or belongs to another tenant, `403 subscription_required`, and `429` on the shared clone admission limit.
 
 ### 4. Submit the clone
 

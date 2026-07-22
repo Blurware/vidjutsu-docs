@@ -64,13 +64,13 @@ Kling 3.0 Motion Control is the only supported model. Source clips are capped at
 vidjutsu clone starting-image \
   --character char_2a91b7f4 \
   --prompt "Standing at a kitchen counter, mid-gesture, facing camera" \
-  --source "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
+  --first-frame "https://cdn.vidjutsu.ai/extracts/tt_8f2c.../frame-0.jpg"
 ```
 
 | Flag | Required | Description |
 |------|----------|-------------|
-| `--character` | Yes | Stored `char_...` id, or a public HTTPS character image URL |
+| `--character` | Yes | Stored `char_...` id |
 | `--prompt` | Yes | Instructions for composing the starting frame |
-| `--source` | No | Public HTTPS source video URL to ground the composition |
+| `--first-frame` | Yes | Public HTTPS first-frame image extracted from the staged source |
 
 The returned frame is always clean, with no overlays or platform UI.
