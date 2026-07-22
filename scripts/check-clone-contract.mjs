@@ -20,6 +20,17 @@ assert.equal(
   false,
   "CloneStartingImageRequest must not expose a model field",
 );
+assert.deepEqual(
+  schemas.CloneStartingImageRequest.required,
+  ["firstFrame", "characterId", "prompt"],
+  "CloneStartingImageRequest must require firstFrame and characterId",
+);
+assert.equal(
+  "characterImageUrl" in schemas.CloneStartingImageRequest.properties ||
+    "sourceVideoUrl" in schemas.CloneStartingImageRequest.properties,
+  false,
+  "CloneStartingImageRequest must not expose legacy image/video URL fields",
+);
 assert.ok(
   cloneVideo.responses["202"],
   "POST /v1/clones/video must remain asynchronous and return 202",

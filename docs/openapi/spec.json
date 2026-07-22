@@ -954,7 +954,7 @@
       "post": {
         "operationId": "cloneStartingImage",
         "summary": "Create a character-swapped starting frame",
-        "description": "Composes a clean starting frame for a clone by applying the prompt to the character image, optionally grounded in the source video's first frame. Supply exactly one of characterImageUrl (a public HTTPS image) or characterId (a previously created character's id, from createCharacter or GET /v1/characters) to identify the character; supplying both or neither is a validation error. The returned image is guaranteed to be a clean cinematic frame with no text overlays, captions, subtitles, watermarks, or platform UI, regardless of what is present in the source video or requested prompt. All other URLs must be public HTTPS. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
+        "description": "Edits the supplied firstFrame image with google/gemini-3.1-flash-image through the caller's tenant-scoped Vercel AI Gateway key. The first frame supplies pose, framing, lighting, background, and composition; the required characterId supplies the replacement identity. The returned image is generated with a server-enforced instruction to remove text overlays, captions, subtitles, watermarks, and platform UI. firstFrame must be public HTTPS. Synchronous; typically completes within a minute. Shares the daily clone admission limit.",
         "parameters": [],
         "responses": {
           "200": {
@@ -4034,27 +4034,24 @@
       "CloneStartingImageRequest": {
         "type": "object",
         "required": [
+          "firstFrame",
+          "characterId",
           "prompt"
         ],
         "properties": {
-          "characterImageUrl": {
+          "firstFrame": {
             "type": "string",
             "format": "uri",
-            "description": "Public HTTPS URL of the character identity image. http:// URLs are rejected. Exactly one of characterImageUrl or characterId must be supplied."
+            "description": "Public HTTPS URL of the source video's extracted first-frame image. This image supplies the pose, framing, lighting, background, and composition to preserve. http:// URLs are rejected."
           },
           "characterId": {
             "type": "string",
-            "description": "Id of a previously created character (from createCharacter or GET /v1/characters) whose stored image should be used. Exactly one of characterImageUrl or characterId must be supplied."
+            "description": "Id of a previously created character (from createCharacter or GET /v1/characters) whose stored image supplies the replacement identity."
           },
           "prompt": {
             "type": "string",
             "minLength": 1,
             "description": "Instructions for composing the starting frame (pose, framing, scene)."
-          },
-          "sourceVideoUrl": {
-            "type": "string",
-            "format": "uri",
-            "description": "Optional public HTTPS URL of the source video used as textual composition context. The endpoint does not extract or attach a source frame."
           }
         }
       },
