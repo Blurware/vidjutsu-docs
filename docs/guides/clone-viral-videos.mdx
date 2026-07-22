@@ -17,8 +17,8 @@ Need an API key? Follow [Get your API key](/get-api-key) first.
 - TikTok and Instagram links are not directly fetchable by the generation providers. Stage the source first with `POST /v1/videos/download/tiktok` or `POST /v1/videos/download/instagram` — every later step takes the staged VidJutsu URL, not the original platform link.
 - Source clips are capped at 15 seconds. A longer `sourceVideoUrl` passed to `POST /v1/clones/video` is rejected with a 422 and `error: "video_too_long"`.
 - `POST /v1/clones/check` accepts source videos up to about 2 minutes for the cloneability read, but the actual clone call is still capped at 15 seconds, so trim or pick a short segment before generating.
-- Starting images returned by `POST /v1/clones/starting-image` are guaranteed clean: no captions, watermarks, or platform UI, regardless of what the source frame or your prompt asked for.
-- `model` defaults to `"kling"` (Kling motion control, keeps the original sound). Pass `model: "seedance"` for the alternate model, which renders 9:16 at 480p through video-edit.
+- Starting images returned by `POST /v1/clones/starting-image` are generated with a server-enforced clean-frame instruction: no captions, watermarks, or platform UI.
+- Kling 3.0 Motion Control is the only supported clone-video model. If you send `model`, its value must be `"kling"`; omitting it uses `"kling"` by default.
 - Characters are a persisted, reusable resource. Create one once, keep its `id`, and pass that `id` into every clone from then on instead of regenerating a character each time.
 
 ## Create your character first
@@ -142,7 +142,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/starting-image \
 }
 ```
 
-`sourceVideoUrl` is optional; passing it grounds the composition in the source clip's opening frame so the pose and framing line up with the motion you're about to clone. The returned frame is always clean, no overlays or platform UI, no matter what the source or prompt included. Synchronous and shares the clone admission limit.
+`sourceVideoUrl` is optional and supplies textual source context only; this endpoint does not extract or attach an opening frame. The returned image is generated with a server-enforced no-overlay instruction. The endpoint is synchronous and shares the clone admission limit.
 
 **Errors**: `403 subscription_required`, `429` on the shared clone admission limit. `422` if both or neither of `characterId` / `characterImageUrl` are provided, or if `characterId` doesn't resolve to a character you own.
 
@@ -166,7 +166,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/video \
 }
 ```
 
-`model` defaults to `"kling"`; pass `"seedance"` for the 480p 9:16 alternate. `prompt` is an optional override of the default identity-swap prompt and only applies to `seedance`. This call is asynchronous: it returns `202` immediately with a task `id` to poll.
+Kling 3.0 Motion Control is the only supported model. `model` defaults to `"kling"` and, when provided, must be `"kling"`. `prompt` optionally overrides the default motion-control prompt. This call remains asynchronous: it returns `202` immediately with a task `id` to poll.
 
 **Errors**: `403 subscription_required`. `422 video_too_long` if `sourceVideoUrl` runs past 15 seconds. `429` with `Retry-After` on the shared clone admission limit.
 

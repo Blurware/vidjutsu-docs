@@ -3,7 +3,7 @@
   "info": {
     "title": "VidJutsu API",
     "version": "2026-07-20",
-    "description": "VidJutsu is a video API built for agents to operate directly. Your agent can clone viral trending skits now: stage a trending clip with /v1/videos/download/tiktok or /v1/videos/download/instagram, check it for cloneability, generate a character and a clean starting frame, then render the clone. The pipeline runs end to end in about 5 minutes, measured. Kling motion control is the default video model; Seedance is the alternate. Clone video output is 480p 9:16."
+    "description": "VidJutsu is a video API built for agents to operate directly. Your agent can clone viral trending skits now: stage a trending clip with /v1/videos/download/tiktok or /v1/videos/download/instagram, check it for cloneability, generate a character and a clean starting frame, then render the clone. Kling 3.0 Motion Control is the supported clone-video model and preserves the source soundtrack."
   },
   "tags": [
     {
@@ -1015,8 +1015,8 @@
     "/v1/clones/video": {
       "post": {
         "operationId": "cloneVideo",
-        "summary": "Clone source motion with Kling motion control or Seedance",
-        "description": "Submits an asynchronous motion-clone generation. The default kling model uses Kling motion control to puppet the starting-image identity with the source video's motion, keeping the original sound; model=\"seedance\" is the alternate model, rendering 9:16 at 480p via video-edit. All URLs must be public HTTPS. Source clips are capped at 15 seconds; a longer sourceVideoUrl is rejected with a 422 and an error of \"video_too_long\". Returns 202 with a task id to poll via GET /v1/clones/video/{id}.",
+        "summary": "Clone source motion with Kling 3.0 Motion Control",
+        "description": "Submits an asynchronous Kling 3.0 Motion Control generation. The starting-image identity is puppeted with the source video's motion while keeping the original sound. All URLs must be public HTTPS. Source clips are capped at 15 seconds; a longer sourceVideoUrl is rejected with a 422 and an error of \"video_too_long\". Returns 202 with a task id to read via GET /v1/clones/video/{id}.",
         "parameters": [],
         "responses": {
           "202": {
@@ -4054,7 +4054,7 @@
           "sourceVideoUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Optional public HTTPS URL of the source video whose opening frame should ground the composition."
+            "description": "Optional public HTTPS URL of the source video used as textual composition context. The endpoint does not extract or attach a source frame."
           }
         }
       },
@@ -4081,7 +4081,6 @@
       "CloneVideoModel": {
         "type": "string",
         "enum": [
-          "seedance",
           "kling"
         ]
       },
@@ -4108,12 +4107,12 @@
                 "$ref": "#/components/schemas/CloneVideoModel"
               }
             ],
-            "description": "Generation model. Defaults to \"kling\": Kling motion control puppets the character image with the source video's motion and keeps the original sound. \"seedance\" is the alternate model (9:16 at 480p, video-edit).",
+            "description": "Generation model. Only \"kling\" is supported: Kling 3.0 Motion Control puppets the character image with the source video's motion and keeps the original sound.",
             "default": "kling"
           },
           "prompt": {
             "type": "string",
-            "description": "Optional override for the default identity-swap prompt (seedance only)."
+            "description": "Optional override for the default motion-control prompt."
           }
         }
       },

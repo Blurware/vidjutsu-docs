@@ -23,8 +23,8 @@ const { data, error } = await vj.cloneVideo({
 |-------|------|----------|-------------|
 | `startingImageUrl` | `string` | Yes | Starting frame from `cloneStartingImage` |
 | `sourceVideoUrl` | `string` | Yes | Staged source video URL, capped at 15 seconds |
-| `model` | `string` | No | `"kling"` (default) uses Kling motion control and keeps original sound; `"seedance"` produces a 480p 9:16 alternate |
-| `prompt` | `string` | No | Overrides the default identity-swap prompt; seedance only |
+| `model` | `string` | No | `"kling"` (default and only supported value) uses Kling 3.0 Motion Control and keeps the original sound |
+| `prompt` | `string` | No | Overrides the default motion-control prompt |
 
 ### Returns
 
