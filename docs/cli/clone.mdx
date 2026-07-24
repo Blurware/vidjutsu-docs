@@ -27,7 +27,7 @@ vidjutsu clone character list
 ## Check a source video
 
 ```bash
-vidjutsu clone check "https://www.tiktok.com/@creator/video/123456789"
+vidjutsu clone check "https://cdn.vidjutsu.ai/imports/source.mp4"
 ```
 
 Scores whether the source video will clone well and prints the verdict (`strong`, `possible`, or `weak`), a 0-100 score, and the evidence.
@@ -35,7 +35,9 @@ Scores whether the source video will clone well and prints the verdict (`strong`
 | Argument / Flag | Required | Description |
 |-----------------|----------|-------------|
 | `<videoUrl>` | Yes | Public HTTPS URL of the source video |
-| `--context` | No | Short description of the source to aid the read |
+
+Raw TikTok and Instagram post pages are rejected. Stage them first with the
+download command or use `clone run`, which performs that step automatically.
 
 ## Clone a video
 

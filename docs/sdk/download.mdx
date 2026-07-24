@@ -52,6 +52,11 @@ Both methods return the same shape.
 | `size` | `number` | File size in bytes |
 | `sha256` | `string` | SHA-256 hash of the staged file |
 | `reused` | `boolean` | `true` when the same post was already staged |
+| `metadata` | `object` | Normalized caption, creator, hashtags, timing, cover, and available engagement statistics |
+
+The importer checks the tenant cache before calling the provider. Existing
+assets whose metadata predates this contract return `metadata: {}` and are not
+backfilled.
 
 ## Rate limit
 

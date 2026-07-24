@@ -8,7 +8,6 @@ description: "Scores whether a source video will clone well before you use a gen
 ```typescript
 const { data, error } = await vj.cloneCheck({
   videoUrl: "https://cdn.example.com/source.mp4",
-  context: "TikTok UGC — woman reviewing a skincare product",
 });
 ```
 
@@ -16,19 +15,27 @@ const { data, error } = await vj.cloneCheck({
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `videoUrl` | `string` | Yes | Public HTTPS URL of the staged source video |
-| `context` | `string` | No | Short description of the source to aid the read |
+| `videoUrl` | `string` | Yes | Directly fetchable public HTTPS MP4 URL |
 
-The source video must be 15 seconds or shorter.
+The source must be an MP4, no larger than 50 MB, and 15 seconds or shorter.
+TikTok and Instagram post pages must be staged first with the matching download
+method. Pass the exact returned `url`; clone-check performs no scraping.
+
+Captions and overlays that can be removed and reapplied do not independently
+reduce cloneability.
 
 ## Returns
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `verdict` | `string` | One of `"strong"`, `"possible"`, or `"weak"` |
-| `score` | `number` | Confidence score from 0 to 100 |
+| `score` | `number` | Server-calculated fixed-rubric score from 0 to 100 |
 | `evidence` | `string[]` | Reasons behind the verdict |
 | `model` | `string` | Model that produced the read |
+
+The server derives the verdict from the score: `strong` is 85–100,
+`possible` is 70–84, and `weak` is below 70. Gemini supplies structured
+video observations; it does not choose the public score or verdict.
 
 ## Example — branch on the verdict
 

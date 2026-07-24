@@ -83,11 +83,30 @@ curl -X POST https://api.vidjutsu.ai/v1/videos/download/tiktok \
   "contentType": "video/mp4",
   "size": 4213880,
   "sha256": "b7e2...",
-  "reused": false
+  "reused": false,
+  "metadata": {
+    "caption": "A simple product demo #ugc",
+    "authorHandle": "creator",
+    "authorName": "Creator Name",
+    "hashtags": ["ugc"],
+    "postedAt": 1784736000000,
+    "durationSeconds": 12,
+    "coverUrl": "https://cdn.vidjutsu.ai/covers/123456789.jpg",
+    "stats": {
+      "views": 120000,
+      "likes": 8400,
+      "comments": 310,
+      "shares": 640
+    }
+  }
 }
 ```
 
-Repeated imports of the same post reuse the same asset (`reused: true`), so restaging is cheap. Use `url` as `videoUrl` for clone-check and as `mediaUrl` for frame extraction; later, use it as the clone video's `sourceVideoUrl`.
+Repeated imports of the same post reuse the same asset (`reused: true`) without
+calling ScrapeCreators or fetching the source media again. Existing assets
+created before metadata storage return `metadata: {}` and are not backfilled.
+Use `url` as `videoUrl` for clone-check and as `mediaUrl` for frame extraction;
+later, use it as the clone video's `sourceVideoUrl`.
 
 **Errors**: `403 subscription_required` if the key has no active subscription. `429` with a `Retry-After` header if the shared 500/day scrape-and-download limit is hit; the window resets at 00:00 UTC.
 
@@ -98,8 +117,7 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
   -H "Authorization: Bearer $VIDJUTSU_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "videoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4",
-    "context": "Two-person kitchen scene, single continuous take, minimal camera movement"
+    "videoUrl": "https://cdn.vidjutsu.ai/uploads/tt_8f2c.../video.mp4"
   }'
 ```
 
@@ -110,15 +128,25 @@ curl -X POST https://api.vidjutsu.ai/v1/clones/check \
   "evidence": [
     "Single continuous shot with a stable, mostly static camera",
     "One clearly framed subject occupying the center third",
-    "No fast cuts or overlaid text obscuring the motion"
+    "No fast cuts or motion-critical occlusion"
   ],
-  "model": "google/gemini-2.5-flash"
+  "model": "google/gemini-3.6-flash"
 }
 ```
 
-`verdict` is `strong`, `possible`, or `weak`, backed by a 0-100 `score` and the `evidence` behind it. Branch on the result: a `strong` or `possible` verdict is worth continuing, `weak` usually is not. This call is synchronous and shares the same daily clone admission limit as the character, starting-image, and video steps.
+Gemini returns structured observations and the server applies a fixed rubric.
+`strong` is 85–100, `possible` is 70–84, and `weak` is below 70. Removable
+captions, stickers, watermarks, and overlays do not reduce the score unless
+they hide motion-critical parts of the performer. Branch on the result: a
+`strong` or `possible` verdict is worth continuing, `weak` usually is not.
+This call is synchronous and shares the same daily clone admission limit as
+the character, starting-image, and video steps.
 
-**Errors**: `403 subscription_required`, `429` with `Retry-After` on the shared clone admission limit.
+**Errors**: `400 social_video_requires_download` for a raw TikTok or Instagram
+page, `413 media_too_large` above 50 MB, `415 unsupported_media_type` for HTML
+or a non-MP4 container, `422 video_too_long` above 15 seconds,
+`403 subscription_required`, and `429` with `Retry-After` on the shared clone
+admission limit.
 
 ### 3. Compose the starting frame
 
