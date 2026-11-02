@@ -1,66 +1,88 @@
 ---
-title: "CLI Overview"
-description: "Clone viral videos from the terminal with the VidJutsu CLI."
+title: "CLI"
+description: "The vidjutsu command line: sign up, upload, edit and render from your terminal."
 ---
 
-The VidJutsu CLI runs the clone workflow and the calls around it from your terminal or an agent workspace. Standalone CLI 0.6.0 and the CLI bundled with SDK 1.4.0 target the current API contract.
+`vidjutsu` is the command line for VidJutsu Cloud. Every command prints the API's JSON on stdout; progress and prompts go to stderr, so it pipes cleanly into `jq` and scripts.
 
 ## Install
 
-```bash
-curl -fsSL https://vidjutsu.ai/install.sh | bash
+```sh
+npm i -g vidjutsu
 ```
 
-See [installation](/cli/install) for details and manual install options.
+Or a standalone binary for macOS and Linux (no Node needed), installed to `~/.local/bin`:
 
-## Clone a video
-
-Create a reusable character once, then clone any video onto it.
-
-```bash
-# Create a character once. This prints a char_... id.
-vidjutsu clone character --prompt "A friendly host in their late 20s, casual streetwear"
-
-# Clone a TikTok video onto that character.
-vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
-  --character char_2a91b7f4
+```sh
+curl -fsSL https://vidjutsu.ai/install.sh | sh
 ```
 
-See [`vidjutsu clone`](/cli/clone) for every subcommand and flag.
+Check it with `vidjutsu --version`. This page covers version 2.0.0.
+
+## Sign in
+
+```sh
+vidjutsu login                    # or: vidjutsu login --email you@example.com
+```
+
+It emails you a code, asks for it, and saves a new API key to `~/.config/vidjutsu/cloud.json` (readable only by you). A new account has no plan yet: the command prints a checkout link. `vidjutsu logout` forgets the saved key.
+
+## Environment
+
+| Variable | |
+| --- | --- |
+| `VIDJUTSU_API_KEY` | Use this key instead of the saved one. Handy in CI. |
+| `VIDJUTSU_API_URL` | API origin. Default `https://api.vidjutsu.ai`. |
+| `XDG_CONFIG_HOME` | Where the saved key lives (default `~/.config`). |
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| [`vidjutsu clone`](/cli/clone) | Create characters and clone videos onto them |
-| [`vidjutsu auth`](/cli/auth) | Authenticate with your API key |
-| [`vidjutsu watch`](/cli/watch) | AI watches a video, freeform prompt |
-| [`vidjutsu extract`](/cli/extract) | Pull frames, audio, metadata |
-| [`vidjutsu transcribe`](/cli/transcribe) | Speech-to-text with word-level timing |
-| [`vidjutsu compliance`](/cli/compliance) | Scan a video or caption against platform TOS |
-| [`vidjutsu check`](/cli/check) | Validate a spec against rules |
-| [`vidjutsu overlay`](/cli/overlay) | Burn a text overlay onto a video |
-| `vidjutsu disclaimer` | Burn a fine-print disclaimer onto a video |
-| [`vidjutsu upload`](/cli/upload) | Upload media to the CDN |
-| [`vidjutsu account`](/cli/accounts) | Manage account records |
-| [`vidjutsu post`](/cli/posts) | Manage post records |
-| [`vidjutsu reference`](/cli/reference) | Manage reference records |
-| [`vidjutsu asset`](/cli/asset) | Manage asset records |
-| [`vidjutsu project`](/cli/projects) | Manage editor timeline projects |
-| [`vidjutsu usage`](/cli/usage) | Remaining daily capacity per endpoint |
-| [`vidjutsu subscribe`](/cli/subscribe) | Manage your subscription |
-| [`vidjutsu info`](/cli/info) | Show API discovery info |
-| `vidjutsu update` | Update the installed CLI |
+### Account
 
-## Configuration
+| Command | |
+| --- | --- |
+| `vidjutsu login [--email <address>]` | Sign up or sign in with an emailed code; saves an API key. |
+| `vidjutsu logout` | Forget the saved key. |
+| `vidjutsu account` | Your account id, status and plan. |
+| `vidjutsu usage` | This billing period's usage. |
+| `vidjutsu entitlements` | Your plan's limits. |
+| `vidjutsu keys` | List your API keys. |
+| `vidjutsu keys create <name>` | Create an API key (its secret is shown once). |
+| `vidjutsu keys revoke <key_id>` | Revoke an API key. |
+| `vidjutsu billing checkout` | A Stripe Checkout link to start Pro. |
+| `vidjutsu billing portal` | A Stripe billing portal link. |
 
-The CLI stores its config at `~/.vidjutsu/config.json`:
+### Media
 
-```json
-{
-  "apiUrl": "https://api.vidjutsu.ai",
-  "apiKey": "vj_live_xxxx"
-}
+| Command | |
+| --- | --- |
+| `vidjutsu upload <file> [--name <name>]` | Upload a file straight to storage and add it to your library. |
+| `vidjutsu ingest <https-url> [--name <name>]` | Add media from a link. |
+| `vidjutsu url <hash> [--ttl <seconds>]` | A time-limited download link. |
+
+### Projects and renders
+
+| Command | |
+| --- | --- |
+| `vidjutsu init <project>` | Create a project. |
+| `vidjutsu show <project>` | Its current timeline. |
+| `vidjutsu edit <project> <ops.json \| ->` | Apply edit operations from a file, or `-` for stdin. The JSON is a list of operations, or `{"operations": [...], "expected_head": "..."}`. |
+| `vidjutsu render <project> [--json <body>] [--no-wait] [--out <file>]` | Render. Waits for the job unless `--no-wait`; `--out` saves the file. `--json` takes the [render options](/guides/rendering#options), for example `'{"height": 2160}'`. |
+| `vidjutsu status <job_id>` | A render job. |
+| `vidjutsu cancel <job_id>` | Cancel a render job. |
+| `vidjutsu download <job_id> [--out <file>]` | Save a finished render (default `<job_id>.mp4`). |
+
+`vidjutsu --help` lists them all.
+
+## Errors
+
+A failed call prints `error: <message> (<code>, HTTP <status>)` to stderr and exits 1. When the fix is a billing step, it also prints the Stripe link: `fix it here: https://...`.
+
+## Example
+
+```sh
+vidjutsu upload take1.mov | jq '{media, audio}' > take1.json
+vidjutsu init promo
+vidjutsu edit promo ops.json
+vidjutsu render promo --json '{"height": 2160, "loudness": -14}' --out promo-4k.mp4
 ```
-
-Generated endpoint commands print JSON. Workflow-oriented commands such as `clone` and `check` print progress and human-readable summaries.

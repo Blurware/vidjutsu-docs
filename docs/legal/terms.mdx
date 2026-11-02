@@ -1,95 +1,85 @@
 ---
 title: "Terms of Service"
-description: "Terms governing use of the VidJutsu API, CLI, and hosted compliance tools"
+description: "Terms governing use of VidJutsu Cloud: the API, MCP server, CLI and SDK"
 ---
 
 <Info>
-These terms govern your use of **api.vidjutsu.ai**, the `vidjutsu` CLI, the TypeScript SDK, and the hosted compliance endpoints (`/v1/compliance/video`, `/v1/compliance/prompt`). Last updated: **2026-04-23**.
+These terms govern your use of VidJutsu Cloud: **api.vidjutsu.ai**, the MCP server at `api.vidjutsu.ai/mcp`, the `vidjutsu` CLI and the TypeScript SDK. Last updated: **2026-11-02**.
 </Info>
 
 ## 1. Acceptance
 
-By creating an API key, subscribing via Stripe, or making any request to the service, you agree to these terms. If you disagree, do not use the service.
+By creating an account, subscribing via Stripe, or making any request to the service, you agree to these terms. If you disagree, do not use the service.
 
 ## 2. The Service
 
-VidJutsu is a developer API that performs automated analysis of audiovisual content and text against a stored corpus of platform policy rules. The **Compliance** endpoints specifically scan inputs against rules ingested from publicly-published platform documentation (YouTube Community Guidelines, TikTok Community Guidelines + ad policies, Instagram / Meta Community Standards, Facebook ad standards) and return a risk score with citations.
+VidJutsu Cloud is a hosted video editing service for developers and their agents. It stores media you upload, keeps versioned edit timelines you build through the API, and renders those timelines to video files on cloud machines. It does not generate video and does not publish to third-party platforms.
 
-## 3. Not Legal Advice
+The open-source VidJutsu engine is licensed separately under its own license. These terms cover only the hosted service. The VidJutsu name and logo are trademarks and are not licensed by these terms.
 
-**The compliance endpoints are informational tools, not legal advice.**
-
-- Every response includes a `disclaimer` field stating this explicitly.
-- The `citation` fields in violations reproduce the platform's own published text. The `explanation` field is VidJutsu's opinion on how that text applies to your input. Neither constitutes legal advice.
-- VidJutsu is not a law firm. We do not provide attorney-client relationships. For legal advice about any specific post or campaign, consult qualified counsel in your jurisdiction.
-- Using the output to make publishing decisions is solely at your discretion. VidJutsu is not liable for platform actions (demonetization, removal, suspension, account termination) taken against content you publish.
-
-## 4. Policy Data
-
-- The `policySnapshotDate` on every response indicates the date associated with the latest corpus update our scan was evaluated against. It is a timestamp, not a warranty.
-- **No freshness guarantee.** VidJutsu makes no commitment, express or implied, about how often the policy corpus is updated, whether it reflects the current state of any platform's published rules, or whether any given policy page has ever been ingested. The corpus may be weeks, months, or arbitrarily out of date at the moment of any given scan.
-- **No accuracy guarantee.** We make no warranty that our ingestion captures every rule on every page, that rules are correctly categorized, that chunking preserves full context, or that citations reflect the platform's current enforcement stance. Citations link back to the platform's own source page so you can verify against the live policy yourself — you are expected to do so before relying on any result.
-- Platforms may change their policies at any time, including silently. VidJutsu has no obligation to detect, reflect, or notify you of such changes.
-
-## 5. Your Content
+## 3. Your Content
 
 You are responsible for:
 
-- The content you submit to the API (video URLs, text, captions, metadata).
-- Ensuring you have the right to upload, transmit, and analyze that content.
-- Final publishing decisions regardless of any score, verdict, or flag returned.
+- The media you upload, link or otherwise submit, and the videos you render from it.
+- Ensuring you have the rights to upload, store, edit and render that content, including any music, footage, likenesses and trademarks in it.
+- How you use and publish anything you render.
 
-You grant VidJutsu a limited license to process your content to provide the service (transcription, visual analysis, chunk-and-match against policy rules, storing for rate-limit and audit purposes). We do not sell your content or use it to train models.
+You keep all rights to your content. You grant VidJutsu a limited license to store, process and transmit your content only as needed to provide the service (storage, conversion, audio processing, rendering and delivering download links). We do not sell your content or use it to train models.
 
-## 6. API Use
+## 4. API Use
 
-- **Authentication** — keep your API key confidential. You're responsible for all requests made with your key. Rotate via `POST /v1/api_keys/rotate` if compromised.
-- **Rate limits** — metered endpoint groups have published daily limits ([Pricing & Rate Limits](/credits-and-billing)); storage and read-only operations may be unmetered. Excess requests return HTTP 429. Attempting to circumvent limits with multiple accounts or automated abuse is a termination event.
-- **Acceptable use** — do not use the service to evaluate content you do not own or have permission to analyze; to surveil individuals; to reverse-engineer or resell the compliance corpus; or for any illegal purpose.
+- **Authentication.** Keep your API keys confidential. You're responsible for all requests made with your keys. Revoke a key (`DELETE /v3/keys/{key_id}`) if it may be compromised.
+- **Limits.** Your plan's limits are listed on the [pricing page](/pricing) and returned by `GET /v3/entitlements`. Requests over a limit are refused (HTTP 403 or 429). Attempting to get around limits with multiple accounts or automated abuse is a termination event.
+- **Acceptable use.** Do not use the service for content you don't have rights to, for illegal content, to harass or impersonate others, to attack or overload the service, or to resell access to the service as a competing hosted product.
 
-## 7. Billing
+## 5. Billing
 
-- Subscription: $99/month via Stripe, billed on the same date each month.
-- Cancel anytime via the Stripe billing portal. Access ends at the end of the current billing period. No partial refunds.
-- We may adjust pricing or rate limits with 30 days' notice, communicated via email to the address on your account.
+- **Pro:** $25 a month plus usage, billed via Stripe. A card is required; there is no free plan. Usage (render minutes and storage beyond what your plan includes) is billed in arrears on your monthly invoice, as listed on the [pricing page](/pricing).
+- A job that fails on our side is not charged.
+- Cancel anytime via the Stripe billing portal. Your plan ends at the end of the current billing period. No partial refunds.
+- **Failed payments.** If a payment fails, new work stops until it's paid; reads keep working so you can download your media. If the payment isn't made within 30 days, your stored media may be deleted.
+- We may adjust pricing or limits with 30 days' notice, communicated via email to the address on your account.
 
-## 8. Warranty Disclaimer
+## 6. Data and Deletion
+
+Stored media, timelines and renders are kept while your account is in good standing. You can download your media at any time while your account is active or within the 30 days after a failed payment. After your plan ends or that period passes, we may delete your stored content. We are not a backup service: keep your own copies of anything important.
+
+## 7. Warranty Disclaimer
 
 **The service is provided "as is" and "as available".** To the maximum extent permitted by law, VidJutsu disclaims all warranties, express or implied, including but not limited to:
 
 - Merchantability and fitness for a particular purpose
-- Accuracy, completeness, or timeliness of compliance ratings, citations, or rule coverage
-- Uninterrupted or error-free operation
-- That any platform will take or refrain from any enforcement action consistent with our analysis
+- Accuracy or completeness of renders, conversions or audio processing
+- Uninterrupted or error-free operation, or availability of stored content
 
-## 9. No Liability
+## 8. No Liability
 
 **To the maximum extent permitted by law, VidJutsu has no liability to you, and you assume all risk, arising from or related to these terms, the service, or any output the service produces.**
 
 Specifically, and without limiting the generality of the foregoing:
 
-- VidJutsu shall not be liable for **any damages of any kind**, whether direct, indirect, incidental, consequential, special, exemplary, or punitive — including without limitation lost profits, lost revenue, lost savings, platform enforcement actions (demonetization, shadow-bans, suspensions, account termination, content removal, strikes), loss of audience, business interruption, reputational harm, legal fees, or costs of substitute services — regardless of the theory of liability (contract, tort, strict liability, negligence, statute, or otherwise) and regardless of whether VidJutsu was advised of the possibility of such damages.
-- You acknowledge that the service is provided at no price-matched-to-risk premium; the fee structure assumes **zero liability** on VidJutsu's part for any outcome of your use of the output.
-- Any compliance scan, citation, verdict, or risk score is offered at your sole risk. You are the decision-maker on every publish, monetization, or ad-buy decision; VidJutsu provides analysis only and bears no responsibility for the consequences of acting on it.
+- VidJutsu shall not be liable for **any damages of any kind**, whether direct, indirect, incidental, consequential, special, exemplary, or punitive — including without limitation lost profits, lost revenue, lost savings, loss of data or content, loss of audience, business interruption, reputational harm, legal fees, or costs of substitute services — regardless of the theory of liability (contract, tort, strict liability, negligence, statute, or otherwise) and regardless of whether VidJutsu was advised of the possibility of such damages.
+- You are the decision-maker on how you use and publish anything you render; VidJutsu bears no responsibility for the consequences.
 
 Where applicable law does not permit the exclusion or limitation of certain damages, VidJutsu's liability in those jurisdictions is limited to the minimum amount permitted by that law.
 
-## 10. Indemnification
+## 9. Indemnification
 
-You agree to indemnify and hold harmless VidJutsu from any claim arising from (a) content you submitted to the service, (b) your use or misuse of the output, or (c) your breach of these terms.
+You agree to indemnify and hold harmless VidJutsu from any claim arising from (a) content you submitted to or rendered with the service, (b) your use or misuse of the output, or (c) your breach of these terms.
 
-## 11. Changes
+## 10. Changes
 
-We may update these terms. Material changes will be announced by email at least 14 days before taking effect. Continued use of the service after the effective date constitutes acceptance. The policy corpus and rate-limit buckets may be updated at any time without advance notice (routine operational changes).
+We may update these terms. Material changes will be announced by email at least 14 days before taking effect. Continued use of the service after the effective date constitutes acceptance.
 
-## 12. Termination
+## 11. Termination
 
-Either party may terminate at any time. Upon termination, your API key is revoked and your access ends. Sections 3, 5, 8, 9, 10, and 13 survive termination.
+Either party may terminate at any time. Upon termination, your API keys are revoked and your access ends. Sections 3, 7, 8, 9 and 12 survive termination.
 
-## 13. Governing Law
+## 12. Governing Law
 
 These terms are governed by the laws of the State of Delaware, United States, without regard to conflict-of-laws principles. Any dispute will be resolved in the state or federal courts of Delaware.
 
-## 14. Contact
+## 13. Contact
 
 Legal notices: **legal@vidjutsu.ai**. Technical questions: **support@vidjutsu.ai**.

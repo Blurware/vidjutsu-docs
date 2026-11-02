@@ -1,13 +1,15 @@
 {
   "name": "vidjutsu-docs",
   "private": true,
-  "workspaces": ["apps/*"],
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "dev": "cd apps/web && bun run dev",
     "build": "cd apps/web && bun run build",
-    "check:clone-contract": "node scripts/check-clone-contract.mjs",
+    "build:spec": "node scripts/build-spec.mjs",
     "check:docs": "node scripts/check-docs.mjs",
-    "check": "bun run check:clone-contract && bun run check:docs"
+    "check": "node scripts/build-spec.mjs --check && node scripts/check-docs.mjs"
   },
   "packageManager": "bun@1.3.10",
   "dependencies": {

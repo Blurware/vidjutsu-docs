@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "sequoia",
   "name": "VidJutsu",
+  "description": "Video editing built for agents: upload takes, edit a timeline with history, and render it on cloud machines.",
   "colors": {
     "primary": "#2563EB",
     "light": "#60A5FA",
@@ -20,26 +21,28 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
               "index",
-              "get-api-key",
               "quickstart",
-              "features"
-            ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
               "authentication",
-              "credits-and-billing"
+              "mcp"
             ]
           },
           {
-            "group": "Recipes",
+            "group": "Guides",
             "pages": [
-              "guides/clone-viral-videos",
-              "guides/scrape"
+              "guides/uploads",
+              "guides/editing",
+              "guides/rendering",
+              "guides/audio"
+            ]
+          },
+          {
+            "group": "Account",
+            "pages": [
+              "pricing",
+              "errors"
             ]
           },
           {
@@ -52,6 +55,7 @@
       },
       {
         "tab": "API Reference",
+        "openapi": "openapi/spec.json",
         "groups": [
           {
             "group": "Overview",
@@ -60,246 +64,96 @@
             ]
           },
           {
-            "group": "Clone",
+            "group": "Sign-up and sign-in",
             "pages": [
-              "POST /v1/clones/check",
-              "POST /v1/characters",
-              "GET /v1/characters",
-              "GET /v1/characters/{id}",
-              "POST /v1/clones/starting-image",
-              "POST /v1/clones/video",
-              "GET /v1/clones/video/{id}"
+              "POST /v3/auth/email",
+              "POST /v3/auth/verify"
             ]
           },
           {
-            "group": "Download",
+            "group": "Account",
             "pages": [
-              "POST /v1/videos/download/tiktok",
-              "POST /v1/videos/download/instagram"
+              "GET /v3/account",
+              "POST /v3/account",
+              "GET /v3/usage",
+              "GET /v3/entitlements"
             ]
           },
           {
-            "group": "Billing & Keys",
+            "group": "API keys",
             "pages": [
-              "GET /v1/pricing",
-              "POST /v1/subscribe",
-              "GET /v1/credits/status",
-              "GET /v1/usage",
-              "POST /v1/api_keys/rotate",
-              "POST /v1/api_keys/recover",
-              "GET /v1/info"
+              "GET /v3/keys",
+              "POST /v3/keys",
+              "DELETE /v3/keys/{key_id}"
             ]
           },
           {
-            "group": "Auth",
+            "group": "Billing",
             "pages": [
-              "POST /v1/auth/verify/request",
-              "POST /v1/auth/verify/confirm"
+              "POST /v3/billing/checkout",
+              "POST /v3/billing/portal"
             ]
           },
           {
-            "group": "Agent Auth (auth.md)",
+            "group": "Media",
             "pages": [
-              "POST /v1/auth/agent",
-              "POST /v1/auth/agent/claim",
-              "POST /v1/auth/agent/claim/complete",
-              "POST /v1/auth/agent/revoke"
+              "POST /v3/media",
+              "GET /v3/media/{hash}",
+              "GET /v3/media/{hash}/url"
             ]
           },
           {
-            "group": "Processing",
+            "group": "Uploads",
             "pages": [
-              "POST /v1/watch",
-              "POST /v1/extract",
-              "POST /v1/transcribe",
-              "POST /v1/check",
-              "POST /v1/overlay",
-              "POST /v1/disclaimer"
+              "POST /v3/uploads",
+              "POST /v3/uploads/{upload_id}/complete",
+              "DELETE /v3/uploads/{upload_id}"
             ]
           },
           {
-            "group": "Compliance",
+            "group": "Projects",
             "pages": [
-              "POST /v1/compliance/video",
-              "POST /v1/compliance/prompt"
+              "POST /v3/projects",
+              "GET /v3/projects/{project}",
+              "POST /v3/projects/{project}/edits"
             ]
           },
           {
-            "group": "Check Rules",
+            "group": "Audio",
             "pages": [
-              "GET /v1/check/rules",
-              "PUT /v1/check/rules"
+              "POST /v3/projects/{project}/level",
+              "POST /v3/audio/clean"
             ]
           },
           {
-            "group": "Upload",
+            "group": "Renders",
             "pages": [
-              "POST /v1/upload",
-              "POST /v1/upload/url"
+              "POST /v3/projects/{project}/renders",
+              "GET /v3/jobs/{job_id}",
+              "POST /v3/jobs/{job_id}/cancel"
             ]
           },
           {
-            "group": "Assets",
+            "group": "Status",
             "pages": [
-              "POST /v1/assets",
-              "GET /v1/assets",
-              "PUT /v1/assets",
-              "DELETE /v1/assets"
-            ]
-          },
-          {
-            "group": "Accounts",
-            "pages": [
-              "POST /v1/accounts",
-              "GET /v1/accounts",
-              "PUT /v1/accounts",
-              "DELETE /v1/accounts"
-            ]
-          },
-          {
-            "group": "Posts",
-            "pages": [
-              "POST /v1/posts",
-              "GET /v1/posts",
-              "PUT /v1/posts",
-              "DELETE /v1/posts"
-            ]
-          },
-          {
-            "group": "References",
-            "pages": [
-              "POST /v1/references",
-              "GET /v1/references",
-              "PUT /v1/references",
-              "DELETE /v1/references"
-            ]
-          },
-          {
-            "group": "Editor Projects",
-            "pages": [
-              "POST /v1/projects",
-              "GET /v1/projects",
-              "PUT /v1/projects",
-              "DELETE /v1/projects"
-            ]
-          },
-          {
-            "group": "Scrape",
-            "pages": [
-              "api-reference/scrape",
-              "POST /v1/scrape/tiktok/profile",
-              "POST /v1/scrape/tiktok/profile/videos",
-              "POST /v1/scrape/tiktok/video",
-              "POST /v1/scrape/tiktok/video/transcript",
-              "POST /v1/scrape/tiktok/video/comments",
-              "POST /v1/scrape/tiktok/search/users",
-              "POST /v1/scrape/tiktok/trending",
-              "POST /v1/scrape/instagram/profile",
-              "POST /v1/scrape/instagram/user/posts",
-              "POST /v1/scrape/instagram/post",
-              "POST /v1/scrape/instagram/post/comments",
-              "POST /v1/scrape/instagram/user/reels"
-            ]
-          }
-        ],
-        "openapi": "openapi/spec.json"
-      },
-      {
-        "tab": "SDK Reference",
-        "groups": [
-          {
-            "group": "Getting Started",
-            "pages": [
-              "sdk/index"
-            ]
-          },
-          {
-            "group": "Clone",
-            "pages": [
-              "sdk/clone-check",
-              "sdk/characters",
-              "sdk/clone-starting-image",
-              "sdk/clone-video",
-              "sdk/download"
-            ]
-          },
-          {
-            "group": "Processing",
-            "pages": [
-              "sdk/watch",
-              "sdk/extract",
-              "sdk/transcribe",
-              "sdk/check",
-              "sdk/overlay",
-              "sdk/disclaimer"
-            ]
-          },
-          {
-            "group": "Storage",
-            "pages": [
-              "sdk/upload",
-              "sdk/accounts",
-              "sdk/posts",
-              "sdk/assets",
-              "sdk/references",
-              "sdk/projects"
-            ]
-          },
-          {
-            "group": "Scrape",
-            "pages": [
-              "sdk/scrape"
+              "GET /v3/health"
             ]
           }
         ]
       },
       {
-        "tab": "CLI Reference",
+        "tab": "CLI and SDK",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "CLI",
             "pages": [
-              "cli/index",
-              "cli/install",
-              "cli/subscribe",
-              "cli/auth"
+              "cli/index"
             ]
           },
           {
-            "group": "Clone",
+            "group": "SDK",
             "pages": [
-              "cli/clone"
-            ]
-          },
-          {
-            "group": "Processing",
-            "pages": [
-              "cli/watch",
-              "cli/extract",
-              "cli/transcribe",
-              "cli/check",
-              "cli/overlay",
-              "cli/compliance"
-            ]
-          },
-          {
-            "group": "Storage",
-            "pages": [
-              "cli/upload",
-              "cli/asset",
-              "cli/accounts",
-              "cli/posts",
-              "cli/reference",
-              "cli/projects"
-            ]
-          },
-          {
-            "group": "Utilities",
-            "pages": [
-              "cli/usage",
-              "cli/status",
-              "cli/info",
-              "cli/version"
+              "sdk/index"
             ]
           }
         ]
@@ -322,8 +176,8 @@
   "navbar": {
     "primary": {
       "type": "button",
-      "label": "Get API Key",
-      "href": "https://vidjutsu.ai"
+      "label": "Get started",
+      "href": "https://docs.vidjutsu.ai/quickstart"
     }
   },
   "contextual": {
@@ -342,5 +196,238 @@
       "github": "https://github.com/tfcbot/vidjutsu-sdk"
     }
   },
-  "openapi": "openapi/spec.json"
+  "redirects": [
+    {
+      "source": "/api-reference/accounts/create",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/accounts/delete",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/accounts/list",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/accounts/update",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/api-keys/pricing",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/api-reference/api-keys/recover",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/api-keys/rotate",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/posts/create",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/posts/delete",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/posts/list",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/posts/update",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/scrape",
+      "destination": "/api-reference/introduction"
+    },
+    {
+      "source": "/api-reference/upload/upload-url",
+      "destination": "/guides/uploads"
+    },
+    {
+      "source": "/api-reference/upload/upload",
+      "destination": "/guides/uploads"
+    },
+    {
+      "source": "/auth",
+      "destination": "/authentication"
+    },
+    {
+      "source": "/cli/accounts",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/asset",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/auth",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/check",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/clone",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/compliance",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/extract",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/info",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/install",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/overlay",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/posts",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/projects",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/reference",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/status",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/subscribe",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/cli/transcribe",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/upload",
+      "destination": "/guides/uploads"
+    },
+    {
+      "source": "/cli/usage",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/cli/version",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/cli/watch",
+      "destination": "/cli/index"
+    },
+    {
+      "source": "/credits-and-billing",
+      "destination": "/pricing"
+    },
+    {
+      "source": "/features",
+      "destination": "/"
+    },
+    {
+      "source": "/get-api-key",
+      "destination": "/authentication"
+    },
+    {
+      "source": "/guides/clone-viral-videos",
+      "destination": "/"
+    },
+    {
+      "source": "/guides/scrape",
+      "destination": "/"
+    },
+    {
+      "source": "/sdk/accounts",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/assets",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/characters",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/check",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/clone-check",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/clone-starting-image",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/clone-video",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/disclaimer",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/download",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/extract",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/overlay",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/posts",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/projects",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/references",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/scrape",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/transcribe",
+      "destination": "/sdk/index"
+    },
+    {
+      "source": "/sdk/upload",
+      "destination": "/guides/uploads"
+    },
+    {
+      "source": "/sdk/watch",
+      "destination": "/sdk/index"
+    }
+  ]
 }

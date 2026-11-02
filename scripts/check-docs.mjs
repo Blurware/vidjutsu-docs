@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
-import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { extname, join, relative } from "node:path";
+import { renderSpec } from "./build-spec.mjs";
 
 function filesUnder(root, extensions) {
   const files = [];
@@ -20,15 +21,13 @@ const contentFiles = [
 const contents = new Map(contentFiles.map((file) => [file, readFileSync(file, "utf8")]));
 
 const forbidden = [
-  [/seedance/i, "Seedance clone claim"],
-  [/wavespeed/i, "WaveSpeed provider claim"],
-  [/480p/i, "legacy 480p claim"],
-  [/kling-motion-control/i, "legacy model literal"],
-  [/characterImageUrl/, "legacy starting-image field"],
-  [/about 2 minutes/i, "legacy clone-check duration"],
-  [/mediaJobs|getDistributionJob|getJob/, "removed job API"],
-  [/--video-url/, "stale generated CLI flag"],
-  [/facebook-ads/, "stale compliance platform"],
+  [/vcore/i, "internal engine name"],
+  [/\/v1\//, "old /v1 API route"],
+  [/\bclon(e|es|ing)\b/i, "old clone product"],
+  [/\bscrap(e|es|ing)\b/i, "old scrape product"],
+  [/\bcharacters?\b/i, "old characters product"],
+  [/\$99\b/, "old $99 plan"],
+  [/credits-and-billing|get-api-key/, "removed page"],
 ];
 
 for (const [file, text] of contents) {
@@ -37,19 +36,8 @@ for (const [file, text] of contents) {
   }
 }
 
-for (const file of [
-  "docs/cli/clone.mdx",
-  "docs/guides/clone-viral-videos.mdx",
-  "docs/sdk/clone-starting-image.mdx",
-]) {
-  const text = contents.get(file);
-  assert.match(text, /firstFrame|--first-frame/, `${file} must document the extracted first frame`);
-  assert.match(text, /characterId|--character/, `${file} must document a stored character id`);
-}
-
-assert.doesNotMatch(contents.get("docs/credits-and-billing.mdx"), /POST \/v1\/(upload|posts).*\|\s*(100|200)/, "upload and posts must not be documented as metered");
-assert.match(contents.get("docs/cli/install.mdx"), /1\.4\.0/, "bundled CLI release must be documented");
-assert.match(contents.get("docs/cli/install.mdx"), /0\.6\.0/, "standalone CLI release must be documented");
+assert.match(contents.get("docs/pricing.mdx"), /\$25 a month/, "pricing must state Pro at $25 a month");
+assert.match(contents.get("docs/pricing.mdx"), /no free plan/i, "pricing must say there is no free plan");
 
 const docsFiles = [...contents.keys()].filter((file) => /\.mdx?$/.test(file));
 const pageByRoute = new Map();
@@ -85,9 +73,7 @@ for (const [file, text] of contents) {
 }
 
 const specText = readFileSync("docs/openapi/spec.json", "utf8");
-const expectedHash = readFileSync(".openapi-sha256", "utf8").trim();
-const actualHash = createHash("sha256").update(specText).digest("hex");
-assert.equal(actualHash, expectedHash, "vendored OpenAPI snapshot hash does not match .openapi-sha256");
+assert.equal(specText, renderSpec(), "docs/openapi/spec.json is stale: run node scripts/build-spec.mjs");
 
 const spec = JSON.parse(specText);
 const config = JSON.parse(readFileSync("docs/docs.json", "utf8"));
@@ -98,6 +84,22 @@ for (const tab of config.navigation.tabs) {
       if (/^(GET|POST|PUT|DELETE|PATCH) /.test(page)) navOperations.add(page);
     }
   }
+}
+for (const tab of config.navigation.tabs) {
+  for (const group of tab.groups) {
+    for (const page of group.pages) {
+      if (/^(GET|POST|PUT|DELETE|PATCH) /.test(page)) {
+        const [method, path] = page.split(" ");
+        assert.ok(spec.paths[path]?.[method.toLowerCase()], `API navigation lists ${page}, which the spec doesn't have`);
+      } else {
+        assert.ok(existsSync(`docs/${page}.mdx`) || existsSync(`docs/${page}.md`), `navigation lists missing page ${page}`);
+      }
+    }
+  }
+}
+for (const { source, destination } of config.redirects ?? []) {
+  assert.ok(!pageByRoute.has(source), `redirect from ${source} shadows an existing page`);
+  assert.ok(pageByRoute.has(destination), `redirect from ${source} goes to missing page ${destination}`);
 }
 for (const [path, item] of Object.entries(spec.paths)) {
   for (const method of ["get", "post", "put", "delete", "patch"]) {

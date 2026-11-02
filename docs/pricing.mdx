@@ -1,0 +1,59 @@
+---
+title: "Pricing and billing"
+description: "Pro is $25 a month plus usage. No free plan; a card is required."
+---
+
+## Pro: $25 a month, plus usage
+
+A card is required to start. There is no free plan.
+
+| Usage | Included each month | Then |
+| --- | --- | --- |
+| Render minutes, up to 1080p | 60 minutes | $0.10 per minute |
+| Render minutes, above 1080p (4K) | None | $0.20 per minute |
+| Storage | 100 GB | $0.05 per GB-month |
+
+Render minutes are minutes of rendered output. Uploading is free; what you store counts as storage, billed on your average stored bytes over the month. A job that fails on our side is never charged. Usage is billed in arrears on your monthly invoice.
+
+### Limits
+
+| Limit | Pro |
+| --- | --- |
+| Monthly usage spend limit | $100 by default, you can raise it up to $500 |
+| Render minutes a month | 2,000 |
+| Storage | 2 TB |
+| Renders at once | 10 |
+| Largest upload | 50 GB |
+| Longest render | 3 hours of output |
+| 4K output | Yes |
+| Support | Email |
+
+`GET /v3/entitlements` (`vidjutsu entitlements`) returns your plan's limits, and `GET /v3/usage` (`vidjutsu usage`) shows this period's usage and what's left of your included minutes and storage.
+
+## Enterprise
+
+Need more than these limits, single sign-on, your own storage or a custom fleet? [Contact us](https://vidjutsu.ai/contact).
+
+## Subscribe and manage billing
+
+There is no billing UI of ours: every billing step is a Stripe-hosted page you get a link to.
+
+| Call | CLI | |
+| --- | --- | --- |
+| `POST /v3/billing/checkout` | `vidjutsu billing checkout` | A Stripe Checkout link that starts Pro. |
+| `POST /v3/billing/portal` | `vidjutsu billing portal` | A Stripe billing portal link: update your card, see invoices, cancel. |
+
+Both take optional `https` redirect URLs (`success_url` and `cancel_url` for checkout, `return_url` for the portal). Your account turns `active` as soon as checkout completes.
+
+Canceling in the portal ends your plan at the end of the billing period.
+
+## When something needs fixing
+
+Every billing error tells you how to fix it:
+
+- **No plan:** work that needs a plan returns 402 `payment_required` with `reason: "no_plan"` and a `checkout_url`.
+- **Failed payment:** new work stops at once with 402 `payment_required`, `reason: "payment_failed"` and a `portal_url` to update your card. Reads keep working so you can get your media out. The error and `GET /v3/account` carry `media_deletes_at`: if the payment isn't made, stored media is deleted 30 days after the failed payment.
+- **A plan limit:** 403 `plan_limit` with a `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`) and a `contact_url`.
+- **Too many renders at once:** 429 `rate_limited` with `retry_after_seconds`.
+
+See [Errors](/errors) for the full list.

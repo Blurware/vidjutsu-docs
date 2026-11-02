@@ -7,9 +7,9 @@ export const viewport: Viewport = {
   themeColor: "#f2ecdf",
 };
 
-const HEADLINE = "Your agent can clone viral videos now";
+const HEADLINE = "Your agent can edit video now";
 const DESCRIPTION =
-  "Point your agent at a video that is already working. It puts your character in it and hands you one back, ready to post.";
+  "Video editing built for agents. Upload takes, edit a timeline with full history, and render 1080p or 4K on cloud machines through one API, a CLI or MCP.";
 
 export const metadata: Metadata = {
   title: {

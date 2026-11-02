@@ -1,80 +1,45 @@
 ---
-title: "VidJutsu — Clone viral videos"
-description: "Your agent can clone viral TikTok and Instagram videos onto your own characters. Get a clone score, swap in your character, get a rendered clone."
+title: "VidJutsu"
+description: "Video editing built for agents. Upload takes, edit a timeline with history, and render it on cloud machines through one API, a CLI or MCP."
 ---
 
-VidJutsu lets your agent clone viral TikTok and Instagram videos onto your own characters. Point it at a source video and it does three things:
+VidJutsu Cloud is a video editor your agent drives. There is no timeline UI to click through: every step is a call.
 
-<CardGroup cols={3}>
-  <Card title="Get a clone score" icon="gauge" href="/guides/clone-viral-videos">
-    A clone check reads whether a source video will clone well before you use a generation attempt.
-  </Card>
-  <Card title="Swap in your character" icon="user" href="/sdk/characters">
-    Create a reusable character once, then use it across every clone.
-  </Card>
-  <Card title="Get a rendered clone" icon="film" href="/sdk/clone-video">
-    Kling motion control maps the source motion onto your character and returns a finished video.
-  </Card>
-</CardGroup>
-
-Each step is a typed call that your agent orchestrates. Character, download, check, extraction, and starting-image calls return synchronously; clone-video submission returns a durable task id to poll.
-
-## Clone a video
+1. **Upload** your takes, music and stills. Files go straight to storage, up to 50 GB each.
+2. **Edit** a project's timeline with plain JSON operations: place clips, trim, cut pauses, set fades and levels. Every edit is a new revision, so nothing is lost and retries are safe.
+3. **Render** the timeline to 1080p or 4K on parallel cloud machines. Ranges that didn't change since the last render are reused, so a small edit re-renders in seconds.
 
 <CardGroup cols={2}>
-  <Card title="Clone viral videos" icon="clapperboard" href="/guides/clone-viral-videos">
-    Stage a source video, score it, swap in your character, and generate your version.
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Sign up, upload a take and render your first cut in a few minutes.
   </Card>
-  <Card title="Get an API key" icon="key" href="/get-api-key">
-    Subscribe and start calling in a couple of minutes.
+  <Card title="Connect an agent (MCP)" icon="robot" href="/mcp">
+    Point Claude Code or any MCP client at `https://api.vidjutsu.ai/mcp`.
   </Card>
-</CardGroup>
-
-## Supporting capabilities
-
-Beyond cloning, the same API covers the steps around it.
-
-<CardGroup cols={2}>
-  <Card title="Discover" icon="magnifying-glass" href="/api-reference/scrape">
-    Scrape TikTok and Instagram for trending, profile, and post metadata to find videos worth cloning.
+  <Card title="Edit a timeline" icon="scissors" href="/guides/editing">
+    The edit operations, with a full example.
   </Card>
-  <Card title="Download" icon="arrow-down-to-line" href="/sdk/download">
-    Stage a single video's file to the CDN so the generation steps can fetch it.
-  </Card>
-  <Card title="Understand" icon="eye" href="/sdk/watch">
-    Watch a video for what's in it, or get a word-level transcript.
-  </Card>
-  <Card title="Finish" icon="badge-check" href="/sdk/overlay">
-    Run an ad-compliance check, then burn a text overlay or disclaimer onto the result.
+  <Card title="Pricing" icon="receipt" href="/pricing">
+    Pro is $25 a month plus usage.
   </Card>
 </CardGroup>
 
-## Choose your interface
+## Ways in
 
-<CardGroup cols={3}>
-  <Card title="REST API" icon="code" href="/api-reference/introduction">
-    Call typed endpoints directly from any runtime.
-  </Card>
-  <Card title="TypeScript SDK" icon="braces" href="/sdk/index">
-    Fully typed methods for the clone workflow and everything around it.
-  </Card>
-  <Card title="CLI" icon="terminal" href="/cli/index">
-    Run `vidjutsu clone` from a terminal or an agent workspace.
-  </Card>
-</CardGroup>
+All of them use the same operations with the same names, and the same JSON in and out.
 
-## MCP
+| | Use it for | Start here |
+| --- | --- | --- |
+| **REST API** | Your own code and scripts: `https://api.vidjutsu.ai/v3` | [API reference](/api-reference/introduction) |
+| **CLI** | The terminal and shell scripts: `npm i -g vidjutsu` | [CLI](/cli/index) |
+| **MCP** | Agents: `https://api.vidjutsu.ai/mcp` | [MCP](/mcp) |
+| **TypeScript SDK** | Node, Bun and the browser | [SDK](/sdk/index) |
 
-VidJutsu exposes an authenticated remote MCP server at `https://api.vidjutsu.ai/mcp`. It uses OAuth 2.1 with a bearer token and exposes five typed tools: `download_tiktok_video`, `download_instagram_video`, `add_overlay`, `clone_check`, and `get_clone_video`. Create characters, compose starting frames, and submit clone videos through REST, the SDK, or the CLI.
+## What it does and doesn't do
 
-**Claude Code (CLI):**
+VidJutsu edits and renders footage you bring. It doesn't generate video, and it doesn't post to social networks.
 
-```bash
-claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp
-```
-
-The `--transport http` flag is required for a remote server. After adding, run `/mcp` in a session, select `vidjutsu`, and choose Authenticate. A browser opens for the OAuth 2.1 flow.
-
-**Claude (desktop app and claude.ai):** add a custom connector. In the desktop app: Settings, Connectors, Add custom connector. On the web: [claude.ai/customize/connectors](https://claude.ai/customize/connectors). Enter `https://api.vidjutsu.ai/mcp` and authorize in the browser. There is no command to run.
-
-The SDK, CLI, and REST API remain available as alternatives.
+- **Inputs:** video (phone footage, screen recordings, ProRes, anything common), audio and still images. Footage is stored as you uploaded it and converted at render time, only the parts a render uses.
+- **Timeline:** video tracks (the first is the picture, tracks above it hold still-image overlays), any number of audio tracks mixed together, clip gain, linear fades, picture-in-picture layouts, and cutting pauses across every track at once.
+- **Audio:** level clips to a target loudness, and studio-sound cleanup for voice tracks with an optional music bed.
+- **Output:** an MP4 at 1920x1080 or 3840x2160, 30 fps, with a download link.

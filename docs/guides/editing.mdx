@@ -1,0 +1,121 @@
+---
+title: "Edit a timeline"
+description: "Projects, revisions and the edit operations, with a full example."
+---
+
+A **project** is a timeline with history. You change it only by sending edit operations, and every edit makes a new **revision**. Nothing is ever overwritten: you can render or read any earlier revision.
+
+## Create a project
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/v3/projects \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"project": "launch-film"}'
+# {"project": "launch-film", "branch": "main", "revision": "..."}
+```
+
+A new project is empty, with one video track `v1` and one audio track `a1`. Project names use letters, digits, `-` and `_`. You can also send a full `manifest` to start from an existing timeline.
+
+`GET /v3/projects/{project}` (`vidjutsu show <project>`) returns the current timeline: `revision`, `duration_seconds` and the `manifest` with its media, tracks and clips. Add `?revision=` to read an older one.
+
+## Send an edit
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/v3/projects/launch-film/edits \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"operations": [ ... ], "expected_head": "<the revision you read>"}'
+# {"project": "launch-film", "branch": "main", "parent": "...", "revision": "...", "duration_seconds": 32}
+```
+
+- An edit is **atomic**. Operations run in order and each sees the result of the ones before it. If any operation fails, the whole edit is rejected and the timeline doesn't change.
+- An edit holds at most **64 operations**. Split a big timeline into several edits.
+- **Safe retries:** send `expected_head` (the revision your edit was written against). If someone else edited since, you get a 409 `conflict` instead of a surprise. Retrying the same request with the same `Idempotency-Key` returns the first result instead of applying it twice.
+- The body can also be a bare list of operations.
+
+The CLI takes the same JSON from a file or stdin: `vidjutsu edit launch-film ops.json`.
+
+## Times
+
+Times are exact. Write them as whole seconds (`12`), a decimal **string** (`"12.5"`), a fraction string (`"1001/30000"`) or `{"ticks": 25, "rate": 2}`. JSON decimals like `12.5` are refused because they aren't exact. Responses always use `{ticks, rate}`.
+
+Ratios (gain) take the same forms: `"0.25"`, `"1/4"` or `{"numerator": 1, "denominator": 4}`.
+
+Ranges are half-open: a clip with `source: {start: 0, end: 20}` plays from 0 up to, not including, 20 seconds.
+
+## Edit operations
+
+| `op` | Fields | What it does |
+| --- | --- | --- |
+| `add_media` | `media` | Make a media item from your library available to the project. Pass the `media` or `audio` object from an [upload](/guides/uploads). |
+| `add_track` | `id`, `kind` (`video` or `audio`) | Add an empty track. Video tracks above the first hold still-image overlays; every audio track is mixed. |
+| `insert_clip` | `track_id`, `occurrence`, `ripple` (default false) | Place a clip. Without ripple it must fit a gap. With ripple, everything at or after its start on every track moves later by its length, so tracks stay in sync. |
+| `delete_clip` | `occurrence_id`, `ripple` | Remove a clip. With ripple, its range is cut from every track. |
+| `move_clip` | `occurrence_id`, `timeline_start`, `track_id` (optional) | Move a clip, optionally to another track of the same kind, without overlapping. |
+| `trim_clip` | `occurrence_id`, `source` | Change which part of the media a clip plays; its start on the timeline stays. |
+| `swap_media` | `occurrence_id`, `media_id`, `source_start` (optional) | Point a clip at other media of the same kind, keeping its place and length. |
+| `set_gain` | `occurrence_id`, `gain` (ratio or `null`) | Audio clips only. `null` is unity. |
+| `set_fade` | `occurrence_id`, `fade_in`, `fade_out` (times or `null`) | Linear fades: video from and to black, overlays in opacity, audio in volume. |
+| `cut_pauses` | `ranges` | Cut sorted, non-overlapping timeline ranges from every track at once, closing the gaps. |
+| `set_layout` | `track_id`, `range`, `layout` | Change a video track's layout over a range (for example, picture-in-picture). |
+
+An **occurrence** (a clip on a track) is:
+
+```json
+{
+  "id": "c1",
+  "media_id": "take1",
+  "source": {"start": 0, "end": 20},
+  "timeline_start": 0,
+  "layout": {"x": 0, "y": 0, "width": 1000, "height": 1000},
+  "gain": "0.5",
+  "fade_in": 1,
+  "fade_out": "0.5"
+}
+```
+
+`layout` is required on video clips and not allowed on audio clips. It is a rectangle on a 1000x1000 canvas, so `{"x": 0, "y": 0, "width": 1000, "height": 1000}` is full frame and `{"x": 700, "y": 700, "width": 280, "height": 280}` is a small picture in the bottom-right corner. `gain`, `fade_in` and `fade_out` are optional.
+
+When an edit splits a clip (a ripple insert, a cut or a layout range), the leftmost piece keeps its id and the later pieces get new ids. Read them from `show` instead of guessing.
+
+## Example
+
+Two takes back to back with their own sound, and a music bed at a quarter volume under both, fading out:
+
+```json
+[
+  {"op": "add_media", "media": {"id": "take1", "asset_hash": "...", "duration": {"ticks": 20, "rate": 1}, "kind": "video", "lineage": []}},
+  {"op": "add_media", "media": {"id": "take1-audio", "asset_hash": "...", "duration": {"ticks": 20, "rate": 1}, "kind": "audio", "lineage": ["..."]}},
+  {"op": "add_media", "media": {"id": "take2", "asset_hash": "...", "duration": {"ticks": 12, "rate": 1}, "kind": "video", "lineage": []}},
+  {"op": "add_media", "media": {"id": "take2-audio", "asset_hash": "...", "duration": {"ticks": 12, "rate": 1}, "kind": "audio", "lineage": ["..."]}},
+  {"op": "add_media", "media": {"id": "music", "asset_hash": "...", "duration": {"ticks": 95, "rate": 1}, "kind": "audio", "lineage": []}},
+  {"op": "add_track", "id": "music-bed", "kind": "audio"},
+
+  {"op": "insert_clip", "track_id": "v1", "occurrence": {"id": "t1", "media_id": "take1",
+    "source": {"start": 0, "end": 20}, "timeline_start": 0,
+    "layout": {"x": 0, "y": 0, "width": 1000, "height": 1000}, "fade_in": 1}},
+  {"op": "insert_clip", "track_id": "a1", "occurrence": {"id": "t1-sound", "media_id": "take1-audio",
+    "source": {"start": 0, "end": 20}, "timeline_start": 0}},
+
+  {"op": "insert_clip", "track_id": "v1", "occurrence": {"id": "t2", "media_id": "take2",
+    "source": {"start": 0, "end": 12}, "timeline_start": 20,
+    "layout": {"x": 0, "y": 0, "width": 1000, "height": 1000}}},
+  {"op": "insert_clip", "track_id": "a1", "occurrence": {"id": "t2-sound", "media_id": "take2-audio",
+    "source": {"start": 0, "end": 12}, "timeline_start": 20}},
+
+  {"op": "insert_clip", "track_id": "music-bed", "occurrence": {"id": "bed", "media_id": "music",
+    "source": {"start": 0, "end": 32}, "timeline_start": 0, "gain": "0.25", "fade_out": 3}}
+]
+```
+
+The media objects are exactly what the uploads returned; the `"..."` stand for their hashes.
+
+Later, to cut a stumble between 14.2 and 15.8 seconds out of every track at once:
+
+```json
+{"operations": [{"op": "cut_pauses", "ranges": [{"start": "14.2", "end": "15.8"}]}],
+ "expected_head": "<revision from the last edit>"}
+```
+
+## Limits
+
+A project holds up to 64 tracks, 10,000 media items and 10,000 clips, and a timeline is at most 24 hours long. Reverse playback, variable speed, transitions other than fades, and free transforms (rotation, perspective) aren't supported; an edit that asks for them is rejected and leaves the timeline unchanged.

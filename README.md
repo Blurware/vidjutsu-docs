@@ -1,26 +1,28 @@
 # vidjutsu-docs
 
-VidJutsu documentation site, built with [Mintlify](https://mintlify.com).
+The VidJutsu Cloud documentation (`docs/`, [Mintlify](https://mintlify.com), served at docs.vidjutsu.ai) and the vidjutsu.ai site (`apps/web`, Next.js on Vercel).
 
-## OpenAPI Spec
+## API reference
 
-The API reference uses the vendored snapshot at `docs/openapi/spec.json`. Its authoritative source is:
+`docs/openapi/spec.json` is the public API spec for `https://api.vidjutsu.ai/v3`. Don't edit it by hand: it is built by `scripts/build-spec.mjs` from
 
+- `openapi/engine.json`, a copy of the engine's spec (`docs/openapi.json` in tfcbot/vidjutsu-core), for the media, upload, project, audio and render routes; and
+- the account, sign-in, key and billing routes the cloud gateway adds (tfcbot/vidjutsu `gateway/lib/operations.ts`), written in the script.
+
+When either changes, copy the new engine spec to `openapi/engine.json` and/or update the script, then:
+
+```bash
+node scripts/build-spec.mjs
 ```
-https://raw.githubusercontent.com/tfcbot/vidjutsu-openapi/main/openapi/spec.json
-```
 
-Source repo: [tfcbot/vidjutsu-openapi](https://github.com/tfcbot/vidjutsu-openapi)
-
-`docs/docs.json` references the local snapshot. `.openapi-sha256` records its expected digest, and `bun run check:docs` verifies the snapshot and documentation contracts.
-
-The OpenAPI repository dispatches `.github/workflows/sync-spec.yml`, which downloads the latest snapshot, updates its digest, validates the docs, and commits changes. That commit triggers the normal Mintlify deployment. The workflow can also be run manually.
-
-## Development
+## Develop
 
 ```bash
 bun install
-bun run dev
-bun run check
-bun run build
+bun run dev          # the site
+cd docs && npx mint dev   # the docs
+bun run check        # spec is current, docs links and navigation, banned terms
+bun run build        # the site
 ```
+
+CI (`.github/workflows/check.yml`) runs the checks, the Mintlify build and link check, and the site build.

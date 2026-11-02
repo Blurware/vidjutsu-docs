@@ -1,14 +1,15 @@
 const finishedStages = [
-  "Scored the video: strong, 95 / 100",
-  "Loaded your character (char_9f1a3e7c)",
-  "Put your character in the scene",
-  "Rendered the clone",
+  "Uploaded take1.mov, take2.mov and music.m4a",
+  "Created project q3-update",
+  "Placed both takes with their sound, music at 25% under both",
+  "Cut 4 pauses across every track",
+  "Rendered in 4K on 23 machines",
 ] as const;
 
 const resultRows = [
-  "clone score · 95 / 100 strong",
-  "character · char_9f1a3e7c",
-  "clone · ready to post",
+  "q3-update.mp4 · 3840x2160 · 2:41",
+  "revision · 7c1e... (5 edits, all kept)",
+  "download link · valid 7 days",
 ] as const;
 
 export function WorkflowChat() {
@@ -21,18 +22,18 @@ export function WorkflowChat() {
       <div className="vj-chat-body">
         <article className="vj-message vj-message-user">
           <span>01 · YOU</span>
-          <p>Clone this one with my character: <strong>https://www.tiktok.com/@creator/video/7534210998821</strong></p>
+          <p>Cut my two takes back to back, cut the long pauses, put <strong>music.m4a</strong> under it and render 4K.</p>
         </article>
         <article className="vj-message vj-message-agent">
           <span>02 · AGENT</span>
-          <p>On it. Scoring it first, then using your existing character.</p>
+          <p>On it. Uploading, then building the timeline.</p>
           <div className="vj-work-log">
             {finishedStages.map((item) => <div key={item}><i>✓</i>{item}</div>)}
           </div>
         </article>
         <article className="vj-message vj-message-result">
           <span>03 · AGENT</span>
-          <p>The clone is rendered and ready:</p>
+          <p>Done. Here it is:</p>
           <div className="vj-result-list">
             {resultRows.map((row, index) => <div key={row}><span>{String(index + 1).padStart(2, "0")}</span><code>{row}</code><i>↗</i></div>)}
           </div>
