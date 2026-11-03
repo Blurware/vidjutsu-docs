@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 };
 
 const features = [
-  ["Edit by transcript", "Read the cut as a script with word-level timing. Select words to cut, keep or comment on them."],
-  ["Watch the timeline", "Scrub and play the current cut with thumbnails and waveforms. Every edit is a revision you can step back to."],
-  ["Comment on moments", "Pin a comment to a stretch of transcript, then mark the cut approved or needing changes."],
+  ["Review by transcript", "Read the cut as a script next to the video, and mark what to cut or keep."],
+  ["Watch the timeline", "Scrub and play the current cut with thumbnails and waveforms."],
+  ["Comment on moments", "Pin a comment to a stretch of the cut, then mark it approved or needing changes."],
   ["Chat with an agent", "Ask for changes in plain words. The agent edits and renders through the same API as the CLI and MCP."],
   ["Record takes", "Record your screen, camera and microphone and send the take straight into a project."],
   ["Free", "The app costs nothing. Video work runs on VidJutsu Cloud and is paid from your prepaid wallet."],
@@ -63,7 +63,7 @@ export default function EditorPage() {
         <section className="max-w-2xl mx-auto mt-16">
           <h2 className="text-xl font-semibold text-ink mb-4">What you need</h2>
           <ul className="space-y-3 text-ink-muted leading-relaxed list-disc pl-5">
-            <li>A Mac.</li>
+            <li>A Mac with macOS 15 (Sequoia) or later, Apple silicon or Intel.</li>
             <li>
               A VidJutsu Cloud account. The editor uses the same API key as the{" "}
               <code className="font-mono text-sm">vidjutsu</code> CLI.
