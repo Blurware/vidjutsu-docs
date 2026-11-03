@@ -5,7 +5,7 @@ description: "Pay as you go from a prepaid wallet. No monthly fee; a card and a 
 
 ## Pay as you go
 
-There is no monthly fee and no subscription. You add credits to a prepaid wallet, and every render and every stored GB is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is only charged for the payments you choose. There is no free plan.
+There is no monthly fee and no subscription. You add credits to a prepaid wallet, and every render and every stored GB is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is charged only for the top-ups you choose, or automatically when the wallet runs low if you turn on [auto top-up](#auto-top-up). There is no free plan.
 
 | Usage | Price |
 | --- | --- |
@@ -42,9 +42,22 @@ There is no billing UI of ours: every payment is a Stripe-hosted page you get a 
 | --- | --- | --- |
 | `POST /billing/checkout` | `vidjutsu billing checkout` | Sign up: add a card and make your first payment (default $5). |
 | `POST /billing/top-up` | `vidjutsu billing top-up` | Add credits any time (default $10). |
+| `POST /billing/auto-top-up` | | Refill automatically when your balance runs low. See [Auto top-up](#auto-top-up). |
 | `POST /billing/portal` | `vidjutsu billing portal` | Update your saved card or see your receipts. |
 
 Checkout and top-up take an optional `amount_usd` in whole cents, from $5 to $500 per payment, for example `{"amount_usd": 25}` (`--amount 25` in the CLI). All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
+
+### Auto top-up
+
+Turn on auto top-up and your wallet refills itself: when usage takes your balance below a threshold, or a render is refused for credits, the card you saved at sign-up is charged automatically.
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/billing/auto-top-up \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"enabled": true, "threshold_usd": 5, "amount_usd": 20}'
+```
+
+`threshold_usd` defaults to $5 and `amount_usd` to $10 ($5 to $500, whole cents). It charges at most 5 times a day. If your card is declined, auto top-up turns off until you save a card again in the portal; `last_failure` says why. Send `{"enabled": false}` to turn it off. `GET /usage` shows the setting under `credits.auto_top_up`. Your agent can do the same with the `billing_auto_top_up` MCP tool.
 
 There is nothing to cancel. Stop using the service and you stop paying; storage is still charged while you keep media stored.
 

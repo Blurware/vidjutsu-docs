@@ -92,6 +92,7 @@
             "pages": [
               "POST /billing/checkout",
               "POST /billing/top-up",
+              "POST /billing/auto-top-up",
               "POST /billing/portal"
             ]
           },

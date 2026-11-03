@@ -213,7 +213,7 @@ const CLOUD_SCHEMAS = {
   Usage: {
     type: "object",
     additionalProperties: true,
-    description: "Your wallet balance (`credits.balance_micros`), this month's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), spend against your monthly limit, renders running and storage used. Money is in micro-dollars. `{\"state\": \"unavailable\"}` when it can't be read right now.",
+    description: "Your wallet balance (`credits.balance_micros`) and auto top-up setting (`credits.auto_top_up`), this month's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), spend against your monthly limit, renders running and storage used. Money is in micro-dollars. `{\"state\": \"unavailable\"}` when it can't be read right now.",
   },
   Entitlements: {
     type: "object",
@@ -259,6 +259,32 @@ const CLOUD_SCHEMAS = {
       amount_usd: AMOUNT_USD("5"),
       success_url: { type: "string", format: "uri", description: "https URL to return to after paying." },
       cancel_url: { type: "string", format: "uri", description: "https URL to return to if you cancel." },
+    },
+  },
+  AutoTopUpRequest: {
+    type: "object",
+    required: ["enabled"],
+    properties: {
+      enabled: { type: "boolean", description: "Turn auto top-up on or off." },
+      threshold_usd: { oneOf: [{ type: "number" }, { type: "string", pattern: "^\\d{1,6}(\\.\\d{1,2})?$" }], description: "Top up when usage takes your balance below this many dollars. Whole cents, above 0 and up to 500. Default 5." },
+      amount_usd: AMOUNT_USD("10"),
+    },
+  },
+  AutoTopUpSetting: {
+    type: "object",
+    required: ["auto_top_up"],
+    properties: {
+      auto_top_up: {
+        type: ["object", "null"],
+        description: "Null when auto top-up is off.",
+        properties: {
+          enabled: { type: "boolean", description: "False after a declined card, until you save a card again." },
+          threshold_micros: { type: "integer", description: "Top up below this balance, in micro-dollars." },
+          amount_micros: { type: "integer", description: "Each automatic charge, in micro-dollars." },
+          last_failure: { type: ["string", "null"], description: "Why the last automatic charge failed, if it did." },
+          last_failure_at: { type: ["number", "null"], description: "When the last automatic charge failed, in Unix milliseconds." },
+        },
+      },
     },
   },
   TopUpRequest: {
@@ -369,6 +395,14 @@ const CLOUD_PATHS = {
       description: "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
       requestBody: { required: false, content: { "application/json": { schema: ref("TopUpRequest") } } },
       responses: { "200": json(ref("BillingLink"), "Top-up link"), ...AUTH_ERRORS, default: errorResponse("400 invalid_request (an amount outside $5 to $500, or not whole cents)") },
+    },
+  },
+  "/billing/auto-top-up": {
+    post: {
+      operationId: "billing_auto_top_up", tags: ["Billing"], summary: "Set auto top-up",
+      description: "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $5), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $10), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
+      requestBody: { required: true, content: { "application/json": { schema: ref("AutoTopUpRequest") } } },
+      responses: { "200": json(ref("AutoTopUpSetting"), "The setting"), ...AUTH_ERRORS, "409": errorResponse("No saved card yet: use POST /billing/checkout first."), default: errorResponse("400 invalid_request (an amount or threshold out of range, or not whole cents)") },
     },
   },
   "/billing/portal": {
