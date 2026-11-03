@@ -9,7 +9,7 @@ export default function Home() {
     <main className="vj-landing" id="main">
       <nav className="vj-nav" aria-label="Primary navigation">
         <a className="vj-wordmark" href="#main"><b>VJ</b> vidjutsu</a>
-        <div><a href="#start">Get started</a><a href="#how-it-works">How it works</a><a href="#pricing">Pricing</a><a href="https://docs.vidjutsu.ai">Docs ↗</a></div>
+        <div><a href="#start">Get started</a><a href="#how-it-works">How it works</a><a href="#pricing">Pricing</a><a href="/editor">Mac editor</a><a href="https://docs.vidjutsu.ai">Docs ↗</a></div>
         <a className="vj-nav-access" href="https://docs.vidjutsu.ai/quickstart"><i /> Get started</a>
       </nav>
       <Hero />
