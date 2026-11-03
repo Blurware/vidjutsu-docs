@@ -25,7 +25,12 @@ The API is versioned by date, like Stripe. Paths carry no version. Instead, ever
 VidJutsu-Version: 2026-11-03
 ```
 
-The current version is `2026-11-03`. A change that could break existing code ships under a new date, and requests that name an older date keep the old behavior. Additive changes, such as new operations, new optional fields and new response fields, aren't breaking and reach every version, so read responses leniently.
+The current version is `2026-11-03`.
+
+- **Pin a version.** Send the header on every request, so your code keeps working when a new version ships. A request without it gets the latest version.
+- **Every response says which version served it**, in its own `VidJutsu-Version` header.
+- **An unknown version** is a 400 `invalid_request` with `reason: "unknown_version"` and the `latest_version`.
+- **What gets a new version.** A change that could break existing code ships under a new date, and requests that name an older date keep the old behavior. Additive changes (new operations, new optional fields, new response fields) don't get a new version and reach every version, so read responses leniently.
 
 The CLI and SDK send the version they were built for. In the SDK, pass `apiVersion` to pin another one.
 

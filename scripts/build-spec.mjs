@@ -103,6 +103,7 @@ const ERROR_SCHEMA = {
     media_deletes_at: { type: "string", format: "date-time", description: "After a failed payment: when your stored media will be deleted if the payment isn't made." },
     contact_url: { type: "string", description: "403 plan_limit: where to ask about Enterprise." },
     retry_after_seconds: { type: "integer", description: "429: when to try again (also sent as a Retry-After header)." },
+    latest_version: { type: "string", description: "400 unknown_version: the newest API version." },
     request_id: { type: "string", description: "Your Idempotency-Key, or a generated id. Quote it when you contact support." },
   },
 };
@@ -135,7 +136,7 @@ const VERSION_PARAMETER = {
   name: VERSION_HEADER,
   in: "header",
   required: false,
-  description: `The API version you wrote your integration against, a date. The current version is \`${API_VERSION}\`. See ${DOCS}/api-reference/introduction#versioning.`,
+  description: `The API version you wrote your integration against, a date. Without it you get the latest version. The current version is \`${API_VERSION}\`. See ${DOCS}/api-reference/introduction#versioning.`,
   schema: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", example: API_VERSION },
 };
 
@@ -146,8 +147,13 @@ const CLOUD_SCHEMAS = {
   Error: ERROR_SCHEMA,
   Health: {
     type: "object",
-    required: ["ok", "service", "version"],
-    properties: { ok: { type: "boolean" }, service: { type: "string" }, version: { type: "string" } },
+    required: ["ok", "service", "version", "api_version"],
+    properties: {
+      ok: { type: "boolean" },
+      service: { type: "string" },
+      version: { type: "string", description: "The service build." },
+      api_version: { type: "string", description: "The API version this request was served with." },
+    },
   },
   SignInStart: {
     type: "object",

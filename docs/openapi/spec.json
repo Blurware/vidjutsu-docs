@@ -83,7 +83,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -136,7 +136,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -159,7 +159,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -297,7 +297,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -353,7 +353,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -418,7 +418,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -483,7 +483,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -528,7 +528,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -564,7 +564,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -596,7 +596,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -690,7 +690,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -807,7 +807,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -860,7 +860,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -891,7 +891,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -945,7 +945,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1066,7 +1066,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1172,7 +1172,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1257,7 +1257,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1392,7 +1392,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1486,7 +1486,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1611,7 +1611,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1725,7 +1725,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1830,7 +1830,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -1944,7 +1944,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2048,7 +2048,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2175,7 +2175,7 @@
             "name": "VidJutsu-Version",
             "in": "header",
             "required": false,
-            "description": "The API version you wrote your integration against, a date. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
             "schema": {
               "type": "string",
               "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
@@ -2556,6 +2556,10 @@
             "type": "integer",
             "description": "429: when to try again (also sent as a Retry-After header)."
           },
+          "latest_version": {
+            "type": "string",
+            "description": "400 unknown_version: the newest API version."
+          },
           "request_id": {
             "type": "string",
             "description": "Your Idempotency-Key, or a generated id. Quote it when you contact support."
@@ -2567,7 +2571,8 @@
         "required": [
           "ok",
           "service",
-          "version"
+          "version",
+          "api_version"
         ],
         "properties": {
           "ok": {
@@ -2577,7 +2582,12 @@
             "type": "string"
           },
           "version": {
-            "type": "string"
+            "type": "string",
+            "description": "The service build."
+          },
+          "api_version": {
+            "type": "string",
+            "description": "The API version this request was served with."
           }
         }
       },

@@ -19,7 +19,7 @@ Branch on `code` (and `reason` for detail), not on `message`. `request_id` is yo
 
 | Status | `code` | When | Extra fields |
 | --- | --- | --- | --- |
-| 400 | `invalid_request` | A bad field, option, name or edit; an empty timeline; a wrong sign-in code. | `reason` |
+| 400 | `invalid_request` | A bad field, option, name or edit; an empty timeline; a wrong sign-in code; an unknown `VidJutsu-Version`. | `reason` (for example `unknown_version`, with `latest_version`) |
 | 401 | `unauthenticated` | No API key or token, or it isn't valid. | |
 | 402 | `payment_required` | No plan yet, or the last payment failed. | `reason` (`no_plan` or `payment_failed`), `checkout_url` or `portal_url`, `media_deletes_at` |
 | 403 | `plan_limit` | A plan limit was reached. | `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`, `feature_not_in_plan`), `contact_url` |
