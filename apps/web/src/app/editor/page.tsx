@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu Editor for Mac",
   description:
-    "A free Mac app for working with your agent on a cut: edit the transcript, watch the timeline, leave comments and chat. Coming soon.",
+    "A free Mac app for working with your agent on a cut: read the transcript, watch the timeline, leave comments and chat. macOS 15 or later.",
 };
 
 const features = [
@@ -25,7 +25,7 @@ export default function EditorPage() {
 
         <div className="max-w-2xl mx-auto text-center mt-10">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
-            Mac app &middot; coming soon
+            Free Mac app &middot; macOS 15 or later
           </p>
           <h1 className="text-[clamp(1.9rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] mb-5">
             See the cut your agent made
@@ -37,18 +37,19 @@ export default function EditorPage() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3">
             <a
-              href="https://docs.vidjutsu.ai/editor/index"
+              href="https://download.vidjutsu.ai/editor/VidJutsu-Editor.dmg"
               className="vj-hero-primary inline-flex items-center justify-center px-6 py-3 bg-brand text-sm font-semibold rounded hover:bg-brand-hover transition-colors"
             >
-              Read about the editor
+              Download for Mac
             </a>
             <a
-              href="https://docs.vidjutsu.ai/quickstart"
+              href="https://docs.vidjutsu.ai/editor/index"
               className="inline-flex items-center justify-center px-6 py-3 text-ink-muted text-sm font-medium hover:text-ink transition-colors"
             >
-              Start with the API today
+              Read the docs
             </a>
           </div>
+          <p className="text-xs text-ink-light mt-4">Apple silicon and Intel &middot; about 180 MB</p>
         </div>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-16" aria-label="Features">
@@ -74,11 +75,11 @@ export default function EditorPage() {
             </li>
           </ul>
           <p className="text-ink-muted leading-relaxed mt-8">
-            Not released yet. Download and install steps will be on{" "}
+            Open the DMG and drag VidJutsu Editor to Applications. It&rsquo;s
+            signed and notarized by Apple, and it updates itself.{" "}
             <a className="text-ink underline" href="https://docs.vidjutsu.ai/editor/index">
-              the editor docs
-            </a>{" "}
-            with the first release.
+              Install guide
+            </a>
           </p>
         </section>
       </div>
