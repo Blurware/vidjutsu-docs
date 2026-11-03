@@ -41,14 +41,10 @@ There is no billing UI of ours: every payment is a Stripe-hosted page you get a 
 | Call | CLI | |
 | --- | --- | --- |
 | `POST /billing/checkout` | `vidjutsu billing checkout` | Sign up: add a card and make your first payment (default $5). |
-| `POST /billing/top-up` | | Add credits any time (default $10). |
+| `POST /billing/top-up` | `vidjutsu billing top-up` | Add credits any time (default $10). |
 | `POST /billing/portal` | `vidjutsu billing portal` | Update your saved card or see your receipts. |
 
-Checkout and top-up take an optional `amount_usd` in whole cents, from $5 to $500 per payment, for example `{"amount_usd": 25}`. All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
-
-<Note>
-  CLI 2.1.0 has no top-up command yet. Call `POST /billing/top-up` directly, use the `billing_top_up` MCP tool, or call `request("POST", "/billing/top-up", {amount_usd: 20})` in the SDK.
-</Note>
+Checkout and top-up take an optional `amount_usd` in whole cents, from $5 to $500 per payment, for example `{"amount_usd": 25}` (`--amount 25` in the CLI). All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
 
 There is nothing to cancel. Stop using the service and you stop paying; storage is still charged while you keep media stored.
 

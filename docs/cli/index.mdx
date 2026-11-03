@@ -49,7 +49,8 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | `vidjutsu keys` | List your API keys. |
 | `vidjutsu keys create <name>` | Create an API key (its secret is shown once). |
 | `vidjutsu keys revoke <key_id>` | Revoke an API key. |
-| `vidjutsu billing checkout` | A Stripe Checkout link to add a card and make your first payment ($5). |
+| `vidjutsu billing checkout [--amount <usd>]` | A Stripe Checkout link to add a card and make your first payment ($5 by default). |
+| `vidjutsu billing top-up [--amount <usd>]` | A Stripe link to add credits to your wallet ($10 by default, $5 minimum). Plain `vidjutsu billing` does the same. |
 | `vidjutsu billing portal` | A Stripe link to update your saved card or see receipts. |
 
 ### Media
@@ -76,9 +77,7 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 
 ## Errors
 
-A failed call prints `error: <message> (<code>, HTTP <status>)` to stderr and exits 1. When the fix is signing up, it also prints the Stripe link: `fix it here: https://...`.
-
-This version has no top-up command. To add credits, call [`POST /billing/top-up`](/pricing#fund-your-wallet) or ask your agent to run the `billing_top_up` MCP tool.
+A failed call prints `error: <message> (<code>, HTTP <status>)` to stderr and exits 1. When the fix is a payment, it also prints the Stripe link to sign up or top up: `fix it here: https://...`.
 
 ## Example
 
