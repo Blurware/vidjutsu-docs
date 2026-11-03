@@ -1,0 +1,50 @@
+---
+title: "Captions"
+description: "Burn captions into a render, or get them as an SRT or WebVTT file. Both come from the words on the edited timeline, so they follow every cut."
+---
+
+Captions come from the words heard on the edited timeline: the transcripts of the sounds on its audio tracks, cut the way the timeline cuts them. Delete a sentence and its caption goes too. Move a clip and its captions move with it.
+
+Every sound on the timeline needs a transcript first ([make one](/guides/uploads#previews-and-transcripts) with `make_transcript`). While one is missing, both calls below answer 400 and name the media, and a render is refused before anything is charged.
+
+## Burn captions into a render
+
+Send `captions` with the render:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/renders \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"height": 1080, "captions": {"position": "bottom", "size": "medium"}}'
+```
+
+| Field | Default | |
+| --- | --- | --- |
+| `on` | `true` | Sending `captions` turns them on. `false` renders without them. |
+| `position` | `bottom` | `bottom` or `top`. |
+| `size` | `medium` | `small`, `medium` or `large`: 4, 5 or 6.4% of the frame height. |
+| `background` | `solid` | `solid` puts a dark box behind each line. `none` is white text with a thin dark edge. |
+
+There is one plain style: white sans text. Captions cost nothing extra; the render is billed by its box time as usual ([pricing](/pricing)).
+
+## Get the captions as a file
+
+```sh
+curl -s "https://api.vidjutsu.ai/projects/launch-film/captions?format=vtt" \
+  -H "Authorization: Bearer $KEY"
+```
+
+```json
+{
+  "project": "launch-film", "branch": "main", "revision": "9f2c...",
+  "format": "vtt", "name": "launch-film.vtt",
+  "cues": [
+    {"start": {"ticks": 36, "rate": 30}, "end": {"ticks": 102, "rate": 30},
+     "text": "This is the launch film.", "lines": ["This is the launch film."]}
+  ],
+  "file": "WEBVTT\n\n00:00:01.200 --> 00:00:03.400\nThis is the launch film.\n"
+}
+```
+
+`format` is `srt` (the default) or `vtt`. `file` is the whole file's text and `name` a file name for it. `cues` are the same captions with exact timeline times, and they're the cues a render with `captions` burns in. Send `revision` or `branch` for another point in history. This call is free and doesn't render anything.
+
+The CLI: `vidjutsu render launch-film --captions` (with `--captions-position top`, `--captions-size small|large` and `--captions-background none`), and `vidjutsu captions launch-film --format vtt --out launch-film.vtt`. The SDK: `render(project, {captions: {}})` and `captions(project, {format})`. MCP: `render` with `captions`, and `captions`.

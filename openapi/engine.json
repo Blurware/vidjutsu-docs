@@ -13,6 +13,157 @@
       }
     },
     "schemas": {
+      "CaptionBackground": {
+        "enum": [
+          "solid",
+          "none"
+        ],
+        "type": "string"
+      },
+      "CaptionFormat": {
+        "enum": [
+          "srt",
+          "vtt"
+        ],
+        "type": "string"
+      },
+      "CaptionOptions": {
+        "additionalProperties": false,
+        "description": "`captions` on a render.",
+        "properties": {
+          "background": {
+            "$ref": "#/components/schemas/CaptionBackground",
+            "default": "solid",
+            "description": "`solid` (default): a dark box behind each line; `none`: white text\nwith a thin dark edge."
+          },
+          "on": {
+            "default": true,
+            "description": "Default true: sending captions turns them on.",
+            "type": "boolean"
+          },
+          "position": {
+            "$ref": "#/components/schemas/CaptionPosition",
+            "default": "bottom",
+            "description": "`bottom` (default) or `top`."
+          },
+          "size": {
+            "$ref": "#/components/schemas/CaptionSize",
+            "default": "medium",
+            "description": "`small`, `medium` (default) or `large`: 4, 5 or 6.4% of the frame height."
+          }
+        },
+        "type": "object"
+      },
+      "CaptionPosition": {
+        "enum": [
+          "bottom",
+          "top"
+        ],
+        "type": "string"
+      },
+      "CaptionSize": {
+        "enum": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "type": "string"
+      },
+      "Captions": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "cues": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "end": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "lines": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "start": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "start",
+                "end",
+                "text",
+                "lines"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file": {
+            "description": "The SRT or WebVTT file's text.",
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "srt",
+              "vtt"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "description": "A file name for it, e.g. `demo.srt`.",
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "format",
+          "name",
+          "cues",
+          "file"
+        ],
+        "type": "object"
+      },
       "Check": {
         "additionalProperties": false,
         "properties": {
@@ -2005,6 +2156,18 @@
             "default": "main",
             "type": "string"
           },
+          "captions": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CaptionOptions"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Burn captions in, from the words heard on the edited timeline (every\nsound on it needs a transcript). One plain style: white sans on a\nsolid box, or on nothing. Leave out (or `on: false`) for none."
+          },
           "ffmpeg": {
             "default": null,
             "description": "Renderer fingerprint override (default: recorded by setup).",
@@ -3477,6 +3640,96 @@
           }
         },
         "summary": "A branch head or revision, with its manifest"
+      }
+    },
+    "/v3/projects/{project}/captions": {
+      "get": {
+        "description": "The cues a render with `captions` burns in, built from the words on the audio tracks. 400 while a sound on the timeline has no transcript.",
+        "operationId": "captions",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "`srt` (default) or `vtt`.",
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CaptionFormat",
+              "default": "srt",
+              "description": "`srt` (default) or `vtt`."
+            }
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Captions"
+                }
+              }
+            },
+            "description": "Captions"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "The edited timeline's captions as an SRT or WebVTT file"
       }
     },
     "/v3/projects/{project}/checks": {
