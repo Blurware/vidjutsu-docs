@@ -65,6 +65,7 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 | `account`, `usage`, `entitlements` | Your account, your wallet balance and this month's usage, your limits. |
 | `create_key`, `list_keys`, `revoke_key` | Manage API keys. |
 | `billing_checkout`, `billing_top_up`, `billing_portal` | Stripe links to sign up and make your first payment, to add credits (`{amount_usd}`), or to update your card and see receipts. |
+| `billing_auto_top_up` | Turn [auto top-up](/pricing#auto-top-up) on or off (`{enabled, threshold_usd, amount_usd}`). |
 | `create_account` | Create your account after an OAuth sign-in. Safe to call again. |
 
 Path parameters (`project`, `job_id`, `hash`, `upload_id`, `key_id`) are tool arguments. The other arguments are the REST body, so the [API reference](/api-reference/introduction) documents every field.

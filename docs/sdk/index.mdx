@@ -60,7 +60,7 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | `render(project, body?, idempotencyKey?)` | Start a [render](/guides/rendering). |
 | `renderStatus(jobId)`, `cancelRender(jobId)` | Read or cancel a render job. |
 | `waitForRender(jobId, {intervalMs?, onUpdate?})` | Poll until the job ends (every 3 seconds by default). |
-| `request(method, path, body?, idempotencyKey?)` | Any other call. |
+| `request(method, path, body?, idempotencyKey?)` | Any other call, for example `request("POST", "/billing/auto-top-up", {enabled: true})`. |
 
 ## Errors
 
