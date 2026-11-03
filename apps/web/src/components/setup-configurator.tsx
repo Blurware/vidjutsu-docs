@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 
-type Connection = "mcp" | "cli" | "skill";
+type Connection = "mcp" | "cli" | "api";
 type Agent = "claude" | "claude-code" | "chatgpt" | "openclaw" | "hermes";
 
 const connections: { id: Connection; label: string }[] = [
   { id: "mcp", label: "MCP" },
   { id: "cli", label: "CLI" },
-  { id: "skill", label: "SKILL" },
+  { id: "api", label: "API" },
 ];
 
 const agents: { id: Agent; label: string; icon: string }[] = [
@@ -36,7 +36,7 @@ function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
     const description =
-      "Connect once and your agent can stage source videos, add overlays, score cloneability, and poll clone tasks through VidJutsu. The server is live at api.vidjutsu.ai/mcp and signs in with OAuth.";
+      "Connect once and your agent can upload media, edit timelines and render through VidJutsu's tools. The server is at api.vidjutsu.ai/mcp and signs in with OAuth or an API key.";
     if (agent === "claude-code") {
       return {
         title: `Connect ${agentLabel} over MCP`,
@@ -44,13 +44,13 @@ function setup(connection: Connection, agent: Agent) {
         steps: [
           "Run the command below. The http transport is required for a remote server.",
           "Run /mcp in a session, pick vidjutsu, and choose Authenticate. A browser opens to sign in.",
-          "Ask your agent to stage and score a video, or poll an existing clone task.",
+          "Ask your agent to cut your takes together and render them.",
         ],
         command: "claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp",
         copy: "COPY COMMAND",
-        note: "Your access is scoped to your key and can be revoked any time.",
-        guide: "Connection guide ↗",
-        href: "https://docs.vidjutsu.ai#mcp",
+        note: "Prefer a key? Add --header \"Authorization: Bearer vj_live_...\".",
+        guide: "MCP guide ↗",
+        href: "https://docs.vidjutsu.ai/mcp",
       };
     }
     return {
@@ -59,49 +59,49 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         connectorHints[agent] || "Add a custom MCP connector in your agent settings.",
         "Paste the server URL below and sign in when the browser opens. There is no command to run.",
-        "Ask your agent to stage and score a video, or poll an existing clone task.",
+        "Ask your agent to cut your takes together and render them.",
       ],
       command: "https://api.vidjutsu.ai/mcp",
       copy: "COPY URL",
-      note: "Your access is scoped to your key and can be revoked any time.",
-      guide: "Connection guide ↗",
-      href: "https://docs.vidjutsu.ai#mcp",
+      note: "Your access is scoped to your account and can be revoked any time.",
+      guide: "MCP guide ↗",
+      href: "https://docs.vidjutsu.ai/mcp",
     };
   }
   if (connection === "cli") {
     return {
       title: `Use VidJutsu from ${agentLabel}`,
-      description: "Install the CLI where your agent works, then it can clone videos from the terminal.",
+      description: "Install the CLI where your agent works. Every command prints JSON your agent can read.",
       steps: [
         "Install the VidJutsu CLI.",
-        "Set VIDJUTSU_API_KEY in the environment.",
-        "Ask your agent to clone a video.",
+        "Run vidjutsu login, enter your email and the code we send you.",
+        "Ask your agent to upload, edit and render.",
       ],
       command: "npm install -g vidjutsu",
       copy: "COPY INSTALL",
       note: "Works anywhere your agent has a terminal.",
       guide: "CLI guide ↗",
-      href: "https://docs.vidjutsu.ai/cli/install",
+      href: "https://docs.vidjutsu.ai/cli/index",
     };
   }
   return {
-    title: `Give ${agentLabel} the clone skill`,
-    description: "Add the VidJutsu video skills so your agent knows the whole clone workflow out of the box.",
+    title: `Call the API from ${agentLabel}`,
+    description: "Two calls sign you up and return an API key. Then it's plain JSON over HTTPS.",
     steps: [
-      "Add the VidJutsu video skills to your agent.",
-      "Set VIDJUTSU_API_KEY in the environment.",
-      "Ask your agent to clone a video.",
+      "Ask for a sign-in code with the command below.",
+      "Send the code to POST /auth/verify to get your API key and a checkout link.",
+      "Send the key as Authorization: Bearer vj_live_... on every call.",
     ],
-    command: "npx skills add tfcbot/agent-video-team",
-    copy: "COPY SKILL",
-    note: "Your key stays in the environment, never in the skill.",
-    guide: "Skill guide ↗",
-    href: "https://docs.vidjutsu.ai",
+    command: "curl -X POST https://api.vidjutsu.ai/auth/email -H 'Content-Type: application/json' -d '{\"email\":\"you@example.com\"}'",
+    copy: "COPY COMMAND",
+    note: "Agents can run sign-up on their own; you only read the code.",
+    guide: "API reference ↗",
+    href: "https://docs.vidjutsu.ai/api-reference/introduction",
   };
 }
 
 export function SetupConfigurator() {
-  const [connection, setConnection] = useState<Connection>("skill");
+  const [connection, setConnection] = useState<Connection>("mcp");
   const [agent, setAgent] = useState<Agent>("claude");
   const [copied, setCopied] = useState(false);
   const current = setup(connection, agent);
@@ -118,8 +118,8 @@ export function SetupConfigurator() {
         <div className="vj-setup-heading">
           <h2 id="setup-heading">Connect your agent.</h2>
           <p>
-            Connect with MCP for its typed tools, or use the CLI or skill for
-            the complete clone workflow.
+            Connect with MCP for typed tools, use the CLI in a terminal, or
+            call the API from your own code.
           </p>
         </div>
 
@@ -145,7 +145,7 @@ export function SetupConfigurator() {
                 <h2>{current.title}</h2>
                 <p>{current.description}</p>
               </div>
-              <a href="https://docs.vidjutsu.ai/get-api-key">GET ACCESS ↗</a>
+              <a href="https://docs.vidjutsu.ai/quickstart">GET STARTED ↗</a>
             </header>
             <ol>
               {current.steps.map((step, index) => <li key={step}><i>{index + 1}</i><p>{step}</p></li>)}
@@ -154,7 +154,7 @@ export function SetupConfigurator() {
             <footer><span>{current.note}</span><a href={current.href}>{current.guide}</a></footer>
           </div>
         </div>
-        <p className="vj-setup-note">Start with the <strong>Skill</strong>. Use the <strong>CLI</strong> for a terminal workspace. Use <strong>MCP</strong> to connect an agent runtime directly.</p>
+        <p className="vj-setup-note">Start with <strong>MCP</strong> to connect an agent runtime directly. Use the <strong>CLI</strong> for a terminal workspace, or the <strong>API</strong> from your own code.</p>
       </div>
     </section>
   );

@@ -1,0 +1,1970 @@
+{
+  "components": {
+    "parameters": {
+      "Repo": {
+        "description": "Hosted mode: the customer. Required there on every route but health; `repo` fields are then refused.",
+        "in": "header",
+        "name": "X-Vidjutsu-Repo",
+        "required": false,
+        "schema": {
+          "pattern": "^[A-Za-z0-9_-]{1,64}$",
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "CleanAudio": {
+        "additionalProperties": false,
+        "description": "`vidjutsu clean-audio`: speech tracks (and an optional music bed) through\nthe audio port, with the Auphonic adapter injected here at the\ncomposition root. Inputs are stored media hashes (or, from the CLI, local\nfiles). The result is made timeline-ready like `ingest` and returned as a\nmedia object whose lineage names the vendor's output and every input.",
+        "properties": {
+          "loudness": {
+            "default": -14.0,
+            "description": "Result loudness, LUFS.",
+            "format": "double",
+            "type": "number"
+          },
+          "max_peak": {
+            "default": -1.0,
+            "description": "True-peak ceiling, dBTP.",
+            "format": "double",
+            "type": "number"
+          },
+          "music": {
+            "default": null,
+            "description": "Music bed kept under the voice.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "music_db": {
+            "default": null,
+            "description": "Music level under the voice, dB.",
+            "format": "double",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "title": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "voice": {
+            "description": "Speech tracks, one per speaker.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "voice"
+        ],
+        "type": "object"
+      },
+      "CleanedAudio": {
+        "additionalProperties": false,
+        "properties": {
+          "job": {
+            "type": "string"
+          },
+          "media": {
+            "$ref": "#/components/schemas/MediaObject"
+          },
+          "out": {},
+          "provider": {
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "result_bytes": {
+            "type": "integer"
+          },
+          "seconds": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "provider",
+          "job",
+          "result",
+          "media"
+        ],
+        "type": "object"
+      },
+      "CompleteUpload": {
+        "additionalProperties": false,
+        "description": "`POST /v3/uploads/{upload_id}/complete` and the `complete_upload` tool.",
+        "properties": {
+          "parts": {
+            "default": [],
+            "description": "Every part, numbers 1 to the part count (empty when the start said\n`already_stored`).",
+            "items": {
+              "$ref": "#/components/schemas/SentPart"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "EditProject": {
+        "additionalProperties": false,
+        "description": "`vidjutsu edit` / `POST /v3/projects/{project}/edits`: operations applied\nto a branch head as one atomic commit. Times may be plain seconds (`12.5`,\n`\"12.5\"`, `\"1001/30000\"`). The body is a list of operations, or an object\nwith `operations` and optionally `branch`, `repo`, and for safe retries\n`expected_head` plus `idempotency_key`.",
+        "properties": {
+          "branch": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_head": {
+            "default": null,
+            "description": "The head this edit was written against; a moved head is a conflict.\nAbsent: the current head.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "idempotency_key": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "operations": {
+            "description": "Edit operations applied as one commit, each named by `op`:\n`add_media` (`media`: an `ingest` result's media object),\n`insert_clip` (`track_id`, `occurrence`: `{id, media_id, source:\n{start, end}, timeline_start}`, `ripple`), `delete_clip`,\n`move_clip`, `trim_clip`, `swap_media`, `set_gain`, `set_fade`,\n`cut_pauses`, `add_track`, `set_layout`. Times are seconds (`12.5`)\nor rationals (`\"1001/30000\"`). See docs/FORMAT.md#edit-operations.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "operations"
+        ],
+        "type": "object"
+      },
+      "Edited": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "parent",
+          "revision",
+          "duration_seconds"
+        ],
+        "type": "object"
+      },
+      "Error": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "description": "Stable error code.",
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ],
+        "type": "object"
+      },
+      "Health": {
+        "additionalProperties": false,
+        "properties": {
+          "configured": {
+            "description": "Whether the server's accounts are usable.",
+            "type": "boolean"
+          },
+          "problem": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "configured",
+          "problem"
+        ],
+        "type": "object"
+      },
+      "IngestUrl": {
+        "additionalProperties": false,
+        "description": "`POST /v3/media` with a JSON body, and the `ingest` MCP tool.",
+        "properties": {
+          "name": {
+            "default": null,
+            "description": "File name for the media id; default: the link's last path part.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "url": {
+            "description": "An `https://` link the server downloads (a presigned link works).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      },
+      "Ingested": {
+        "additionalProperties": false,
+        "properties": {
+          "audio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MediaObject"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "A video's sound, as audio media."
+          },
+          "bytes": {
+            "type": "integer"
+          },
+          "conform_at_render": {
+            "description": "Whether render boxes convert the parts of this video a render uses (it is stored as is).",
+            "type": "boolean"
+          },
+          "converted": {
+            "description": "Whether the file was transcoded before storing (`ingest --eager`, or a still that became PNG).",
+            "type": "boolean"
+          },
+          "media": {
+            "$ref": "#/components/schemas/MediaObject"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "converted",
+          "conform_at_render",
+          "note",
+          "bytes",
+          "media",
+          "audio"
+        ],
+        "type": "object"
+      },
+      "InitProject": {
+        "additionalProperties": false,
+        "description": "`vidjutsu init` / `POST /v3/projects`: a project from a manifest, or an\nempty one with one video and one audio track (`v1`, `a1`) ready for\n`insert_clip` edits.",
+        "properties": {
+          "idempotency_key": {
+            "default": null,
+            "description": "Retrying with the same key returns the first result.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "manifest": {
+            "additionalProperties": true,
+            "default": null,
+            "description": "A full project manifest (see docs/FORMAT.md); absent: an empty\nproject with tracks `v1` (video) and `a1` (audio).",
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "project": {
+            "type": "string"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "project"
+        ],
+        "type": "object"
+      },
+      "Job": {
+        "additionalProperties": false,
+        "properties": {
+          "cancel_requested": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "description": "Unix seconds.",
+            "type": "integer"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "finished_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "job_id": {
+            "description": "`rj_` and 32 hex digits.",
+            "type": "string"
+          },
+          "kind": {
+            "const": "render"
+          },
+          "output": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "bytes": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "expires_at": {
+                    "type": "integer"
+                  },
+                  "hash": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "description": "A fresh 7-day link on every read.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "hash",
+                  "bytes",
+                  "url",
+                  "expires_at"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The rendered file, once succeeded."
+          },
+          "progress": {
+            "additionalProperties": false,
+            "properties": {
+              "done": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "done",
+              "total"
+            ],
+            "type": "object"
+          },
+          "project": {
+            "type": "string"
+          },
+          "report": {
+            "description": "The CLI's render report (timings, box log), or null."
+          },
+          "revision": {
+            "description": "Pinned when the job was created.",
+            "type": "string"
+          },
+          "started_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "state": {
+            "enum": [
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "canceled"
+            ]
+          },
+          "usage": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "box_seconds": {
+                    "description": "Wall-clock box time, from creation to stop.",
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "boxes": {
+                    "description": "Boxes created.",
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "final": {
+                    "description": "The job has finished: these numbers will not change. Record them once, by job_id.",
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "memory_gb_seconds": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "output_seconds": {
+                    "description": "Length of the rendered film (null when it failed).",
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "vcpu_seconds": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  }
+                },
+                "required": [
+                  "final",
+                  "boxes",
+                  "box_seconds",
+                  "vcpu_seconds",
+                  "memory_gb_seconds",
+                  "output_seconds",
+                  "height"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "What the job used, once boxes have run (also for failed and canceled jobs); null when none ran."
+          }
+        },
+        "required": [
+          "job_id",
+          "kind",
+          "project",
+          "revision",
+          "state",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "progress",
+          "cancel_requested",
+          "error",
+          "usage",
+          "output",
+          "report"
+        ],
+        "type": "object"
+      },
+      "JsonRpc": {
+        "description": "A JSON-RPC 2.0 message or batch; see docs/MCP.md.",
+        "type": [
+          "object",
+          "array"
+        ]
+      },
+      "LevelAudio": {
+        "additionalProperties": false,
+        "description": "`vidjutsu level` / `POST /v3/projects/{project}/level`: measure what each\nclip on the audio tracks plays (EBU R128) with local FFmpeg reading the\nstored media, then set gains so each plays at `target` LUFS, as one edit.\nGains are rounded to thousandths (an explicit rounding at this adapter\nboundary) and clamped to the gain bounds.",
+        "properties": {
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "dry_run": {
+            "default": false,
+            "description": "Measure and report without editing.",
+            "type": "boolean"
+          },
+          "max_peak": {
+            "default": -1.0,
+            "format": "double",
+            "type": "number"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "target": {
+            "default": -16.0,
+            "format": "double",
+            "type": "number"
+          },
+          "tracks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tracks"
+        ],
+        "type": "object"
+      },
+      "Leveled": {
+        "additionalProperties": false,
+        "properties": {
+          "clips": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "gain": {},
+                "gain_db": {
+                  "type": "number"
+                },
+                "measured_lufs": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "occurrence": {
+                  "type": "string"
+                },
+                "peak_limited": {
+                  "type": "boolean"
+                },
+                "skipped": {
+                  "type": "string"
+                },
+                "true_peak": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "occurrence",
+                "measured_lufs"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "edit": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "branch": {
+                    "type": "string"
+                  },
+                  "parent": {
+                    "type": "string"
+                  },
+                  "project": {
+                    "type": "string"
+                  },
+                  "revision": {
+                    "type": "string"
+                  },
+                  "target_lufs": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "project",
+                  "branch",
+                  "parent",
+                  "revision",
+                  "target_lufs"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "clips",
+          "edit"
+        ],
+        "type": "object"
+      },
+      "MediaLink": {
+        "additionalProperties": false,
+        "properties": {
+          "hash": {
+            "type": "string"
+          },
+          "ttl": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hash",
+          "url",
+          "ttl"
+        ],
+        "type": "object"
+      },
+      "MediaObject": {
+        "additionalProperties": false,
+        "properties": {
+          "asset_hash": {
+            "type": "string"
+          },
+          "duration": {
+            "additionalProperties": false,
+            "properties": {
+              "rate": {
+                "type": "integer"
+              },
+              "ticks": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ticks",
+              "rate"
+            ],
+            "type": "object"
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "video",
+              "audio",
+              "image"
+            ]
+          },
+          "lineage": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "asset_hash",
+          "duration",
+          "kind",
+          "lineage"
+        ],
+        "type": "object"
+      },
+      "MediaReceipt": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "type": "integer"
+          },
+          "hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hash",
+          "bytes"
+        ],
+        "type": "object"
+      },
+      "Project": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "manifest": {
+            "description": "The project manifest; see docs/FORMAT.md.",
+            "type": "object"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "duration_seconds",
+          "manifest"
+        ],
+        "type": "object"
+      },
+      "ProjectRevision": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision"
+        ],
+        "type": "object"
+      },
+      "Purged": {
+        "additionalProperties": false,
+        "properties": {
+          "deleted_bytes": {
+            "type": "integer"
+          },
+          "deleted_objects": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "deleted_bytes",
+          "deleted_objects"
+        ],
+        "type": "object"
+      },
+      "RenderProject": {
+        "additionalProperties": false,
+        "description": "`vidjutsu render` / `POST /v3/projects/{project}/renders`.",
+        "properties": {
+          "boxes": {
+            "default": null,
+            "description": "Box cap for this render (default from config).",
+            "format": "uint",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "ffmpeg": {
+            "default": null,
+            "description": "Renderer fingerprint override (default: recorded by setup).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "force": {
+            "default": false,
+            "description": "Render even if this exact output exists.",
+            "type": "boolean"
+          },
+          "hedge": {
+            "default": true,
+            "description": "Duplicate slow jobs on idle boxes.",
+            "type": "boolean"
+          },
+          "height": {
+            "default": 1080,
+            "description": "1080 (1920x1080) or 2160 (3840x2160), 30 fps.",
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "loudness": {
+            "default": null,
+            "description": "Normalize the final mix to this integrated loudness (LUFS).",
+            "format": "double",
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "max_peak": {
+            "default": -1.0,
+            "description": "True-peak ceiling for `loudness`, dBTP.",
+            "format": "double",
+            "type": "number"
+          },
+          "range_seconds": {
+            "default": 15,
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "default": null,
+            "description": "Render this revision instead of the branch head.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "split": {
+            "default": "cuts",
+            "description": "`cuts`: ranges follow clip boundaries so edits reuse untouched\nranges; `grid`: fixed ranges from frame 0.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SentPart": {
+        "additionalProperties": false,
+        "description": "One sent part: its number and the `ETag` header its PUT returned.",
+        "properties": {
+          "etag": {
+            "type": "string"
+          },
+          "number": {
+            "description": "1-based, in order.",
+            "format": "uint",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "number",
+          "etag"
+        ],
+        "type": "object"
+      },
+      "StartUpload": {
+        "additionalProperties": false,
+        "description": "`POST /v3/uploads` and the `start_upload` tool.",
+        "properties": {
+          "bytes": {
+            "description": "The file's exact length in bytes.",
+            "format": "uint64",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "name": {
+            "description": "File name for the media id (`take1.mov` becomes media `take1`).",
+            "type": "string"
+          },
+          "sha256": {
+            "description": "The file's SHA-256, 64 lowercase hex digits. The server checks the\nstored bytes against it before keeping them.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "bytes",
+          "sha256"
+        ],
+        "type": "object"
+      },
+      "Storage": {
+        "additionalProperties": false,
+        "properties": {
+          "objects": {
+            "type": "integer"
+          },
+          "stored_bytes": {
+            "description": "Bytes stored for this repository: media, renders, caches and history.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "stored_bytes",
+          "objects"
+        ],
+        "type": "object"
+      },
+      "Upload": {
+        "additionalProperties": false,
+        "properties": {
+          "already_stored": {
+            "description": "The hash is already stored: send no parts, just complete.",
+            "type": "boolean"
+          },
+          "expires_at": {
+            "description": "Unix seconds when the part links stop working.",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "part_size": {
+            "description": "Bytes in every part but the last (the rest).",
+            "type": "integer"
+          },
+          "parts": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "number": {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "url": {
+                  "description": "Presigned PUT for this part.",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "number",
+                "url"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "upload_id": {
+            "description": "`up_` and 32 hex digits.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "upload_id",
+          "name",
+          "already_stored",
+          "part_size",
+          "parts",
+          "expires_at"
+        ],
+        "type": "object"
+      },
+      "UploadAborted": {
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "const": "aborted"
+          },
+          "upload_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "upload_id",
+          "state"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "The VidJutsu workflow over HTTP: ingest media, build a project by edits, render it on parallel boxes as a background job. Every route runs the same code as its CLI command. See docs/HTTP.md.",
+    "license": {
+      "identifier": "Apache-2.0",
+      "name": "Apache-2.0"
+    },
+    "title": "VidJutsu",
+    "version": "0.0.4"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/mcp": {
+      "post": {
+        "description": "The same steps as MCP tools; see docs/MCP.md.",
+        "operationId": "mcp",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonRpc"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonRpc"
+                }
+              }
+            },
+            "description": "Answers to the requests"
+          },
+          "202": {
+            "description": "Only notifications or responses were sent."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "MCP tools (streamable HTTP, stateless)"
+      }
+    },
+    "/v3/audio/clean": {
+      "post": {
+        "operationId": "clean_audio",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CleanAudio"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CleanedAudio"
+                }
+              }
+            },
+            "description": "The cleaned media"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Studio voice cleanup and mix"
+      }
+    },
+    "/v3/health": {
+      "get": {
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            },
+            "description": "Health"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Whether the server's accounts are usable"
+      }
+    },
+    "/v3/jobs/{job_id}": {
+      "get": {
+        "operationId": "render_status",
+        "parameters": [
+          {
+            "description": "A render job id (`rj_` and 32 hex digits).",
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Repository (default: the server's). Multi-tenant hosting sets it from a header.",
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A render job"
+      }
+    },
+    "/v3/jobs/{job_id}/cancel": {
+      "post": {
+        "operationId": "cancel_render",
+        "parameters": [
+          {
+            "description": "A render job id (`rj_` and 32 hex digits).",
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Repository (default: the server's). Multi-tenant hosting sets it from a header.",
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Stop a render job and its boxes"
+      }
+    },
+    "/v3/media": {
+      "post": {
+        "description": "Makes the media timeline-ready (FFmpeg) and stores it by hash. Links must be https to a named host; redirects are not followed.",
+        "operationId": "ingest",
+        "parameters": [
+          {
+            "description": "With a file body: its file name, which names the media (`take1.mov` is media `take1`).",
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestUrl"
+              }
+            },
+            "application/octet-stream": {
+              "schema": {
+                "contentEncoding": "binary",
+                "type": "string"
+              }
+            }
+          },
+          "description": "The file's bytes (application/octet-stream, up to 8 GiB, named by `?name=`), or an https link the server downloads.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingested"
+                }
+              }
+            },
+            "description": "The stored media"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Ingest a file or link"
+      }
+    },
+    "/v3/media/{hash}": {
+      "get": {
+        "operationId": "media",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaReceipt"
+                }
+              }
+            },
+            "description": "Stored"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A stored file's receipt"
+      }
+    },
+    "/v3/media/{hash}/download": {
+      "get": {
+        "operationId": "media_download",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "307": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaLink"
+                }
+              }
+            },
+            "description": "Redirect; `Location` is the link.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Redirect to a one-hour link"
+      }
+    },
+    "/v3/media/{hash}/url": {
+      "get": {
+        "operationId": "media_url",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Link lifetime in seconds.",
+            "in": "query",
+            "name": "ttl",
+            "required": false,
+            "schema": {
+              "default": 86400,
+              "maximum": 604800,
+              "minimum": 60,
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaLink"
+                }
+              }
+            },
+            "description": "The link"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A download link"
+      }
+    },
+    "/v3/projects": {
+      "post": {
+        "operationId": "init",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectRevision"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Create a project"
+      }
+    },
+    "/v3/projects/{project}": {
+      "get": {
+        "operationId": "show",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": "main",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            },
+            "description": "The project"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A branch head or revision, with its manifest"
+      }
+    },
+    "/v3/projects/{project}/edits": {
+      "post": {
+        "operationId": "edit",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/EditProject"
+                  },
+                  {
+                    "description": "Just the operations (on the main branch).",
+                    "items": {
+                      "type": "object"
+                    },
+                    "type": "array"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Edited"
+                }
+              }
+            },
+            "description": "Committed"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Apply edit operations as one commit"
+      }
+    },
+    "/v3/projects/{project}/level": {
+      "post": {
+        "operationId": "level",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LevelAudio"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Leveled"
+                }
+              }
+            },
+            "description": "Measured (and edited)"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Set clip gains to a target loudness"
+      }
+    },
+    "/v3/projects/{project}/renders": {
+      "post": {
+        "description": "Plans and checks the render, then answers 202 with a job that runs in the background. Poll `GET /v3/jobs/{job_id}`.",
+        "operationId": "render",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Names the job: a retry returns the same job; the same key with a different request is 409 idempotency_conflict.",
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": false,
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenderProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start a render job"
+      }
+    },
+    "/v3/storage": {
+      "delete": {
+        "description": "Media, renders, caches, history and jobs. Safe to repeat.",
+        "operationId": "purge_storage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Purged"
+                }
+              }
+            },
+            "description": "Deleted"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Delete everything stored for the repository (hosted mode)"
+      },
+      "get": {
+        "operationId": "storage",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Storage"
+                }
+              }
+            },
+            "description": "Stored"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Bytes stored for the repository"
+      }
+    },
+    "/v3/uploads": {
+      "post": {
+        "description": "For large files: the bytes go straight to storage by presigned PUT links, one per part, never through this server. PUT each part (exactly `part_size` bytes, the last one the rest) and keep each response's `ETag` header, then complete.",
+        "operationId": "start_upload",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartUpload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Upload"
+                }
+              }
+            },
+            "description": "The part links"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start a direct upload"
+      }
+    },
+    "/v3/uploads/{upload_id}": {
+      "delete": {
+        "operationId": "abort_upload",
+        "parameters": [
+          {
+            "description": "An upload id (`up_` and 32 hex digits).",
+            "in": "path",
+            "name": "upload_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadAborted"
+                }
+              }
+            },
+            "description": "Abandoned"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Abandon an upload"
+      }
+    },
+    "/v3/uploads/{upload_id}/complete": {
+      "post": {
+        "description": "Checks the stored bytes against the SHA-256 and length (a mismatch stores nothing), then ingests like `POST /v3/media`. Safe to repeat: a completed upload answers with its result.",
+        "operationId": "complete_upload",
+        "parameters": [
+          {
+            "description": "An upload id (`up_` and 32 hex digits).",
+            "in": "path",
+            "name": "upload_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteUpload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingested"
+                }
+              }
+            },
+            "description": "The stored media"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Finish an upload and ingest it"
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "`vidjutsu serve` (loopback)",
+      "url": "http://127.0.0.1:7031"
+    }
+  ]
+}

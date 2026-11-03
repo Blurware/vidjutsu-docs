@@ -1,0 +1,83 @@
+---
+title: "Connect an agent (MCP)"
+description: "Give Claude Code, Claude Desktop, Cursor or any MCP client the VidJutsu tools."
+---
+
+VidJutsu is an MCP server at:
+
+```
+https://api.vidjutsu.ai/mcp
+```
+
+It speaks MCP over streamable HTTP. The tools are the same operations as the [REST API](/api-reference/introduction), with the same names and the same JSON.
+
+## Connect
+
+<Tabs>
+  <Tab title="Claude Code">
+    With an API key (works for agents running unattended):
+    ```sh
+    claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp \
+      --header "Authorization: Bearer vj_live_..."
+    ```
+    Or with OAuth, signing in through your browser:
+    ```sh
+    claude mcp add --transport http vidjutsu https://api.vidjutsu.ai/mcp
+    ```
+    then run `/mcp` in Claude Code and choose **Authenticate**.
+  </Tab>
+  <Tab title="JSON config">
+    Clients that read a JSON config (Claude Desktop, Cursor and others):
+    ```json
+    {
+      "mcpServers": {
+        "vidjutsu": {
+          "type": "http",
+          "url": "https://api.vidjutsu.ai/mcp",
+          "headers": {"Authorization": "Bearer vj_live_..."}
+        }
+      }
+    }
+    ```
+    Leave out `headers` to sign in with OAuth, if your client supports it.
+  </Tab>
+</Tabs>
+
+Get an API key with [two calls](/authentication) or `vidjutsu login`. Your agent can run the sign-up calls itself and ask you only for the emailed code. The OAuth sign-up page asks new users to prove they're human, so an agent working alone should use a key.
+
+Tools that do work need a funded wallet. Until you've signed up, they fail with `payment_required` and a `checkout_url` your agent can hand you; when your balance runs low, the error carries a `top_up_url` instead.
+
+## Tools
+
+| Tool | What it does |
+| --- | --- |
+| `ingest` | Add media from an https link (`{url, name}`). |
+| `create_upload`, `complete_upload`, `abort_upload` | [Direct upload](/guides/uploads#direct-uploads) of a large file by presigned links. |
+| `media_url` | A time-limited download link for a media item or render (`{hash, ttl}`). |
+| `init` | Create a project (`{project}`). |
+| `show` | A project's current timeline (`{project}`). |
+| `edit` | Apply [edit operations](/guides/editing#edit-operations) (`{project, operations, expected_head}`). |
+| `level` | Level audio clips to a target loudness (`{project, tracks, target}`). |
+| `clean_audio` | Studio sound for voice tracks (`{voice, music}`). |
+| `render` | Start a render job (`{project, height}`). |
+| `render_status` | A render job; once succeeded, a download link (`{job_id}`). |
+| `cancel_render` | Stop a render job (`{job_id}`). |
+| `account`, `usage`, `entitlements` | Your account, your wallet balance and this month's usage, your limits. |
+| `create_key`, `list_keys`, `revoke_key` | Manage API keys. |
+| `billing_checkout`, `billing_top_up`, `billing_portal` | Stripe links to sign up and make your first payment, to add credits (`{amount_usd}`), or to update your card and see receipts. |
+| `create_account` | Create your account after an OAuth sign-in. Safe to call again. |
+
+Path parameters (`project`, `job_id`, `hash`, `upload_id`, `key_id`) are tool arguments. The other arguments are the REST body, so the [API reference](/api-reference/introduction) documents every field.
+
+Every tool that changes something takes an optional `idempotency_key`: reuse it when retrying so the work happens once. Read-only tools are marked as such, so clients can run them without asking.
+
+A tool's result is the operation's JSON. A failure is a result with `isError: true` and the [error body](/errors), so the agent can read the `message` and fix the call.
+
+## A session
+
+Ask your agent something like "cut take1 and take2 back to back with the music under both, and render it in 4K". It will typically:
+
+1. `ingest` or `create_upload` each file, keeping the returned `media` and `audio` objects.
+2. `init {"project": "cut"}`.
+3. `edit` with `add_media` for each item, `add_track` for the music, and `insert_clip` for each clip.
+4. `render {"project": "cut", "height": 2160, "idempotency_key": "cut-1"}`, then `render_status` until `succeeded`, and give you `output.url`.

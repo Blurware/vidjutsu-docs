@@ -1,9 +1,7 @@
 ---
-title: "API Reference"
-description: "Complete reference for the VidJutsu API"
+title: "API reference"
+description: "The VidJutsu Cloud REST API: base URL, authentication, conventions."
 ---
-
-## Base URL
 
 ```
 https://api.vidjutsu.ai
@@ -11,146 +9,51 @@ https://api.vidjutsu.ai
 
 ## Authentication
 
-Most endpoints require an API key passed as a Bearer token in the `Authorization` header:
+Send an API key as a bearer token on every call:
 
-```bash
-curl https://api.vidjutsu.ai/v1/clones/check \
-  -H "Authorization: Bearer vj_live_your_key_here"
+```
+Authorization: Bearer vj_live_...
 ```
 
-Get your API key by [subscribing](/authentication) with any card via Stripe.
-
-## Endpoints
-
-### Clone
-
-The clone workflow. Each clone endpoint shares one daily admission limit. See the [clone viral videos guide](/guides/clone-viral-videos) for the full sequence.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/clones/check` | Score whether a source video will clone well (verdict + 0-100 score) |
-| POST | `/v1/characters` | Create a reusable character (`char_...`) |
-| GET | `/v1/characters` | List your characters |
-| GET | `/v1/characters/{id}` | Fetch one character by id |
-| POST | `/v1/clones/starting-image` | Compose a clean character-swapped starting frame |
-| POST | `/v1/clones/video` | Submit the motion clone, returns a task id |
-| GET | `/v1/clones/video/{id}` | Poll the clone task for the finished video |
-
-### Download
-
-Stage one video's file to the CDN, one call per video.
-
-| Method | Endpoint | Description | Calls / day |
-|--------|----------|-------------|-------------|
-| POST | `/v1/videos/download/tiktok` | Stage a TikTok video's file | metered |
-| POST | `/v1/videos/download/instagram` | Stage an Instagram video's file | metered |
-
-### Discovery (scrape)
-
-Metadata and discovery only. Scrape returns raw source URLs and never stages media. All scrape endpoints share one daily rate group (500/day). See [scrape](/api-reference/scrape).
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/scrape/tiktok/trending` | Trending feed by region |
-| POST | `/v1/scrape/tiktok/profile/videos` | Videos for a TikTok profile |
-| POST | `/v1/scrape/tiktok/video` | Single TikTok video metadata |
-| POST | `/v1/scrape/instagram/user/reels` | Reels for an Instagram profile |
-| POST | `/v1/scrape/instagram/post` | Single Instagram post metadata |
-
-Full scrape list on the [scrape page](/api-reference/scrape).
-
-### Processing
-
-Each processing endpoint has its own daily rate-limit bucket. Buckets are independent.
-
-| Method | Endpoint | Description | Calls / day |
-|--------|----------|-------------|-------------|
-| POST | `/v1/watch` | AI watches video, freeform prompt | 50 |
-| POST | `/v1/extract` | Pull frames, audio, metadata | 100 |
-| POST | `/v1/transcribe` | Speech-to-text with word timing | 30 |
-| POST | `/v1/compliance/video` | Scan a video against platform TOS | 20 |
-| POST | `/v1/compliance/prompt` | Scan text against platform TOS | 100 |
-| POST | `/v1/overlay` | Burn text overlay onto a video | 50 |
-| POST | `/v1/disclaimer` | Burn a disclaimer card onto a video | 50 |
-| POST | `/v1/check` | Validate a spec against rules | 100 |
-| GET | `/v1/check/rules` | Load per-client custom rules | unmetered |
-| PUT | `/v1/check/rules` | Save per-client custom rules | unmetered |
-
-### Storage
-
-Storage endpoints are unmetered under your subscription.
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/upload` | Upload media to CDN |
-| POST | `/v1/upload/url` | Upload from external URL |
-| POST/GET/PUT/DELETE | `/v1/accounts` | Manage account records (supports tag filtering) |
-| POST/GET/PUT/DELETE | `/v1/posts` | Manage post records |
-| POST/GET/PUT/DELETE | `/v1/references` | Manage reference records |
-| POST/GET/PUT/DELETE | `/v1/assets` | Manage asset records |
-| POST/GET/PUT/DELETE | `/v1/projects` | Manage serializable editor timeline projects |
-
-### Billing & Keys
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/subscribe` | Start a subscription checkout session |
-| GET | `/v1/credits/status` | Poll checkout status, retrieve API key |
-| GET | `/v1/usage` | Remaining daily capacity per endpoint |
-| GET | `/v1/pricing` | Current pricing + limits table |
-| POST | `/v1/api_keys/rotate` | Rotate your API key |
-| POST | `/v1/api_keys/recover` | Recover a lost API key |
-| GET | `/v1/info` | API discovery + endpoint catalog |
-
-## Tags
-
-Accounts and posts support AWS-style key-value tags for organization and filtering:
-
-```json
-{
-  "tags": [
-    { "key": "brand", "value": "summer-launch" },
-    { "key": "region", "value": "northeast" }
-  ]
-}
-```
-
-Filter on GET requests: `?tag.brand=summer-launch`
-
-## Response codes
-
-| Code | Description |
-|------|-------------|
-| `200` | Success (read operations, edits) |
-| `201` | Created (new records) |
-| `202` | Accepted (async operation started) |
-| `400` | Missing or invalid parameters |
-| `401` | Missing or invalid API key |
-| `403` | Subscription inactive or expired (`subscription_required`) |
-| `422` | Unprocessable request (for example `video_too_long` on a clone over 15 seconds) |
-| `429` | Daily rate limit reached |
-
-## Error format
-
-All errors return a consistent JSON structure. On `429`, the response includes `retryAfter` (seconds until the bucket resets at 00:00 UTC):
-
-```json
-{
-  "error": "rate_limited",
-  "message": "Daily limit reached for watch (50/day). Resets at midnight UTC.",
-  "limit": 50,
-  "retryAfter": 14523
-}
-```
-
-## Synchronous and async responses
-
-Most endpoints return a synchronous `200` with the result in the body. The clone video call is asynchronous: `POST /v1/clones/video` returns `202` with a task id, which you poll with `GET /v1/clones/video/{id}`.
-
-## CORS
-
-The REST API allows cross-origin requests from any origin. Public integrations should send `Content-Type` and `Authorization`; idempotent operations may also use `Idempotency-Key`.
+Get one with [two sign-up calls](/authentication). OAuth access tokens from MCP sign-in work too. `GET /health`, `POST /auth/email` and `POST /auth/verify` need no key.
 
 ## Versioning
 
-Responses include the `VidJutsu-Version` header indicating the current API version.
+The API is versioned by date, like Stripe. Paths carry no version. Instead, every request names the version it was written against in a header:
+
+```
+VidJutsu-Version: 2026-11-03
+```
+
+The current version is `2026-11-03`.
+
+- **Pin a version.** Send the header on every request, so your code keeps working when a new version ships. A request without it gets the latest version.
+- **Every response says which version served it**, in its own `VidJutsu-Version` header.
+- **An unknown version** is a 400 `invalid_request` with `reason: "unknown_version"` and the `latest_version`.
+- **What gets a new version.** A change that could break existing code ships under a new date, and requests that name an older date keep the old behavior. Additive changes (new operations, new optional fields, new response fields) don't get a new version and reach every version, so read responses leniently.
+
+The CLI and SDK send the version they were built for. In the SDK, pass `apiVersion` to pin another one.
+
+## Conventions
+
+- **JSON in, JSON out**, with snake_case fields. Send `Content-Type: application/json`. The one exception is `POST /media`, which also takes up to 4 MB of raw bytes as `application/octet-stream`.
+- **Idempotency.** Send an `Idempotency-Key` header on every write. A retry with the same key returns the first result instead of doing the work twice. For edits, also send `expected_head`.
+- **Times** in timelines are exact: whole seconds, decimal strings (`"12.5"`) or fractions. See [Times](/guides/editing#times).
+- **Renders are background jobs.** `POST /projects/{project}/renders` answers 202 with a job; poll `GET /jobs/{job_id}`.
+- **Errors** have a stable `code`, a `message`, and fields that tell you how to fix them. See [Errors](/errors).
+- **Every operation is also an MCP tool** with the same name (the `operationId` on each page). See [MCP](/mcp).
+
+## Operations
+
+| Group | Operations |
+| --- | --- |
+| Sign-up and sign-in | `POST /auth/email`, `POST /auth/verify` |
+| Account | `GET /account`, `POST /account`, `GET /usage`, `GET /entitlements` |
+| API keys | `GET /keys`, `POST /keys`, `DELETE /keys/{key_id}` |
+| Billing | `POST /billing/checkout`, `POST /billing/top-up`, `POST /billing/portal` |
+| Media | `POST /media`, `GET /media/{hash}`, `GET /media/{hash}/url` |
+| Uploads | `POST /uploads`, `POST /uploads/{upload_id}/complete`, `DELETE /uploads/{upload_id}` |
+| Projects | `POST /projects`, `GET /projects/{project}`, `POST /projects/{project}/edits` |
+| Audio | `POST /projects/{project}/level`, `POST /audio/clean` |
+| Renders | `POST /projects/{project}/renders`, `GET /jobs/{job_id}`, `POST /jobs/{job_id}/cancel` |
+| Status | `GET /health` |

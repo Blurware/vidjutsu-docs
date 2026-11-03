@@ -1,0 +1,88 @@
+---
+title: "Upload media"
+description: "Add takes, music and stills to your library: from a link, or straight to storage in parts."
+---
+
+Everything a timeline uses lives in your media library. There are three ways to add a file:
+
+| Way | For | Call |
+| --- | --- | --- |
+| **Direct upload** | Files on your machine, up to 50 GB | `POST /uploads`, then `PUT` the parts, then `POST /uploads/{upload_id}/complete` |
+| **Link** | Files already online | `POST /media` with `{"url": "https://...", "name": "take1.mov"}` |
+| **Inline bytes** | Small files (stills, short clips), up to 4 MB | `POST /media?name=logo.png` with the bytes as `application/octet-stream` |
+
+The CLI's `vidjutsu upload <file>` and the SDK's `upload()` do a direct upload for you. `vidjutsu ingest <https-url>` adds from a link.
+
+## What you get back
+
+Every way returns the same thing:
+
+```json
+{
+  "name": "take1.mov",
+  "bytes": 734003200,
+  "converted": false,
+  "conform_at_render": true,
+  "note": "...",
+  "media": {"id": "take1", "asset_hash": "9f2c...", "duration": {"ticks": 4004, "rate": 100},
+            "kind": "video", "lineage": []},
+  "audio": {"id": "take1-audio", "asset_hash": "9f2c...", "duration": {"ticks": 4004, "rate": 100},
+            "kind": "audio", "lineage": ["9f2c..."]}
+}
+```
+
+- The media **id** comes from the file name: `take1.mov` becomes `take1`. Name files the way you want to refer to them in edits.
+- A video with sound also returns **`audio`**: its sound as separate audio media (`take1-audio`), so you can place picture and sound on their own tracks.
+- Pass the `media` (and `audio`) objects to an [`add_media` edit](/guides/editing#edit-operations) to use them in a project.
+- Files are stored as uploaded, by content hash. Footage that isn't constant-frame-rate H.264 (phone video, ProRes, screen recordings) is converted at render time, only the parts a render uses, and the conversion is cached for later renders (`conform_at_render: true`).
+- Uploading the same bytes twice stores them once.
+
+## Direct uploads
+
+The bytes go from you to storage by presigned links, never through the API, in parts you can send in parallel and retry one at a time.
+
+<Steps>
+  <Step title="Start the upload">
+    Send the file's name, exact length and SHA-256 (64 lowercase hex digits).
+    ```sh
+    curl -s -X POST https://api.vidjutsu.ai/uploads \
+      -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+      -d '{"name": "take1.mov", "bytes": 734003200, "sha256": "9f2c..."}'
+    ```
+    ```json
+    {"upload_id": "up_...", "name": "take1.mov", "already_stored": false,
+     "part_size": 67108864, "expires_at": 1793671600,
+     "parts": [{"number": 1, "url": "https://..."}, {"number": 2, "url": "https://..."}]}
+    ```
+    If `already_stored` is true, those bytes are already in your library: skip to step 3 and complete with `{}`.
+  </Step>
+  <Step title="PUT each part">
+    Every part is exactly `part_size` bytes (64 MiB for most files), and the last part is the rest. PUT each part's bytes to its `url` and keep the `ETag` header from each response. A failed part can be sent again. The links work for 6 hours (`expires_at`, Unix seconds).
+    ```sh
+    curl -s -X PUT --data-binary @part1.bin -D - "https://..." | grep -i etag
+    ```
+  </Step>
+  <Step title="Complete it">
+    Send every part's number and ETag, in order.
+    ```sh
+    curl -s -X POST https://api.vidjutsu.ai/uploads/up_.../complete \
+      -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+      -d '{"parts": [{"number": 1, "etag": "\"a1b2...\""}, {"number": 2, "etag": "\"c3d4...\""}]}'
+    ```
+    The stored bytes are checked against the SHA-256 you sent (a mismatch stores nothing and is a 400), then the file is added to your library. The answer is the same as adding from a link. Completing again returns the same answer. Checking the hash reads the whole file, so a very large file takes a minute or so to complete.
+  </Step>
+</Steps>
+
+`DELETE /uploads/{upload_id}` abandons an upload and the parts sent so far.
+
+## Adding from a link
+
+The link must be `https://` to a named host: no IP addresses, `localhost` or credentials in the URL, and redirects are not followed. A presigned link from your own storage works. `name` is optional and defaults to the link's last path part.
+
+## Download links
+
+`GET /media/{hash}/url?ttl=3600` returns a time-limited link to any stored file, including finished renders. `ttl` is in seconds, from 60 to 604800 (7 days); the default is one day. The CLI: `vidjutsu url <hash> --ttl 3600`.
+
+## Cost
+
+Uploading is free; stored bytes count toward storage. See [Pricing](/pricing).

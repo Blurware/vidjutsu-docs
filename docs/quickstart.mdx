@@ -1,89 +1,130 @@
 ---
 title: "Quickstart"
-description: "Create a character and clone a viral video onto it."
+description: "Sign up, fund your wallet, upload a take and render your first cut."
 ---
 
-<Info>
-Need an API key? Follow [Get your API key](/get-api-key) first.
-</Info>
+You need an email address and a card. There's no monthly fee: you pay as you go from a prepaid wallet, starting with $5 or more. A minute of 1080p output costs $0.10. See [Pricing](/pricing).
 
-## Clone a video
+<Tabs>
+  <Tab title="CLI">
 
-Create a reusable character once, then clone a viral video onto it. The CLI flow below requires version 1.4.0 or later:
+<Steps>
+  <Step title="Install">
+    ```sh
+    npm i -g vidjutsu
+    # or a standalone binary for macOS and Linux:
+    curl -fsSL https://vidjutsu.ai/install.sh | sh
+    ```
+  </Step>
+  <Step title="Sign up">
+    ```sh
+    vidjutsu login
+    ```
+    Enter your email, then the code we send you. This creates your account and saves an API key to `~/.config/vidjutsu/cloud.json`. Signing in again later works the same way.
+  </Step>
+  <Step title="Fund your wallet">
+    ```sh
+    vidjutsu billing checkout
+    ```
+    Open the `url` it prints, add a card and pay $5 with Stripe. Your account turns `active` as soon as the payment goes through (`vidjutsu account` shows it, and `vidjutsu usage` shows your balance).
+  </Step>
+  <Step title="Upload a take">
+    ```sh
+    vidjutsu upload take1.mp4
+    ```
+    It prints the media item. A video with sound gives you two: `take1` (the picture) and `take1-audio` (its sound). Keep the printed `media` and `audio` objects for the next step.
+  </Step>
+  <Step title="Make a project and edit it">
+    ```sh
+    vidjutsu init first-cut
+    vidjutsu edit first-cut edit.json
+    ```
+    `edit.json` places the first 20 seconds of the take on the timeline with its sound. Paste the `media` and `audio` objects from the upload where marked:
 
-```bash
-# Create a character once. This prints a char_... id.
-vidjutsu clone character --prompt "A friendly host in their late 20s, casual streetwear"
+    ```json edit.json
+    [
+      {"op": "add_media", "media": {"id": "take1", "...": "the media object from upload"}},
+      {"op": "add_media", "media": {"id": "take1-audio", "...": "the audio object from upload"}},
+      {"op": "insert_clip", "track_id": "v1", "occurrence": {
+        "id": "c1", "media_id": "take1", "timeline_start": 0,
+        "source": {"start": 0, "end": 20},
+        "layout": {"x": 0, "y": 0, "width": 1000, "height": 1000}}},
+      {"op": "insert_clip", "track_id": "a1", "occurrence": {
+        "id": "c1-sound", "media_id": "take1-audio", "timeline_start": 0,
+        "source": {"start": 0, "end": 20}}}
+    ]
+    ```
+  </Step>
+  <Step title="Render">
+    ```sh
+    vidjutsu render first-cut --out first-cut.mp4
+    ```
+    It waits for the render job and saves the file. Add `--json '{"height": 2160}'` for 4K.
+  </Step>
+</Steps>
 
-# Clone a TikTok video onto that character.
-vidjutsu clone run "https://www.tiktok.com/@creator/video/123456789" \
-  --character char_2a91b7f4
-```
+  </Tab>
+  <Tab title="curl">
 
-`clone run` stages the source, scores it with a clone check, composes a character-swapped starting frame, generates the clone, and prints the finished video URL.
+<Steps>
+  <Step title="Sign up">
+    ```sh
+    API=https://api.vidjutsu.ai
+    V='VidJutsu-Version: 2026-11-03'   # the API version, sent on every call
+    curl -s -H "$V" -X POST $API/auth/email -H 'Content-Type: application/json' \
+      -d '{"email": "you@example.com"}'
+    # {"attempt": "...", "expires_at": "...", "next": "POST /auth/verify ..."}
 
-## The same flow in the SDK
+    curl -s -H "$V" -X POST $API/auth/verify -H 'Content-Type: application/json' \
+      -d '{"attempt": "...", "code": "123456"}'
+    # {"api_key": "vj_live_...", "account_id": "...", "status": "no_plan", "checkout_url": "https://checkout.stripe.com/..."}
+    ```
+    Keep the `api_key`: it's shown once.
+  </Step>
+  <Step title="Fund your wallet">
+    Open `checkout_url` in a browser, add a card and pay $5. Then check:
+    ```sh
+    KEY=vj_live_...
+    curl -s -H "$V" $API/account -H "Authorization: Bearer $KEY"
+    # {"account_id": "...", "status": "active", ...}
+    ```
+  </Step>
+  <Step title="Add a take">
+    For a file that's already online, send its https link. For files on your machine, use a [direct upload](/guides/uploads).
+    ```sh
+    curl -s -H "$V" -X POST $API/media -H "Authorization: Bearer $KEY" \
+      -H 'Content-Type: application/json' \
+      -d '{"url": "https://example.com/take1.mp4"}'
+    # {"name": "take1.mp4", "media": {"id": "take1", ...}, "audio": {"id": "take1-audio", ...}, ...}
+    ```
+  </Step>
+  <Step title="Make a project and edit it">
+    ```sh
+    curl -s -H "$V" -X POST $API/projects -H "Authorization: Bearer $KEY" \
+      -H 'Content-Type: application/json' -d '{"project": "first-cut"}'
 
-```typescript
-import { createClient } from "vidjutsu";
+    curl -s -H "$V" -X POST $API/projects/first-cut/edits -H "Authorization: Bearer $KEY" \
+      -H 'Content-Type: application/json' -d @edit.json
+    ```
+    Use the `edit.json` from the CLI tab, with the `media` and `audio` objects from the previous step.
+  </Step>
+  <Step title="Render and download">
+    ```sh
+    curl -s -H "$V" -X POST $API/projects/first-cut/renders -H "Authorization: Bearer $KEY" \
+      -H 'Content-Type: application/json' -H 'Idempotency-Key: first-cut-1' -d '{}'
+    # 202 {"job_id": "rj_...", "state": "queued", ...}
 
-const vj = createClient();
+    curl -s -H "$V" $API/jobs/rj_... -H "Authorization: Bearer $KEY"
+    # poll until "state": "succeeded"; then output.url is a 7-day download link
+    ```
+  </Step>
+</Steps>
 
-// 1. Create a reusable character (returns { id: "char_...", imageUrl, model }).
-const { data: character } = await vj.createCharacter({
-  prompt: "A friendly host in their late 20s, casual streetwear",
-});
+  </Tab>
+</Tabs>
 
-// 2. Stage the source video, then score it.
-const { data: source } = await vj.downloadTikTokVideo({
-  url: "https://www.tiktok.com/@creator/video/123456789",
-});
-const { data: check } = await vj.cloneCheck({ videoUrl: source.url });
-console.log(check.verdict, check.score);
+## Next
 
-// 3. Extract the actual first frame, edit its identity, then generate the clone.
-const { data: extracted } = await vj.extractMedia({ mediaUrl: source.url, frames: [0] });
-const { data: starting } = await vj.cloneStartingImage({
-  characterId: character.id,
-  firstFrame: extracted.frames[0].url,
-  prompt: "Match the framing and pose of the source's opening frame",
-});
-const { data: task } = await vj.cloneVideo({
-  startingImageUrl: starting.imageUrl,
-  sourceVideoUrl: source.url,
-  model: "kling",
-});
-let result;
-do {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  ({ data: result } = await vj.getCloneVideo(task.id));
-} while (result.status === "processing");
-
-if (result.status === "failed") throw new Error(result.error);
-console.log(result.videoUrl);
-```
-
-## What happens
-
-1. **Character** — a persisted, reusable identity you create once and reuse on every clone.
-2. **Download** — the source post becomes a stable, tenant-owned VidJutsu asset with a durable URL.
-3. **Check** — a verdict and 0-100 score for whether the source will clone well, before you use a generation attempt.
-4. **Starting image** — a clean character-swapped opening frame, no captions or platform UI.
-5. **Clone video** — Kling motion control maps the source motion onto your character and returns the finished URL.
-
-## Next steps
-
-<CardGroup cols={2}>
-  <Card title="Clone viral videos guide" icon="clapperboard" href="/guides/clone-viral-videos">
-    The full call sequence with every request and response shape.
-  </Card>
-  <Card title="Scrape guide" icon="magnifying-glass" href="/guides/scrape">
-    Pull profile, post, and comment data to find videos worth cloning.
-  </Card>
-  <Card title="SDK reference" icon="braces" href="/sdk/index">
-    Typed methods for the clone workflow and everything around it.
-  </Card>
-  <Card title="API reference" icon="code" href="/api-reference/introduction">
-    Every public operation and response schema.
-  </Card>
-</CardGroup>
+- [Edit a timeline](/guides/editing): every edit operation, and how revisions work.
+- [Render](/guides/rendering): 4K, loudness, rendering an older revision, canceling.
+- [Connect an agent](/mcp): the same steps as MCP tools.

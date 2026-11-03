@@ -1,0 +1,38 @@
+---
+title: "Errors"
+description: "Every error has a stable code, a message, and the fields that tell you how to fix it."
+---
+
+Errors are JSON with a stable `code`, a plain-words `message` and a `request_id`:
+
+```json
+{
+  "code": "payment_required",
+  "message": "Your wallet doesn't cover this. Add credits with POST /billing/top-up.",
+  "reason": "insufficient_credits",
+  "top_up_url": "https://checkout.stripe.com/...",
+  "request_id": "first-cut-1"
+}
+```
+
+Branch on `code` (and `reason` for detail), not on `message`. `request_id` is your `Idempotency-Key`, or a generated id; it's also sent as the `X-Request-Id` header. Quote it when you contact support.
+
+| Status | `code` | When | Extra fields |
+| --- | --- | --- | --- |
+| 400 | `invalid_request` | A bad field, option, name or edit; an empty timeline; a wrong sign-in code; an unknown `VidJutsu-Version`. | `reason` (for example `unknown_version`, with `latest_version`) |
+| 401 | `unauthenticated` | No API key or token, or it isn't valid. | |
+| 402 | `payment_required` | Not signed up yet, your wallet doesn't cover the job, or it's below zero. See [Pricing](/pricing#when-something-needs-fixing). | `reason` (`no_plan`, `insufficient_credits` or `payment_failed`), `checkout_url` or `top_up_url`, `media_deletes_at` |
+| 403 | `plan_limit` | A plan limit was reached. | `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`, `feature_not_in_plan`), `contact_url` |
+| 403 | `forbidden` | Not allowed with this credential, for example creating an account with an API key. | |
+| 404 | `not_found` | An unknown route, project, revision, media hash, upload or job. | |
+| 409 | `conflict` | The timeline moved since `expected_head`, an `Idempotency-Key` was reused for a different request, or a billing step doesn't apply (checkout when you're already signed up, or the portal before your first payment). | `reason` |
+| 413 | `payload_too_large` | A JSON body over 1 MB, or inline bytes over 4 MB. Use a [direct upload](/guides/uploads#direct-uploads). | |
+| 429 | `rate_limited` | Too many renders at once, or too many requests. | `retry_after_seconds` (also a `Retry-After` header) |
+| 502 | `upstream_error` | The render engine failed. Try again. | |
+| 503 | `service_unavailable` | Temporarily unavailable. Try again. | |
+
+## Retrying safely
+
+Send an `Idempotency-Key` header on every write (MCP tools take `idempotency_key`). Retrying with the same key returns the first result instead of doing the work twice, so it's safe to retry after a timeout or a 5xx. For edits, also send `expected_head`.
+
+Retry 429, 502 and 503 with backoff. Don't retry 4xx errors other than 429 without changing the request.

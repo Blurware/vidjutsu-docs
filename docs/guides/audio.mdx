@@ -1,0 +1,50 @@
+---
+title: "Audio"
+description: "Level clips to a target loudness, and clean up voice tracks."
+---
+
+## Level clips
+
+`POST /projects/{project}/level` measures what each clip on the audio tracks you name actually plays (EBU R128), then sets each clip's gain so it plays at the `target` loudness. It's applied as one edit, so it makes a new revision like any other.
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/level \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"tracks": ["a1"], "target": -16}'
+```
+
+```json
+{"clips": [{"occurrence": "t1-sound", "measured_lufs": -22.4, "gain_db": 6.4, "true_peak": -3.1, "peak_limited": false}, ...],
+ "edit": {"project": "launch-film", "branch": "main", "parent": "...", "revision": "...", "target_lufs": -16}}
+```
+
+| Field | Default | |
+| --- | --- | --- |
+| `tracks` | required | Audio track ids to level. |
+| `target` | `-16` | Loudness each clip should play at, in LUFS. |
+| `max_peak` | `-1` | True-peak ceiling, in dBTP. A clip that would clip is held below it (`peak_limited`). |
+| `branch` | `main` | |
+| `dry_run` | `false` | Measure and report without editing. |
+
+Leveling sets clip gain. To set the loudness of the finished film, pass `loudness` when you [render](/guides/rendering#options).
+
+## Clean up voice
+
+`POST /audio/clean` gives voice tracks studio sound: noise and room echo reduced, levels evened out, and the speakers mixed, optionally over a music bed. The result is added to your library as new audio media.
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/audio/clean \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"voice": ["<hash of take1-audio>"], "music": "<hash of music>", "music_db": -18, "loudness": -14}'
+```
+
+| Field | Default | |
+| --- | --- | --- |
+| `voice` | required | Stored media hashes (`asset_hash`), one speech track per speaker. |
+| `music` | | A music bed kept under the voice. |
+| `music_db` | | Music level under the voice, in dB. |
+| `loudness` | `-14` | Loudness of the result, in LUFS. |
+| `max_peak` | `-1` | True-peak ceiling, in dBTP. |
+| `title` | | A label for the job. |
+
+The answer includes `media`, a media object you can pass to `add_media` and place on an audio track in place of the raw sound. Cleanup takes a while for long recordings, since the whole track is processed.

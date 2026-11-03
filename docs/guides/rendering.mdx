@@ -1,0 +1,89 @@
+---
+title: "Render"
+description: "Render a timeline to 1080p or 4K as a background job, then download it."
+---
+
+A render turns a project's timeline into an MP4 on parallel cloud machines. It runs as a background job: you start it, poll it, and download the result.
+
+## Start a render
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/renders \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -H 'Idempotency-Key: launch-film-cut-3' \
+  -d '{"height": 1080}'
+```
+
+The answer is 202 with the job:
+
+```json
+{"job_id": "rj_3f9c...", "kind": "render", "project": "launch-film", "revision": "...",
+ "state": "queued", "created_at": 1793650000, "started_at": null, "finished_at": null,
+ "progress": {"done": 0, "total": 0}, "cancel_requested": false, "error": null,
+ "usage": null, "output": null, "report": null}
+```
+
+Bad options or an empty timeline are refused right away, before any job starts.
+
+**Always send an `Idempotency-Key`.** A retry with the same key returns the same job instead of starting a second render. The same key with a different request is a 409.
+
+### Options
+
+Every field is optional.
+
+| Field | Default | |
+| --- | --- | --- |
+| `height` | `1080` | `1080` (1920x1080) or `2160` (3840x2160, 4K). 30 fps. |
+| `branch` | `main` | Render this branch's head. |
+| `revision` | | Render this exact revision instead of the head. |
+| `loudness` | | Normalize the final mix to this integrated loudness, in LUFS (for example `-14` for most streaming sites). |
+| `max_peak` | `-1` | True-peak ceiling for `loudness`, in dBTP. |
+| `force` | `false` | Render again even if this exact output already exists. |
+
+The revision is pinned when the job starts, so edits you make while it renders don't change what it renders.
+
+## Poll the job
+
+```sh
+curl -s https://api.vidjutsu.ai/jobs/rj_3f9c... -H "Authorization: Bearer $KEY"
+```
+
+`state` is `queued`, `running`, `succeeded`, `failed` or `canceled`. `progress` counts the render's pieces (`done` of `total`). Poll every few seconds.
+
+When it succeeds:
+
+```json
+{"job_id": "rj_3f9c...", "state": "succeeded",
+ "output": {"hash": "b71e...", "bytes": 48211337, "url": "https://...", "expires_at": 1794254800},
+ "usage": {"final": true, "output_seconds": 32, "height": 1080, ...}, ...}
+```
+
+`output.url` is a download link that works for 7 days; every read of the job gives a fresh one. The file stays in your library: `GET /media/{hash}/url` makes a new link any time. A `failed` job has an `error` message.
+
+## Cancel
+
+`POST /jobs/{job_id}/cancel` stops the render and its machines; the job ends `canceled`. You pay only for what was already rendered.
+
+## Re-rendering after an edit
+
+Renders are split into ranges that follow your cuts. When you render again after an edit, the ranges that didn't change are reused, so fixing one cut in a long film re-renders only around that cut. Rendering a timeline that didn't change at all succeeds almost at once.
+
+## CLI and SDK
+
+```sh
+vidjutsu render launch-film --out launch-film.mp4            # waits, then downloads
+vidjutsu render launch-film --json '{"height": 2160}' --no-wait
+vidjutsu status rj_3f9c...
+vidjutsu download rj_3f9c... --out launch-film.mp4
+vidjutsu cancel rj_3f9c...
+```
+
+```ts
+const job = await api.render("launch-film", { height: 2160 }, "launch-film-cut-3");
+const done = await api.waitForRender(job.job_id);
+console.log(done.output); // {hash, bytes, url, expires_at}
+```
+
+## Cost and limits
+
+Renders are paid from your wallet by the length of the output: $0.10 a minute at up to 1080p, $0.20 above 1080p. A render your balance doesn't cover is refused with a `top_up_url`. A render that fails on our side is never charged. You can run up to 10 renders at once (more get a 429 with `retry_after_seconds`), and each job renders up to 3 hours of output. See [Pricing](/pricing).

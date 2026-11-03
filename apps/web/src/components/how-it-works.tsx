@@ -1,18 +1,18 @@
 const BENEFITS = [
   {
     num: "01",
-    title: "Get a clone score",
-    desc: "Know a video is worth cloning before you use a generation attempt. Every clone starts with a score.",
+    title: "Upload takes",
+    desc: "Phone footage, screen recordings, ProRes, music, stills. Straight to storage, up to 50 GB a file.",
   },
   {
     num: "02",
-    title: "Reuse your own character",
-    desc: "Set up your character once, then put it in any clone. Keep the motion that is already winning.",
+    title: "Edit by calls",
+    desc: "Place clips, trim, cut pauses, fade and level. Every edit is a revision, so nothing is lost and retries are safe.",
   },
   {
     num: "03",
-    title: "Get views",
-    desc: "Post what is already trending, at the pace an agent can work. More at bats, more hits.",
+    title: "Render in parallel",
+    desc: "1080p or 4K on many machines at once. Change one cut and only that part renders again.",
   },
 ];
 
