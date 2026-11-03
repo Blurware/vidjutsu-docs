@@ -433,7 +433,11 @@ const EDITOR_SCHEMAS = {
     camera_track: str("The camera's video track. Default: found from the files' kinds, else the next video track."),
     expected_head: str("The head you decided against; a moved head is a conflict."),
   }, { required: ["preset"], description: "Leave out `from` and `to` for the whole video." }),
-  AppliedLayout: obj({ applied: { type: "array", items: obj({ role: { type: "string", enum: ["screen", "camera"] }, track: str("") }) } }, { description: "The edit (like POST /projects/{project}/edits answers) plus which track got which part." }),
+  AppliedLayout: obj({
+    layout: obj({ id: str(""), name: str("") }, { description: "The preset applied." }),
+    applied: { type: "array", items: obj({ role: { type: "string", enum: ["screen", "camera"] }, track: str("") }) },
+    warning: str("Present when the camera's track is under the screen's. Tracks draw bottom to top, so the screen hides the camera wherever it covers it: keep the camera on a higher track."),
+  }, { description: "The edit (like POST /projects/{project}/edits answers) plus the preset, which track got which part, and a warning when the camera would be hidden." }),
   ShotFile: obj({
     media: str("The file's hash."), media_id: str(""), name: str(""),
     kind: { type: "string", enum: ["camera", "screen", "audio", "video", "image", "file"] },
@@ -640,7 +644,7 @@ const EDITOR_PATHS = {
   "/projects/{project}/layout": {
     post: {
       operationId: "apply_layout", tags: ["Layouts"], summary: "Apply a layout preset",
-      description: "Lay out the screen and the camera with a preset, as one revision with Undo. Leave out `from` and `to` for the whole video. The screen and camera tracks are found from the files' kinds (`screen`, `camera`), else the lowest video track is the screen and the next one the camera; `screen_track` and `camera_track` override. It sends one `set_layout` per part over the range, the same edit the editor makes.",
+      description: "Lay out the screen and the camera with a preset, as one revision with Undo. Leave out `from` and `to` for the whole video. The screen and camera tracks are found from the files' kinds (`screen`, `camera`), else the lowest video track is the screen and the next one the camera; `screen_track` and `camera_track` override. It sends one `set_layout` per part over the range, the same edit the editor makes. If the camera's track is under the screen's, the answer has a `warning`, because the screen would hide the camera.",
       parameters: [PROJECT_PARAM],
       requestBody: { required: true, content: { "application/json": { schema: ref("ApplyLayout") } } },
       responses: { "200": json(ref("AppliedLayout"), "The edit"), ...AUTH_ERRORS, ...CONFLICT("The head moved (`stale_head`): read the project again.") },

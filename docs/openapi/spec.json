@@ -3238,7 +3238,7 @@
           "Layouts"
         ],
         "summary": "Apply a layout preset",
-        "description": "Lay out the screen and the camera with a preset, as one revision with Undo. Leave out `from` and `to` for the whole video. The screen and camera tracks are found from the files' kinds (`screen`, `camera`), else the lowest video track is the screen and the next one the camera; `screen_track` and `camera_track` override. It sends one `set_layout` per part over the range, the same edit the editor makes.",
+        "description": "Lay out the screen and the camera with a preset, as one revision with Undo. Leave out `from` and `to` for the whole video. The screen and camera tracks are found from the files' kinds (`screen`, `camera`), else the lowest video track is the screen and the next one the camera; `screen_track` and `camera_track` override. It sends one `set_layout` per part over the range, the same edit the editor makes. If the camera's track is under the screen's, the answer has a `warning`, because the screen would hide the camera.",
         "parameters": [
           {
             "name": "project",
@@ -5019,6 +5019,21 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
+          "layout": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": ""
+              },
+              "name": {
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": "The preset applied."
+          },
           "applied": {
             "type": "array",
             "items": {
@@ -5038,9 +5053,13 @@
                 }
               }
             }
+          },
+          "warning": {
+            "type": "string",
+            "description": "Present when the camera's track is under the screen's. Tracks draw bottom to top, so the screen hides the camera wherever it covers it: keep the camera on a higher track."
           }
         },
-        "description": "The edit (like POST /projects/{project}/edits answers) plus which track got which part."
+        "description": "The edit (like POST /projects/{project}/edits answers) plus the preset, which track got which part, and a warning when the camera would be hidden."
       },
       "ApplyLayout": {
         "type": "object",

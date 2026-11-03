@@ -28,7 +28,7 @@ curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/layout \
   -d '{"preset": "circle_corner", "from": "12.5", "to": 40}'
 ```
 
-Leave out `from` and `to` to lay out the whole video. The answer is the edit (like [`POST /projects/{project}/edits`](/guides/editing#send-an-edit) answers) plus `applied`, which track got which part.
+Leave out `from` and `to` to lay out the whole video. The answer is the edit (like [`POST /projects/{project}/edits`](/guides/editing#send-an-edit) answers) plus `layout` (the preset) and `applied`, which track got which part. Tracks draw bottom to top, so if the camera's track is under the screen's, the answer also has a `warning`: the screen hides the camera wherever it covers it. Keep the camera on a higher track, for example the screen on `v1` and the camera on `v2`.
 
 Which track is the screen and which the camera? From the files' kinds in the [shot list](/guides/shot-list) (`screen`, `camera`); otherwise the lowest video track is the screen and the next one the camera. Send `screen_track` and `camera_track` to choose. Send `expected_head` to make sure nobody edited first.
 
