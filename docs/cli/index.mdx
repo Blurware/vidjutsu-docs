@@ -17,7 +17,7 @@ Or a standalone binary for macOS and Linux (no Node needed), installed to `~/.lo
 curl -fsSL https://vidjutsu.ai/install.sh | sh
 ```
 
-Check it with `vidjutsu --version`. This page covers version 2.2.0, which adds the shot list, history and undo, layouts, Studio Sound and live updates. Update older installs with `npm i -g vidjutsu@latest`.
+Check it with `vidjutsu --version`. This page covers version 2.2.0, which adds the shot list, history and undo, layouts, Studio Sound, live updates, captions, frame and check, and importing from Descript. Update older installs with `npm i -g vidjutsu@latest`.
 
 ## Sign in
 
@@ -94,6 +94,7 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | --- | --- |
 | `vidjutsu shot-list <project>` | The [shot list](/guides/shot-list): scenes, shots and the files filed under each. |
 | `vidjutsu shot-list edit <project> <ops.json \| -> [--expected-revision <n>]` | Apply shot list operations. Without `--expected-revision` it uses the current one. |
+| `vidjutsu shot-list import <project> <episode.json \| -> [--replace]` | Bring an [episode plan](/guides/import-descript#bring-in-an-episode-plan) in as the shot list. |
 
 ### Layouts and sound
 
@@ -104,6 +105,14 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | `vidjutsu layouts delete <layout_id>` | Delete a saved preset. |
 | `vidjutsu layout <project> <preset> [--from <time>] [--to <time>]` | Lay out the screen and camera with a preset, over a range or the whole video. |
 | `vidjutsu studio-sound <project> [--media <id,id>] [--no-wait]` | Turn on [Studio Sound](/guides/studio-sound) and wait for it. |
+
+### Look and check
+
+| Command | |
+| --- | --- |
+| `vidjutsu frame <project> <time...> [--height 360\|720\|1080] [--revision <r>] [--no-wait]` | [Stills of the cut](/guides/look-and-check) at timeline times. Waits and prints each still's link. |
+| `vidjutsu check <project> [--sections <file.json>] [--revision <r>] [--no-wait]` | [Measure the cut](/guides/look-and-check#check-the-cut): gaps, black, silence, loudness and gains. |
+| `vidjutsu import <project> <export.fcpxml\|.edl> --files <ingested.json> [--format fcpxml\|edl]` | Open a [Descript export](/guides/import-descript) as a new project. |
 
 ### Working together
 

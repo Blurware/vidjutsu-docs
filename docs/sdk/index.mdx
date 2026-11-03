@@ -61,9 +61,11 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | `edit(project, operations, {expected_head?, summary?, branch?, idempotency_key?})` | [Edit](/guides/editing) a timeline. |
 | `timelineWords(project, {revision?, pause?})` | The words and pauses on the edited timeline. |
 | `history(project, {limit?, before?})`, `undo(project, revision, {change?, expected_head?})`, `restore(project, revision, {expected_head?})` | [Undo and history](/guides/agents#undo-and-history). |
-| `shotList(project)`, `shotListEdit(project, expectedRevision, operations)`, `files(project)`, `searchWords(project, words, {limit?})` | The [shot list](/guides/shot-list), the project's files and word search. |
+| `shotList(project)`, `shotListEdit(project, expectedRevision, operations)`, `shotListImport(project, expectedRevision, episode, {replace?})`, `files(project)`, `searchWords(project, words, {limit?})` | The [shot list](/guides/shot-list), [episode plans](/guides/import-descript#bring-in-an-episode-plan), the project's files and word search. |
 | `layouts()`, `saveLayout({name, screen, camera})`, `deleteLayout(layoutId)`, `applyLayout(project, preset, {from?, to?})` | [Screen and camera layouts](/guides/layouts). |
 | `studioSound(project, {media?})`, `level(project, body)` | [Studio Sound](/guides/studio-sound) and [leveling](/guides/audio). |
+| `frame(project, times, {height?, revision?})`, `check(project, {sections?, revision?})` | [Look at and check a cut](/guides/look-and-check). Both start jobs; read `output` when they succeed. |
+| `importTimeline({project, timeline, files, format?})` | Open a [Descript export](/guides/import-descript) as a new project. |
 | `events(project, {after?, limit?})`, `stream(project, {lastEventId?, signal?})` | [Live updates](/guides/live-updates): notices as JSON, or the live stream as an async iterator. |
 | `setPresence(project, {selection?, playhead?})`, `workingOn(project, {text, clips?, range?, scene?})` | Say where you are and what you're doing. |
 | `comments(project)`, `addComment(project, body)`, `resolveComment(project, commentId, resolved?)`, `deleteComment(project, commentId)` | Comments. |

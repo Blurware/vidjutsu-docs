@@ -39,7 +39,7 @@ The CLI and SDK send the version they were built for. In the SDK, pass `apiVersi
 - **JSON in, JSON out**, with snake_case fields. Send `Content-Type: application/json`. The one exception is `POST /media`, which also takes up to 4 MB of raw bytes as `application/octet-stream`.
 - **Idempotency.** Send an `Idempotency-Key` header on every write. A retry with the same key returns the first result instead of doing the work twice. For edits, also send `expected_head`.
 - **Times** in timelines are exact: whole seconds, decimal strings (`"12.5"`) or fractions. See [Times](/guides/editing#times).
-- **Renders are background jobs**, and so are previews, transcripts and Studio Sound. Starting one answers with a job; poll `GET /jobs/{job_id}`, or follow the project's [live stream](/guides/live-updates).
+- **Renders are background jobs**, and so are previews, transcripts, Studio Sound, frame and check. Starting one answers with a job; poll `GET /jobs/{job_id}`, or follow the project's [live stream](/guides/live-updates).
 - **Who is acting.** Send `VidJutsu-Client: <name>` (for example `Claude Code`) and history, Activity and change notices name you that way. Without it, you're named by your API key's name. It's display only and grants nothing.
 - **ETags.** `GET /projects/{project}` and `GET /projects/{project}/head` send an `ETag`. Send it back as `If-None-Match` and an unchanged project answers 304 with no body.
 - **Errors** have a stable `code`, a `message`, and fields that tell you how to fix them. See [Errors](/errors).

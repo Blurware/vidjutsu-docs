@@ -50,6 +50,9 @@
       "name": "Audio"
     },
     {
+      "name": "Look and check"
+    },
+    {
       "name": "Live updates"
     },
     {
@@ -624,6 +627,81 @@
         ]
       }
     },
+    "/imports": {
+      "post": {
+        "operationId": "import_timeline",
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Import a Descript timeline",
+        "description": "Open a Descript timeline export (FCPXML or EDL) as a new project, at once. An export names files, not media, so ingest every file it names first and pass each ingest result in `files`. FCPXML brings picture and sound layer by layer, each picture full frame; EDL brings sound only, at exact sample times with volumes and fades. Captions and markers are skipped and counted in `skipped`. Anything that would change the picture or timing (transforms, effects, retiming, titles, transitions) is refused with a 400 naming it, never approximated. The request can be up to 4 MB. Free. See [Import from Descript](https://docs.vidjutsu.ai/guides/import-descript).",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Makes a write safe to retry: the same key returns the first result instead of doing the work twice. Up to 128 printable characters.",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportTimeline"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The new project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Imported"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The export uses something that can't be brought over exactly, or names a file missing from `files`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/jobs/{job_id}": {
       "get": {
         "operationId": "render_status",
@@ -631,7 +709,7 @@
           "Renders"
         ],
         "summary": "Get a render job",
-        "description": "A job's state and progress: a render, preview, transcript or Studio Sound job. Once a render has succeeded, `output.url` is a fresh 7-day download link on every read.",
+        "description": "A job's state and progress: a render, preview, transcript, Studio Sound, frame or check job. Once a render has succeeded, `output.url` is a fresh 7-day download link on every read; a finished frame job has its stills in `output.frames`, and a check its measurements in `output`.",
         "parameters": [
           {
             "description": "A render job id (`rj_` and 32 hex digits).",
@@ -2190,6 +2268,120 @@
         }
       }
     },
+    "/projects/{project}/checks": {
+      "post": {
+        "operationId": "check",
+        "tags": [
+          "Look and check"
+        ],
+        "summary": "Check the cut",
+        "description": "Measure the cut before anyone watches it: gaps, stretches with no sound, black picture, silence, the loudness of the mix and of each section, and each audio clip's gain. Measured values only, never a score. Answers 202 with a job; when it succeeds, its `output` holds the measurements. Billed by the box time it uses, at $0.03 per vCPU-minute by the second. See [Look at and check a cut](https://docs.vidjutsu.ai/guides/look-and-check).",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The project name."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Makes a write safe to retry: the same key returns the first result instead of doing the work twice. Up to 128 printable characters.",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "The job (kind `check`)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many renders at once, or too many requests. Retry after `retry_after_seconds`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Any other error: 400 invalid_request, 404 not_found, 409 conflict, 413 payload_too_large, 502 upstream_error, 503 service_unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/projects/{project}/comments": {
       "get": {
         "operationId": "comments",
@@ -2693,6 +2885,120 @@
           },
           "401": {
             "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project}/frames": {
+      "post": {
+        "operationId": "frame",
+        "tags": [
+          "Look and check"
+        ],
+        "summary": "Get stills of the cut",
+        "description": "Stills of the timeline at the times you give, drawn by the renderer itself, so they show exactly what a render shows: every layer, its place and shape, fades and glides, and black in gaps. Each still is the output frame (30 fps) whose span holds the time, so `t - 1/30` and `t` are the frames either side of a cut at `t`. Answers 202 with a job; when it succeeds, `output.frames` has one still per time. Billed by the box time it uses, at $0.03 per vCPU-minute by the second, with no fee per frame. See [Look at and check a cut](https://docs.vidjutsu.ai/guides/look-and-check).",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The project name."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Makes a write safe to retry: the same key returns the first result instead of doing the work twice. Up to 128 printable characters.",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrameRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "The job (kind `frames`)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many renders at once, or too many requests. Retry after `retry_after_seconds`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Any other error: 400 invalid_request, 404 not_found, 409 conflict, 413 payload_too_large, 502 upstream_error, 503 service_unavailable.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3555,6 +3861,80 @@
           },
           "409": {
             "description": "Someone changed the shot list first (`stale_revision`): read it again and redo your edit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project}/shot-list/import": {
+      "post": {
+        "operationId": "shot_list_import",
+        "tags": [
+          "Shot list"
+        ],
+        "summary": "Import an episode plan",
+        "description": "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order: talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The project name."
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShotListImport"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The shot list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShotList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Someone changed the shot list first (`stale_revision`): read it again and import again.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4763,6 +5143,111 @@
           }
         }
       },
+      "CheckReport": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "gaps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Each track's stretches with no clip, and `no_sound` where no audio plays."
+          },
+          "black": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Runs of black picture, as rendered."
+          },
+          "silence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Stretches where the mix is below -50 dBFS for 0.5 s or more."
+          },
+          "mix": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "integrated_lufs": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "true_peak_dbtp": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "description": "Loudness of the whole mix."
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Each section's name, range and loudness (`integrated_lufs`, `true_peak_dbtp`)."
+          },
+          "gains": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Each audio clip's `gain` and `gain_db`."
+          }
+        },
+        "description": "A check job's measurements. Measured values only, never a score."
+      },
+      "CheckRequest": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "sections": {
+            "type": "array",
+            "maxItems": 200,
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": ""
+                },
+                "from": {
+                  "$ref": "#/components/schemas/Time"
+                },
+                "to": {
+                  "$ref": "#/components/schemas/Time"
+                }
+              },
+              "required": [
+                "from",
+                "to"
+              ]
+            },
+            "description": "Stretches to measure on their own, for example one per scene. Default: every 30 seconds."
+          },
+          "branch": {
+            "type": "string",
+            "description": "Default `main`."
+          },
+          "revision": {
+            "type": "string",
+            "description": "A revision to check instead of the head."
+          }
+        }
+      },
       "CheckoutRequest": {
         "type": "object",
         "properties": {
@@ -5142,6 +5627,93 @@
           }
         }
       },
+      "FrameOutput": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "frames": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "time": {
+                  "$ref": "#/components/schemas/Time"
+                },
+                "frame": {
+                  "type": "integer",
+                  "description": "The output frame (30 fps) whose span holds the time."
+                },
+                "frame_time": {
+                  "type": "string",
+                  "description": "That frame's start, as an exact fraction."
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "hash": {
+                  "type": "string",
+                  "description": "The still's media hash."
+                },
+                "bytes": {
+                  "type": "integer"
+                },
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "content_type": {
+                  "type": "string",
+                  "description": "`image/jpeg`."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "A fresh one-day link on every read."
+                }
+              }
+            },
+            "description": "One still per time, in the order asked."
+          }
+        },
+        "description": "A frame job's stills."
+      },
+      "FrameRequest": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "times": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 24,
+            "items": {
+              "$ref": "#/components/schemas/Time"
+            },
+            "description": "1 to 24 timeline times."
+          },
+          "height": {
+            "type": "integer",
+            "enum": [
+              360,
+              720,
+              1080
+            ],
+            "description": "Still height. Default 720."
+          },
+          "branch": {
+            "type": "string",
+            "description": "Default `main`."
+          },
+          "revision": {
+            "type": "string",
+            "description": "A revision to look at instead of the head."
+          }
+        },
+        "required": [
+          "times"
+        ]
+      },
       "Head": {
         "additionalProperties": false,
         "properties": {
@@ -5323,6 +5895,94 @@
           }
         }
       },
+      "ImportTimeline": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "The new project's name."
+          },
+          "timeline": {
+            "type": "string",
+            "description": "The export's whole text."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "fcpxml",
+              "edl"
+            ],
+            "description": "Default: told from the text."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The file name the export uses."
+                },
+                "media": {
+                  "type": "string",
+                  "description": "Its media hash, from ingest."
+                },
+                "audio": {
+                  "type": "string",
+                  "description": "Its audio media hash, from ingest."
+                }
+              }
+            },
+            "description": "An ingest result for every file the export names. Clips are matched by file name."
+          }
+        },
+        "required": [
+          "project",
+          "timeline",
+          "files"
+        ]
+      },
+      "Imported": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": ""
+          },
+          "revision": {
+            "type": "string",
+            "description": "The new project's first revision."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "fcpxml",
+              "edl"
+            ]
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "clips": {
+            "type": "integer"
+          },
+          "tracks": {
+            "type": "integer"
+          },
+          "skipped": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "What was left out and how many, such as captions and markers."
+          },
+          "trimmed": {
+            "description": "Clips cut to the length of their file."
+          }
+        },
+        "description": "The new project plus what was imported."
+      },
       "IngestUrl": {
         "additionalProperties": false,
         "description": "An https link to add to your library.",
@@ -5469,7 +6129,9 @@
               "render",
               "preview",
               "transcript",
-              "studio_sound"
+              "studio_sound",
+              "frames",
+              "check"
             ]
           },
           "media": {
@@ -5510,10 +6172,16 @@
                 "$ref": "#/components/schemas/Preview"
               },
               {
+                "$ref": "#/components/schemas/FrameOutput"
+              },
+              {
+                "$ref": "#/components/schemas/CheckReport"
+              },
+              {
                 "type": "null"
               }
             ],
-            "description": "The rendered file, or the preview, once succeeded. A transcript's words are read from its route."
+            "description": "The rendered file, the preview, a frame job's stills or a check's measurements, once succeeded. A transcript's words are read from its route."
           },
           "progress": {
             "additionalProperties": false,
@@ -6967,6 +7635,29 @@
         "required": [
           "expected_revision",
           "operations"
+        ]
+      },
+      "ShotListImport": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "expected_revision": {
+            "type": "integer",
+            "description": "The shot list revision you read."
+          },
+          "episode": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The whole episode plan (`episode.json`, `schemaVersion` 2)."
+          },
+          "replace": {
+            "type": "boolean",
+            "description": "Remove every scene first (their files stay in the project). Default false: scenes go after the last one."
+          }
+        },
+        "required": [
+          "expected_revision",
+          "episode"
         ]
       },
       "SignInStart": {

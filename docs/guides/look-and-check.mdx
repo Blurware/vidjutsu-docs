@@ -1,0 +1,62 @@
+---
+title: "Look at and check a cut"
+description: "Stills of the cut exactly as the render draws them, and measurements of gaps, black, silence and loudness, so an agent can check its own work."
+---
+
+An agent that edits a cut should be able to see it and hear it before anyone watches. Two tools do that without a full render: **frame** draws stills of the timeline at the times you name, and **check** measures the cut. Both run as jobs on cloud machines, like renders.
+
+## Look at the cut
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/frames \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"times": ["41.9667", 42, 75.5], "height": 720}'
+# {"job_id": "rj_...", "kind": "frames", "state": "queued", ...}
+```
+
+Poll `GET /jobs/{job_id}` until it has `succeeded`. Its `output.frames` has one still per time, in the order you asked:
+
+```json
+{"frames": [
+  {"time": "41.9667", "frame": 1258, "frame_time": "1258/30", "seconds": 41.933, "url": "https://...",
+   "width": 1280, "height": 720, "content_type": "image/jpeg", "hash": "...", "bytes": 81233}
+]}
+```
+
+| Field | Default | |
+| --- | --- | --- |
+| `times` | required | 1 to 24 timeline times: seconds (`12.5`) or fractions (`"1001/30000"`). |
+| `height` | `720` | `360`, `720` or `1080`. |
+| `revision` | the head | Look at an earlier revision. |
+| `branch` | `main` | |
+
+Each still is drawn by the renderer itself, so it shows exactly what a render would: every layer in its place and shape, fades and glides, and black in gaps. A still is the output frame (30 fps) whose span holds the time, so the frames either side of a cut at `t` are `t - 1/30` and `t`. The `url` is a JPEG link that lasts a day, fresh on every read.
+
+The CLI waits and prints the stills: `vidjutsu frame launch-film 41.9667 42`. The SDK: `frame(project, times, {height})`, then `waitForJob(job_id)`. MCP: `frame`.
+
+## Check the cut
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/checks \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"sections": [{"name": "Intro", "from": 0, "to": 30}, {"name": "Demo", "from": 30, "to": 118.4}]}'
+```
+
+A check renders the revision small and reports what it measured. The job's `output` has:
+
+| Field | What it measures |
+| --- | --- |
+| `gaps` | Each track's stretches with no clip, and `no_sound` where no audio plays at all. |
+| `black` | Runs of black picture, as rendered. |
+| `silence` | Stretches where the mix stays below -50 dBFS for 0.5 seconds or more. |
+| `mix` | The whole mix's loudness: `integrated_lufs` and `true_peak_dbtp`. |
+| `sections` | The same loudness for each section. |
+| `gains` | Each audio clip's `gain` and `gain_db`. |
+
+These are measured values, never a score, so your agent decides what counts as a problem. Send up to 200 `sections`, for example one per scene of the [shot list](/guides/shot-list); without them, the cut is measured in 30-second sections. To even out loudness after a check, [level](/guides/audio#level-clips) the audio tracks.
+
+The CLI: `vidjutsu check launch-film --sections sections.json`. The SDK: `check(project, {sections})`. MCP: `check`.
+
+## Price
+
+Both are billed like every job: by the box time they use, at $0.03 per vCPU-minute, by the second, with no minimum and no fee per frame. See [Pricing](/pricing).

@@ -34,8 +34,10 @@
             "pages": [
               "guides/uploads",
               "guides/editing",
+              "guides/look-and-check",
               "guides/rendering",
               "guides/shot-list",
+              "guides/import-descript",
               "guides/agents",
               "guides/live-updates",
               "guides/layouts",
@@ -128,6 +130,7 @@
             "pages": [
               "GET /projects",
               "POST /projects",
+              "POST /imports",
               "GET /projects/{project}",
               "GET /projects/{project}/head",
               "POST /projects/{project}/edits",
@@ -147,6 +150,7 @@
             "pages": [
               "GET /projects/{project}/shot-list",
               "POST /projects/{project}/shot-list/edits",
+              "POST /projects/{project}/shot-list/import",
               "GET /projects/{project}/files",
               "GET /projects/{project}/words"
             ]
@@ -165,6 +169,13 @@
             "pages": [
               "POST /projects/{project}/studio-sound",
               "POST /projects/{project}/level"
+            ]
+          },
+          {
+            "group": "Look and check",
+            "pages": [
+              "POST /projects/{project}/frames",
+              "POST /projects/{project}/checks"
             ]
           },
           {

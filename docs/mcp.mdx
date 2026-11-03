@@ -58,23 +58,27 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 | `make_transcript`, `media_transcript` | Make and read a file's transcript. |
 | `list_projects` | Your projects, most recently changed first. |
 | `init` | Create a project (`{project}`). |
+| `import_timeline` | Open a Descript FCPXML or EDL export as a new project ([import from Descript](/guides/import-descript)). Free. |
 | `show` | A project's timeline, and who is in it right now (`{project}`). |
 | `head` | The head revision without the timeline: a cheap check for changes. |
 | `edit` | Apply [edit operations](/guides/editing#edit-operations) (`{project, operations, expected_head, summary}`). |
 | `timeline_words` | The words and pauses on the edited timeline, ready for cuts ([cut by the script](/guides/agents#cut-by-the-script)). |
 | `history`, `undo`, `restore` | Every revision and shot list change; undo one change or a whole revision; bring back an earlier one ([undo and history](/guides/agents#undo-and-history)). |
 | `shot_list`, `shot_list_edit` | Read and change the [shot list](/guides/shot-list): scenes, shots and the files filed under them. |
+| `shot_list_import` | Bring an episode plan in as the shot list ([episode plans](/guides/import-descript#bring-in-an-episode-plan)). |
 | `files` | Every file in the project, where it is used and where it came from. |
 | `search_words` | Find spoken words in every file of the project. |
 | `layouts`, `save_layout`, `delete_layout`, `apply_layout` | [Screen and camera layouts](/guides/layouts): list, save and delete presets, and apply one over a range. |
 | `studio_sound` | Clean every voice in the project ([Studio Sound](/guides/studio-sound)). |
 | `level` | Level audio clips to a target loudness (`{project, tracks, target}`). |
+| `frame` | Stills of the cut at timeline times, exactly as the render draws them ([look at a cut](/guides/look-and-check)). |
+| `check` | Measure the cut: gaps, black, silence, loudness and gains ([check a cut](/guides/look-and-check#check-the-cut)). |
 | `working_on`, `set_presence` | Say what you're about to do, and where you are, so the person sees it in the editor. |
 | `events` | The project's change notices since a sequence number ([live updates](/guides/live-updates)). |
 | `comments`, `add_comment`, `resolve_comment`, `delete_comment` | Comments on moments and ranges of the timeline, with replies. |
 | `quote` | What a render or Studio Sound would cost, before you spend. Free. |
 | `render` | Start a render job (`{project, height}`). |
-| `render_status` | Any job (render, preview, transcript, Studio Sound); once a render has succeeded, a download link (`{job_id}`). |
+| `render_status` | Any job (render, preview, transcript, Studio Sound, frame, check); once a render has succeeded, a download link, and a frame or check job's output (`{job_id}`). |
 | `cancel_render` | Stop a render job (`{job_id}`). |
 | `account`, `usage`, `wallet`, `entitlements` | Your account, your usage, your wallet, your limits. |
 | `create_key`, `list_keys`, `revoke_key` | Manage API keys. |

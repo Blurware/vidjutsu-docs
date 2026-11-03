@@ -76,6 +76,8 @@ The CLI reads the operations from a file or stdin: `vidjutsu shot-list edit laun
 
 None of these touch the timeline. To put a take in the cut, [edit the timeline](/guides/editing) with `add_media` and `insert_clip`.
 
+Already planned the episode elsewhere? [Bring in an episode plan](/guides/import-descript#bring-in-an-episode-plan) (`episode.json`) with `POST /projects/{project}/shot-list/import`, and its groups and beats become scenes and shots.
+
 ## Record a scene or a shot
 
 In the editor, open the Shot list view and record a whole scene or a single shot. Screen and camera are recorded as **two files**, so they can be cut and laid out separately. Each take is uploaded and filed under its scene (tagged with its shot) as soon as you stop. The app never puts takes on the timeline by itself: you, or your agent, choose what goes in the cut.

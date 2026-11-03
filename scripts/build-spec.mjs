@@ -65,7 +65,7 @@ const ENGINE_ROUTES = [
   ["post", "/v3/projects/{project}/renders", "render", "Start a render", "Renders",
     "Render a project's timeline (the branch head, or a pinned revision) on parallel cloud machines. Answers 202 with a job right away; poll it until it ends. Send an `Idempotency-Key` header so a retry returns the same job. Ranges that didn't change since a previous render are reused."],
   ["get", "/v3/jobs/{job_id}", "render_status", "Get a render job", "Renders",
-    "A job's state and progress: a render, preview, transcript or Studio Sound job. Once a render has succeeded, `output.url` is a fresh 7-day download link on every read."],
+    "A job's state and progress: a render, preview, transcript, Studio Sound, frame or check job. Once a render has succeeded, `output.url` is a fresh 7-day download link on every read; a finished frame job has its stills in `output.frames`, and a check its measurements in `output`."],
   ["post", "/v3/jobs/{job_id}/cancel", "cancel_render", "Cancel a render", "Renders",
     "Stop a render job and its machines. You pay only for the output already rendered."],
 ];
@@ -466,6 +466,49 @@ const EDITOR_SCHEMAS = {
     }) },
     next: { type: ["string", "null"], description: "Pass as `before` for the next page; null on the last page." },
   }),
+  FrameRequest: obj({
+    times: { type: "array", minItems: 1, maxItems: 24, items: ref("Time"), description: "1 to 24 timeline times." },
+    height: { type: "integer", enum: [360, 720, 1080], description: "Still height. Default 720." },
+    branch: str("Default `main`."), revision: str("A revision to look at instead of the head."),
+  }, { required: ["times"] }),
+  FrameOutput: obj({
+    frames: { type: "array", items: obj({
+      time: ref("Time"), frame: { type: "integer", description: "The output frame (30 fps) whose span holds the time." },
+      frame_time: str("That frame's start, as an exact fraction."), seconds: { type: "number" },
+      hash: str("The still's media hash."), bytes: { type: "integer" }, width: { type: "integer" }, height: { type: "integer" },
+      content_type: str("`image/jpeg`."), url: str("A fresh one-day link on every read."),
+    }), description: "One still per time, in the order asked." },
+  }, { description: "A frame job's stills." }),
+  CheckRequest: obj({
+    sections: { type: "array", maxItems: 200, items: obj({ name: str(""), from: ref("Time"), to: ref("Time") }, { required: ["from", "to"] }), description: "Stretches to measure on their own, for example one per scene. Default: every 30 seconds." },
+    branch: str("Default `main`."), revision: str("A revision to check instead of the head."),
+  }),
+  CheckReport: obj({
+    gaps: { type: "array", items: { type: "object", additionalProperties: true }, description: "Each track's stretches with no clip, and `no_sound` where no audio plays." },
+    black: { type: "array", items: { type: "object", additionalProperties: true }, description: "Runs of black picture, as rendered." },
+    silence: { type: "array", items: { type: "object", additionalProperties: true }, description: "Stretches where the mix is below -50 dBFS for 0.5 s or more." },
+    mix: obj({ integrated_lufs: { type: ["number", "null"] }, true_peak_dbtp: { type: ["number", "null"] } }, { description: "Loudness of the whole mix." }),
+    sections: { type: "array", items: { type: "object", additionalProperties: true }, description: "Each section's name, range and loudness (`integrated_lufs`, `true_peak_dbtp`)." },
+    gains: { type: "array", items: { type: "object", additionalProperties: true }, description: "Each audio clip's `gain` and `gain_db`." },
+  }, { description: "A check job's measurements. Measured values only, never a score." }),
+  ImportTimeline: obj({
+    project: str("The new project's name."),
+    timeline: str("The export's whole text."),
+    format: { type: "string", enum: ["fcpxml", "edl"], description: "Default: told from the text." },
+    files: { type: "array", items: obj({ name: str("The file name the export uses."), media: str("Its media hash, from ingest."), audio: str("Its audio media hash, from ingest.") }), description: "An ingest result for every file the export names. Clips are matched by file name." },
+  }, { required: ["project", "timeline", "files"] }),
+  Imported: obj({
+    project: str(""), revision: str("The new project's first revision."),
+    format: { type: "string", enum: ["fcpxml", "edl"] }, duration_seconds: { type: "number" },
+    clips: { type: "integer" }, tracks: { type: "integer" },
+    skipped: { type: "object", additionalProperties: true, description: "What was left out and how many, such as captions and markers." },
+    trimmed: { description: "Clips cut to the length of their file." },
+  }, { description: "The new project plus what was imported." }),
+  ShotListImport: obj({
+    expected_revision: { type: "integer", description: "The shot list revision you read." },
+    episode: { type: "object", additionalProperties: true, description: "The whole episode plan (`episode.json`, `schemaVersion` 2)." },
+    replace: { type: "boolean", description: "Remove every scene first (their files stay in the project). Default false: scenes go after the last one." },
+  }, { required: ["expected_revision", "episode"] }),
   Money: obj({
     cost_micros: { type: "integer" }, cost_usd: { type: "number" },
     wallet_after_micros: { type: "integer", description: "Your balance after it (never below zero)." },
@@ -630,6 +673,42 @@ const EDITOR_PATHS = {
       parameters: [PROJECT_PARAM],
       requestBody: { required: true, content: { "application/json": { schema: ref("ApplyLayout") } } },
       responses: { "200": json(ref("AppliedLayout"), "The edit"), ...AUTH_ERRORS, ...CONFLICT("The head moved (`stale_head`): read the project again.") },
+    },
+  },
+  "/projects/{project}/frames": {
+    post: {
+      operationId: "frame", tags: ["Look and check"], summary: "Get stills of the cut",
+      description: "Stills of the timeline at the times you give, drawn by the renderer itself, so they show exactly what a render shows: every layer, its place and shape, fades and glides, and black in gaps. Each still is the output frame (30 fps) whose span holds the time, so `t - 1/30` and `t` are the frames either side of a cut at `t`. Answers 202 with a job; when it succeeds, `output.frames` has one still per time. Billed by the box time it uses, at $0.03 per vCPU-minute by the second, with no fee per frame. See [Look at and check a cut](" + DOCS + "/guides/look-and-check).",
+      parameters: [PROJECT_PARAM, IDEMPOTENCY_HEADER],
+      requestBody: { required: true, content: { "application/json": { schema: ref("FrameRequest") } } },
+      responses: { "202": json(ref("Job"), "The job (kind `frames`)"), ...ENGINE_ERRORS },
+    },
+  },
+  "/projects/{project}/checks": {
+    post: {
+      operationId: "check", tags: ["Look and check"], summary: "Check the cut",
+      description: "Measure the cut before anyone watches it: gaps, stretches with no sound, black picture, silence, the loudness of the mix and of each section, and each audio clip's gain. Measured values only, never a score. Answers 202 with a job; when it succeeds, its `output` holds the measurements. Billed by the box time it uses, at $0.03 per vCPU-minute by the second. See [Look at and check a cut](" + DOCS + "/guides/look-and-check).",
+      parameters: [PROJECT_PARAM, IDEMPOTENCY_HEADER],
+      requestBody: { required: false, content: { "application/json": { schema: ref("CheckRequest") } } },
+      responses: { "202": json(ref("Job"), "The job (kind `check`)"), ...ENGINE_ERRORS },
+    },
+  },
+  "/imports": {
+    post: {
+      operationId: "import_timeline", tags: ["Projects"], summary: "Import a Descript timeline",
+      description: "Open a Descript timeline export (FCPXML or EDL) as a new project, at once. An export names files, not media, so ingest every file it names first and pass each ingest result in `files`. FCPXML brings picture and sound layer by layer, each picture full frame; EDL brings sound only, at exact sample times with volumes and fades. Captions and markers are skipped and counted in `skipped`. Anything that would change the picture or timing (transforms, effects, retiming, titles, transitions) is refused with a 400 naming it, never approximated. The request can be up to 4 MB. Free. See [Import from Descript](" + DOCS + "/guides/import-descript).",
+      parameters: [IDEMPOTENCY_HEADER],
+      requestBody: { required: true, content: { "application/json": { schema: ref("ImportTimeline") } } },
+      responses: { "201": json(ref("Imported"), "The new project"), ...AUTH_ERRORS, "400": errorResponse("The export uses something that can't be brought over exactly, or names a file missing from `files`.") },
+    },
+  },
+  "/projects/{project}/shot-list/import": {
+    post: {
+      operationId: "shot_list_import", tags: ["Shot list"], summary: "Import an episode plan",
+      description: "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order: talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
+      parameters: [PROJECT_PARAM],
+      requestBody: { required: true, content: { "application/json": { schema: ref("ShotListImport") } } },
+      responses: { "200": json(ref("ShotList"), "The shot list"), ...AUTH_ERRORS, ...CONFLICT("Someone changed the shot list first (`stale_revision`): read it again and import again.") },
     },
   },
   "/projects/{project}/quote": {
@@ -802,6 +881,12 @@ export function buildSpec(engine) {
   }
   for (const [path, text] of Object.entries(SCHEMA_TEXT)) setText(schemas, path, text);
   Object.assign(schemas, CLOUD_SCHEMAS, EDITOR_SCHEMAS);
+  // The cloud's frame and check jobs share the job record with renders.
+  const job = schemas.Job?.properties;
+  if (!job?.kind?.enum || !job.output?.anyOf) throw new Error("Job schema changed: update the frame/check patch");
+  for (const kind of ["frames", "check"]) if (!job.kind.enum.includes(kind)) job.kind.enum.push(kind);
+  job.output.anyOf.splice(job.output.anyOf.length - 1, 0, ref("FrameOutput"), ref("CheckReport"));
+  job.output.description = "The rendered file, the preview, a frame job's stills or a check's measurements, once succeeded. A transcript's words are read from its route.";
 
   const paths = {};
   for (const [method, path, operationId, summary, tag, description] of ENGINE_ROUTES) {
@@ -846,7 +931,7 @@ export function buildSpec(engine) {
     },
     servers: [{ url: "https://api.vidjutsu.ai" }],
     security: [{ bearer: [] }],
-    tags: ["Sign-up and sign-in", "Account", "API keys", "Billing", "Media", "Uploads", "Projects", "History", "Shot list", "Layouts", "Audio", "Live updates", "Comments", "Renders", "Status"].map((name) => ({ name })),
+    tags: ["Sign-up and sign-in", "Account", "API keys", "Billing", "Media", "Uploads", "Projects", "History", "Shot list", "Layouts", "Audio", "Look and check", "Live updates", "Comments", "Renders", "Status"].map((name) => ({ name })),
     paths: sorted,
     components: {
       securitySchemes: {
