@@ -10,18 +10,18 @@ There are no web pages to sign up on. Two JSON calls sign you up the first time 
 <Steps>
   <Step title="Ask for a code">
     ```sh
-    curl -s -X POST https://api.vidjutsu.ai/v3/auth/email \
+    curl -s -X POST https://api.vidjutsu.ai/auth/email \
       -H 'Content-Type: application/json' \
       -d '{"email": "you@example.com"}'
     ```
     ```json
     {"attempt": "eyJ...", "expires_at": "2026-11-03T00:10:00.000Z",
-     "next": "POST /v3/auth/verify with {attempt, code} from the email."}
+     "next": "POST /auth/verify with {attempt, code} from the email."}
     ```
   </Step>
   <Step title="Verify it">
     ```sh
-    curl -s -X POST https://api.vidjutsu.ai/v3/auth/verify \
+    curl -s -X POST https://api.vidjutsu.ai/auth/verify \
       -H 'Content-Type: application/json' \
       -d '{"attempt": "eyJ...", "code": "123456", "name": "my laptop"}'
     ```
@@ -44,7 +44,7 @@ The CLI runs the same two calls: `vidjutsu login`.
 Send it on every call:
 
 ```sh
-curl -s https://api.vidjutsu.ai/v3/account -H "Authorization: Bearer vj_live_..."
+curl -s https://api.vidjutsu.ai/account -H "Authorization: Bearer vj_live_..."
 ```
 
 The CLI and SDK read it from `VIDJUTSU_API_KEY`. A missing or invalid key is a 401 `unauthenticated`.
@@ -53,9 +53,9 @@ The CLI and SDK read it from `VIDJUTSU_API_KEY`. A missing or invalid key is a 4
 
 | Call | CLI | |
 | --- | --- | --- |
-| `POST /v3/keys {"name": "ci"}` | `vidjutsu keys create ci` | A new key. Its `secret` is shown only once. |
-| `GET /v3/keys` | `vidjutsu keys` | Your keys with their `prefix`, never their secrets. |
-| `DELETE /v3/keys/{key_id}` | `vidjutsu keys revoke <key_id>` | The key stops working right away. |
+| `POST /keys {"name": "ci"}` | `vidjutsu keys create ci` | A new key. Its `secret` is shown only once. |
+| `GET /keys` | `vidjutsu keys` | Your keys with their `prefix`, never their secrets. |
+| `DELETE /keys/{key_id}` | `vidjutsu keys revoke <key_id>` | The key stops working right away. |
 
 Give each machine or agent its own key, so you can revoke one without touching the others. If a key leaks, revoke it and create a new one.
 

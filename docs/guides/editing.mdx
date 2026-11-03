@@ -8,7 +8,7 @@ A **project** is a timeline with history. You change it only by sending edit ope
 ## Create a project
 
 ```sh
-curl -s -X POST https://api.vidjutsu.ai/v3/projects \
+curl -s -X POST https://api.vidjutsu.ai/projects \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{"project": "launch-film"}'
 # {"project": "launch-film", "branch": "main", "revision": "..."}
@@ -16,12 +16,12 @@ curl -s -X POST https://api.vidjutsu.ai/v3/projects \
 
 A new project is empty, with one video track `v1` and one audio track `a1`. Project names use letters, digits, `-` and `_`. You can also send a full `manifest` to start from an existing timeline.
 
-`GET /v3/projects/{project}` (`vidjutsu show <project>`) returns the current timeline: `revision`, `duration_seconds` and the `manifest` with its media, tracks and clips. Add `?revision=` to read an older one.
+`GET /projects/{project}` (`vidjutsu show <project>`) returns the current timeline: `revision`, `duration_seconds` and the `manifest` with its media, tracks and clips. Add `?revision=` to read an older one.
 
 ## Send an edit
 
 ```sh
-curl -s -X POST https://api.vidjutsu.ai/v3/projects/launch-film/edits \
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/edits \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{"operations": [ ... ], "expected_head": "<the revision you read>"}'
 # {"project": "launch-film", "branch": "main", "parent": "...", "revision": "...", "duration_seconds": 32}

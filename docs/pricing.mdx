@@ -28,7 +28,7 @@ Render minutes are minutes of rendered output. Uploading is free; what you store
 | 4K output | Yes |
 | Support | Email |
 
-`GET /v3/entitlements` (`vidjutsu entitlements`) returns your plan's limits, and `GET /v3/usage` (`vidjutsu usage`) shows this period's usage and what's left of your included minutes and storage.
+`GET /entitlements` (`vidjutsu entitlements`) returns your plan's limits, and `GET /usage` (`vidjutsu usage`) shows this period's usage and what's left of your included minutes and storage.
 
 ## Enterprise
 
@@ -40,8 +40,8 @@ There is no billing UI of ours: every billing step is a Stripe-hosted page you g
 
 | Call | CLI | |
 | --- | --- | --- |
-| `POST /v3/billing/checkout` | `vidjutsu billing checkout` | A Stripe Checkout link that starts Pro. |
-| `POST /v3/billing/portal` | `vidjutsu billing portal` | A Stripe billing portal link: update your card, see invoices, cancel. |
+| `POST /billing/checkout` | `vidjutsu billing checkout` | A Stripe Checkout link that starts Pro. |
+| `POST /billing/portal` | `vidjutsu billing portal` | A Stripe billing portal link: update your card, see invoices, cancel. |
 
 Both take optional `https` redirect URLs (`success_url` and `cancel_url` for checkout, `return_url` for the portal). Your account turns `active` as soon as checkout completes.
 
@@ -52,7 +52,7 @@ Canceling in the portal ends your plan at the end of the billing period.
 Every billing error tells you how to fix it:
 
 - **No plan:** work that needs a plan returns 402 `payment_required` with `reason: "no_plan"` and a `checkout_url`.
-- **Failed payment:** new work stops at once with 402 `payment_required`, `reason: "payment_failed"` and a `portal_url` to update your card. Reads keep working so you can get your media out. The error and `GET /v3/account` carry `media_deletes_at`: if the payment isn't made, stored media is deleted 30 days after the failed payment.
+- **Failed payment:** new work stops at once with 402 `payment_required`, `reason: "payment_failed"` and a `portal_url` to update your card. Reads keep working so you can get your media out. The error and `GET /account` carry `media_deletes_at`: if the payment isn't made, stored media is deleted 30 days after the failed payment.
 - **A plan limit:** 403 `plan_limit` with a `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`) and a `contact_url`.
 - **Too many renders at once:** 429 `rate_limited` with `retry_after_seconds`.
 

@@ -8,9 +8,9 @@ A render turns a project's timeline into an MP4 on parallel cloud machines. It r
 ## Start a render
 
 ```sh
-curl -s -X POST https://api.vidjutsu.ai/v3/projects/launch-film/renders \
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/renders \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
-  -H 'Idempotency-Key: launch-film-v3' \
+  -H 'Idempotency-Key: launch-film-cut-3' \
   -d '{"height": 1080}'
 ```
 
@@ -45,7 +45,7 @@ The revision is pinned when the job starts, so edits you make while it renders d
 ## Poll the job
 
 ```sh
-curl -s https://api.vidjutsu.ai/v3/jobs/rj_3f9c... -H "Authorization: Bearer $KEY"
+curl -s https://api.vidjutsu.ai/jobs/rj_3f9c... -H "Authorization: Bearer $KEY"
 ```
 
 `state` is `queued`, `running`, `succeeded`, `failed` or `canceled`. `progress` counts the render's pieces (`done` of `total`). Poll every few seconds.
@@ -58,11 +58,11 @@ When it succeeds:
  "usage": {"final": true, "output_seconds": 32, "height": 1080, ...}, ...}
 ```
 
-`output.url` is a download link that works for 7 days; every read of the job gives a fresh one. The file stays in your library: `GET /v3/media/{hash}/url` makes a new link any time. A `failed` job has an `error` message.
+`output.url` is a download link that works for 7 days; every read of the job gives a fresh one. The file stays in your library: `GET /media/{hash}/url` makes a new link any time. A `failed` job has an `error` message.
 
 ## Cancel
 
-`POST /v3/jobs/{job_id}/cancel` stops the render and its machines; the job ends `canceled`. You pay only for what was already rendered.
+`POST /jobs/{job_id}/cancel` stops the render and its machines; the job ends `canceled`. You pay only for what was already rendered.
 
 ## Re-rendering after an edit
 
@@ -79,7 +79,7 @@ vidjutsu cancel rj_3f9c...
 ```
 
 ```ts
-const job = await api.render("launch-film", { height: 2160 }, "launch-film-v3");
+const job = await api.render("launch-film", { height: 2160 }, "launch-film-cut-3");
 const done = await api.waitForRender(job.job_id);
 console.log(done.output); // {hash, bytes, url, expires_at}
 ```

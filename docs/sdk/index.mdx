@@ -36,8 +36,11 @@ new VidJutsu({
   apiKey: "vj_live_...",               // or an OAuth access token
   baseUrl: "https://api.vidjutsu.ai",  // default
   fetch: customFetch,                  // default: global fetch
+  apiVersion: "2026-11-03",            // default: the version this SDK was built for
 });
 ```
+
+Every request carries the `VidJutsu-Version` header. See [Versioning](/api-reference/introduction#versioning).
 
 ## Methods
 

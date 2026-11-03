@@ -29,8 +29,8 @@ You keep all rights to your content. You grant VidJutsu a limited license to sto
 
 ## 4. API Use
 
-- **Authentication.** Keep your API keys confidential. You're responsible for all requests made with your keys. Revoke a key (`DELETE /v3/keys/{key_id}`) if it may be compromised.
-- **Limits.** Your plan's limits are listed on the [pricing page](/pricing) and returned by `GET /v3/entitlements`. Requests over a limit are refused (HTTP 403 or 429). Attempting to get around limits with multiple accounts or automated abuse is a termination event.
+- **Authentication.** Keep your API keys confidential. You're responsible for all requests made with your keys. Revoke a key (`DELETE /keys/{key_id}`) if it may be compromised.
+- **Limits.** Your plan's limits are listed on the [pricing page](/pricing) and returned by `GET /entitlements`. Requests over a limit are refused (HTTP 403 or 429). Attempting to get around limits with multiple accounts or automated abuse is a termination event.
 - **Acceptable use.** Do not use the service for content you don't have rights to, for illegal content, to harass or impersonate others, to attack or overload the service, or to resell access to the service as a competing hosted product.
 
 ## 5. Billing

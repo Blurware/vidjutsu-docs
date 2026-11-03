@@ -23,6 +23,7 @@ const contents = new Map(contentFiles.map((file) => [file, readFileSync(file, "u
 const forbidden = [
   [/vcore/i, "internal engine name"],
   [/\/v1\//, "old /v1 API route"],
+  [/\/v3\b/, "versioned path (the API is versioned by date, with no version in paths)"],
   [/\bclon(e|es|ing)\b/i, "old clone product"],
   [/\bscrap(e|es|ing)\b/i, "old scrape product"],
   [/\bcharacters?\b/i, "old characters product"],

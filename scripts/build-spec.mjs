@@ -16,6 +16,11 @@ import { pathToFileURL } from "node:url";
 
 const DOCS = "https://docs.vidjutsu.ai";
 
+// The API is versioned by date, like Stripe: paths carry no version, and
+// every request names one in this header. Keep in step with the gateway.
+export const API_VERSION = "2026-11-03";
+export const VERSION_HEADER = "VidJutsu-Version";
+
 // Engine routes served by the cloud, with their public names (also the MCP
 // tool names) and customer-facing text.
 const ENGINE_ROUTES = [
@@ -126,6 +131,14 @@ const IDEMPOTENCY_HEADER = {
   schema: { type: "string", maxLength: 128 },
 };
 
+const VERSION_PARAMETER = {
+  name: VERSION_HEADER,
+  in: "header",
+  required: false,
+  description: `The API version you wrote your integration against, a date. The current version is \`${API_VERSION}\`. See ${DOCS}/api-reference/introduction#versioning.`,
+  schema: { type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", example: API_VERSION },
+};
+
 const json = (schema, description) => ({ description, content: { "application/json": { schema } } });
 const ref = (name) => ({ $ref: `#/components/schemas/${name}` });
 
@@ -145,7 +158,7 @@ const CLOUD_SCHEMAS = {
     type: "object",
     required: ["attempt", "expires_at"],
     properties: {
-      attempt: { type: "string", description: "Send it back with the code to POST /v3/auth/verify." },
+      attempt: { type: "string", description: "Send it back with the code to POST /auth/verify." },
       expires_at: { type: "string", format: "date-time" },
       next: { type: "string" },
     },
@@ -154,7 +167,7 @@ const CLOUD_SCHEMAS = {
     type: "object",
     required: ["attempt", "code"],
     properties: {
-      attempt: { type: "string", description: "From POST /v3/auth/email." },
+      attempt: { type: "string", description: "From POST /auth/email." },
       code: { type: "string", description: "The code from the email." },
       name: { type: "string", maxLength: 64, description: "A name for the API key this creates." },
     },
@@ -251,14 +264,14 @@ const CLOUD_SCHEMAS = {
 };
 
 const CLOUD_PATHS = {
-  "/v3/health": {
+  "/health": {
     get: {
       operationId: "health", tags: ["Status"], summary: "Health", security: [],
       description: "Whether the API is up. No key needed.",
       responses: { "200": json(ref("Health"), "Up") },
     },
   },
-  "/v3/auth/email": {
+  "/auth/email": {
     post: {
       operationId: "sign_in_email", tags: ["Sign-up and sign-in"], summary: "Email a sign-in code", security: [],
       description: "Sign up or sign in: emails a one-time code to the address. Works the same for new and existing users. No key needed.",
@@ -266,7 +279,7 @@ const CLOUD_PATHS = {
       responses: { "200": json(ref("SignInStarted"), "Code sent"), default: errorResponse("400 invalid_request, 429 rate_limited") },
     },
   },
-  "/v3/auth/verify": {
+  "/auth/verify": {
     post: {
       operationId: "sign_in_verify", tags: ["Sign-up and sign-in"], summary: "Verify the code", security: [],
       description: "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no plan yet: open `checkout_url` to start Pro.",
@@ -274,7 +287,7 @@ const CLOUD_PATHS = {
       responses: { "201": json(ref("SignedIn"), "Signed in, with a new API key"), default: errorResponse("400 invalid_request (wrong or expired code), 429 rate_limited") },
     },
   },
-  "/v3/account": {
+  "/account": {
     get: {
       operationId: "account", tags: ["Account"], summary: "Get your account",
       description: "Your account id, status and plan.",
@@ -282,25 +295,25 @@ const CLOUD_PATHS = {
     },
     post: {
       operationId: "create_account", tags: ["Account"], summary: "Create your account",
-      description: "Create your account after signing in with OAuth. Safe to call again. Not needed after POST /v3/auth/verify, and API keys can't call it.",
+      description: "Create your account after signing in with OAuth. Safe to call again. Not needed after POST /auth/verify, and API keys can't call it.",
       responses: { "200": json(ref("Account"), "Your account"), ...AUTH_ERRORS, "403": errorResponse("Called with an API key.") },
     },
   },
-  "/v3/usage": {
+  "/usage": {
     get: {
       operationId: "usage", tags: ["Account"], summary: "Get usage",
       description: "This billing period's usage and what's left of your included allowance.",
       responses: { "200": json(ref("Usage"), "Usage"), ...AUTH_ERRORS },
     },
   },
-  "/v3/entitlements": {
+  "/entitlements": {
     get: {
       operationId: "entitlements", tags: ["Account"], summary: "Get plan limits",
       description: "Your plan's limits and features.",
       responses: { "200": json(ref("Entitlements"), "Limits"), ...AUTH_ERRORS },
     },
   },
-  "/v3/keys": {
+  "/keys": {
     get: {
       operationId: "list_keys", tags: ["API keys"], summary: "List API keys",
       description: "Your API keys, never their secrets.",
@@ -313,7 +326,7 @@ const CLOUD_PATHS = {
       responses: { "201": json(ref("CreatedKey"), "The new key, with its secret"), ...AUTH_ERRORS },
     },
   },
-  "/v3/keys/{key_id}": {
+  "/keys/{key_id}": {
     delete: {
       operationId: "revoke_key", tags: ["API keys"], summary: "Revoke an API key",
       description: "The key stops working right away.",
@@ -321,7 +334,7 @@ const CLOUD_PATHS = {
       responses: { "200": json(ref("RevokedKey"), "Revoked"), ...AUTH_ERRORS },
     },
   },
-  "/v3/billing/checkout": {
+  "/billing/checkout": {
     post: {
       operationId: "billing_checkout", tags: ["Billing"], summary: "Get a checkout link",
       description: "A Stripe Checkout link that starts the Pro plan: $25 a month plus usage, card required. Open it in a browser. 409 if you already have an active plan.",
@@ -329,7 +342,7 @@ const CLOUD_PATHS = {
       responses: { "200": json(ref("BillingLink"), "Checkout link"), ...AUTH_ERRORS, "409": errorResponse("You already have an active plan.") },
     },
   },
-  "/v3/billing/portal": {
+  "/billing/portal": {
     post: {
       operationId: "billing_portal", tags: ["Billing"], summary: "Get a billing portal link",
       description: "A Stripe billing portal link to update your card, see invoices or cancel. 409 before your first checkout.",
@@ -390,13 +403,15 @@ export function buildSpec(engine) {
     if (!source) throw new Error(`engine spec has no ${method.toUpperCase()} ${path}`);
     const op = stripRepo(clone(source));
     const parameters = (op.parameters ?? []).filter((p) => p.in !== "header");
+    parameters.push(VERSION_PARAMETER);
     if (method !== "get") parameters.push(IDEMPOTENCY_HEADER);
     const responses = Object.fromEntries(Object.entries(op.responses).filter(([status]) => status !== "default"));
     if (op.requestBody?.content?.["application/octet-stream"]) {
       op.requestBody.description = "An https link (`{url, name}`), or up to 4 MB of raw bytes (`application/octet-stream`, named by `?name=`).";
     }
-    paths[path] ??= {};
-    paths[path][method] = {
+    const publicPath = path.replace(/^\/v3(?=\/)/, "");
+    paths[publicPath] ??= {};
+    paths[publicPath][method] = {
       operationId,
       tags: [tag],
       summary,
@@ -406,7 +421,11 @@ export function buildSpec(engine) {
       responses: { ...responses, ...ENGINE_ERRORS },
     };
   }
-  for (const [path, item] of Object.entries(CLOUD_PATHS)) paths[path] = { ...(paths[path] ?? {}), ...clone(item) };
+  for (const [path, item] of Object.entries(CLOUD_PATHS)) {
+    const ops = clone(item);
+    for (const op of Object.values(ops)) op.parameters = [...(op.parameters ?? []), VERSION_PARAMETER];
+    paths[path] = { ...(paths[path] ?? {}), ...ops };
+  }
 
   const sorted = Object.fromEntries(Object.keys(paths).sort().map((key) => [key, paths[key]]));
   return {
@@ -425,7 +444,7 @@ export function buildSpec(engine) {
         bearer: {
           type: "http",
           scheme: "bearer",
-          description: "A VidJutsu API key (`vj_live_...`) from POST /v3/auth/verify or POST /v3/keys, or an OAuth access token (MCP clients).",
+          description: "A VidJutsu API key (`vj_live_...`) from POST /auth/verify or POST /keys, or an OAuth access token (MCP clients).",
         },
       },
       schemas: Object.fromEntries(Object.keys(schemas).sort().map((key) => [key, schemas[key]])),

@@ -7,9 +7,9 @@ Everything a timeline uses lives in your media library. There are three ways to 
 
 | Way | For | Call |
 | --- | --- | --- |
-| **Direct upload** | Files on your machine, up to 50 GB | `POST /v3/uploads`, then `PUT` the parts, then `POST /v3/uploads/{upload_id}/complete` |
-| **Link** | Files already online | `POST /v3/media` with `{"url": "https://...", "name": "take1.mov"}` |
-| **Inline bytes** | Small files (stills, short clips), up to 4 MB | `POST /v3/media?name=logo.png` with the bytes as `application/octet-stream` |
+| **Direct upload** | Files on your machine, up to 50 GB | `POST /uploads`, then `PUT` the parts, then `POST /uploads/{upload_id}/complete` |
+| **Link** | Files already online | `POST /media` with `{"url": "https://...", "name": "take1.mov"}` |
+| **Inline bytes** | Small files (stills, short clips), up to 4 MB | `POST /media?name=logo.png` with the bytes as `application/octet-stream` |
 
 The CLI's `vidjutsu upload <file>` and the SDK's `upload()` do a direct upload for you. `vidjutsu ingest <https-url>` adds from a link.
 
@@ -45,7 +45,7 @@ The bytes go from you to storage by presigned links, never through the API, in p
   <Step title="Start the upload">
     Send the file's name, exact length and SHA-256 (64 lowercase hex digits).
     ```sh
-    curl -s -X POST https://api.vidjutsu.ai/v3/uploads \
+    curl -s -X POST https://api.vidjutsu.ai/uploads \
       -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
       -d '{"name": "take1.mov", "bytes": 734003200, "sha256": "9f2c..."}'
     ```
@@ -65,7 +65,7 @@ The bytes go from you to storage by presigned links, never through the API, in p
   <Step title="Complete it">
     Send every part's number and ETag, in order.
     ```sh
-    curl -s -X POST https://api.vidjutsu.ai/v3/uploads/up_.../complete \
+    curl -s -X POST https://api.vidjutsu.ai/uploads/up_.../complete \
       -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
       -d '{"parts": [{"number": 1, "etag": "\"a1b2...\""}, {"number": 2, "etag": "\"c3d4...\""}]}'
     ```
@@ -73,7 +73,7 @@ The bytes go from you to storage by presigned links, never through the API, in p
   </Step>
 </Steps>
 
-`DELETE /v3/uploads/{upload_id}` abandons an upload and the parts sent so far.
+`DELETE /uploads/{upload_id}` abandons an upload and the parts sent so far.
 
 ## Adding from a link
 
@@ -81,7 +81,7 @@ The link must be `https://` to a named host: no IP addresses, `localhost` or cre
 
 ## Download links
 
-`GET /v3/media/{hash}/url?ttl=3600` returns a time-limited link to any stored file, including finished renders. `ttl` is in seconds, from 60 to 604800 (7 days); the default is one day. The CLI: `vidjutsu url <hash> --ttl 3600`.
+`GET /media/{hash}/url?ttl=3600` returns a time-limited link to any stored file, including finished renders. `ttl` is in seconds, from 60 to 604800 (7 days); the default is one day. The CLI: `vidjutsu url <hash> --ttl 3600`.
 
 ## Cost
 

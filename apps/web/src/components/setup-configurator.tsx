@@ -89,10 +89,10 @@ function setup(connection: Connection, agent: Agent) {
     description: "Two calls sign you up and return an API key. Then it's plain JSON over HTTPS.",
     steps: [
       "Ask for a sign-in code with the command below.",
-      "Send the code to POST /v3/auth/verify to get your API key and a checkout link.",
+      "Send the code to POST /auth/verify to get your API key and a checkout link.",
       "Send the key as Authorization: Bearer vj_live_... on every call.",
     ],
-    command: "curl -X POST https://api.vidjutsu.ai/v3/auth/email -H 'Content-Type: application/json' -d '{\"email\":\"you@example.com\"}'",
+    command: "curl -X POST https://api.vidjutsu.ai/auth/email -H 'Content-Type: application/json' -d '{\"email\":\"you@example.com\"}'",
     copy: "COPY COMMAND",
     note: "Agents can run sign-up on their own; you only read the code.",
     guide: "API reference ↗",

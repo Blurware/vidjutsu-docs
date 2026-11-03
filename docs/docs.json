@@ -66,77 +66,77 @@
           {
             "group": "Sign-up and sign-in",
             "pages": [
-              "POST /v3/auth/email",
-              "POST /v3/auth/verify"
+              "POST /auth/email",
+              "POST /auth/verify"
             ]
           },
           {
             "group": "Account",
             "pages": [
-              "GET /v3/account",
-              "POST /v3/account",
-              "GET /v3/usage",
-              "GET /v3/entitlements"
+              "GET /account",
+              "POST /account",
+              "GET /usage",
+              "GET /entitlements"
             ]
           },
           {
             "group": "API keys",
             "pages": [
-              "GET /v3/keys",
-              "POST /v3/keys",
-              "DELETE /v3/keys/{key_id}"
+              "GET /keys",
+              "POST /keys",
+              "DELETE /keys/{key_id}"
             ]
           },
           {
             "group": "Billing",
             "pages": [
-              "POST /v3/billing/checkout",
-              "POST /v3/billing/portal"
+              "POST /billing/checkout",
+              "POST /billing/portal"
             ]
           },
           {
             "group": "Media",
             "pages": [
-              "POST /v3/media",
-              "GET /v3/media/{hash}",
-              "GET /v3/media/{hash}/url"
+              "POST /media",
+              "GET /media/{hash}",
+              "GET /media/{hash}/url"
             ]
           },
           {
             "group": "Uploads",
             "pages": [
-              "POST /v3/uploads",
-              "POST /v3/uploads/{upload_id}/complete",
-              "DELETE /v3/uploads/{upload_id}"
+              "POST /uploads",
+              "POST /uploads/{upload_id}/complete",
+              "DELETE /uploads/{upload_id}"
             ]
           },
           {
             "group": "Projects",
             "pages": [
-              "POST /v3/projects",
-              "GET /v3/projects/{project}",
-              "POST /v3/projects/{project}/edits"
+              "POST /projects",
+              "GET /projects/{project}",
+              "POST /projects/{project}/edits"
             ]
           },
           {
             "group": "Audio",
             "pages": [
-              "POST /v3/projects/{project}/level",
-              "POST /v3/audio/clean"
+              "POST /projects/{project}/level",
+              "POST /audio/clean"
             ]
           },
           {
             "group": "Renders",
             "pages": [
-              "POST /v3/projects/{project}/renders",
-              "GET /v3/jobs/{job_id}",
-              "POST /v3/jobs/{job_id}/cancel"
+              "POST /projects/{project}/renders",
+              "GET /jobs/{job_id}",
+              "POST /jobs/{job_id}/cancel"
             ]
           },
           {
             "group": "Status",
             "pages": [
-              "GET /v3/health"
+              "GET /health"
             ]
           }
         ]

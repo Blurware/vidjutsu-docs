@@ -70,11 +70,12 @@ You need an email address and a card. There is no free plan: Pro is $25 a month 
   <Step title="Sign up">
     ```sh
     API=https://api.vidjutsu.ai
-    curl -s -X POST $API/v3/auth/email -H 'Content-Type: application/json' \
+    V='VidJutsu-Version: 2026-11-03'   # the API version, sent on every call
+    curl -s -H "$V" -X POST $API/auth/email -H 'Content-Type: application/json' \
       -d '{"email": "you@example.com"}'
-    # {"attempt": "...", "expires_at": "...", "next": "POST /v3/auth/verify ..."}
+    # {"attempt": "...", "expires_at": "...", "next": "POST /auth/verify ..."}
 
-    curl -s -X POST $API/v3/auth/verify -H 'Content-Type: application/json' \
+    curl -s -H "$V" -X POST $API/auth/verify -H 'Content-Type: application/json' \
       -d '{"attempt": "...", "code": "123456"}'
     # {"api_key": "vj_live_...", "account_id": "...", "status": "no_plan", "checkout_url": "https://checkout.stripe.com/..."}
     ```
@@ -84,14 +85,14 @@ You need an email address and a card. There is no free plan: Pro is $25 a month 
     Open `checkout_url` in a browser and pay. Then check:
     ```sh
     KEY=vj_live_...
-    curl -s $API/v3/account -H "Authorization: Bearer $KEY"
+    curl -s -H "$V" $API/account -H "Authorization: Bearer $KEY"
     # {"account_id": "...", "status": "active", ...}
     ```
   </Step>
   <Step title="Add a take">
     For a file that's already online, send its https link. For files on your machine, use a [direct upload](/guides/uploads).
     ```sh
-    curl -s -X POST $API/v3/media -H "Authorization: Bearer $KEY" \
+    curl -s -H "$V" -X POST $API/media -H "Authorization: Bearer $KEY" \
       -H 'Content-Type: application/json' \
       -d '{"url": "https://example.com/take1.mp4"}'
     # {"name": "take1.mp4", "media": {"id": "take1", ...}, "audio": {"id": "take1-audio", ...}, ...}
@@ -99,21 +100,21 @@ You need an email address and a card. There is no free plan: Pro is $25 a month 
   </Step>
   <Step title="Make a project and edit it">
     ```sh
-    curl -s -X POST $API/v3/projects -H "Authorization: Bearer $KEY" \
+    curl -s -H "$V" -X POST $API/projects -H "Authorization: Bearer $KEY" \
       -H 'Content-Type: application/json' -d '{"project": "first-cut"}'
 
-    curl -s -X POST $API/v3/projects/first-cut/edits -H "Authorization: Bearer $KEY" \
+    curl -s -H "$V" -X POST $API/projects/first-cut/edits -H "Authorization: Bearer $KEY" \
       -H 'Content-Type: application/json' -d @edit.json
     ```
     Use the `edit.json` from the CLI tab, with the `media` and `audio` objects from the previous step.
   </Step>
   <Step title="Render and download">
     ```sh
-    curl -s -X POST $API/v3/projects/first-cut/renders -H "Authorization: Bearer $KEY" \
+    curl -s -H "$V" -X POST $API/projects/first-cut/renders -H "Authorization: Bearer $KEY" \
       -H 'Content-Type: application/json' -H 'Idempotency-Key: first-cut-1' -d '{}'
     # 202 {"job_id": "rj_...", "state": "queued", ...}
 
-    curl -s $API/v3/jobs/rj_... -H "Authorization: Bearer $KEY"
+    curl -s -H "$V" $API/jobs/rj_... -H "Authorization: Bearer $KEY"
     # poll until "state": "succeeded"; then output.url is a 7-day download link
     ```
   </Step>
