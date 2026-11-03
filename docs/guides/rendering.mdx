@@ -39,6 +39,7 @@ Every field is optional.
 | `loudness` | | Normalize the final mix to this integrated loudness, in LUFS (for example `-14` for most streaming sites). |
 | `max_peak` | `-1` | True-peak ceiling for `loudness`, in dBTP. |
 | `force` | `false` | Render again even if this exact output already exists. |
+| `captions` | | Burn in [captions](/guides/captions) from the words on the timeline, for example `{"position": "bottom"}`. No extra charge. |
 
 The revision is pinned when the job starts, so edits you make while it renders don't change what it renders.
 

@@ -2298,6 +2298,135 @@
         }
       }
     },
+    "/projects/{project}/captions": {
+      "get": {
+        "operationId": "captions",
+        "tags": [
+          "Renders"
+        ],
+        "summary": "Get captions",
+        "description": "The edited timeline's captions as an SRT (default) or WebVTT file, without rendering: `file` holds the text, `name` a file name for it, and `cues` each caption with exact timeline times. These are the cues a render with `captions` burns in. They come from the words on the audio tracks, so they follow every cut. Optional `revision` or `branch`. Free. Refused (400) while a sound on the timeline has no transcript; the error names the media. See [Captions](https://docs.vidjutsu.ai/guides/captions).",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "`srt` (default) or `vtt`.",
+            "in": "query",
+            "name": "format",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CaptionFormat",
+              "default": "srt",
+              "description": "`srt` (default) or `vtt`."
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Captions"
+                }
+              }
+            },
+            "description": "Captions"
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many renders at once, or too many requests. Retry after `retry_after_seconds`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Any other error: 400 invalid_request, 404 not_found, 409 conflict, 413 payload_too_large, 502 upstream_error, 503 service_unavailable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/projects/{project}/checks": {
       "post": {
         "operationId": "check",
@@ -3553,7 +3682,7 @@
           "Renders"
         ],
         "summary": "Start a render",
-        "description": "Render a project's timeline (the branch head, or a pinned revision) on parallel cloud machines. Answers 202 with a job right away; poll it until it ends. Send an `Idempotency-Key` header so a retry returns the same job. Ranges that didn't change since a previous render are reused.",
+        "description": "Render a project's timeline (the branch head, or a pinned revision) on parallel cloud machines. Answers 202 with a job right away; poll it until it ends. Send an `Idempotency-Key` header so a retry returns the same job. Ranges that didn't change since a previous render are reused. Send `captions` to burn in captions from the words on the audio tracks; they cost nothing extra, and every sound on the timeline needs a transcript first, or the render is refused (400) before anything is charged. See [Captions](https://docs.vidjutsu.ai/guides/captions).",
         "parameters": [
           {
             "description": "Project name (letters, digits, '-', '_').",
@@ -5191,6 +5320,157 @@
             "description": "Checkout only: an open checkout session was reused."
           }
         }
+      },
+      "CaptionBackground": {
+        "enum": [
+          "solid",
+          "none"
+        ],
+        "type": "string"
+      },
+      "CaptionFormat": {
+        "enum": [
+          "srt",
+          "vtt"
+        ],
+        "type": "string"
+      },
+      "CaptionOptions": {
+        "additionalProperties": false,
+        "description": "`captions` on a render.",
+        "properties": {
+          "background": {
+            "$ref": "#/components/schemas/CaptionBackground",
+            "default": "solid",
+            "description": "`solid` (default): a dark box behind each line; `none`: white text\nwith a thin dark edge."
+          },
+          "on": {
+            "default": true,
+            "description": "Default true: sending captions turns them on.",
+            "type": "boolean"
+          },
+          "position": {
+            "$ref": "#/components/schemas/CaptionPosition",
+            "default": "bottom",
+            "description": "`bottom` (default) or `top`."
+          },
+          "size": {
+            "$ref": "#/components/schemas/CaptionSize",
+            "default": "medium",
+            "description": "`small`, `medium` (default) or `large`: 4, 5 or 6.4% of the frame height."
+          }
+        },
+        "type": "object"
+      },
+      "CaptionPosition": {
+        "enum": [
+          "bottom",
+          "top"
+        ],
+        "type": "string"
+      },
+      "CaptionSize": {
+        "enum": [
+          "small",
+          "medium",
+          "large"
+        ],
+        "type": "string"
+      },
+      "Captions": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "cues": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "end": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "lines": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "start": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "start",
+                "end",
+                "text",
+                "lines"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "file": {
+            "description": "The SRT or WebVTT file's text.",
+            "type": "string"
+          },
+          "format": {
+            "enum": [
+              "srt",
+              "vtt"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "description": "A file name for it, e.g. `demo.srt`.",
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "format",
+          "name",
+          "cues",
+          "file"
+        ],
+        "type": "object"
       },
       "Check": {
         "additionalProperties": false,
@@ -7640,6 +7920,18 @@
           "branch": {
             "default": "main",
             "type": "string"
+          },
+          "captions": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CaptionOptions"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Burn in captions from the words heard on the edited timeline (every sound on it needs a transcript). One plain style: white sans on a dark box, or on nothing. Leave it out (or send `on: false`) for none."
           },
           "force": {
             "default": false,

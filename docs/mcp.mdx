@@ -77,7 +77,8 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 | `events` | The project's change notices since a sequence number ([live updates](/guides/live-updates)). |
 | `comments`, `add_comment`, `resolve_comment`, `delete_comment` | Comments on moments and ranges of the timeline, with replies. |
 | `quote` | What a render or Studio Sound would cost, before you spend. Free. |
-| `render` | Start a render job (`{project, height}`). |
+| `render` | Start a render job (`{project, height, captions}`); `captions` burns them in ([captions](/guides/captions)). |
+| `captions` | The cut's captions as an SRT or WebVTT file, without rendering. Free. |
 | `render_status` | Any job (render, preview, transcript, Studio Sound, frame, check); once a render has succeeded, a download link, and a frame or check job's output (`{job_id}`). |
 | `cancel_render` | Stop a render job (`{job_id}`). |
 | `account`, `usage`, `wallet`, `entitlements` | Your account, your usage, your wallet, your limits. |

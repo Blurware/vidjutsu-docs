@@ -70,7 +70,8 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | `setPresence(project, {selection?, playhead?})`, `workingOn(project, {text, clips?, range?, scene?})` | Say where you are and what you're doing. |
 | `comments(project)`, `addComment(project, body)`, `resolveComment(project, commentId, resolved?)`, `deleteComment(project, commentId)` | Comments. |
 | `quote(project, {media?})` | What a render and Studio Sound would cost. |
-| `render(project, body?, idempotencyKey?)` | Start a [render](/guides/rendering). |
+| `render(project, body?, idempotencyKey?)` | Start a [render](/guides/rendering). `body.captions` burns in [captions](/guides/captions). |
+| `captions(project, {format?, revision?, branch?})` | The cut's [captions](/guides/captions) as SRT or WebVTT. Free. |
 | `renderStatus(jobId)`, `cancelRender(jobId)` | Read any job, or cancel a render. |
 | `waitForJob(jobId, {intervalMs?, onUpdate?})` | Poll a job until it ends (every 3 seconds by default). `waitForRender` is the same. |
 | `request(method, path, body?, idempotencyKey?)` | Any other call. |

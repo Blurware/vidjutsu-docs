@@ -36,6 +36,7 @@
               "guides/editing",
               "guides/look-and-check",
               "guides/rendering",
+              "guides/captions",
               "guides/shot-list",
               "guides/import-descript",
               "guides/agents",
@@ -199,6 +200,7 @@
             "group": "Renders",
             "pages": [
               "POST /projects/{project}/renders",
+              "GET /projects/{project}/captions",
               "GET /jobs/{job_id}",
               "POST /jobs/{job_id}/cancel"
             ]

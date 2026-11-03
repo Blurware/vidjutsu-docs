@@ -132,6 +132,8 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | --- | --- |
 | `vidjutsu quote <project> [--media <id,id>]` | What a render and Studio Sound would cost, before you spend. |
 | `vidjutsu render <project> [--json <body>] [--no-wait] [--out <file>]` | Render. Waits for the job unless `--no-wait`; `--out` saves the file. `--json` takes the [render options](/guides/rendering#options), for example `'{"height": 2160}'`. |
+| `vidjutsu render <project> --captions [--captions-position top] [--captions-size small\|large] [--captions-background none]` | Render with [captions](/guides/captions) burned in. No extra charge. |
+| `vidjutsu captions <project> [--format srt\|vtt] [--revision <r>] [--out <file>]` | The cut's [captions](/guides/captions) as a file. Free. |
 | `vidjutsu status <job_id>` | Any job. |
 | `vidjutsu cancel <job_id>` | Cancel a render job. |
 | `vidjutsu download <job_id> [--out <file>]` | Save a finished render (default `<job_id>.mp4`). |
