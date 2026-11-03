@@ -13,6 +13,400 @@
       }
     },
     "schemas": {
+      "Check": {
+        "additionalProperties": false,
+        "properties": {
+          "black": {
+            "description": "Black picture as rendered, in timeline seconds.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "description": "Seconds.",
+                  "type": "number"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "gains": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "gain": {
+                  "description": "The clip's gain ratio; null is unity."
+                },
+                "gain_db": {
+                  "description": "20·log10(gain); null for a muted clip (gain 0).",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "occurrence": {
+                  "type": "string"
+                },
+                "track": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "track",
+                "occurrence",
+                "gain",
+                "gain_db"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "gaps": {
+            "description": "Stretches of a track with no clip, exact.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "kind": {
+                  "enum": [
+                    "video",
+                    "audio"
+                  ]
+                },
+                "seconds": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "track": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds",
+                "track",
+                "kind"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "mix": {
+            "additionalProperties": false,
+            "properties": {
+              "integrated_lufs": {
+                "description": "EBU R128 integrated loudness; null when silent (below -70 LUFS).",
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "silent": {
+                "type": "boolean"
+              },
+              "true_peak_dbtp": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "integrated_lufs",
+              "true_peak_dbtp",
+              "silent"
+            ],
+            "type": "object"
+          },
+          "no_sound": {
+            "description": "Where no audio track has a clip, exact.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "seconds": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "sections": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "integrated_lufs": {
+                  "description": "EBU R128 integrated loudness; null when silent (below -70 LUFS).",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "silent": {
+                  "type": "boolean"
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "true_peak_dbtp": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "integrated_lufs",
+                "true_peak_dbtp",
+                "silent",
+                "name",
+                "from",
+                "to"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "silence": {
+            "description": "Silence in the rendered mix.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "description": "Seconds.",
+                  "type": "number"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "thresholds": {
+            "additionalProperties": false,
+            "properties": {
+              "black_min_seconds": {
+                "type": "number"
+              },
+              "black_picture": {
+                "type": "number"
+              },
+              "black_pixel": {
+                "type": "number"
+              },
+              "silence_db": {
+                "type": "number"
+              },
+              "silence_min_seconds": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "black_min_seconds",
+              "black_picture",
+              "black_pixel",
+              "silence_db",
+              "silence_min_seconds"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "project",
+          "revision",
+          "duration_seconds",
+          "mix",
+          "sections",
+          "black",
+          "silence",
+          "gaps",
+          "no_sound",
+          "gains",
+          "thresholds"
+        ],
+        "type": "object"
+      },
+      "CheckProject": {
+        "additionalProperties": false,
+        "description": "`POST /v3/projects/{project}/checks`: measure a branch head (or a pinned\nrevision) as a background job.",
+        "properties": {
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sections": {
+            "default": null,
+            "description": "Stretches of the timeline to measure loudness of, such as scenes:\n`{name?, from, to}`, up to 200, inside the timeline. Absent: one per\n30 seconds.",
+            "items": {
+              "$ref": "#/components/schemas/Section"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
       "CleanAudio": {
         "additionalProperties": false,
         "description": "`vidjutsu clean-audio`: speech tracks (and an optional music bed) through\nthe audio port, with the Auphonic adapter injected here at the\ncomposition root. Inputs are stored media hashes (or, from the CLI, local\nfiles). The result is made timeline-ready like `ingest` and returned as a\nmedia object whose lineage names the vendor's output and every input.",
@@ -217,6 +611,143 @@
         "required": [
           "code",
           "message"
+        ],
+        "type": "object"
+      },
+      "FrameProject": {
+        "additionalProperties": false,
+        "description": "`POST /v3/projects/{project}/frames`: stills of a branch head (or a\npinned revision) at timeline times, as a background job.",
+        "properties": {
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "height": {
+            "default": 720,
+            "description": "Still height in pixels: 360, 720 (default) or 1080. Stills are 16:9,\nlike the render.",
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "times": {
+            "description": "Timeline times, 1 to 24, each before the end: seconds (`12.5`) or\nrationals (`\"1001/30000\"`). Each still is the output frame (30 fps)\nwhose span holds that time, so `t` and `t - 1/30` are the frames on\neither side of a cut at `t`.",
+            "items": true,
+            "type": "array"
+          }
+        },
+        "required": [
+          "times"
+        ],
+        "type": "object"
+      },
+      "Frames": {
+        "additionalProperties": false,
+        "properties": {
+          "expires_at": {
+            "description": "Unix seconds.",
+            "type": "integer"
+          },
+          "frames": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "bytes": {
+                  "type": "integer"
+                },
+                "content_type": {
+                  "const": "image/jpeg"
+                },
+                "frame": {
+                  "description": "The output frame (30 fps) whose span holds the asked-for time.",
+                  "type": "integer"
+                },
+                "frame_time": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "hash": {
+                  "description": "The stored JPEG.",
+                  "type": "string"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "seconds": {
+                  "description": "The frame's start, in seconds.",
+                  "type": "number"
+                },
+                "time": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "url": {
+                  "description": "A fresh one-day link on every read.",
+                  "type": "string"
+                },
+                "width": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "time",
+                "frame",
+                "frame_time",
+                "seconds",
+                "hash",
+                "bytes",
+                "width",
+                "height",
+                "content_type",
+                "url"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "frames",
+          "expires_at"
         ],
         "type": "object"
       },
@@ -449,6 +980,144 @@
         ],
         "type": "object"
       },
+      "ImportTimeline": {
+        "additionalProperties": false,
+        "description": "`POST /v3/imports` / MCP `import_timeline`: a Descript timeline export\n(FCPXML or EDL) as a new project.",
+        "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is importing it, as Activity shows it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "files": {
+            "description": "One `ingest` result per file the export names (`{name, media,\naudio}`), matched to clips by file name.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "format": {
+            "default": null,
+            "description": "`fcpxml` or `edl`; absent: told from the text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "idempotency_key": {
+            "default": null,
+            "description": "Retrying with the same key returns the first result.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "project": {
+            "description": "The new project's name.",
+            "type": "string"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timeline": {
+            "description": "The export's whole text (Descript `fcpxml` or `edl`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "timeline",
+          "files"
+        ],
+        "type": "object"
+      },
+      "Imported": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "clips": {
+            "description": "Clips in the export.",
+            "type": "integer"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "fcpxml",
+              "edl"
+            ]
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "skipped": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "What the export held that a timeline doesn't (captions, markers), with counts.",
+            "type": "object"
+          },
+          "tracks": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "clips": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "video",
+                    "audio"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "clips"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "trimmed": {
+            "description": "Clips cut back to their file's end (by at most one frame, from Descript's frame snapping).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "format",
+          "duration_seconds",
+          "clips",
+          "tracks",
+          "skipped",
+          "trimmed"
+        ],
+        "type": "object"
+      },
       "IngestUrl": {
         "additionalProperties": false,
         "description": "`POST /v3/media` with a JSON body, and the `ingest` MCP tool.",
@@ -593,7 +1262,9 @@
               "render",
               "preview",
               "transcript",
-              "studio_sound"
+              "studio_sound",
+              "frames",
+              "check"
             ]
           },
           "media": {
@@ -634,10 +1305,16 @@
                 "$ref": "#/components/schemas/Preview"
               },
               {
+                "$ref": "#/components/schemas/Frames"
+              },
+              {
+                "$ref": "#/components/schemas/Check"
+              },
+              {
                 "type": "null"
               }
             ],
-            "description": "The rendered file, or the preview, once succeeded. A transcript's words are read from its route."
+            "description": "The rendered file, the preview, the stills or the check's values, once succeeded. A transcript's words are read from its route."
           },
           "progress": {
             "additionalProperties": false,
@@ -708,6 +1385,13 @@
                     "description": "The job has finished: these numbers will not change. Record them once, by job_id.",
                     "type": "boolean"
                   },
+                  "frames": {
+                    "description": "A frames job: stills drawn (null when it failed).",
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
                   "height": {
                     "type": "integer"
                   },
@@ -718,7 +1402,7 @@
                     ]
                   },
                   "output_seconds": {
-                    "description": "A render: length of the rendered film (null when it failed).",
+                    "description": "A render: length of the rendered film; a check: length of the timeline checked (null when it failed).",
                     "type": [
                       "number",
                       "null"
@@ -1481,6 +2165,27 @@
         ],
         "type": "object"
       },
+      "Section": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "description": "Timeline seconds (`12.5`) or rationals."
+          },
+          "name": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "to": true
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "type": "object"
+      },
       "SentPart": {
         "additionalProperties": false,
         "description": "One sent part: its number and the `ETag` header its PUT returned.",
@@ -1548,6 +2253,13 @@
         "additionalProperties": false,
         "description": "`POST /v3/projects/{project}/studio-sound`: turn Studio Sound on.",
         "properties": {
+          "author": {
+            "description": "Who turned it on, for the project's history (one line).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "branch": {
             "default": "main",
             "type": "string"
@@ -2091,6 +2803,50 @@
           }
         },
         "summary": "Whether the server's accounts are usable"
+      }
+    },
+    "/v3/imports": {
+      "post": {
+        "description": "FCPXML (picture and sound, layer by layer) or EDL (sound only). Ingest every file the export names first and pass the results in `files`. Anything that would change the picture or timing is refused (400) rather than approximated.",
+        "operationId": "import_timeline",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportTimeline"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Imported"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Open a Descript timeline export as a new project"
       }
     },
     "/v3/jobs/{job_id}": {
@@ -2723,6 +3479,59 @@
         "summary": "A branch head or revision, with its manifest"
       }
     },
+    "/v3/projects/{project}/checks": {
+      "post": {
+        "description": "Checks the sections and pins the revision, then answers 202 with a job. Poll `GET /v3/jobs/{job_id}`: once it succeeded, `output` holds the measured values.",
+        "operationId": "check",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start measuring gaps, black frames, silence and loudness"
+      }
+    },
     "/v3/projects/{project}/edits": {
       "post": {
         "operationId": "edit",
@@ -2784,6 +3593,59 @@
           }
         },
         "summary": "Apply edit operations as one commit"
+      }
+    },
+    "/v3/projects/{project}/frames": {
+      "post": {
+        "description": "Checks the times and pins the revision, then answers 202 with a job. Poll `GET /v3/jobs/{job_id}`: once it succeeded, `output.frames` holds one JPEG link per asked-for time.",
+        "operationId": "frame",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrameProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start drawing stills at timeline times"
       }
     },
     "/v3/projects/{project}/head": {

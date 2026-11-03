@@ -18,7 +18,7 @@ Poll `GET /jobs/{job_id}` until it has `succeeded`. Its `output.frames` has one 
 
 ```json
 {"frames": [
-  {"time": "41.9667", "frame": 1258, "frame_time": "1258/30", "seconds": 41.933, "url": "https://...",
+  {"time": "41.9667", "frame": 1258, "frame_time": {"ticks": 1258, "rate": 30}, "seconds": 41.933, "url": "https://...",
    "width": 1280, "height": 720, "content_type": "image/jpeg", "hash": "...", "bytes": 81233}
 ]}
 ```
