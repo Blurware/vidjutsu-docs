@@ -144,8 +144,14 @@
         ]
       },
       {
-        "tab": "CLI and SDK",
+        "tab": "Editor, CLI and SDK",
         "groups": [
+          {
+            "group": "Mac editor",
+            "pages": [
+              "editor/index"
+            ]
+          },
           {
             "group": "CLI",
             "pages": [
