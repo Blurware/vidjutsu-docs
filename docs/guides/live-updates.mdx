@@ -54,7 +54,7 @@ Uploads, previews and transcripts show in a project's stream when the call names
 ### SDK and CLI
 
 ```ts
-for await (const { event, id, data } of api.stream("launch-film")) {
+for await (const { event, id, data } of client.stream("launch-film")) {
   if (event === "revision") await refresh();
 }
 ```

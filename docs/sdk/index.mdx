@@ -11,19 +11,19 @@ npm i vidjutsu
 import { readFileSync } from "node:fs";
 import { VidJutsu } from "vidjutsu";
 
-const api = new VidJutsu({ apiKey: process.env.VIDJUTSU_API_KEY });
+const client = new VidJutsu({ apiKey: process.env.VIDJUTSU_API_KEY });
 
-const take = await api.upload("take1.mov", new Uint8Array(readFileSync("take1.mov")));
-await api.init("film");
-await api.edit("film", [
+const take = await client.upload("take1.mov", new Uint8Array(readFileSync("take1.mov")));
+await client.init("film");
+await client.edit("film", [
   { op: "add_media", media: take.media },
   { op: "insert_clip", track_id: "v1", occurrence: {
     id: "c1", media_id: take.media.id, timeline_start: 0,
     source: { start: 0, end: 20 },
     layout: { x: 0, y: 0, width: 1000, height: 1000 } } },
 ]);
-const job = await api.render("film", { height: 1080 }, "film-1");
-const done = await api.waitForRender(job.job_id);
+const job = await client.render("film", { height: 1080 }, "film-1");
+const done = await client.waitForRender(job.job_id);
 console.log(done.output); // {hash, bytes, url, expires_at}
 ```
 
@@ -79,7 +79,7 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 
 ```ts
 const controller = new AbortController();
-for await (const { event, id, data } of api.stream("film", { signal: controller.signal })) {
+for await (const { event, id, data } of client.stream("film", { signal: controller.signal })) {
   if (event === "revision") console.log("new revision", data);
 }
 ```
@@ -94,7 +94,7 @@ Failed calls throw `VidJutsuError` with the API's `status`, `code` and `message`
 import { VidJutsuError } from "vidjutsu";
 
 try {
-  await api.render("film");
+  await client.render("film");
 } catch (error) {
   if (error instanceof VidJutsuError && error.code === "payment_required") {
     console.log("Add credits here:", error.fixUrl);
