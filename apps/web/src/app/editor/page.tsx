@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu Editor for Mac",
   description:
-    "A free Mac app for working with your agent on a cut: read the transcript, watch the timeline, leave comments and chat. macOS 15 or later.",
+    "A Mac app for VidJutsu Cloud, for working with your agent on a cut: read the transcript, watch the timeline, leave comments and chat. macOS 15 or later.",
 };
 
 const features = [
@@ -12,7 +12,7 @@ const features = [
   ["Comment on moments", "Pin a comment to a stretch of the cut, then mark it approved or needing changes."],
   ["Chat with an agent", "Ask for changes in plain words. The agent edits and renders through the same API as the CLI and MCP."],
   ["Record takes", "Record your screen, camera and microphone and send the take straight into a project."],
-  ["Free", "The app costs nothing. Video work runs on VidJutsu Cloud and is paid from your prepaid wallet."],
+  ["Runs on VidJutsu Cloud", "Uploads, storage and renders run on your VidJutsu Cloud account and are paid from your prepaid wallet."],
 ] as const;
 
 export default function EditorPage() {
@@ -25,13 +25,13 @@ export default function EditorPage() {
 
         <div className="max-w-2xl mx-auto text-center mt-10">
           <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
-            Free Mac app &middot; macOS 15 or later
+            Mac app &middot; macOS 15 or later
           </p>
           <h1 className="text-[clamp(1.9rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] mb-5">
             See the cut your agent made
           </h1>
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
-            VidJutsu Editor is a free, native Mac app. Your agent does the
+            VidJutsu Editor is a native Mac app for VidJutsu Cloud. Your agent does the
             cutting; you read the script, watch the timeline, say what to
             change and approve it.
           </p>
@@ -49,7 +49,7 @@ export default function EditorPage() {
               Read the docs
             </a>
           </div>
-          <p className="text-xs text-ink-light mt-4">Apple silicon and Intel &middot; about 180 MB</p>
+          <p className="text-xs text-ink-light mt-4">Needs a VidJutsu Cloud account &middot; Apple silicon and Intel</p>
         </div>
 
         <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-16" aria-label="Features">
@@ -66,8 +66,12 @@ export default function EditorPage() {
           <ul className="space-y-3 text-ink-muted leading-relaxed list-disc pl-5">
             <li>A Mac with macOS 15 (Sequoia) or later, Apple silicon or Intel.</li>
             <li>
-              A VidJutsu Cloud account. The editor uses the same API key as the{" "}
-              <code className="font-mono text-sm">vidjutsu</code> CLI.
+              A VidJutsu Cloud account: the editor needs one to work. It uses the
+              same API key as the{" "}
+              <code className="font-mono text-sm">vidjutsu</code> CLI.{" "}
+              <a className="text-ink underline" href="https://docs.vidjutsu.ai/quickstart">
+                Sign up
+              </a>
             </li>
             <li>
               For chat: Sign in with ChatGPT, or your own OpenAI or Anthropic API

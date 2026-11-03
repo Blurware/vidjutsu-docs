@@ -31,6 +31,7 @@ const forbidden = [
   [/\$25 ?(a|\/) ?mo/i, "old $25 monthly plan (billing is a prepaid wallet)"],
   [/(?<!no )\bsubscri(be|bes|bed|bing|ption|ptions)\b/i, "old subscription billing (billing is a prepaid wallet)"],
   [/portal_url|included each month|60 minutes/i, "old Pro plan details"],
+  [/free,? (native )?mac (app|editor)|app itself is free|editor, free|\["free"/i, "the editor isn't free: it needs a VidJutsu Cloud account"],
   [/credits-and-billing|get-api-key/, "removed page"],
 ];
 

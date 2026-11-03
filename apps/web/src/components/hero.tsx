@@ -14,7 +14,7 @@ export function Hero() {
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
             Upload your takes. Your agent cuts them on a timeline that keeps
             every revision, then renders 1080p or 4K on cloud machines. One
-            API, a CLI and MCP, and a free Mac editor when you want to see the cut.
+            API, a CLI and MCP, and a Mac editor when you want to see the cut.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3">
