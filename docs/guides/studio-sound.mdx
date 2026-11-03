@@ -39,8 +39,8 @@ Check first with `GET /projects/{project}/quote`, which estimates the cost (ever
 
 ```json
 {"project": "launch-film", "length_seconds": 118.4, "balance_micros": 12400000, "balance_usd": 12.4,
- "studio_sound": {"voice_seconds": 160, "billed_seconds": 160, "cost_micros": 266667, "cost_usd": 0.27,
-                  "wallet_after_micros": 12133333, "wallet_after_usd": 12.13, "allowed": true, "reason": null, "message": null,
+ "studio_sound": {"voice_seconds": 160, "estimated_vcpu_seconds": 80, "cost_micros": 40000, "cost_usd": 0.04,
+                  "wallet_after_micros": 12360000, "wallet_after_usd": 12.36, "allowed": true, "reason": null, "message": null,
                   "media": ["take1-audio", "take2-audio"]},
  "render": [...]}
 ```

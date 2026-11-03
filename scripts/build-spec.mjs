@@ -469,7 +469,7 @@ const EDITOR_SCHEMAS = {
   Money: obj({
     cost_micros: { type: "integer" }, cost_usd: { type: "number" },
     wallet_after_micros: { type: "integer", description: "Your balance after it (never below zero)." },
-    billed_seconds: { type: "number", description: "Billed by the second, with no minimum." },
+    estimated_vcpu_seconds: { type: "number", description: "The box time the job is expected to use, in vCPU-seconds, at $0.03 per vCPU-minute. The charge is the box time it actually uses, by the second, with no minimum." },
     allowed: { type: "boolean", description: "Whether your wallet would let it start." },
     reason: { type: ["string", "null"], description: "Why not, when it wouldn't: `no_plan`, `payment_failed`, `spend_limit` or `insufficient_credits`." },
     message: { type: ["string", "null"] },
