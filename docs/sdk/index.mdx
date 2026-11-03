@@ -49,7 +49,7 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | `signIn(email)`, `verify(attempt, code)` | [Sign up or sign in](/authentication). `verify` returns `{api_key, account_id, status, checkout_url?}`. No key needed. |
 | `account()`, `usage()`, `entitlements()` | Your account, usage and limits. |
 | `createKey(name)`, `listKeys()`, `revokeKey(keyId)` | API keys. |
-| `billingCheckout({success_url?, cancel_url?})`, `billingPortal({return_url?})` | Stripe links. |
+| `billingCheckout({success_url?, cancel_url?})`, `billingPortal({return_url?})` | Stripe links to sign up with your first $5, or to manage your saved card. To add credits, use `request("POST", "/billing/top-up", {amount_usd: 20})`. |
 | `upload(name, bytes)` | A [direct upload](/guides/uploads#direct-uploads): starts it, PUTs each part, completes it, and aborts on failure. |
 | `ingestUrl(url, name?, idempotencyKey?)` | Add media from a link. |
 | `createUpload(name, bytes, sha256)`, `completeUpload(uploadId, parts)`, `abortUpload(uploadId)` | Direct upload steps, if you want to send parts yourself (in parallel, or from a stream). |
@@ -64,7 +64,7 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 
 ## Errors
 
-Failed calls throw `VidJutsuError` with the API's `status`, `code` and `message`, and the whole error `body`. For a 402, `fixUrl` is the Stripe link that fixes it.
+Failed calls throw `VidJutsuError` with the API's `status`, `code` and `message`, and the whole error `body`. For a 402 before sign-up, `fixUrl` is the Stripe checkout link. When your wallet runs low, the top-up link is `body.top_up_url`.
 
 ```ts
 import { VidJutsuError } from "vidjutsu";
@@ -73,7 +73,7 @@ try {
   await api.render("film");
 } catch (error) {
   if (error instanceof VidJutsuError && error.code === "payment_required") {
-    console.log("Subscribe or update your card:", error.fixUrl);
+    console.log("Add credits here:", error.fixUrl ?? error.body.top_up_url);
   } else throw error;
 }
 ```

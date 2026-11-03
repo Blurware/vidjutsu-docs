@@ -45,7 +45,7 @@ It speaks MCP over streamable HTTP. The tools are the same operations as the [RE
 
 Get an API key with [two calls](/authentication) or `vidjutsu login`. Your agent can run the sign-up calls itself and ask you only for the emailed code. The OAuth sign-up page asks new users to prove they're human, so an agent working alone should use a key.
 
-You need an active plan before tools that do work will run. A tool that needs one fails with `payment_required` and a `checkout_url` your agent can hand you.
+Tools that do work need a funded wallet. Until you've signed up, they fail with `payment_required` and a `checkout_url` your agent can hand you; when your balance runs low, the error carries a `top_up_url` instead.
 
 ## Tools
 
@@ -62,9 +62,9 @@ You need an active plan before tools that do work will run. A tool that needs on
 | `render` | Start a render job (`{project, height}`). |
 | `render_status` | A render job; once succeeded, a download link (`{job_id}`). |
 | `cancel_render` | Stop a render job (`{job_id}`). |
-| `account`, `usage`, `entitlements` | Your account, this period's usage, your plan's limits. |
+| `account`, `usage`, `entitlements` | Your account, your wallet balance and this month's usage, your limits. |
 | `create_key`, `list_keys`, `revoke_key` | Manage API keys. |
-| `billing_checkout`, `billing_portal` | Stripe links to subscribe, or to update your card, see invoices or cancel. |
+| `billing_checkout`, `billing_top_up`, `billing_portal` | Stripe links to sign up and make your first payment, to add credits (`{amount_usd}`), or to update your card and see receipts. |
 | `create_account` | Create your account after an OAuth sign-in. Safe to call again. |
 
 Path parameters (`project`, `job_id`, `hash`, `upload_id`, `key_id`) are tool arguments. The other arguments are the REST body, so the [API reference](/api-reference/introduction) documents every field.

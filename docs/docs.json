@@ -91,6 +91,7 @@
             "group": "Billing",
             "pages": [
               "POST /billing/checkout",
+              "POST /billing/top-up",
               "POST /billing/portal"
             ]
           },

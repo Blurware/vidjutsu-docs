@@ -12,7 +12,7 @@ export default function ContactPage() {
         <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-4">
           Enterprise
         </p>
-        <h1 className="text-2xl font-semibold text-ink mb-3">Need more than Pro?</h1>
+        <h1 className="text-2xl font-semibold text-ink mb-3">Need more than pay as you go?</h1>
         <p className="text-ink-muted mb-4">
           Enterprise is an annual contract with volume pricing, higher limits,
           single sign-on, your own storage, a custom render fleet and an SLA.

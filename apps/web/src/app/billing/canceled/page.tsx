@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Checkout canceled",
+  title: "Payment canceled",
 };
 
 export default function BillingCanceledPage() {
@@ -24,11 +24,13 @@ export default function BillingCanceledPage() {
           </svg>
         </div>
         <h1 className="text-2xl font-semibold text-ink mb-2">
-          Checkout canceled
+          Payment canceled
         </h1>
         <p className="text-ink-muted mb-6">
-          Nothing was charged. When you&rsquo;re ready, get a new link with
-          <code className="font-mono text-sm"> vidjutsu billing checkout</code>.
+          Nothing was charged. When you&rsquo;re ready, ask your agent for a
+          new payment link, or run
+          <code className="font-mono text-sm"> vidjutsu billing checkout</code>{" "}
+          if you haven&rsquo;t signed up yet.
         </p>
         <a
           href="/"

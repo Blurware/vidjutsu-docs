@@ -1,23 +1,23 @@
 ---
 title: "Pricing and billing"
-description: "Pro is $25 a month plus usage. No free plan; a card is required."
+description: "Pay as you go from a prepaid wallet. No monthly fee; a card and a first payment of $5 or more to start."
 ---
 
-## Pro: $25 a month, plus usage
+## Pay as you go
 
-A card is required to start. There is no free plan.
+There is no monthly fee and no subscription. You add credits to a prepaid wallet, and every render and every stored GB is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is only charged for the payments you choose. There is no free plan.
 
-| Usage | Included each month | Then |
-| --- | --- | --- |
-| Render minutes, up to 1080p | 60 minutes | $0.10 per minute |
-| Render minutes, above 1080p (4K) | None | $0.20 per minute |
-| Storage | 100 GB | $0.05 per GB-month |
+| Usage | Price |
+| --- | --- |
+| Render minutes, up to 1080p | $0.10 per minute |
+| Render minutes, above 1080p (4K) | $0.20 per minute |
+| Storage | $0.05 per GB-month |
 
-Render minutes are minutes of rendered output. Uploading is free; what you store counts as storage, billed on your average stored bytes over the month. A job that fails on our side is never charged. Usage is billed in arrears on your monthly invoice.
+Render minutes are minutes of rendered output. A render holds its cost from your wallet when it starts; a render that fails on our side is never charged, and what it held goes back. Uploading is free. Storage is charged on your average stored bytes over the month.
 
 ### Limits
 
-| Limit | Pro |
+| Limit | Value |
 | --- | --- |
 | Monthly usage spend limit | $100 by default, you can raise it up to $500 |
 | Render minutes a month | 2,000 |
@@ -28,31 +28,40 @@ Render minutes are minutes of rendered output. Uploading is free; what you store
 | 4K output | Yes |
 | Support | Email |
 
-`GET /entitlements` (`vidjutsu entitlements`) returns your plan's limits, and `GET /usage` (`vidjutsu usage`) shows this period's usage and what's left of your included minutes and storage.
+`GET /usage` (`vidjutsu usage`) shows your wallet balance and this month's usage and spend. `GET /entitlements` (`vidjutsu entitlements`) returns your limits.
 
 ## Enterprise
 
 Need more than these limits, single sign-on, your own storage or a custom fleet? [Contact us](https://vidjutsu.ai/contact).
 
-## Subscribe and manage billing
+## Fund your wallet
 
-There is no billing UI of ours: every billing step is a Stripe-hosted page you get a link to.
+There is no billing UI of ours: every payment is a Stripe-hosted page you get a link to.
 
 | Call | CLI | |
 | --- | --- | --- |
-| `POST /billing/checkout` | `vidjutsu billing checkout` | A Stripe Checkout link that starts Pro. |
-| `POST /billing/portal` | `vidjutsu billing portal` | A Stripe billing portal link: update your card, see invoices, cancel. |
+| `POST /billing/checkout` | `vidjutsu billing checkout` | Sign up: add a card and make your first payment (default $5). |
+| `POST /billing/top-up` | | Add credits any time (default $10). |
+| `POST /billing/portal` | `vidjutsu billing portal` | Update your saved card or see your receipts. |
 
-Both take optional `https` redirect URLs (`success_url` and `cancel_url` for checkout, `return_url` for the portal). Your account turns `active` as soon as checkout completes.
+Checkout and top-up take an optional `amount_usd` in whole cents, from $5 to $500 per payment, for example `{"amount_usd": 25}`. All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
 
-Canceling in the portal ends your plan at the end of the billing period.
+<Note>
+  CLI 2.1.0 has no top-up command yet. Call `POST /billing/top-up` directly, use the `billing_top_up` MCP tool, or call `request("POST", "/billing/top-up", {amount_usd: 20})` in the SDK.
+</Note>
+
+There is nothing to cancel. Stop using the service and you stop paying; storage is still charged while you keep media stored.
 
 ## When something needs fixing
 
-Every billing error tells you how to fix it:
+Every billing error is a 402 `payment_required` that carries the link that fixes it:
 
-- **No plan:** work that needs a plan returns 402 `payment_required` with `reason: "no_plan"` and a `checkout_url`.
-- **Failed payment:** new work stops at once with 402 `payment_required`, `reason: "payment_failed"` and a `portal_url` to update your card. Reads keep working so you can get your media out. The error and `GET /account` carry `media_deletes_at`: if the payment isn't made, stored media is deleted 30 days after the failed payment.
+- **Not signed up yet:** `reason: "no_plan"` and a `checkout_url` to add a card and fund your wallet.
+- **Not enough credits:** a render your balance doesn't cover returns `reason: "insufficient_credits"` and a `top_up_url`. The message says what the render costs and what your wallet has.
+- **Wallet below zero:** new work stops at once with `reason: "payment_failed"` and a `top_up_url`. Reads keep working so you can get your media out. The error and `GET /account` carry `media_deletes_at`: unless you top up, stored media is deleted 30 days after your wallet went below zero.
+
+Other limits:
+
 - **A plan limit:** 403 `plan_limit` with a `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`) and a `contact_url`.
 - **Too many renders at once:** 429 `rate_limited` with `retry_after_seconds`.
 

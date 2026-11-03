@@ -9,7 +9,7 @@ These terms govern your use of VidJutsu Cloud: **api.vidjutsu.ai**, the MCP serv
 
 ## 1. Acceptance
 
-By creating an account, subscribing via Stripe, or making any request to the service, you agree to these terms. If you disagree, do not use the service.
+By creating an account, paying via Stripe, or making any request to the service, you agree to these terms. If you disagree, do not use the service.
 
 ## 2. The Service
 
@@ -30,20 +30,20 @@ You keep all rights to your content. You grant VidJutsu a limited license to sto
 ## 4. API Use
 
 - **Authentication.** Keep your API keys confidential. You're responsible for all requests made with your keys. Revoke a key (`DELETE /keys/{key_id}`) if it may be compromised.
-- **Limits.** Your plan's limits are listed on the [pricing page](/pricing) and returned by `GET /entitlements`. Requests over a limit are refused (HTTP 403 or 429). Attempting to get around limits with multiple accounts or automated abuse is a termination event.
+- **Limits.** Your account's limits are listed on the [pricing page](/pricing) and returned by `GET /entitlements`. Requests over a limit are refused (HTTP 403 or 429). Attempting to get around limits with multiple accounts or automated abuse is a termination event.
 - **Acceptable use.** Do not use the service for content you don't have rights to, for illegal content, to harass or impersonate others, to attack or overload the service, or to resell access to the service as a competing hosted product.
 
 ## 5. Billing
 
-- **Pro:** $25 a month plus usage, billed via Stripe. A card is required; there is no free plan. Usage (render minutes and storage beyond what your plan includes) is billed in arrears on your monthly invoice, as listed on the [pricing page](/pricing).
+- **Pay as you go.** Usage is paid from a prepaid wallet of credits, at the rates on the [pricing page](/pricing). There is no monthly fee and no free plan. Signing up takes a card and a first payment; you add credits whenever you choose, via Stripe. Your card is charged only for the payments you make.
 - A job that fails on our side is not charged.
-- Cancel anytime via the Stripe billing portal. Your plan ends at the end of the current billing period. No partial refunds.
-- **Failed payments.** If a payment fails, new work stops until it's paid; reads keep working so you can download your media. If the payment isn't made within 30 days, your stored media may be deleted.
+- Credits are prepaid for use of the service and are not refundable, except where the law requires it. There is nothing to cancel: stop using the service and you stop paying, apart from storage for media you keep stored.
+- **Wallet below zero.** If your balance goes below zero, new work stops until you add credits; reads keep working so you can download your media. If you don't add credits within 30 days, your stored media may be deleted.
 - We may adjust pricing or limits with 30 days' notice, communicated via email to the address on your account.
 
 ## 6. Data and Deletion
 
-Stored media, timelines and renders are kept while your account is in good standing. You can download your media at any time while your account is active or within the 30 days after a failed payment. After your plan ends or that period passes, we may delete your stored content. We are not a backup service: keep your own copies of anything important.
+Stored media, timelines and renders are kept while your account is in good standing. You can download your media at any time while your account is active or within the 30 days after your balance goes below zero. After that period passes, or your account is closed, we may delete your stored content. We are not a backup service: keep your own copies of anything important.
 
 ## 7. Warranty Disclaimer
 

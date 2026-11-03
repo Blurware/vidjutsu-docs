@@ -86,4 +86,4 @@ console.log(done.output); // {hash, bytes, url, expires_at}
 
 ## Cost and limits
 
-Renders are billed by the length of the output: per minute at up to 1080p, and at a higher rate above 1080p. Pro includes 60 minutes of 1080p a month. A render that fails on our side is never charged. Pro runs up to 10 renders at once (more get a 429 with `retry_after_seconds`) and renders up to 3 hours of output per job. See [Pricing](/pricing).
+Renders are paid from your wallet by the length of the output: $0.10 a minute at up to 1080p, $0.20 above 1080p. A render your balance doesn't cover is refused with a `top_up_url`. A render that fails on our side is never charged. You can run up to 10 renders at once (more get a 429 with `retry_after_seconds`), and each job renders up to 3 hours of output. See [Pricing](/pricing).

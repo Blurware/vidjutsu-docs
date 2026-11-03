@@ -28,6 +28,9 @@ const forbidden = [
   [/\bscrap(e|es|ing)\b/i, "old scrape product"],
   [/\bcharacters?\b/i, "old characters product"],
   [/\$99\b/, "old $99 plan"],
+  [/\$25 ?(a|\/) ?mo/i, "old $25 monthly plan (billing is a prepaid wallet)"],
+  [/(?<!no )\bsubscri(be|bes|bed|bing|ption|ptions)\b/i, "old subscription billing (billing is a prepaid wallet)"],
+  [/portal_url|included each month|60 minutes/i, "old Pro plan details"],
   [/credits-and-billing|get-api-key/, "removed page"],
 ];
 
@@ -37,7 +40,9 @@ for (const [file, text] of contents) {
   }
 }
 
-assert.match(contents.get("docs/pricing.mdx"), /\$25 a month/, "pricing must state Pro at $25 a month");
+assert.match(contents.get("docs/pricing.mdx"), /no monthly fee/i, "pricing must say there is no monthly fee");
+assert.match(contents.get("docs/pricing.mdx"), /at least \$5/, "pricing must state the $5 first payment");
+assert.match(contents.get("docs/pricing.mdx"), /\$0\.10 per minute/, "pricing must state the 1080p rate");
 assert.match(contents.get("docs/pricing.mdx"), /no free plan/i, "pricing must say there is no free plan");
 
 const docsFiles = [...contents.keys()].filter((file) => /\.mdx?$/.test(file));

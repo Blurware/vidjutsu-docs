@@ -1,9 +1,9 @@
 ---
 title: "Quickstart"
-description: "Sign up, subscribe, upload a take and render your first cut."
+description: "Sign up, fund your wallet, upload a take and render your first cut."
 ---
 
-You need an email address and a card. There is no free plan: Pro is $25 a month plus usage, with 60 minutes of 1080p rendering included each month. See [Pricing](/pricing).
+You need an email address and a card. There's no monthly fee: you pay as you go from a prepaid wallet, starting with $5 or more. A minute of 1080p output costs $0.10. See [Pricing](/pricing).
 
 <Tabs>
   <Tab title="CLI">
@@ -22,11 +22,11 @@ You need an email address and a card. There is no free plan: Pro is $25 a month 
     ```
     Enter your email, then the code we send you. This creates your account and saves an API key to `~/.config/vidjutsu/cloud.json`. Signing in again later works the same way.
   </Step>
-  <Step title="Subscribe">
+  <Step title="Fund your wallet">
     ```sh
     vidjutsu billing checkout
     ```
-    Open the `url` it prints and pay with Stripe. Your account turns `active` as soon as checkout completes (`vidjutsu account` shows it).
+    Open the `url` it prints, add a card and pay $5 with Stripe. Your account turns `active` as soon as the payment goes through (`vidjutsu account` shows it, and `vidjutsu usage` shows your balance).
   </Step>
   <Step title="Upload a take">
     ```sh
@@ -81,8 +81,8 @@ You need an email address and a card. There is no free plan: Pro is $25 a month 
     ```
     Keep the `api_key`: it's shown once.
   </Step>
-  <Step title="Subscribe">
-    Open `checkout_url` in a browser and pay. Then check:
+  <Step title="Fund your wallet">
+    Open `checkout_url` in a browser, add a card and pay $5. Then check:
     ```sh
     KEY=vj_live_...
     curl -s -H "$V" $API/account -H "Authorization: Bearer $KEY"

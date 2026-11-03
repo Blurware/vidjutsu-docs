@@ -11,7 +11,7 @@ export default function BillingPage() {
         <h1 className="text-2xl font-semibold text-ink mb-2">Billing updated</h1>
         <p className="text-ink-muted mb-6">
           You can close this tab and go back to your agent or terminal. To
-          open the billing portal again, run
+          update your card or see receipts again, run
           <code className="font-mono text-sm"> vidjutsu billing portal</code>.
         </p>
         <a

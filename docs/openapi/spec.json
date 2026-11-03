@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VidJutsu Cloud API",
-    "version": "3",
+    "version": "2026-11-03",
     "description": "Video editing built for agents: upload takes, edit a timeline with history, and render it on cloud machines. The same operations are MCP tools at https://api.vidjutsu.ai/mcp."
   },
   "servers": [
@@ -55,7 +55,7 @@
           "Account"
         ],
         "summary": "Get your account",
-        "description": "Your account id, status and plan.",
+        "description": "Your account id and status, and when stored media will be deleted if your wallet is below zero.",
         "responses": {
           "200": {
             "description": "Your account",
@@ -209,7 +209,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -219,7 +219,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -315,7 +315,7 @@
         ],
         "summary": "Verify the code",
         "security": [],
-        "description": "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no plan yet: open `checkout_url` to start Pro.",
+        "description": "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
         "requestBody": {
           "required": true,
           "content": {
@@ -370,7 +370,7 @@
           "Billing"
         ],
         "summary": "Get a checkout link",
-        "description": "A Stripe Checkout link that starts the Pro plan: $25 a month plus usage, card required. Open it in a browser. 409 if you already have an active plan.",
+        "description": "Sign up for paid use: a Stripe Checkout link to add a card and make your first payment into your prepaid wallet ($5 by default). There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
         "requestBody": {
           "required": false,
           "content": {
@@ -403,7 +403,7 @@
             }
           },
           "409": {
-            "description": "You already have an active plan.",
+            "description": "Your wallet is already set up.",
             "content": {
               "application/json": {
                 "schema": {
@@ -435,7 +435,7 @@
           "Billing"
         ],
         "summary": "Get a billing portal link",
-        "description": "A Stripe billing portal link to update your card, see invoices or cancel. 409 before your first checkout.",
+        "description": "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment.",
         "requestBody": {
           "required": false,
           "content": {
@@ -468,7 +468,72 @@
             }
           },
           "409": {
-            "description": "No subscription yet.",
+            "description": "No payment yet: use POST /billing/checkout first.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ]
+      }
+    },
+    "/billing/top-up": {
+      "post": {
+        "operationId": "billing_top_up",
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Get a top-up link",
+        "description": "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TopUpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Top-up link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingLink"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "400 invalid_request (an amount outside $5 to $500, or not whole cents)",
             "content": {
               "application/json": {
                 "schema": {
@@ -499,8 +564,8 @@
         "tags": [
           "Account"
         ],
-        "summary": "Get plan limits",
-        "description": "Your plan's limits and features.",
+        "summary": "Get your limits",
+        "description": "Your limits and features: spend limit, render minutes, storage, renders at once, largest upload, longest render, 4K.",
         "responses": {
           "200": {
             "description": "Limits",
@@ -626,7 +691,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -636,7 +701,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -730,7 +795,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -740,7 +805,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1002,7 +1067,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1012,7 +1077,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1096,7 +1161,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1106,7 +1171,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1202,7 +1267,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1212,7 +1277,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1307,7 +1372,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1317,7 +1382,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1422,7 +1487,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1432,7 +1497,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1547,7 +1612,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1557,7 +1622,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1661,7 +1726,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1671,7 +1736,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1775,7 +1840,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1785,7 +1850,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1880,7 +1945,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1890,7 +1955,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1984,7 +2049,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -1994,7 +2059,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2098,7 +2163,7 @@
             }
           },
           "402": {
-            "description": "No active plan (`checkout_url`), or the last payment failed (`portal_url`).",
+            "description": "Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2108,7 +2173,7 @@
             }
           },
           "403": {
-            "description": "A plan limit was reached (`plan_limit`, with `reason` and `contact_url`).",
+            "description": "A limit was reached (`plan_limit`, with `reason` and `contact_url`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2147,7 +2212,7 @@
           "Account"
         ],
         "summary": "Get usage",
-        "description": "This billing period's usage and what's left of your included allowance.",
+        "description": "Your wallet balance and this month's usage and spend.",
         "responses": {
           "200": {
             "description": "Usage",
@@ -2213,7 +2278,7 @@
               "object",
               "null"
             ],
-            "description": "The plan you're on, or null before you subscribe.",
+            "description": "The price list your account uses: `{plan_key, version}`.",
             "additionalProperties": true
           },
           "media_deletes_at": {
@@ -2222,7 +2287,7 @@
               "null"
             ],
             "format": "date-time",
-            "description": "After a failed payment: when stored media will be deleted if the payment isn't made."
+            "description": "While your wallet is below zero: when stored media will be deleted unless you top up."
           }
         }
       },
@@ -2233,7 +2298,7 @@
           "active",
           "payment_failed"
         ],
-        "description": "`no_plan`: subscribe to start work. `active`: everything works. `payment_failed`: reads work, new work is paused until you update your card."
+        "description": "`no_plan`: make your first payment (POST /billing/checkout) to start work. `active`: everything works. `payment_failed`: your wallet is below zero; reads work, new work is paused until you top up (POST /billing/top-up)."
       },
       "ApiKey": {
         "type": "object",
@@ -2276,6 +2341,10 @@
             "type": "string",
             "description": "A Stripe-hosted page. Open it in a browser."
           },
+          "amount_micros": {
+            "type": "integer",
+            "description": "Checkout and top-up: the payment amount, in micro-dollars."
+          },
           "reused": {
             "type": "boolean",
             "description": "Checkout only: an open checkout session was reused."
@@ -2285,6 +2354,18 @@
       "CheckoutRequest": {
         "type": "object",
         "properties": {
+          "amount_usd": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
+              }
+            ],
+            "description": "Dollars, in whole cents, from 5 to 500 (for example `25` or `\"12.50\"`). Default 5."
+          },
           "success_url": {
             "type": "string",
             "format": "uri",
@@ -2498,7 +2579,7 @@
       "Entitlements": {
         "type": "object",
         "additionalProperties": true,
-        "description": "`{\"state\": \"available\", \"entitlements\": {...}, \"spend_limit_micros\": ...}`: your plan's limits and features. Money is in micro-dollars."
+        "description": "`{\"state\": \"available\", \"entitlements\": {...}, \"spend_limit_micros\": ...}`: your limits and features. Money is in micro-dollars."
       },
       "Error": {
         "type": "object",
@@ -2533,20 +2614,20 @@
           },
           "reason": {
             "type": "string",
-            "description": "Finer cause, for example `no_plan`, `payment_failed`, `spend_limit`, `stale_head`."
+            "description": "Finer cause, for example `no_plan`, `insufficient_credits`, `payment_failed`, `spend_limit`, `stale_head`."
           },
           "checkout_url": {
             "type": "string",
-            "description": "402 with no plan: a Stripe Checkout link that starts Pro."
+            "description": "402 `no_plan`: a Stripe Checkout link to add a card and make your first payment."
           },
-          "portal_url": {
+          "top_up_url": {
             "type": "string",
-            "description": "402 after a failed payment: a Stripe billing portal link to update your card."
+            "description": "402 `insufficient_credits` or `payment_failed`: a Stripe link to add credits to your wallet."
           },
           "media_deletes_at": {
             "type": "string",
             "format": "date-time",
-            "description": "After a failed payment: when your stored media will be deleted if the payment isn't made."
+            "description": "402 `payment_failed` (wallet below zero): when your stored media will be deleted unless you top up."
           },
           "contact_url": {
             "type": "string",
@@ -3339,7 +3420,7 @@
           },
           "checkout_url": {
             "type": "string",
-            "description": "When `status` is `no_plan`: a Stripe Checkout link that starts Pro."
+            "description": "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first payment ($5 or more)."
           },
           "note": {
             "type": "string"
@@ -3371,6 +3452,33 @@
           "sha256"
         ],
         "type": "object"
+      },
+      "TopUpRequest": {
+        "type": "object",
+        "properties": {
+          "amount_usd": {
+            "oneOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
+              }
+            ],
+            "description": "Dollars, in whole cents, from 5 to 500 (for example `25` or `\"12.50\"`). Default 10."
+          },
+          "success_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "https URL to return to after paying."
+          },
+          "cancel_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "https URL to return to if you cancel."
+          }
+        }
       },
       "Upload": {
         "additionalProperties": false,
@@ -3445,7 +3553,7 @@
       "Usage": {
         "type": "object",
         "additionalProperties": true,
-        "description": "This billing period's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), what's left of your included allowance, and the spend so far. `{\"state\": \"unavailable\"}` when it can't be read right now."
+        "description": "Your wallet balance (`credits.balance_micros`), this month's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), spend against your monthly limit, renders running and storage used. Money is in micro-dollars. `{\"state\": \"unavailable\"}` when it can't be read right now."
       }
     }
   }

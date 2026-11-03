@@ -97,10 +97,10 @@ const ERROR_SCHEMA = {
   properties: {
     code: { type: "string", enum: ERROR_CODES, description: "Stable error code." },
     message: { type: "string", description: "What went wrong, in plain words." },
-    reason: { type: "string", description: "Finer cause, for example `no_plan`, `payment_failed`, `spend_limit`, `stale_head`." },
-    checkout_url: { type: "string", description: "402 with no plan: a Stripe Checkout link that starts Pro." },
-    portal_url: { type: "string", description: "402 after a failed payment: a Stripe billing portal link to update your card." },
-    media_deletes_at: { type: "string", format: "date-time", description: "After a failed payment: when your stored media will be deleted if the payment isn't made." },
+    reason: { type: "string", description: "Finer cause, for example `no_plan`, `insufficient_credits`, `payment_failed`, `spend_limit`, `stale_head`." },
+    checkout_url: { type: "string", description: "402 `no_plan`: a Stripe Checkout link to add a card and make your first payment." },
+    top_up_url: { type: "string", description: "402 `insufficient_credits` or `payment_failed`: a Stripe link to add credits to your wallet." },
+    media_deletes_at: { type: "string", format: "date-time", description: "402 `payment_failed` (wallet below zero): when your stored media will be deleted unless you top up." },
     contact_url: { type: "string", description: "403 plan_limit: where to ask about Enterprise." },
     retry_after_seconds: { type: "integer", description: "429: when to try again (also sent as a Retry-After header)." },
     latest_version: { type: "string", description: "400 unknown_version: the newest API version." },
@@ -118,8 +118,8 @@ const AUTH_ERRORS = {
 };
 const ENGINE_ERRORS = {
   ...AUTH_ERRORS,
-  "402": errorResponse("No active plan (`checkout_url`), or the last payment failed (`portal_url`)."),
-  "403": errorResponse("A plan limit was reached (`plan_limit`, with `reason` and `contact_url`)."),
+  "402": errorResponse("Not signed up yet (`no_plan`, with `checkout_url`), or your wallet doesn't cover this or is below zero (`insufficient_credits` or `payment_failed`, with `top_up_url`)."),
+  "403": errorResponse("A limit was reached (`plan_limit`, with `reason` and `contact_url`)."),
   "429": errorResponse("Too many renders at once, or too many requests. Retry after `retry_after_seconds`."),
   default: errorResponse("Any other error: 400 invalid_request, 404 not_found, 409 conflict, 413 payload_too_large, 502 upstream_error, 503 service_unavailable."),
 };
@@ -142,6 +142,11 @@ const VERSION_PARAMETER = {
 
 const json = (schema, description) => ({ description, content: { "application/json": { schema } } });
 const ref = (name) => ({ $ref: `#/components/schemas/${name}` });
+
+const AMOUNT_USD = (fallback) => ({
+  oneOf: [{ type: "number" }, { type: "string", pattern: "^\\d{1,6}(\\.\\d{1,2})?$" }],
+  description: `Dollars, in whole cents, from 5 to 500 (for example \`25\` or \`"12.50"\`). Default ${fallback}.`,
+});
 
 const CLOUD_SCHEMAS = {
   Error: ERROR_SCHEMA,
@@ -186,14 +191,14 @@ const CLOUD_SCHEMAS = {
       key_id: { type: "string" },
       account_id: { type: "string" },
       status: ref("AccountStatus"),
-      checkout_url: { type: "string", description: "When `status` is `no_plan`: a Stripe Checkout link that starts Pro." },
+      checkout_url: { type: "string", description: "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first payment ($5 or more)." },
       note: { type: "string" },
     },
   },
   AccountStatus: {
     type: "string",
     enum: ["no_plan", "active", "payment_failed"],
-    description: "`no_plan`: subscribe to start work. `active`: everything works. `payment_failed`: reads work, new work is paused until you update your card.",
+    description: "`no_plan`: make your first payment (POST /billing/checkout) to start work. `active`: everything works. `payment_failed`: your wallet is below zero; reads work, new work is paused until you top up (POST /billing/top-up).",
   },
   Account: {
     type: "object",
@@ -201,19 +206,19 @@ const CLOUD_SCHEMAS = {
     properties: {
       account_id: { type: "string" },
       status: ref("AccountStatus"),
-      plan_version: { type: ["object", "null"], description: "The plan you're on, or null before you subscribe.", additionalProperties: true },
-      media_deletes_at: { type: ["string", "null"], format: "date-time", description: "After a failed payment: when stored media will be deleted if the payment isn't made." },
+      plan_version: { type: ["object", "null"], description: "The price list your account uses: `{plan_key, version}`.", additionalProperties: true },
+      media_deletes_at: { type: ["string", "null"], format: "date-time", description: "While your wallet is below zero: when stored media will be deleted unless you top up." },
     },
   },
   Usage: {
     type: "object",
     additionalProperties: true,
-    description: "This billing period's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), what's left of your included allowance, and the spend so far. `{\"state\": \"unavailable\"}` when it can't be read right now.",
+    description: "Your wallet balance (`credits.balance_micros`), this month's usage of each meter (render minutes up to 1080p, render minutes above 1080p, storage), spend against your monthly limit, renders running and storage used. Money is in micro-dollars. `{\"state\": \"unavailable\"}` when it can't be read right now.",
   },
   Entitlements: {
     type: "object",
     additionalProperties: true,
-    description: "`{\"state\": \"available\", \"entitlements\": {...}, \"spend_limit_micros\": ...}`: your plan's limits and features. Money is in micro-dollars.",
+    description: "`{\"state\": \"available\", \"entitlements\": {...}, \"spend_limit_micros\": ...}`: your limits and features. Money is in micro-dollars.",
   },
   CreateKey: {
     type: "object",
@@ -251,6 +256,15 @@ const CLOUD_SCHEMAS = {
   CheckoutRequest: {
     type: "object",
     properties: {
+      amount_usd: AMOUNT_USD("5"),
+      success_url: { type: "string", format: "uri", description: "https URL to return to after paying." },
+      cancel_url: { type: "string", format: "uri", description: "https URL to return to if you cancel." },
+    },
+  },
+  TopUpRequest: {
+    type: "object",
+    properties: {
+      amount_usd: AMOUNT_USD("10"),
       success_url: { type: "string", format: "uri", description: "https URL to return to after paying." },
       cancel_url: { type: "string", format: "uri", description: "https URL to return to if you cancel." },
     },
@@ -264,6 +278,7 @@ const CLOUD_SCHEMAS = {
     required: ["url"],
     properties: {
       url: { type: "string", description: "A Stripe-hosted page. Open it in a browser." },
+      amount_micros: { type: "integer", description: "Checkout and top-up: the payment amount, in micro-dollars." },
       reused: { type: "boolean", description: "Checkout only: an open checkout session was reused." },
     },
   },
@@ -288,7 +303,7 @@ const CLOUD_PATHS = {
   "/auth/verify": {
     post: {
       operationId: "sign_in_verify", tags: ["Sign-up and sign-in"], summary: "Verify the code", security: [],
-      description: "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no plan yet: open `checkout_url` to start Pro.",
+      description: "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
       requestBody: { required: true, content: { "application/json": { schema: ref("SignInVerify") } } },
       responses: { "201": json(ref("SignedIn"), "Signed in, with a new API key"), default: errorResponse("400 invalid_request (wrong or expired code), 429 rate_limited") },
     },
@@ -296,7 +311,7 @@ const CLOUD_PATHS = {
   "/account": {
     get: {
       operationId: "account", tags: ["Account"], summary: "Get your account",
-      description: "Your account id, status and plan.",
+      description: "Your account id and status, and when stored media will be deleted if your wallet is below zero.",
       responses: { "200": json(ref("Account"), "Your account"), ...AUTH_ERRORS },
     },
     post: {
@@ -308,14 +323,14 @@ const CLOUD_PATHS = {
   "/usage": {
     get: {
       operationId: "usage", tags: ["Account"], summary: "Get usage",
-      description: "This billing period's usage and what's left of your included allowance.",
+      description: "Your wallet balance and this month's usage and spend.",
       responses: { "200": json(ref("Usage"), "Usage"), ...AUTH_ERRORS },
     },
   },
   "/entitlements": {
     get: {
-      operationId: "entitlements", tags: ["Account"], summary: "Get plan limits",
-      description: "Your plan's limits and features.",
+      operationId: "entitlements", tags: ["Account"], summary: "Get your limits",
+      description: "Your limits and features: spend limit, render minutes, storage, renders at once, largest upload, longest render, 4K.",
       responses: { "200": json(ref("Entitlements"), "Limits"), ...AUTH_ERRORS },
     },
   },
@@ -343,17 +358,25 @@ const CLOUD_PATHS = {
   "/billing/checkout": {
     post: {
       operationId: "billing_checkout", tags: ["Billing"], summary: "Get a checkout link",
-      description: "A Stripe Checkout link that starts the Pro plan: $25 a month plus usage, card required. Open it in a browser. 409 if you already have an active plan.",
+      description: "Sign up for paid use: a Stripe Checkout link to add a card and make your first payment into your prepaid wallet ($5 by default). There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
       requestBody: { required: false, content: { "application/json": { schema: ref("CheckoutRequest") } } },
-      responses: { "200": json(ref("BillingLink"), "Checkout link"), ...AUTH_ERRORS, "409": errorResponse("You already have an active plan.") },
+      responses: { "200": json(ref("BillingLink"), "Checkout link"), ...AUTH_ERRORS, "409": errorResponse("Your wallet is already set up.") },
+    },
+  },
+  "/billing/top-up": {
+    post: {
+      operationId: "billing_top_up", tags: ["Billing"], summary: "Get a top-up link",
+      description: "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
+      requestBody: { required: false, content: { "application/json": { schema: ref("TopUpRequest") } } },
+      responses: { "200": json(ref("BillingLink"), "Top-up link"), ...AUTH_ERRORS, default: errorResponse("400 invalid_request (an amount outside $5 to $500, or not whole cents)") },
     },
   },
   "/billing/portal": {
     post: {
       operationId: "billing_portal", tags: ["Billing"], summary: "Get a billing portal link",
-      description: "A Stripe billing portal link to update your card, see invoices or cancel. 409 before your first checkout.",
+      description: "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment.",
       requestBody: { required: false, content: { "application/json": { schema: ref("PortalRequest") } } },
-      responses: { "200": json(ref("BillingLink"), "Portal link"), ...AUTH_ERRORS, "409": errorResponse("No subscription yet.") },
+      responses: { "200": json(ref("BillingLink"), "Portal link"), ...AUTH_ERRORS, "409": errorResponse("No payment yet: use POST /billing/checkout first.") },
     },
   },
 };
@@ -438,7 +461,7 @@ export function buildSpec(engine) {
     openapi: "3.1.0",
     info: {
       title: "VidJutsu Cloud API",
-      version: "3",
+      version: API_VERSION,
       description: "Video editing built for agents: upload takes, edit a timeline with history, and render it on cloud machines. The same operations are MCP tools at https://api.vidjutsu.ai/mcp.",
     },
     servers: [{ url: "https://api.vidjutsu.ai" }],

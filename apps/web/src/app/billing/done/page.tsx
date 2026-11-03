@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Subscribed",
+  title: "Payment received",
 };
 
 export default function BillingDonePage() {
@@ -25,12 +25,13 @@ export default function BillingDonePage() {
             </svg>
           </div>
           <h1 className="text-2xl font-semibold text-ink mb-2">
-            You&rsquo;re on Pro
+            Payment received
           </h1>
           <p className="text-ink-muted">
-            Your plan is active. Go back to your agent or terminal and carry on:
-            <code className="font-mono text-sm"> vidjutsu account</code> shows
-            it.
+            Your wallet is funded and your account is active. Go back to your
+            agent or terminal and carry on:
+            <code className="font-mono text-sm"> vidjutsu usage</code> shows
+            your balance.
           </p>
         </div>
 
