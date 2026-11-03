@@ -1353,7 +1353,7 @@
           "Media"
         ],
         "summary": "Make a preview",
-        "description": "Make a media item's preview files: a small proxy video, a filmstrip and a waveform. $0.04 per source minute, billed by the second, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the preview. If the preview exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors.",
+        "description": "Make a media item's preview files: a small proxy video, a filmstrip and a waveform. Billed by box time, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the preview. If the preview exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors.",
         "parameters": [
           {
             "description": "A stored media hash (64 hex digits).",
@@ -1575,7 +1575,7 @@
           "Media"
         ],
         "summary": "Make a transcript",
-        "description": "Transcribe a media item: words with start and end times, and speakers when known. $0.02 per source minute, billed by the second, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the transcript. If it exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors.",
+        "description": "Transcribe a media item: words with start and end times, and speakers when known. Billed by box time, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the transcript. If it exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors.",
         "parameters": [
           {
             "description": "A stored media hash (64 hex digits).",
@@ -3154,7 +3154,7 @@
           "Billing"
         ],
         "summary": "Get a price quote",
-        "description": "What it costs, before you spend: a render of the project's current timeline at each quality (1080p, 4K) and Studio Sound on it, priced from your plan, and whether your wallet would let each start. A render's price is exact (billed by the second). Studio Sound is the most it can cost: every voice file on the audio tracks, or only `media`; voices cleaned before are free. Free to call.",
+        "description": "What it would cost, before you spend: estimates for a render of the project's current timeline at each quality (1080p, 4K) and Studio Sound on it, priced from your plan, and whether your wallet would let each start. Jobs are charged the box time they use, so these are estimates. Studio Sound covers every voice file on the audio tracks, or only `media`; voices cleaned before are free. Free to call.",
         "parameters": [
           {
             "name": "project",
@@ -3573,7 +3573,7 @@
           "Audio"
         ],
         "summary": "Turn on Studio Sound",
-        "description": "Clean every voice on the project's audio tracks (noise, echo, tone and level) and swap the cleaned copies onto their clips, as one revision. Send `media` (media ids) to clean only those, so music is left alone. $0.10 per minute of voice cleaned, billed by the second; a voice cleaned before is reused for free. Answers with a job: poll `GET /jobs/{job_id}`. `show` then reports `studio_sound` (`on`, `off` or `partial`) and the revision that turned it on; undo that revision to turn it off. If a Studio Sound job is already running, `started` is false and nothing is charged. See [Studio Sound](https://docs.vidjutsu.ai/guides/studio-sound).",
+        "description": "Clean every voice on the project's audio tracks (noise, echo, tone and level) and swap the cleaned copies onto their clips, as one revision. Send `media` (media ids) to clean only those, so music is left alone. Billed by box time (about 1.5 cents a voice minute); a voice cleaned before is reused for free. Answers with a job: poll `GET /jobs/{job_id}`. `show` then reports `studio_sound` (`on`, `off` or `partial`) and the revision that turned it on; undo that revision to turn it off. If a Studio Sound job is already running, `started` is false and nothing is charged. See [Studio Sound](https://docs.vidjutsu.ai/guides/studio-sound).",
         "parameters": [
           {
             "description": "Project name (letters, digits, '-', '_').",
@@ -6014,7 +6014,7 @@
           },
           "billed_seconds": {
             "type": "number",
-            "description": "What is billed: every second, with no minimum."
+            "description": "Billed by the second, with no minimum."
           },
           "allowed": {
             "type": "boolean",
@@ -6479,7 +6479,7 @@
                 }
               ]
             },
-            "description": "A render of the current timeline at each quality your plan has. Exact."
+            "description": "A render of the current timeline at each quality your plan has."
           },
           "studio_sound": {
             "oneOf": [
@@ -6510,7 +6510,7 @@
                 "type": "null"
               }
             ],
-            "description": "Studio Sound on the voice files: the most it can cost, since voices cleaned before are free."
+            "description": "Studio Sound on the voice files. Voices cleaned before are free."
           }
         }
       },

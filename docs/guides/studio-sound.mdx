@@ -1,6 +1,6 @@
 ---
 title: "Studio Sound"
-description: "Clean every voice in a project in one step: noise, echo, tone and level. $0.10 a voice minute, billed by the second."
+description: "Clean every voice in a project in one step: noise, echo, tone and level. About 1.5 cents a voice minute."
 ---
 
 Studio Sound cleans the voices in a project: background noise and room echo come down, tone and level even out. It cleans each voice file whole and swaps the cleaned copies onto the clips that use them, as one revision, so every cut you've made stays where it is.
@@ -33,9 +33,9 @@ In the editor, Studio Sound is a switch, and it shows the price before you turn 
 
 ## Price
 
-**$0.10 per minute of voice cleaned**, billed by the second, with no minimum: a 45-second voice file costs $0.075. A voice file is cleaned whole, once; a voice cleaned before is reused for free, so turning Studio Sound off and on again, or adding a cut, costs nothing more.
+Studio Sound is billed like every job: by the box time it uses, at $0.03 per vCPU-minute, by the second, with no minimum. That comes to about **1.5 cents per minute of voice**. A voice file is cleaned whole, once; a voice cleaned before is reused for free, so turning Studio Sound off and on again, or adding a cut, costs nothing more.
 
-Check first with `GET /projects/{project}/quote`, which returns the most it can cost (every voice file on the audio tracks, or only `?media=`) and whether your wallet would let it start:
+Check first with `GET /projects/{project}/quote`, which estimates the cost (every voice file on the audio tracks, or only `?media=`) and says whether your wallet would let it start:
 
 ```json
 {"project": "launch-film", "length_seconds": 118.4, "balance_micros": 12400000, "balance_usd": 12.4,

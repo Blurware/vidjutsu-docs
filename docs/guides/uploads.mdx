@@ -87,12 +87,12 @@ The link must be `https://` to a named host: no IP addresses, `localhost` or cre
 
 Two background jobs turn a stored file into what the editor and agents read:
 
-| Call | Makes | Price |
-| --- | --- | --- |
-| `POST /media/{hash}/preview` | A small proxy video, a filmstrip and a waveform | $0.04 per source minute |
-| `POST /media/{hash}/transcript` | The words, with start and end times, and speakers when known | $0.02 per source minute |
+| Call | Makes |
+| --- | --- |
+| `POST /media/{hash}/preview` | A small proxy video, a filmstrip and a waveform |
+| `POST /media/{hash}/transcript` | The words, with start and end times, and speakers when known |
 
-Each is billed by the second with no minimum, and made once per file: asking again while one exists or is being made answers `started: false` and costs nothing. Otherwise the answer is a job: poll `GET /jobs/{job_id}`, then read the result, which is free:
+Each is billed by the box time it uses ([pricing](/pricing)), and made once per file: asking again while one exists or is being made answers `started: false` and costs nothing. Otherwise the answer is a job: poll `GET /jobs/{job_id}`, then read the result, which is free:
 
 ```sh
 curl -s -X POST https://api.vidjutsu.ai/media/<hash>/transcript \
@@ -113,4 +113,4 @@ Transcripts are what [timeline words](/guides/agents#cut-by-the-script) and [wor
 
 ## Cost
 
-Uploading is free; stored bytes count toward storage. Previews and transcripts are priced above. See [Pricing](/pricing).
+Uploading is free; stored bytes count toward storage. Previews and transcripts are billed by box time. See [Pricing](/pricing).

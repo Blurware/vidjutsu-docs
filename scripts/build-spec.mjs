@@ -31,11 +31,11 @@ const ENGINE_ROUTES = [
   ["get", "/v3/media/{hash}/url", "media_url", "Get a download link", "Media",
     "A time-limited download link for a media item or a finished render. `ttl` is in seconds, from 60 to 604800 (default 86400)."],
   ["post", "/v3/media/{hash}/preview", "make_preview", "Make a preview", "Media",
-    "Make a media item's preview files: a small proxy video, a filmstrip and a waveform. $0.04 per source minute, billed by the second, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the preview. If the preview exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors."],
+    "Make a media item's preview files: a small proxy video, a filmstrip and a waveform. Billed by box time, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the preview. If the preview exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors."],
   ["get", "/v3/media/{hash}/preview", "media_preview", "Get a preview", "Media",
     "A media item's preview: `state` (`none`, `pending`, `ready` or `failed`) and, when ready, time-limited links to the proxy video, filmstrip and waveform. Free."],
   ["post", "/v3/media/{hash}/transcript", "make_transcript", "Make a transcript", "Media",
-    "Transcribe a media item: words with start and end times, and speakers when known. $0.02 per source minute, billed by the second, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the transcript. If it exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors."],
+    "Transcribe a media item: words with start and end times, and speakers when known. Billed by box time, once per media item. Answers with a job (`started: true`); poll `GET /jobs/{job_id}`, then read the transcript. If it exists or is being made, `started` is false and nothing is charged. Send `project` to show its progress in that project's open editors."],
   ["get", "/v3/media/{hash}/transcript", "media_transcript", "Get a transcript", "Media",
     "A media item's transcript: `state` (`none`, `pending`, `ready` or `failed`) and, when ready, its language and a time-limited link (`words.url`) to a JSON array of words with start and end times. Free."],
   ["post", "/v3/uploads", "create_upload", "Start an upload", "Uploads",
@@ -61,7 +61,7 @@ const ENGINE_ROUTES = [
   ["post", "/v3/projects/{project}/level", "level", "Level audio", "Audio",
     "Measure what each clip on the named audio tracks plays (EBU R128) and set gains so each plays at `target` LUFS, as one edit. `dry_run` measures without editing."],
   ["post", "/v3/projects/{project}/studio-sound", "studio_sound", "Turn on Studio Sound", "Audio",
-    "Clean every voice on the project's audio tracks (noise, echo, tone and level) and swap the cleaned copies onto their clips, as one revision. Send `media` (media ids) to clean only those, so music is left alone. $0.10 per minute of voice cleaned, billed by the second; a voice cleaned before is reused for free. Answers with a job: poll `GET /jobs/{job_id}`. `show` then reports `studio_sound` (`on`, `off` or `partial`) and the revision that turned it on; undo that revision to turn it off. If a Studio Sound job is already running, `started` is false and nothing is charged. See [Studio Sound](" + DOCS + "/guides/studio-sound)."],
+    "Clean every voice on the project's audio tracks (noise, echo, tone and level) and swap the cleaned copies onto their clips, as one revision. Send `media` (media ids) to clean only those, so music is left alone. Billed by box time (about 1.5 cents a voice minute); a voice cleaned before is reused for free. Answers with a job: poll `GET /jobs/{job_id}`. `show` then reports `studio_sound` (`on`, `off` or `partial`) and the revision that turned it on; undo that revision to turn it off. If a Studio Sound job is already running, `started` is false and nothing is charged. See [Studio Sound](" + DOCS + "/guides/studio-sound)."],
   ["post", "/v3/projects/{project}/renders", "render", "Start a render", "Renders",
     "Render a project's timeline (the branch head, or a pinned revision) on parallel cloud machines. Answers 202 with a job right away; poll it until it ends. Send an `Idempotency-Key` header so a retry returns the same job. Ranges that didn't change since a previous render are reused."],
   ["get", "/v3/jobs/{job_id}", "render_status", "Get a render job", "Renders",
@@ -469,7 +469,7 @@ const EDITOR_SCHEMAS = {
   Money: obj({
     cost_micros: { type: "integer" }, cost_usd: { type: "number" },
     wallet_after_micros: { type: "integer", description: "Your balance after it (never below zero)." },
-    billed_seconds: { type: "number", description: "What is billed: every second, with no minimum." },
+    billed_seconds: { type: "number", description: "Billed by the second, with no minimum." },
     allowed: { type: "boolean", description: "Whether your wallet would let it start." },
     reason: { type: ["string", "null"], description: "Why not, when it wouldn't: `no_plan`, `payment_failed`, `spend_limit` or `insufficient_credits`." },
     message: { type: ["string", "null"] },
@@ -477,8 +477,8 @@ const EDITOR_SCHEMAS = {
   Quote: obj({
     project: str(""), revision: { type: ["string", "null"] }, length_seconds: { type: "number" },
     balance_micros: { type: "integer" }, balance_usd: { type: "number" },
-    render: { type: "array", items: { allOf: [ref("Money"), obj({ quality: str("`1080p` or `4k`."), height: { type: "integer" } })] }, description: "A render of the current timeline at each quality your plan has. Exact." },
-    studio_sound: { oneOf: [{ allOf: [ref("Money"), obj({ voice_seconds: { type: "number" }, media: { type: "array", items: { type: "string" }, description: "The voices it would clean." } })] }, { type: "null" }], description: "Studio Sound on the voice files: the most it can cost, since voices cleaned before are free." },
+    render: { type: "array", items: { allOf: [ref("Money"), obj({ quality: str("`1080p` or `4k`."), height: { type: "integer" } })] }, description: "A render of the current timeline at each quality your plan has." },
+    studio_sound: { oneOf: [{ allOf: [ref("Money"), obj({ voice_seconds: { type: "number" }, media: { type: "array", items: { type: "string" }, description: "The voices it would clean." } })] }, { type: "null" }], description: "Studio Sound on the voice files. Voices cleaned before are free." },
   }),
   Wallet: obj({
     standing: ref("AccountStatus"),
@@ -635,7 +635,7 @@ const EDITOR_PATHS = {
   "/projects/{project}/quote": {
     get: {
       operationId: "quote", tags: ["Billing"], summary: "Get a price quote",
-      description: "What it costs, before you spend: a render of the project's current timeline at each quality (1080p, 4K) and Studio Sound on it, priced from your plan, and whether your wallet would let each start. A render's price is exact (billed by the second). Studio Sound is the most it can cost: every voice file on the audio tracks, or only `media`; voices cleaned before are free. Free to call.",
+      description: "What it would cost, before you spend: estimates for a render of the project's current timeline at each quality (1080p, 4K) and Studio Sound on it, priced from your plan, and whether your wallet would let each start. Jobs are charged the box time they use, so these are estimates. Studio Sound covers every voice file on the audio tracks, or only `media`; voices cleaned before are free. Free to call.",
       parameters: [PROJECT_PARAM, queryParam("media", { type: "string" }, "Studio Sound on only these media ids, separated by commas.")],
       responses: { "200": json(ref("Quote"), "Prices"), ...AUTH_ERRORS },
     },
