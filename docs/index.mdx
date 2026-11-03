@@ -34,13 +34,15 @@ All of them use the same operations with the same names, and the same JSON in an
 | **CLI** | The terminal and shell scripts: `npm i -g vidjutsu` | [CLI](/cli/index) |
 | **MCP** | Agents: `https://api.vidjutsu.ai/mcp` | [MCP](/mcp) |
 | **TypeScript SDK** | Node, Bun and the browser | [SDK](/sdk/index) |
-| **Mac editor** | Reading, watching and commenting on a cut, and chatting with an agent | [VidJutsu Editor](/editor/index) |
+| **Mac editor** | Planning and recording with the shot list, cutting by the script, watching what your agent does, and chatting with it | [VidJutsu Editor](/editor/index) |
 
 ## What it does and doesn't do
 
 VidJutsu edits and renders footage you bring. It doesn't generate video, and it doesn't post to social networks.
 
 - **Inputs:** video (phone footage, screen recordings, ProRes, anything common), audio and still images. Footage is stored as you uploaded it and converted at render time, only the parts a render uses.
-- **Timeline:** video tracks (the first is the picture, tracks above it hold still-image overlays), any number of audio tracks mixed together, clip gain, linear fades, picture-in-picture layouts, and cutting pauses across every track at once.
-- **Audio:** level clips to a target loudness, and studio-sound cleanup for voice tracks with an optional music bed.
+- **Timeline:** video tracks drawn bottom to top (a screen, a camera over it, graphics over both), any number of audio tracks mixed together, clip gain, linear fades, screen and camera [layouts](/guides/layouts) with shapes and smooth moves, and cutting pauses across every track at once.
+- **Planning and history:** a [shot list](/guides/shot-list) of scenes and shots with each take filed under its scene, word search across every file, and [history with undo](/guides/agents#undo-and-history) of any single change.
+- **Audio:** level clips to a target loudness, and [Studio Sound](/guides/studio-sound) to clean every voice.
+- **Working together:** agents and people in the same project, with [live updates](/guides/live-updates), comments, and what each agent is working on.
 - **Output:** an MP4 at 1920x1080 or 3840x2160, 30 fps, with a download link.

@@ -1,0 +1,76 @@
+---
+title: "Screen and camera layouts"
+description: "Lay out a screen recording and a camera with a preset, or place any video track yourself: shapes, crop, fit and smooth moves."
+---
+
+A screen recording and a camera are two files on two video tracks, so they can be cut and placed separately. A **layout** says where each one goes. Pick a preset for the whole video or a stretch of it, or place any video track yourself with `set_layout`. Every change is an ordinary edit: a new revision, in history, with Undo.
+
+## Presets
+
+`GET /layouts` (`vidjutsu layouts`) lists the six built-in presets and the ones saved to your account, the same list the editor shows:
+
+| Preset | Screen | Camera |
+| --- | --- | --- |
+| `circle_corner` | Full frame | A circle in the bottom-right corner |
+| `square_corner` | Full frame | A rounded square in the bottom-left corner |
+| `side_by_side` | Left two thirds | Right third |
+| `camera_third` | Right two thirds | Left third |
+| `camera_only` | Hidden | Full frame |
+| `screen_only` | Full frame | Hidden |
+
+Each preset has `id`, `name`, `builtin` and `parts`: a `screen` and a `camera` [layout](#layout-fields).
+
+## Apply one
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/layout \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"preset": "circle_corner", "from": "12.5", "to": 40}'
+```
+
+Leave out `from` and `to` to lay out the whole video. The answer is the edit (like [`POST /projects/{project}/edits`](/guides/editing#send-an-edit) answers) plus `applied`, which track got which part.
+
+Which track is the screen and which the camera? From the files' kinds in the [shot list](/guides/shot-list) (`screen`, `camera`); otherwise the lowest video track is the screen and the next one the camera. Send `screen_track` and `camera_track` to choose. Send `expected_head` to make sure nobody edited first.
+
+The CLI: `vidjutsu layout launch-film circle_corner --from 12.5 --to 40`. The SDK: `applyLayout(project, preset, {from, to})`. MCP: `apply_layout`.
+
+In the editor, the same presets sit under the player. Drag and resize the camera on the video, pick a shape, then use it for the selection or the whole video, or save it as a preset. A shot in the shot list can name the layout to record it with.
+
+## Save your own
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/layouts \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"name": "Big camera right",
+       "screen": {"x": 0, "y": 0, "width": 600, "height": 1000, "fit": "contain"},
+       "camera": {"x": 600, "y": 150, "width": 380, "height": 700, "shape": "rounded", "fit": "cover"}}'
+```
+
+Saving again under the same name replaces the preset (`replaced: true`); built-in names are taken. `DELETE /layouts/{layout_id}` deletes a saved preset. The CLI: `vidjutsu layouts save preset.json` and `vidjutsu layouts delete <layout_id>`.
+
+## Layout fields
+
+A layout is a place on a 1000x1000 canvas, whatever the output size:
+
+| Field | | |
+| --- | --- | --- |
+| `x`, `y`, `width`, `height` | required | The box. `{"x": 0, "y": 0, "width": 1000, "height": 1000}` is full frame. |
+| `shape` | `square` | `square`, `rounded` or `circle`. |
+| `radius` | `140` | Rounded corners, in thousandths of the box's shorter side. |
+| `crop` | | `{x, y, width, height}` of the source to show, on the same 1000 grid. |
+| `fit` | `stretch` | How the source fills the box: `stretch`, `cover` (fill and crop) or `contain` (show it all). Presets use `cover` for cameras and `contain` for screens, so nothing is squashed. |
+| `hidden` | `false` | Hide the track over the range. |
+| `cut` | `false` | Jump straight to this layout. By default a move from the layout before glides over a third of a second. |
+
+## Place a track yourself
+
+A preset is just two `set_layout` operations. Send your own to place any video track over a range:
+
+```json
+{"operations": [
+  {"op": "set_layout", "track_id": "v2", "range": {"start": "12.5", "end": 40},
+   "layout": {"x": 775, "y": 617, "width": 190, "height": 338, "shape": "circle", "fit": "cover"}}
+], "expected_head": "<revision>"}
+```
+
+Any video track can hold video, and tracks are drawn bottom to top, so a camera on `v2` sits over the screen on `v1`, and a motion graphic on `v3` plays over both. When the same clip continues into a new layout, it glides there smoothly unless the new layout has `cut: true`.

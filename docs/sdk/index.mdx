@@ -37,6 +37,7 @@ new VidJutsu({
   baseUrl: "https://api.vidjutsu.ai",  // default
   fetch: customFetch,                  // default: global fetch
   apiVersion: "2026-11-03",            // default: the version this SDK was built for
+  clientName: "My Agent",              // the name history and Activity show for your edits
 });
 ```
 
@@ -47,20 +48,41 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | Method | Operation |
 | --- | --- |
 | `signIn(email)`, `verify(attempt, code)` | [Sign up or sign in](/authentication). `verify` returns `{api_key, account_id, status, checkout_url?}`. No key needed. |
-| `account()`, `usage()`, `entitlements()` | Your account, usage and limits. |
+| `account()`, `usage()`, `wallet()`, `entitlements()` | Your account, usage, wallet and limits. |
 | `createKey(name)`, `listKeys()`, `revokeKey(keyId)` | API keys. |
 | `billingCheckout({amount_usd?, success_url?, cancel_url?})`, `billingTopUp({amount_usd?, success_url?, cancel_url?})`, `billingPortal({return_url?})` | Stripe links to sign up with your first payment, to add credits, or to manage your saved card. |
-| `upload(name, bytes)` | A [direct upload](/guides/uploads#direct-uploads): starts it, PUTs each part, completes it, and aborts on failure. |
-| `ingestUrl(url, name?, idempotencyKey?)` | Add media from a link. |
-| `createUpload(name, bytes, sha256)`, `completeUpload(uploadId, parts)`, `abortUpload(uploadId)` | Direct upload steps, if you want to send parts yourself (in parallel, or from a stream). |
+| `billingAutoTopUp({enabled, threshold_usd?, amount_usd?})` | Turn [auto top-up](/pricing#auto-top-up) on or off. |
+| `upload(name, bytes, {source?, project?})` | A [direct upload](/guides/uploads#direct-uploads): starts it, PUTs each part, completes it, and aborts on failure. |
+| `ingestUrl(url, name?, idempotencyKey?, {source?, project?})` | Add media from a link. |
+| `createUpload(name, bytes, sha256)`, `completeUpload(uploadId, parts, {source?, project?})`, `abortUpload(uploadId)` | Direct upload steps, if you want to send parts yourself (in parallel, or from a stream). |
 | `mediaInfo(hash)`, `mediaUrl(hash, ttlSeconds?)` | A media item, and a download link for it. |
-| `init(project, idempotencyKey?)`, `show(project)` | Create and read projects. |
-| `edit(project, operations, {expected_head?, branch?, idempotency_key?})` | [Edit](/guides/editing) a timeline. |
-| `level(project, body)`, `cleanAudio(body)` | [Audio](/guides/audio). |
+| `makePreview(hash, {project?})`, `mediaPreview(hash)`, `makeTranscript(hash, {project?})`, `mediaTranscript(hash)` | [Previews and transcripts](/guides/uploads#previews-and-transcripts). |
+| `listProjects({cursor?, limit?})`, `init(project, idempotencyKey?)`, `show(project, {revision?})`, `head(project)` | List, create and read projects. |
+| `edit(project, operations, {expected_head?, summary?, branch?, idempotency_key?})` | [Edit](/guides/editing) a timeline. |
+| `timelineWords(project, {revision?, pause?})` | The words and pauses on the edited timeline. |
+| `history(project, {limit?, before?})`, `undo(project, revision, {change?, expected_head?})`, `restore(project, revision, {expected_head?})` | [Undo and history](/guides/agents#undo-and-history). |
+| `shotList(project)`, `shotListEdit(project, expectedRevision, operations)`, `files(project)`, `searchWords(project, words, {limit?})` | The [shot list](/guides/shot-list), the project's files and word search. |
+| `layouts()`, `saveLayout({name, screen, camera})`, `deleteLayout(layoutId)`, `applyLayout(project, preset, {from?, to?})` | [Screen and camera layouts](/guides/layouts). |
+| `studioSound(project, {media?})`, `level(project, body)` | [Studio Sound](/guides/studio-sound) and [leveling](/guides/audio). |
+| `events(project, {after?, limit?})`, `stream(project, {lastEventId?, signal?})` | [Live updates](/guides/live-updates): notices as JSON, or the live stream as an async iterator. |
+| `setPresence(project, {selection?, playhead?})`, `workingOn(project, {text, clips?, range?, scene?})` | Say where you are and what you're doing. |
+| `comments(project)`, `addComment(project, body)`, `resolveComment(project, commentId, resolved?)`, `deleteComment(project, commentId)` | Comments. |
+| `quote(project, {media?})` | What a render and Studio Sound would cost. |
 | `render(project, body?, idempotencyKey?)` | Start a [render](/guides/rendering). |
-| `renderStatus(jobId)`, `cancelRender(jobId)` | Read or cancel a render job. |
-| `waitForRender(jobId, {intervalMs?, onUpdate?})` | Poll until the job ends (every 3 seconds by default). |
-| `request(method, path, body?, idempotencyKey?)` | Any other call, for example `request("POST", "/billing/auto-top-up", {enabled: true})`. |
+| `renderStatus(jobId)`, `cancelRender(jobId)` | Read any job, or cancel a render. |
+| `waitForJob(jobId, {intervalMs?, onUpdate?})` | Poll a job until it ends (every 3 seconds by default). `waitForRender` is the same. |
+| `request(method, path, body?, idempotencyKey?)` | Any other call. |
+
+## Live updates
+
+```ts
+const controller = new AbortController();
+for await (const { event, id, data } of api.stream("film", { signal: controller.signal })) {
+  if (event === "revision") console.log("new revision", data);
+}
+```
+
+`stream()` yields `{event, id?, data}` for each Server-Sent Event. It reconnects when the server ends the stream (about every five minutes) and resumes from the last notice it saw.
 
 ## Errors
 

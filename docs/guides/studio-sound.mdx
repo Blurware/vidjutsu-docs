@@ -1,0 +1,52 @@
+---
+title: "Studio Sound"
+description: "Clean every voice in a project in one step: noise, echo, tone and level. $0.10 a voice minute, billed by the second."
+---
+
+Studio Sound cleans the voices in a project: background noise and room echo come down, tone and level even out. It cleans each voice file whole and swaps the cleaned copies onto the clips that use them, as one revision, so every cut you've made stays where it is.
+
+## Turn it on
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/studio-sound \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"media": ["take1-audio", "take2-audio"]}'
+# {"job_id": "rj_...", "state": "queued", "started": true, ...}
+```
+
+It answers with a job right away. Poll `GET /jobs/{job_id}` until it has `succeeded` (or follow it in the [live stream](/guides/live-updates)); the new revision is then the project's head.
+
+| Field | Default | |
+| --- | --- | --- |
+| `media` | every audio media item the audio tracks play | Media ids to clean. Name your voices when the project has music, so the music is left alone. |
+| `branch` | `main` | |
+
+If a Studio Sound job is already running for the project, the answer says `started: false` and nothing is charged.
+
+The CLI waits for the job and prints the project: `vidjutsu studio-sound launch-film --media take1-audio,take2-audio`. The SDK: `studioSound(project, {media})`, then `waitForJob(job_id)`. MCP: `studio_sound`.
+
+In the editor, Studio Sound is a switch, and it shows the price before you turn it on.
+
+## On, off or partial
+
+`GET /projects/{project}` reports `studio_sound`: `on`, `off` or `partial` (some voices cleaned), and the revision that turned it on. To turn it off, [undo](/guides/agents#undo-and-history) that revision. Turning it on again later reuses the voices already cleaned.
+
+## Price
+
+**$0.10 per minute of voice cleaned**, billed by the second, with no minimum: a 45-second voice file costs $0.075. A voice file is cleaned whole, once; a voice cleaned before is reused for free, so turning Studio Sound off and on again, or adding a cut, costs nothing more.
+
+Check first with `GET /projects/{project}/quote`, which returns the most it can cost (every voice file on the audio tracks, or only `?media=`) and whether your wallet would let it start:
+
+```json
+{"project": "launch-film", "length_seconds": 118.4, "balance_micros": 12400000, "balance_usd": 12.4,
+ "studio_sound": {"voice_seconds": 160, "billed_seconds": 160, "cost_micros": 266667, "cost_usd": 0.27,
+                  "wallet_after_micros": 12133333, "wallet_after_usd": 12.13, "allowed": true, "reason": null, "message": null,
+                  "media": ["take1-audio", "take2-audio"]},
+ "render": [...]}
+```
+
+The CLI: `vidjutsu quote launch-film --media take1-audio,take2-audio`. See [Pricing](/pricing).
+
+## Loudness
+
+Studio Sound evens out each voice. To set every clip to the same loudness, [level](/guides/audio#level-clips) the audio tracks; to set the loudness of the finished film, pass `loudness` when you [render](/guides/rendering#options).

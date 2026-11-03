@@ -17,7 +17,7 @@ Or a standalone binary for macOS and Linux (no Node needed), installed to `~/.lo
 curl -fsSL https://vidjutsu.ai/install.sh | sh
 ```
 
-Check it with `vidjutsu --version`. This page covers version 2.1.0, the first to use date-versioned routes. Update older installs with `npm i -g vidjutsu@latest`.
+Check it with `vidjutsu --version`. This page covers version 2.2.0, which adds the shot list, history and undo, layouts, Studio Sound and live updates. Update older installs with `npm i -g vidjutsu@latest`.
 
 ## Sign in
 
@@ -33,6 +33,7 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | --- | --- |
 | `VIDJUTSU_API_KEY` | Use this key instead of the saved one. Handy in CI. |
 | `VIDJUTSU_API_URL` | API origin. Default `https://api.vidjutsu.ai`. |
+| `VIDJUTSU_CLIENT` | The name history and the editor's Activity show for your edits, for example `Claude Code`. Default: your API key's name. |
 | `XDG_CONFIG_HOME` | Where the saved key lives (default `~/.config`). |
 
 ## Commands
@@ -51,27 +52,82 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | `vidjutsu keys revoke <key_id>` | Revoke an API key. |
 | `vidjutsu billing checkout [--amount <usd>]` | A Stripe Checkout link to add a card and make your first payment ($5 by default). |
 | `vidjutsu billing top-up [--amount <usd>]` | A Stripe link to add credits to your wallet ($10 by default, $5 minimum). Plain `vidjutsu billing` does the same. |
+| `vidjutsu billing auto-top-up --on [--threshold <usd>] [--amount <usd>]` | Refill your wallet automatically when it runs low. `--off` turns it off. See [Auto top-up](/pricing#auto-top-up). |
 | `vidjutsu billing portal` | A Stripe link to update your saved card or see receipts. |
+| `vidjutsu wallet` | Your balance, saved card, auto top-up and this month's spend. |
 
 ### Media
 
 | Command | |
 | --- | --- |
-| `vidjutsu upload <file> [--name <name>]` | Upload a file straight to storage and add it to your library. |
-| `vidjutsu ingest <https-url> [--name <name>]` | Add media from a link. |
+| `vidjutsu upload <file> [--name <name>] [--project <project>]` | Upload a file straight to storage and add it to your library. `--project` shows the upload in that project's editors. |
+| `vidjutsu ingest <https-url> [--name <name>] [--project <project>]` | Add media from a link. |
 | `vidjutsu url <hash> [--ttl <seconds>]` | A time-limited download link. |
+| `vidjutsu preview <hash> [--project <project>] [--no-wait]` | Make a file's [preview](/guides/uploads#previews-and-transcripts) (or read it, if it exists), waiting for the job. |
+| `vidjutsu transcript <hash> [--project <project>] [--no-wait]` | Make a file's transcript (or read it), waiting for the job. |
 
-### Projects and renders
+### Projects
 
 | Command | |
 | --- | --- |
+| `vidjutsu projects [--limit <n>] [--cursor <next_cursor>]` | Your projects, most recently changed first. |
 | `vidjutsu init <project>` | Create a project. |
-| `vidjutsu show <project>` | Its current timeline. |
-| `vidjutsu edit <project> <ops.json \| ->` | Apply edit operations from a file, or `-` for stdin. The JSON is a list of operations, or `{"operations": [...], "expected_head": "..."}`. |
+| `vidjutsu show <project> [--revision <revision>]` | Its timeline, and who is in it right now. |
+| `vidjutsu head <project>` | Its head revision, without the timeline. |
+| `vidjutsu edit <project> <ops.json \| -> [--summary <line>]` | Apply edit operations from a file, or `-` for stdin. The JSON is a list of operations, or `{"operations": [...], "expected_head": "..."}`. |
+| `vidjutsu words <project> [--pause <seconds>]` | The words and pauses on the edited timeline ([cut by the script](/guides/agents#cut-by-the-script)). |
+| `vidjutsu search <project> <words...> [--limit <n>]` | Find spoken words in every file of the project. |
+| `vidjutsu files <project>` | Every file in the project, where it is used and where it came from. |
+| `vidjutsu level <project> --tracks <a1,a2> [--target <lufs>] [--dry-run]` | [Level](/guides/audio#level-clips) the clips on audio tracks. |
+
+### History
+
+| Command | |
+| --- | --- |
+| `vidjutsu history <project> [--limit <n>] [--before <next>]` | Every revision and shot list change, newest first. |
+| `vidjutsu undo <project> <revision> [--change <index>] [--expected-head <revision>]` | Undo a revision, or one change of it, as a new revision. |
+| `vidjutsu restore <project> <revision> [--expected-head <revision>]` | Bring back an earlier revision's timeline. |
+
+### Shot list
+
+| Command | |
+| --- | --- |
+| `vidjutsu shot-list <project>` | The [shot list](/guides/shot-list): scenes, shots and the files filed under each. |
+| `vidjutsu shot-list edit <project> <ops.json \| -> [--expected-revision <n>]` | Apply shot list operations. Without `--expected-revision` it uses the current one. |
+
+### Layouts and sound
+
+| Command | |
+| --- | --- |
+| `vidjutsu layouts` | The built-in and saved [layout presets](/guides/layouts). |
+| `vidjutsu layouts save <preset.json \| ->` | Save a preset (`{name, screen, camera}`). |
+| `vidjutsu layouts delete <layout_id>` | Delete a saved preset. |
+| `vidjutsu layout <project> <preset> [--from <time>] [--to <time>]` | Lay out the screen and camera with a preset, over a range or the whole video. |
+| `vidjutsu studio-sound <project> [--media <id,id>] [--no-wait]` | Turn on [Studio Sound](/guides/studio-sound) and wait for it. $0.10 a voice minute. |
+
+### Working together
+
+| Command | |
+| --- | --- |
+| `vidjutsu events <project> [--after <seq>]` | Change notices since a sequence number. |
+| `vidjutsu events <project> --follow` | The [live stream](/guides/live-updates): one JSON event per line, reconnecting as needed. |
+| `vidjutsu working-on <project> <text> [--clips <id,id>] [--from <time> --to <time>] [--scene <id>]` | Say what you're about to do. `--clear` clears it. |
+| `vidjutsu presence <project> [--playhead <time>] [--from <time> --to <time>]` | Say where you are. `--clear` clears it. |
+| `vidjutsu comments <project>` | The project's comments. |
+| `vidjutsu comment <project> <text> (--at <time> \| --from <time> --to <time> \| --reply-to <id>) [--quote <words>]` | Comment on a moment or a range, or reply. |
+| `vidjutsu comments resolve\|reopen\|delete <project> <comment_id>` | Resolve, reopen or delete a comment. |
+
+### Prices and renders
+
+| Command | |
+| --- | --- |
+| `vidjutsu quote <project> [--media <id,id>]` | What a render and Studio Sound would cost, before you spend. |
 | `vidjutsu render <project> [--json <body>] [--no-wait] [--out <file>]` | Render. Waits for the job unless `--no-wait`; `--out` saves the file. `--json` takes the [render options](/guides/rendering#options), for example `'{"height": 2160}'`. |
-| `vidjutsu status <job_id>` | A render job. |
+| `vidjutsu status <job_id>` | Any job. |
 | `vidjutsu cancel <job_id>` | Cancel a render job. |
 | `vidjutsu download <job_id> [--out <file>]` | Save a finished render (default `<job_id>.mp4`). |
+
+Times are seconds (`12`, `12.5`) or fractions (`1001/30000`).
 
 `vidjutsu --help` lists them all.
 

@@ -1,0 +1,112 @@
+---
+title: "Plan and record with the shot list"
+description: "Plan a video as scenes and shots, file each take under its scene, and find any word in any file."
+---
+
+Every project can have a **shot list**: the plan for the video, as scenes in order, each with its shots. It lives next to the timeline and never changes it. The takes you record or upload are filed under their scene (and, if you like, tagged with a shot), so you and your agent always know what each file is for and whether it made the cut.
+
+The editor shows the shot list as its own view next to Edit, where you can record a whole scene or a single shot. Agents read and write the same shot list through the API and MCP.
+
+## Read it
+
+```sh
+curl -s https://api.vidjutsu.ai/projects/launch-film/shot-list -H "Authorization: Bearer $KEY"
+```
+
+```json
+{
+  "revision": 4,
+  "timeline_revision": "...",
+  "scenes": [
+    {
+      "id": "sc_intro",
+      "title": "Intro",
+      "shots": [
+        {"id": "sh_hook", "talking": ["What we built", "Why it matters"], "script": "Last week we shipped...",
+         "visual": {"name": "Product shot", "note": "Close on the phone"}, "layout": "circle_corner"}
+      ],
+      "media": [
+        {"media": "<hash>", "name": "intro-take2.mov", "kind": "camera", "seconds": 41.2, "shot": "sh_hook",
+         "source": null, "on_timeline": [{"clip": "c1", "track": "v1", "start_seconds": 0, "end_seconds": 38.5}]}
+      ]
+    }
+  ]
+}
+```
+
+- A **shot** has talking points (`talking`, only the points), a rough `script` line, a key `visual` (`{media?, name?, note?}`) and the `layout` preset to record it with. Every field is optional.
+- `media` lists the files filed under the scene: takes and anything else attached, with each file's kind (`camera`, `screen`, `audio`, `video`, `image` or `file`), its length, the shot it's tagged with, and `on_timeline`, the clips that use it.
+- `revision` is the shot list's own revision. Send it back when you edit. A project with no shot list answers `revision: 0` and no scenes.
+
+The CLI: `vidjutsu shot-list launch-film`. The SDK: `shotList(project)`. MCP: `shot_list`.
+
+## Edit it
+
+Send a batch of operations with the revision you read. They are applied in order, all or none:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/shot-list/edits \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"expected_revision": 4, "operations": [
+        {"op": "add_scene", "id": "sc_demo", "title": "Demo", "after": "sc_intro"},
+        {"op": "add_shot", "scene": "sc_demo", "id": "sh_upload", "talking": ["Drag a file in"], "layout": "side_by_side"}
+      ]}'
+```
+
+The answer is the new shot list, plus `created`: the ids of the scenes and shots it made, in order. You can choose ids yourself (`id`), so later operations in the same batch can refer to them.
+
+If someone changed the shot list since you read it, nothing changes and you get a 409 `conflict` with `reason: "stale_revision"` and the current `shot_list`, so you can redo the edit on top of it.
+
+The CLI reads the operations from a file or stdin: `vidjutsu shot-list edit launch-film plan.json`. It uses the current revision if you don't pass `--expected-revision`.
+
+### Operations
+
+| `op` | Fields | What it does |
+| --- | --- | --- |
+| `add_scene` | `title`, `id`, `after` | Add a scene after another one (`after` a scene id); at the end if left out. |
+| `rename_scene` | `scene`, `title` | Rename a scene. |
+| `move_scene` | `scene`, `after` | Move a scene after another one, or to the top with `after: null`. |
+| `remove_scene` | `scene` | Remove a scene. Its files stay in the project. |
+| `add_shot` | `scene`, `id`, `after`, `talking`, `script`, `visual`, `layout` | Add a shot to a scene. |
+| `set_shot` | `shot`, `talking`, `script`, `visual`, `layout` | Change only the fields you send. `talking` is the whole list. |
+| `move_shot` | `shot`, `scene`, `after` | Move a shot, within its scene or to another. Its tagged takes move with it. |
+| `remove_shot` | `shot` | Remove a shot. Its takes stay in the scene, untagged. |
+| `attach_media` | `scene`, `media`, `shot`, `name`, `kind`, `seconds`, `media_id`, `recording`, `started_at`, `source` | File a stored file (by its hash) under a scene, optionally tagged with a shot. Attaching it again re-tags it or moves it to another scene. |
+| `detach_media` | `scene`, `media` | Take a file out of its scene. It stays in the project. |
+
+None of these touch the timeline. To put a take in the cut, [edit the timeline](/guides/editing) with `add_media` and `insert_clip`.
+
+## Record a scene or a shot
+
+In the editor, open the Shot list view and record a whole scene or a single shot. Screen and camera are recorded as **two files**, so they can be cut and laid out separately. Each take is uploaded and filed under its scene (tagged with its shot) as soon as you stop. The app never puts takes on the timeline by itself: you, or your agent, choose what goes in the cut.
+
+Recording from your own tools works the same way: upload the file (`vidjutsu upload take.mov`), then `attach_media` it to its scene.
+
+## Files and where they came from
+
+`GET /projects/{project}/files` (`vidjutsu files <project>`, MCP `files`) lists every file in the project: the ones filed under each scene in shot list order, then files that were filed once and taken out (`scene: null`), then any other file on the timeline. Each has its name, kind, length, scene, shot, `on_timeline` clips and `source`.
+
+`source` says where a file came from, so an agent knows what to change to remake it. Set it when you add the file (`source` on `POST /media` or on completing an upload) or when you attach it, for example `{"type": "hyperframes", "project": "intro-card", "version": 3}`. A finished render's file gets `{"type": "render", "job_id": "...", "project": "...", "revision": "..."}`.
+
+## Find what was said
+
+`GET /projects/{project}/words?query=...` searches the spoken words of every file in the project, whether or not it's on the timeline:
+
+```sh
+curl -s "https://api.vidjutsu.ai/projects/launch-film/words?query=ten+times+faster" -H "Authorization: Bearer $KEY"
+```
+
+```json
+{"query": "ten times faster", "total": 1, "searched": 6, "not_transcribed": ["<hash>"],
+ "matches": [{"media": "<hash>", "name": "demo-take1.mov", "scene": "sc_demo", "shot": "sh_upload",
+              "start_seconds": 12.48, "end_seconds": 13.6, "text": "ten times faster",
+              "before": "and it renders about", "after": "than doing it by hand"}]}
+```
+
+Words match in order, ignoring case and punctuation. `start_seconds` and `end_seconds` are times in that file, ready for an `insert_clip` source range. Files without a transcript are listed in `not_transcribed`: make one with `POST /media/{hash}/transcript` (see [Previews and transcripts](/guides/uploads#previews-and-transcripts)).
+
+The CLI: `vidjutsu search launch-film ten times faster`.
+
+## History
+
+Every shot list edit appears in the project's [history](/guides/agents#undo-and-history), with who made it, next to the timeline's revisions, and as a `shot_list` notice in the [live stream](/guides/live-updates).

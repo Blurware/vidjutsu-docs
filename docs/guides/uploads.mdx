@@ -79,10 +79,38 @@ The bytes go from you to storage by presigned links, never through the API, in p
 
 The link must be `https://` to a named host: no IP addresses, `localhost` or credentials in the URL, and redirects are not followed. A presigned link from your own storage works. `name` is optional and defaults to the link's last path part.
 
+## Where a file came from
+
+`POST /media` and completing an upload take an optional `source`: where the file came from, for example `{"type": "hyperframes", "project": "intro-card", "version": 3}`. A project's [files](/guides/shot-list#files-and-where-they-came-from) list shows it, so an agent knows what to edit to remake the file. Send `project` too, and that project's open editors show the upload and its progress.
+
+## Previews and transcripts
+
+Two background jobs turn a stored file into what the editor and agents read:
+
+| Call | Makes | Price |
+| --- | --- | --- |
+| `POST /media/{hash}/preview` | A small proxy video, a filmstrip and a waveform | $0.04 per source minute |
+| `POST /media/{hash}/transcript` | The words, with start and end times, and speakers when known | $0.02 per source minute |
+
+Each is billed by the second with no minimum, and made once per file: asking again while one exists or is being made answers `started: false` and costs nothing. Otherwise the answer is a job: poll `GET /jobs/{job_id}`, then read the result, which is free:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/media/<hash>/transcript \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' -d '{"project": "launch-film"}'
+# {"job_id": "rj_...", "state": "queued", "started": true, ...}
+
+curl -s https://api.vidjutsu.ai/media/<hash>/transcript -H "Authorization: Bearer $KEY"
+# {"state": "ready", "language": "en", "words": {"url": "https://..."}, ...}
+```
+
+`GET /media/{hash}/preview` and `GET /media/{hash}/transcript` report a `state` (`none`, `pending`, `ready` or `failed`) and, when ready, time-limited links. A transcript's `words.url` is a JSON array of words with `start` and `end` seconds. The CLI does both steps and waits: `vidjutsu transcript <hash>` and `vidjutsu preview <hash>`.
+
+Transcripts are what [timeline words](/guides/agents#cut-by-the-script) and [word search](/guides/shot-list#find-what-was-said) read.
+
 ## Download links
 
 `GET /media/{hash}/url?ttl=3600` returns a time-limited link to any stored file, including finished renders. `ttl` is in seconds, from 60 to 604800 (7 days); the default is one day. The CLI: `vidjutsu url <hash> --ttl 3600`.
 
 ## Cost
 
-Uploading is free; stored bytes count toward storage. See [Pricing](/pricing).
+Uploading is free; stored bytes count toward storage. Previews and transcripts are priced above. See [Pricing](/pricing).

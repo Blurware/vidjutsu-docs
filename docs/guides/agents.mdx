@@ -1,0 +1,111 @@
+---
+title: "Edit with agents"
+description: "Let agents cut while you watch: say what you're doing, cut by the script, and undo any change from history."
+---
+
+VidJutsu is built for an agent and a person working on the same cut. The agent edits through the API or [MCP](/mcp); the person watches in the [editor](/editor/index), or reads history and comments from anywhere. Edits land right away. Every edit is a new revision with an author and a one-line summary, so nothing is ever lost and any change can be undone.
+
+## Who is in the project
+
+`GET /projects/{project}` (`show`) returns the timeline and who is in the project right now:
+
+- **`presence`**: people in the editor, with their `selection` (`{start, end, clips?}`) and `playhead`. The editor writes it about once a second, so an agent asked to "cut what I selected" can read the selection and cut exactly that.
+- **`working_on`**: what agents said they are about to do.
+
+To write your own presence (any client can), send `POST /projects/{project}/presence` with `selection` and `playhead`; null clears either, and fields you leave out stay as they were. Presence goes away a minute after the last write.
+
+## Say what you're doing
+
+Before a change a person would want to see coming, say so:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/working_on \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"text": "Cutting the long pauses in the intro", "range": {"start": 0, "end": 45}}'
+```
+
+The editor shows it in Activity and highlights the `clips`, `range` or `scene` you name. It clears on your next edit, or two minutes after your last call; call again to keep it up, or send `{"text": null}` to clear it. The CLI: `vidjutsu working-on launch-film Cutting the long pauses --from 0 --to 45`.
+
+## Name yourself
+
+History, Activity and change notices name whoever made each revision. Send a `VidJutsu-Client` header (for example `VidJutsu-Client: Claude Code`) and that's the name people see; without it, an agent is named by its API key's name. The CLI sends `VIDJUTSU_CLIENT`, and the SDK takes `clientName`.
+
+Each edit can also carry a `summary`, the one line history and Activity show for it ("Cut 14 filler words"). Leave it out and one is written from the operations.
+
+## Cut by the script
+
+`GET /projects/{project}/timeline-words` returns the words heard on the edited timeline, in order, with the pauses between them:
+
+```json
+{"revision": "...", "pause_seconds": 0.5, "words": 312,
+ "items": [
+   {"kind": "word", "text": "Last", "start": {"ticks": 12, "rate": 10}, "end": {"ticks": 15, "rate": 10},
+    "track": "a1", "occurrence": "t1-sound", "media": "take1-audio"},
+   {"kind": "pause", "start": {"ticks": 31, "rate": 10}, "end": {"ticks": 52, "rate": 10}, "seconds": 2.1}
+ ],
+ "untranscribed": []}
+```
+
+Times are exact timeline times, so a run of words or a pause goes straight into a `cut_pauses` range:
+
+```json
+{"operations": [{"op": "cut_pauses", "ranges": [{"start": {"ticks": 31, "rate": 10}, "end": {"ticks": 52, "rate": 10}}]}],
+ "expected_head": "<revision>", "summary": "Cut a 2.1 s pause"}
+```
+
+`pause` sets the shortest pause listed (default 0.5 seconds). Media without a transcript is listed in `untranscribed`: make one with `POST /media/{hash}/transcript`. The CLI: `vidjutsu words launch-film --pause 1`.
+
+In the editor, the person does the same by selecting words in the script and pressing Delete.
+
+## Undo and history
+
+`GET /projects/{project}/history` lists every revision, newest first, merged with the [shot list](/guides/shot-list)'s changes:
+
+```json
+{"project": "launch-film", "next": "eyJ0Ijo...",
+ "entries": [
+   {"kind": "edit", "revision": "r7", "parent": "r6", "author": "Claude Code", "summary": "Cut 3 pauses",
+    "at": "2026-11-03T18:02:11Z", "seconds": -4.2,
+    "changes": [{"index": 0, "kind": "cut_pauses", "summary": "Cut 2.1 s at 0:03", "at_seconds": 3.1,
+                 "seconds": -2.1, "undoable": true, "words": []}]},
+   {"kind": "shot_list", "shot_list_revision": 5, "author": "Sam", "summary": "Added scene Demo",
+    "at": "2026-11-03T17:58:40Z", "changes": [{"index": 0, "kind": "add_scene", "summary": "Added scene Demo", "undoable": false}]}
+ ]}
+```
+
+Each timeline revision lists its changes, and a cut lists the words it took out. Pages hold 20 entries by default (`limit` up to 100); pass `next` as `before` for the next page.
+
+Undo makes a new revision, so it can be undone too:
+
+| Call | What it does |
+| --- | --- |
+| `POST /projects/{project}/undo {"revision": "r7"}` | Undo the whole revision. Undoing the head restores its parent exactly (this is ⌘Z in the editor). |
+| `POST /projects/{project}/undo {"revision": "r4", "change": 2}` | Undo one change of any revision, keeping every edit since: a cut comes back where it was, a moved or trimmed clip goes back. |
+| `POST /projects/{project}/undo {"revision": "<the undo revision>"}` | Redo: undo the undo. |
+| `POST /projects/{project}/restore {"revision": "r2"}` | Bring back an earlier revision's whole timeline. The revisions in between stay in history. |
+
+If a later edit touched the same thing, undo answers 409 `conflict` with `reason: "changed_since"` and changes nothing. With `expected_head`, a head that moved answers 409 with `reason: "stale_head"`.
+
+The CLI: `vidjutsu history launch-film`, `vidjutsu undo launch-film r4 --change 2`, `vidjutsu restore launch-film r2`.
+
+## Check for changes cheaply
+
+`GET /projects/{project}/head` returns the head revision, its author, summary and time without the timeline. Both it and `show` send an ETag: send it back as `If-None-Match` and an unchanged project answers 304 with no body. Show's ETag also covers presence and working_on. To hear about changes as they happen, use the [live stream](/guides/live-updates).
+
+## Comments
+
+People and agents leave comments on a moment or a stretch of the timeline:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/comments \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"text": "This pause feels long", "start": "12.5", "end": "15", "quote": "and then we"}'
+```
+
+Send `time` instead of `start` and `end` for a single moment, and `{"text": ..., "reply_to": "<comment_id>"}` to reply. Times refer to a revision (default: the current one), so a comment left on an earlier revision is labeled as such. `GET /projects/{project}/comments` lists them oldest first; `POST /projects/{project}/comments/{comment_id}` with `{"resolved": true}` resolves a thread (`false` reopens it), and `DELETE` removes a comment and, for a thread's first comment, its replies.
+
+The CLI: `vidjutsu comment launch-film This pause feels long --from 12.5 --to 15`, `vidjutsu comments launch-film`, `vidjutsu comments resolve launch-film <comment_id>`.
+
+## Check the price first
+
+`GET /projects/{project}/quote` says what a render at each quality and [Studio Sound](/guides/studio-sound) would cost, and whether your wallet would let each start, before anything is spent. It's free to call. See [Pricing](/pricing#check-a-price-first).

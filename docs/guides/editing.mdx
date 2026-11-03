@@ -31,6 +31,7 @@ curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/edits \
 - An edit holds at most **64 operations**. Split a big timeline into several edits.
 - **Safe retries:** send `expected_head` (the revision your edit was written against). If someone else edited since, you get a 409 `conflict` instead of a surprise. Retrying the same request with the same `Idempotency-Key` returns the first result instead of applying it twice.
 - The body can also be a bare list of operations.
+- **History:** send `summary`, the one line history and the editor's Activity show for this edit (default: written from the operations). Every edit can be [undone](/guides/agents#undo-and-history), on its own or one change at a time.
 
 The CLI takes the same JSON from a file or stdin: `vidjutsu edit launch-film ops.json`.
 
@@ -47,7 +48,7 @@ Ranges are half-open: a clip with `source: {start: 0, end: 20}` plays from 0 up 
 | `op` | Fields | What it does |
 | --- | --- | --- |
 | `add_media` | `media` | Make a media item from your library available to the project. Pass the `media` or `audio` object from an [upload](/guides/uploads). |
-| `add_track` | `id`, `kind` (`video` or `audio`) | Add an empty track. Video tracks above the first hold still-image overlays; every audio track is mixed. |
+| `add_track` | `id`, `kind` (`video` or `audio`) | Add an empty track. Any video track can hold video or stills, drawn bottom to top; every audio track is mixed. |
 | `insert_clip` | `track_id`, `occurrence`, `ripple` (default false) | Place a clip. Without ripple it must fit a gap. With ripple, everything at or after its start on every track moves later by its length, so tracks stay in sync. |
 | `delete_clip` | `occurrence_id`, `ripple` | Remove a clip. With ripple, its range is cut from every track. |
 | `move_clip` | `occurrence_id`, `timeline_start`, `track_id` (optional) | Move a clip, optionally to another track of the same kind, without overlapping. |
@@ -56,7 +57,7 @@ Ranges are half-open: a clip with `source: {start: 0, end: 20}` plays from 0 up 
 | `set_gain` | `occurrence_id`, `gain` (ratio or `null`) | Audio clips only. `null` is unity. |
 | `set_fade` | `occurrence_id`, `fade_in`, `fade_out` (times or `null`) | Linear fades: video from and to black, overlays in opacity, audio in volume. |
 | `cut_pauses` | `ranges` | Cut sorted, non-overlapping timeline ranges from every track at once, closing the gaps. |
-| `set_layout` | `track_id`, `range`, `layout` | Change a video track's layout over a range (for example, picture-in-picture). |
+| `set_layout` | `track_id`, `range`, `layout` | Place a video track over a range: picture-in-picture, side by side, a circle camera. See [Layouts](/guides/layouts#layout-fields). |
 
 An **occurrence** (a clip on a track) is:
 
@@ -73,7 +74,7 @@ An **occurrence** (a clip on a track) is:
 }
 ```
 
-`layout` is required on video clips and not allowed on audio clips. It is a rectangle on a 1000x1000 canvas, so `{"x": 0, "y": 0, "width": 1000, "height": 1000}` is full frame and `{"x": 700, "y": 700, "width": 280, "height": 280}` is a small picture in the bottom-right corner. `gain`, `fade_in` and `fade_out` are optional.
+`layout` is required on video clips and not allowed on audio clips. It is a rectangle on a 1000x1000 canvas, so `{"x": 0, "y": 0, "width": 1000, "height": 1000}` is full frame and `{"x": 700, "y": 700, "width": 280, "height": 280}` is a small picture in the bottom-right corner. It can also have a shape, crop and fit: see [Layout fields](/guides/layouts#layout-fields). `gain`, `fade_in` and `fade_out` are optional.
 
 When an edit splits a clip (a ripple insert, a cut or a layout range), the leftmost piece keeps its id and the later pieces get new ids. Read them from `show` instead of guessing.
 

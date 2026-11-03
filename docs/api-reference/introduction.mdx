@@ -39,7 +39,9 @@ The CLI and SDK send the version they were built for. In the SDK, pass `apiVersi
 - **JSON in, JSON out**, with snake_case fields. Send `Content-Type: application/json`. The one exception is `POST /media`, which also takes up to 4 MB of raw bytes as `application/octet-stream`.
 - **Idempotency.** Send an `Idempotency-Key` header on every write. A retry with the same key returns the first result instead of doing the work twice. For edits, also send `expected_head`.
 - **Times** in timelines are exact: whole seconds, decimal strings (`"12.5"`) or fractions. See [Times](/guides/editing#times).
-- **Renders are background jobs.** `POST /projects/{project}/renders` answers 202 with a job; poll `GET /jobs/{job_id}`.
+- **Renders are background jobs**, and so are previews, transcripts and Studio Sound. Starting one answers with a job; poll `GET /jobs/{job_id}`, or follow the project's [live stream](/guides/live-updates).
+- **Who is acting.** Send `VidJutsu-Client: <name>` (for example `Claude Code`) and history, Activity and change notices name you that way. Without it, you're named by your API key's name. It's display only and grants nothing.
+- **ETags.** `GET /projects/{project}` and `GET /projects/{project}/head` send an `ETag`. Send it back as `If-None-Match` and an unchanged project answers 304 with no body.
 - **Errors** have a stable `code`, a `message`, and fields that tell you how to fix them. See [Errors](/errors).
 - **Every operation is also an MCP tool** with the same name (the `operationId` on each page). See [MCP](/mcp).
 
@@ -50,10 +52,15 @@ The CLI and SDK send the version they were built for. In the SDK, pass `apiVersi
 | Sign-up and sign-in | `POST /auth/email`, `POST /auth/verify` |
 | Account | `GET /account`, `POST /account`, `GET /usage`, `GET /entitlements` |
 | API keys | `GET /keys`, `POST /keys`, `DELETE /keys/{key_id}` |
-| Billing | `POST /billing/checkout`, `POST /billing/top-up`, `POST /billing/auto-top-up`, `POST /billing/portal` |
-| Media | `POST /media`, `GET /media/{hash}`, `GET /media/{hash}/url` |
+| Billing | `POST /billing/checkout`, `POST /billing/top-up`, `POST /billing/auto-top-up`, `POST /billing/portal`, `GET /wallet`, `GET /projects/{project}/quote` |
+| Media | `POST /media`, `GET /media/{hash}`, `GET /media/{hash}/url`, `POST` and `GET /media/{hash}/preview`, `POST` and `GET /media/{hash}/transcript` |
 | Uploads | `POST /uploads`, `POST /uploads/{upload_id}/complete`, `DELETE /uploads/{upload_id}` |
-| Projects | `POST /projects`, `GET /projects/{project}`, `POST /projects/{project}/edits` |
-| Audio | `POST /projects/{project}/level`, `POST /audio/clean` |
+| Projects | `GET /projects`, `POST /projects`, `GET /projects/{project}`, `GET /projects/{project}/head`, `POST /projects/{project}/edits`, `GET /projects/{project}/timeline-words` |
+| History | `GET /projects/{project}/history`, `POST /projects/{project}/undo`, `POST /projects/{project}/restore` |
+| Shot list | `GET /projects/{project}/shot-list`, `POST /projects/{project}/shot-list/edits`, `GET /projects/{project}/files`, `GET /projects/{project}/words` |
+| Layouts | `GET /layouts`, `POST /layouts`, `DELETE /layouts/{layout_id}`, `POST /projects/{project}/layout` |
+| Audio | `POST /projects/{project}/studio-sound`, `POST /projects/{project}/level` |
+| Live updates | `GET /projects/{project}/events`, `POST /projects/{project}/presence`, `POST /projects/{project}/working_on` |
+| Comments | `GET` and `POST /projects/{project}/comments`, `POST` and `DELETE /projects/{project}/comments/{comment_id}` |
 | Renders | `POST /projects/{project}/renders`, `GET /jobs/{job_id}`, `POST /jobs/{job_id}/cancel` |
 | Status | `GET /health` |
