@@ -1,0 +1,73 @@
+---
+title: "Live updates"
+description: "Follow a project as it changes: one Server-Sent Events stream per project, or change notices you poll."
+---
+
+When an agent edits a project, everyone looking at it should see the change. Each project has a stream of **change notices**: new revisions (who made them and which clips they touched), comments, shot list changes, and jobs starting and ending. Read them as a live stream, or poll for them.
+
+## The live stream
+
+`GET /projects/{project}/events` with `Accept: text/event-stream` is the project's [Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) stream:
+
+```sh
+curl -N https://api.vidjutsu.ai/projects/launch-film/events \
+  -H "Authorization: Bearer $KEY" -H 'Accept: text/event-stream'
+```
+
+```
+retry: 1000
+
+id: 41
+event: ready
+data: {"last_seq":41}
+
+id: 42
+event: revision
+data: {"seq":42,"revision":"...","parent":"...","by":{"kind":"agent","name":"Claude Code"},"operation":"edit","ops":["cut_pauses"],"clips":["c4","c7"],"duration_seconds":118.4,"created_at":1793728931}
+
+event: working_on
+data: {"working_on":[{"text":"Tightening the demo","scene":"sc_demo", ...}]}
+
+event: job
+data: {"job_id":"rj_...","kind":"render","state":"running","percent":40}
+```
+
+| Event | Has an `id` | What it is |
+| --- | --- | --- |
+| `ready` | yes | The stream is open; `last_seq` is the newest notice. A new stream doesn't replay older ones. |
+| `revision` | yes | A new revision: who made it (`by`), the operations and the clips it touched. Read it with `show` or `history`. |
+| `comment` | yes | A comment was added, resolved, reopened or deleted. |
+| `shot_list` | yes | The [shot list](/guides/shot-list) changed. |
+| `job` | yes, when it starts or ends | A render, preview, transcript, upload or Studio Sound job started or finished. While it runs, progress (`state`, `progress`, `percent`) comes as snapshots without an id. |
+| `presence` | no | Who is in the editor and where, when it changes or runs out. |
+| `working_on` | no | What agents said they are doing, when it changes or runs out. |
+| `reset` | yes | Notices were dropped (they are kept for a day): read the project again. |
+
+Notices are short on purpose. Fetch the details with the usual routes: `show`, `comments`, `shot_list` or `GET /jobs/{job_id}`.
+
+### Reconnecting
+
+A stream ends after about five minutes, and the client reconnects (`retry: 1000` asks for one second). Send the last `id` you saw as `Last-Event-ID` and you get every notice you missed; snapshots (presence, working_on, job progress) start fresh. Browsers' `EventSource` does this for you. Comment lines every 20 seconds keep the stream open through proxies.
+
+Uploads, previews and transcripts show in a project's stream when the call names it: send `project` in the body of `POST /media`, `POST /uploads`, `POST /media/{hash}/preview` or `POST /media/{hash}/transcript`.
+
+### SDK and CLI
+
+```ts
+for await (const { event, id, data } of api.stream("launch-film")) {
+  if (event === "revision") await refresh();
+}
+```
+
+`stream()` reconnects on its own and resumes from the last notice it saw. Pass `signal` to stop it. The CLI prints one JSON event per line: `vidjutsu events launch-film --follow`.
+
+## Polling instead
+
+Without `Accept: text/event-stream`, the same route is plain JSON, and it's the `events` MCP tool:
+
+```sh
+curl -s "https://api.vidjutsu.ai/projects/launch-film/events?after=41" -H "Authorization: Bearer $KEY"
+# {"last_seq": 42, "reset": false, "events": [{"seq": 42, "type": "revision", "data": {...}, "created_at": 1793728931}]}
+```
+
+Pass the last `seq` you saw as `after`. `reset: true` means notices you hadn't seen were dropped, so read the project again. For a single project you can also poll `GET /projects/{project}/head` with `If-None-Match`, which answers 304 until something changes. See [Check for changes cheaply](/guides/agents#check-for-changes-cheaply).

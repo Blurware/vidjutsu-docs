@@ -34,7 +34,14 @@
             "pages": [
               "guides/uploads",
               "guides/editing",
+              "guides/look-and-check",
               "guides/rendering",
+              "guides/shot-list",
+              "guides/import-descript",
+              "guides/agents",
+              "guides/live-updates",
+              "guides/layouts",
+              "guides/studio-sound",
               "guides/audio"
             ]
           },
@@ -93,7 +100,9 @@
               "POST /billing/checkout",
               "POST /billing/top-up",
               "POST /billing/auto-top-up",
-              "POST /billing/portal"
+              "POST /billing/portal",
+              "GET /wallet",
+              "GET /projects/{project}/quote"
             ]
           },
           {
@@ -101,7 +110,11 @@
             "pages": [
               "POST /media",
               "GET /media/{hash}",
-              "GET /media/{hash}/url"
+              "GET /media/{hash}/url",
+              "POST /media/{hash}/preview",
+              "GET /media/{hash}/preview",
+              "POST /media/{hash}/transcript",
+              "GET /media/{hash}/transcript"
             ]
           },
           {
@@ -115,16 +128,71 @@
           {
             "group": "Projects",
             "pages": [
+              "GET /projects",
               "POST /projects",
+              "POST /imports",
               "GET /projects/{project}",
-              "POST /projects/{project}/edits"
+              "GET /projects/{project}/head",
+              "POST /projects/{project}/edits",
+              "GET /projects/{project}/timeline-words"
+            ]
+          },
+          {
+            "group": "History",
+            "pages": [
+              "GET /projects/{project}/history",
+              "POST /projects/{project}/undo",
+              "POST /projects/{project}/restore"
+            ]
+          },
+          {
+            "group": "Shot list",
+            "pages": [
+              "GET /projects/{project}/shot-list",
+              "POST /projects/{project}/shot-list/edits",
+              "POST /projects/{project}/shot-list/import",
+              "GET /projects/{project}/files",
+              "GET /projects/{project}/words"
+            ]
+          },
+          {
+            "group": "Layouts",
+            "pages": [
+              "GET /layouts",
+              "POST /layouts",
+              "DELETE /layouts/{layout_id}",
+              "POST /projects/{project}/layout"
             ]
           },
           {
             "group": "Audio",
             "pages": [
-              "POST /projects/{project}/level",
-              "POST /audio/clean"
+              "POST /projects/{project}/studio-sound",
+              "POST /projects/{project}/level"
+            ]
+          },
+          {
+            "group": "Look and check",
+            "pages": [
+              "POST /projects/{project}/frames",
+              "POST /projects/{project}/checks"
+            ]
+          },
+          {
+            "group": "Live updates",
+            "pages": [
+              "GET /projects/{project}/events",
+              "POST /projects/{project}/presence",
+              "POST /projects/{project}/working_on"
+            ]
+          },
+          {
+            "group": "Comments",
+            "pages": [
+              "GET /projects/{project}/comments",
+              "POST /projects/{project}/comments",
+              "POST /projects/{project}/comments/{comment_id}",
+              "DELETE /projects/{project}/comments/{comment_id}"
             ]
           },
           {

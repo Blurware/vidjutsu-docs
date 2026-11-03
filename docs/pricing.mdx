@@ -1,19 +1,34 @@
 ---
 title: "Pricing and billing"
-description: "Pay as you go from a prepaid wallet. No monthly fee; a card and a first payment of $5 or more to start."
+description: "Pay as you go from a prepaid wallet: box time at $0.03 per vCPU-minute for every job, by the second, plus storage. No monthly fee; a card and $5 to start."
 ---
 
 ## Pay as you go
 
-There is no monthly fee and no subscription. You add credits to a prepaid wallet, and every render and every stored GB is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is charged only for the top-ups you choose, or automatically when the wallet runs low if you turn on [auto top-up](#auto-top-up). There is no free plan.
+There is no monthly fee and no subscription. You add credits to a prepaid wallet, and all usage (box time for every job, and storage) is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is charged only for the top-ups you choose, or automatically when the wallet runs low if you turn on [auto top-up](#auto-top-up). There is no free plan.
 
 | Usage | Price |
 | --- | --- |
-| Render minutes, up to 1080p | $0.10 per minute |
-| Render minutes, above 1080p (4K) | $0.20 per minute |
+| Box time, for every job | $0.03 per vCPU-minute |
 | Storage | $0.05 per GB-month |
 
-Render minutes are minutes of rendered output. A render holds its cost from your wallet when it starts; a render that fails on our side is never charged, and what it held goes back. Uploading is free. Storage is charged on your average stored bytes over the month.
+Every job runs on cloud machines (boxes), and every job is paid the same way: the box time it uses, at $0.03 per vCPU-minute, billed by the second. That covers renders, [previews and transcripts](/guides/uploads#previews-and-transcripts), [Studio Sound](/guides/studio-sound), [frame and check](/guides/look-and-check), and everything else that does work. Importing a Descript timeline is free. There is no minimum charge and no fee per file, per frame or per minute of output. Uploading is free, and so is reading anything: previews, transcripts, history, the shot list and the rest.
+
+What that comes to, as estimates (the charge is the box time a job actually uses):
+
+| Job | About |
+| --- | --- |
+| A minute of 1080p output | $0.18 |
+| A minute of 4K output | $0.33 |
+| A minute of voice through Studio Sound | 1.5 cents |
+
+Previews and transcripts are made once per file, and a voice cleaned by Studio Sound before is reused, so asking again costs nothing. A job holds its estimated cost from your wallet when it starts, and is charged the box time it used when it ends; a job that fails on our side is never charged, and what it held goes back. Storage is charged on your average stored bytes over the month.
+
+### Check a price first
+
+`GET /projects/{project}/quote` (`vidjutsu quote <project>`, MCP `quote`) estimates a render of the project's current timeline at each quality and Studio Sound on its voices, against your wallet right now, before anything is spent. Each comes with `allowed`, or the `reason` it wouldn't start. It's free to call. The editor's render sheet and Studio Sound switch show the same estimates.
+
+`GET /wallet` (`vidjutsu wallet`) shows your balance, your saved card, auto top-up and this month's spend against your limit.
 
 ### Limits
 

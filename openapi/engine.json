@@ -13,6 +13,400 @@
       }
     },
     "schemas": {
+      "Check": {
+        "additionalProperties": false,
+        "properties": {
+          "black": {
+            "description": "Black picture as rendered, in timeline seconds.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "description": "Seconds.",
+                  "type": "number"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "gains": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "gain": {
+                  "description": "The clip's gain ratio; null is unity."
+                },
+                "gain_db": {
+                  "description": "20·log10(gain); null for a muted clip (gain 0).",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "occurrence": {
+                  "type": "string"
+                },
+                "track": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "track",
+                "occurrence",
+                "gain",
+                "gain_db"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "gaps": {
+            "description": "Stretches of a track with no clip, exact.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "kind": {
+                  "enum": [
+                    "video",
+                    "audio"
+                  ]
+                },
+                "seconds": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "track": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds",
+                "track",
+                "kind"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "mix": {
+            "additionalProperties": false,
+            "properties": {
+              "integrated_lufs": {
+                "description": "EBU R128 integrated loudness; null when silent (below -70 LUFS).",
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "silent": {
+                "type": "boolean"
+              },
+              "true_peak_dbtp": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "integrated_lufs",
+              "true_peak_dbtp",
+              "silent"
+            ],
+            "type": "object"
+          },
+          "no_sound": {
+            "description": "Where no audio track has a clip, exact.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "seconds": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "sections": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "integrated_lufs": {
+                  "description": "EBU R128 integrated loudness; null when silent (below -70 LUFS).",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "name": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "silent": {
+                  "type": "boolean"
+                },
+                "to": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "true_peak_dbtp": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "integrated_lufs",
+                "true_peak_dbtp",
+                "silent",
+                "name",
+                "from",
+                "to"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "silence": {
+            "description": "Silence in the rendered mix.",
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "description": "Seconds.",
+                  "type": "number"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "from",
+                "to",
+                "seconds"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "thresholds": {
+            "additionalProperties": false,
+            "properties": {
+              "black_min_seconds": {
+                "type": "number"
+              },
+              "black_picture": {
+                "type": "number"
+              },
+              "black_pixel": {
+                "type": "number"
+              },
+              "silence_db": {
+                "type": "number"
+              },
+              "silence_min_seconds": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "black_min_seconds",
+              "black_picture",
+              "black_pixel",
+              "silence_db",
+              "silence_min_seconds"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "project",
+          "revision",
+          "duration_seconds",
+          "mix",
+          "sections",
+          "black",
+          "silence",
+          "gaps",
+          "no_sound",
+          "gains",
+          "thresholds"
+        ],
+        "type": "object"
+      },
+      "CheckProject": {
+        "additionalProperties": false,
+        "description": "`POST /v3/projects/{project}/checks`: measure a branch head (or a pinned\nrevision) as a background job.",
+        "properties": {
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sections": {
+            "default": null,
+            "description": "Stretches of the timeline to measure loudness of, such as scenes:\n`{name?, from, to}`, up to 200, inside the timeline. Absent: one per\n30 seconds.",
+            "items": {
+              "$ref": "#/components/schemas/Section"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
       "CleanAudio": {
         "additionalProperties": false,
         "description": "`vidjutsu clean-audio`: speech tracks (and an optional music bed) through\nthe audio port, with the Auphonic adapter injected here at the\ncomposition root. Inputs are stored media hashes (or, from the CLI, local\nfiles). The result is made timeline-ready like `ingest` and returned as a\nmedia object whose lineage names the vendor's output and every input.",
@@ -116,6 +510,14 @@
         "additionalProperties": false,
         "description": "`vidjutsu edit` / `POST /v3/projects/{project}/edits`: operations applied\nto a branch head as one atomic commit. Times may be plain seconds (`12.5`,\n`\"12.5\"`, `\"1001/30000\"`). The body is a list of operations, or an object\nwith `operations` and optionally `branch`, `repo`, and for safe retries\n`expected_head` plus `idempotency_key`.",
         "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is editing, as Activity shows it (\"Claude Code\", \"Max\").",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "branch": {
             "default": null,
             "type": [
@@ -148,6 +550,14 @@
           },
           "repo": {
             "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "summary": {
+            "default": null,
+            "description": "One line for Activity (\"Cut 14 filler words\"); default: made from\nthe changes.",
             "type": [
               "string",
               "null"
@@ -204,6 +614,198 @@
         ],
         "type": "object"
       },
+      "FrameProject": {
+        "additionalProperties": false,
+        "description": "`POST /v3/projects/{project}/frames`: stills of a branch head (or a\npinned revision) at timeline times, as a background job.",
+        "properties": {
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "height": {
+            "default": 720,
+            "description": "Still height in pixels: 360, 720 (default) or 1080. Stills are 16:9,\nlike the render.",
+            "format": "uint32",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "times": {
+            "description": "Timeline times, 1 to 24, each before the end: seconds (`12.5`) or\nrationals (`\"1001/30000\"`). Each still is the output frame (30 fps)\nwhose span holds that time, so `t` and `t - 1/30` are the frames on\neither side of a cut at `t`.",
+            "items": true,
+            "type": "array"
+          }
+        },
+        "required": [
+          "times"
+        ],
+        "type": "object"
+      },
+      "Frames": {
+        "additionalProperties": false,
+        "properties": {
+          "expires_at": {
+            "description": "Unix seconds.",
+            "type": "integer"
+          },
+          "frames": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "bytes": {
+                  "type": "integer"
+                },
+                "content_type": {
+                  "const": "image/jpeg"
+                },
+                "frame": {
+                  "description": "The output frame (30 fps) whose span holds the asked-for time.",
+                  "type": "integer"
+                },
+                "frame_time": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "hash": {
+                  "description": "The stored JPEG.",
+                  "type": "string"
+                },
+                "height": {
+                  "type": "integer"
+                },
+                "seconds": {
+                  "description": "The frame's start, in seconds.",
+                  "type": "number"
+                },
+                "time": {
+                  "additionalProperties": false,
+                  "description": "Exact seconds: ticks / rate.",
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "url": {
+                  "description": "A fresh one-day link on every read.",
+                  "type": "string"
+                },
+                "width": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "time",
+                "frame",
+                "frame_time",
+                "seconds",
+                "hash",
+                "bytes",
+                "width",
+                "height",
+                "content_type",
+                "url"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "frames",
+          "expires_at"
+        ],
+        "type": "object"
+      },
+      "Head": {
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "kind": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "summary": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "kind",
+          "author",
+          "summary",
+          "at",
+          "duration_seconds"
+        ],
+        "type": "object"
+      },
       "Health": {
         "additionalProperties": false,
         "properties": {
@@ -225,6 +827,294 @@
           "version",
           "configured",
           "problem"
+        ],
+        "type": "object"
+      },
+      "History": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "entries": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "at": {
+                  "type": "string"
+                },
+                "author": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "changes": {
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "at_seconds": {
+                        "description": "Where, on the timeline the revision made.",
+                        "type": "number"
+                      },
+                      "index": {
+                        "type": "integer"
+                      },
+                      "kind": {
+                        "description": "cut, gap, insert, place, remove, move, trim, swap, gain, fade, layout, add_media or add_track.",
+                        "type": "string"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      },
+                      "seconds": {
+                        "description": "Timeline length added (+) or removed (-).",
+                        "type": "number"
+                      },
+                      "summary": {
+                        "type": "string"
+                      },
+                      "track": {
+                        "type": "string"
+                      },
+                      "undoable": {
+                        "description": "Whether `undo` can undo it on its own.",
+                        "type": "boolean"
+                      },
+                      "words": {
+                        "description": "For a cut of transcribed media: the words it took out (empty: a silence).",
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "index",
+                      "kind",
+                      "summary",
+                      "at_seconds",
+                      "seconds",
+                      "undoable"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "duration_seconds": {
+                  "type": "number"
+                },
+                "kind": {
+                  "description": "init, edit, level, restore or undo.",
+                  "type": "string"
+                },
+                "parent": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "restored": {
+                  "type": "string"
+                },
+                "revision": {
+                  "type": "string"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "undid": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "change": {
+                      "type": "integer"
+                    },
+                    "revision": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "revision"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "revision",
+                "parent",
+                "kind",
+                "author",
+                "summary",
+                "at",
+                "duration_seconds",
+                "seconds",
+                "changes"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "head": {
+            "type": "string"
+          },
+          "next": {
+            "description": "Pass as `before` for the next page.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "project": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "head",
+          "entries",
+          "next"
+        ],
+        "type": "object"
+      },
+      "ImportTimeline": {
+        "additionalProperties": false,
+        "description": "`POST /v3/imports` / MCP `import_timeline`: a Descript timeline export\n(FCPXML or EDL) as a new project.",
+        "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is importing it, as Activity shows it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "files": {
+            "description": "One `ingest` result per file the export names (`{name, media,\naudio}`), matched to clips by file name.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "format": {
+            "default": null,
+            "description": "`fcpxml` or `edl`; absent: told from the text.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "idempotency_key": {
+            "default": null,
+            "description": "Retrying with the same key returns the first result.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "project": {
+            "description": "The new project's name.",
+            "type": "string"
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "timeline": {
+            "description": "The export's whole text (Descript `fcpxml` or `edl`).",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "timeline",
+          "files"
+        ],
+        "type": "object"
+      },
+      "Imported": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "clips": {
+            "description": "Clips in the export.",
+            "type": "integer"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "format": {
+            "enum": [
+              "fcpxml",
+              "edl"
+            ]
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "skipped": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "What the export held that a timeline doesn't (captions, markers), with counts.",
+            "type": "object"
+          },
+          "tracks": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "clips": {
+                  "type": "integer"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "video",
+                    "audio"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "kind",
+                "clips"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "trimmed": {
+            "description": "Clips cut back to their file's end (by at most one frame, from Descript's frame snapping).",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "format",
+          "duration_seconds",
+          "clips",
+          "tracks",
+          "skipped",
+          "trimmed"
         ],
         "type": "object"
       },
@@ -300,6 +1190,14 @@
         "additionalProperties": false,
         "description": "`vidjutsu init` / `POST /v3/projects`: a project from a manifest, or an\nempty one with one video and one audio track (`v1`, `a1`) ready for\n`insert_clip` edits.",
         "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is creating it, as Activity shows it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "idempotency_key": {
             "default": null,
             "description": "Retrying with the same key returns the first result.",
@@ -360,7 +1258,18 @@
             "type": "string"
           },
           "kind": {
-            "const": "render"
+            "enum": [
+              "render",
+              "preview",
+              "transcript",
+              "studio_sound",
+              "frames",
+              "check"
+            ]
+          },
+          "media": {
+            "description": "A preview's or transcript's media hash.",
+            "type": "string"
           },
           "output": {
             "anyOf": [
@@ -393,10 +1302,19 @@
                 "type": "object"
               },
               {
+                "$ref": "#/components/schemas/Preview"
+              },
+              {
+                "$ref": "#/components/schemas/Frames"
+              },
+              {
+                "$ref": "#/components/schemas/Check"
+              },
+              {
                 "type": "null"
               }
             ],
-            "description": "The rendered file, once succeeded."
+            "description": "The rendered file, the preview, the stills or the check's values, once succeeded. A transcript's words are read from its route."
           },
           "progress": {
             "additionalProperties": false,
@@ -415,6 +1333,7 @@
             "type": "object"
           },
           "project": {
+            "description": "Empty for a preview or transcript.",
             "type": "string"
           },
           "report": {
@@ -423,6 +1342,10 @@
           "revision": {
             "description": "Pinned when the job was created.",
             "type": "string"
+          },
+          "started": {
+            "description": "Starting a preview, transcript or Studio Sound: whether this request started the job (false when it exists or is running).",
+            "type": "boolean"
           },
           "started_at": {
             "type": [
@@ -462,6 +1385,13 @@
                     "description": "The job has finished: these numbers will not change. Record them once, by job_id.",
                     "type": "boolean"
                   },
+                  "frames": {
+                    "description": "A frames job: stills drawn (null when it failed).",
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
                   "height": {
                     "type": "integer"
                   },
@@ -472,7 +1402,14 @@
                     ]
                   },
                   "output_seconds": {
-                    "description": "Length of the rendered film (null when it failed).",
+                    "description": "A render: length of the rendered film; a check: length of the timeline checked (null when it failed).",
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  },
+                  "source_seconds": {
+                    "description": "A preview or transcript: length of the source. Studio Sound: length of the voices sent to Auphonic. Null when it failed.",
                     "type": [
                       "number",
                       "null"
@@ -490,9 +1427,7 @@
                   "boxes",
                   "box_seconds",
                   "vcpu_seconds",
-                  "memory_gb_seconds",
-                  "output_seconds",
-                  "height"
+                  "memory_gb_seconds"
                 ],
                 "type": "object"
               },
@@ -532,6 +1467,14 @@
         "additionalProperties": false,
         "description": "`vidjutsu level` / `POST /v3/projects/{project}/level`: measure what each\nclip on the audio tracks plays (EBU R128) with local FFmpeg reading the\nstored media, then set gains so each plays at `target` LUFS, as one edit.\nGains are rounded to thousandths (an explicit rounding at this adapter\nboundary) and clamped to the gain bounds.",
         "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is leveling, as Activity shows it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "branch": {
             "default": "main",
             "type": "string"
@@ -737,9 +1680,208 @@
         ],
         "type": "object"
       },
+      "Preview": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "filmstrip": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "columns": {
+                    "type": "integer"
+                  },
+                  "expires_at": {
+                    "description": "Unix seconds.",
+                    "type": "integer"
+                  },
+                  "frame_height": {
+                    "type": "integer"
+                  },
+                  "frame_width": {
+                    "type": "integer"
+                  },
+                  "frames": {
+                    "type": "integer"
+                  },
+                  "hash": {
+                    "description": "The stored file.",
+                    "type": "string"
+                  },
+                  "interval_seconds": {
+                    "description": "Thumbnail i shows the source at i * interval_seconds.",
+                    "type": "integer"
+                  },
+                  "url": {
+                    "description": "A fresh one-day link on every read.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "hash",
+                  "url",
+                  "expires_at",
+                  "frames",
+                  "columns",
+                  "frame_width",
+                  "frame_height",
+                  "interval_seconds"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "hash": {
+            "description": "The media previewed.",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "The job making (or that made) it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "video",
+              "audio"
+            ]
+          },
+          "proxy": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "bytes": {
+                    "type": "integer"
+                  },
+                  "expires_at": {
+                    "description": "Unix seconds.",
+                    "type": "integer"
+                  },
+                  "hash": {
+                    "description": "The stored file.",
+                    "type": "string"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "url": {
+                    "description": "A fresh one-day link on every read.",
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "hash",
+                  "url",
+                  "expires_at",
+                  "bytes",
+                  "width",
+                  "height"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source_seconds": {
+            "description": "Length of the source.",
+            "type": "number"
+          },
+          "state": {
+            "enum": [
+              "none",
+              "pending",
+              "ready",
+              "failed"
+            ]
+          },
+          "waveform": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "channels": {
+                    "const": 1
+                  },
+                  "encoding": {
+                    "const": "uint8",
+                    "description": "One byte per peak, 255 full scale."
+                  },
+                  "expires_at": {
+                    "description": "Unix seconds.",
+                    "type": "integer"
+                  },
+                  "hash": {
+                    "description": "The stored file.",
+                    "type": "string"
+                  },
+                  "peaks": {
+                    "type": "integer"
+                  },
+                  "peaks_per_second": {
+                    "type": "integer"
+                  },
+                  "url": {
+                    "description": "A fresh one-day link on every read.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "hash",
+                  "url",
+                  "expires_at",
+                  "peaks",
+                  "peaks_per_second",
+                  "channels",
+                  "encoding"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "hash",
+          "state"
+        ],
+        "type": "object"
+      },
       "Project": {
         "additionalProperties": false,
         "properties": {
+          "at": {
+            "description": "When it was made (UTC).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "author": {
+            "description": "Who made this revision, as they named themselves.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "branch": {
             "type": "string"
           },
@@ -755,6 +1897,48 @@
           },
           "revision": {
             "type": "string"
+          },
+          "studio_sound": {
+            "additionalProperties": false,
+            "properties": {
+              "cleaned": {
+                "description": "Of those, clips playing a cleaned copy.",
+                "type": "integer"
+              },
+              "clips": {
+                "description": "Clips on the audio tracks.",
+                "type": "integer"
+              },
+              "revision": {
+                "description": "The revision that turned it on; undo it to turn it off.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "`on`: every clip on the audio tracks plays a cleaned copy.",
+                "enum": [
+                  "off",
+                  "on",
+                  "partial"
+                ]
+              }
+            },
+            "required": [
+              "state",
+              "clips",
+              "cleaned",
+              "revision"
+            ],
+            "type": "object"
+          },
+          "summary": {
+            "description": "The revision's one line in `history`.",
+            "type": [
+              "string",
+              "null"
+            ]
           }
         },
         "required": [
@@ -762,6 +1946,7 @@
           "branch",
           "revision",
           "duration_seconds",
+          "studio_sound",
           "manifest"
         ],
         "type": "object"
@@ -889,6 +2074,118 @@
         },
         "type": "object"
       },
+      "RestoreProject": {
+        "additionalProperties": false,
+        "description": "`restore` / `POST /v3/projects/{project}/restore`: bring back an earlier\nrevision's timeline as a new revision on top of the branch head. History\nis never rewritten.",
+        "properties": {
+          "author": {
+            "default": null,
+            "description": "Who is doing it, as Activity shows it (\"Claude Code\", \"Max\").",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "expected_head": {
+            "default": null,
+            "description": "The head this was decided against; a moved head is a conflict.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "idempotency_key": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "description": "The revision whose timeline comes back.",
+            "type": "string"
+          },
+          "summary": {
+            "default": null,
+            "description": "One line for Activity; default: says which revision came back.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "revision"
+        ],
+        "type": "object"
+      },
+      "Restored": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "project": {
+            "type": "string"
+          },
+          "restored": {
+            "description": "The revision whose timeline came back.",
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "parent",
+          "revision",
+          "duration_seconds"
+        ],
+        "type": "object"
+      },
+      "Section": {
+        "additionalProperties": false,
+        "properties": {
+          "from": {
+            "description": "Timeline seconds (`12.5`) or rationals."
+          },
+          "name": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "to": true
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "type": "object"
+      },
       "SentPart": {
         "additionalProperties": false,
         "description": "One sent part: its number and the `ETag` header its PUT returned.",
@@ -949,6 +2246,361 @@
         "required": [
           "stored_bytes",
           "objects"
+        ],
+        "type": "object"
+      },
+      "StudioSound": {
+        "additionalProperties": false,
+        "description": "`POST /v3/projects/{project}/studio-sound`: turn Studio Sound on.",
+        "properties": {
+          "author": {
+            "description": "Who turned it on, for the project's history (one line).",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "default": "main",
+            "type": "string"
+          },
+          "media": {
+            "description": "Clean only these voices (media ids played on audio tracks). Absent:\nevery audio media the audio tracks play, music included, so leave\nmusic out here when it should stay as it is.",
+            "items": {
+              "type": "string"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "repo": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "TimelineWords": {
+        "additionalProperties": false,
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "number"
+          },
+          "items": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "end": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "kind": {
+                  "enum": [
+                    "word",
+                    "pause"
+                  ],
+                  "type": "string"
+                },
+                "media": {
+                  "type": "string"
+                },
+                "occurrence": {
+                  "type": "string"
+                },
+                "seconds": {
+                  "type": "number"
+                },
+                "speaker": {
+                  "type": "string"
+                },
+                "start": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "rate": {
+                      "type": "integer"
+                    },
+                    "ticks": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ticks",
+                    "rate"
+                  ],
+                  "type": "object"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "track": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "start",
+                "end"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "pause_seconds": {
+            "type": "number"
+          },
+          "project": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "string"
+          },
+          "untranscribed": {
+            "description": "Media on the timeline without a transcript.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "words": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "project",
+          "branch",
+          "revision",
+          "duration_seconds",
+          "pause_seconds",
+          "words",
+          "items",
+          "untranscribed"
+        ],
+        "type": "object"
+      },
+      "Transcript": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hash": {
+            "description": "The media transcribed.",
+            "type": "string"
+          },
+          "job_id": {
+            "description": "The job making (or that made) it.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "source_seconds": {
+            "description": "Length of the sound.",
+            "type": "number"
+          },
+          "state": {
+            "enum": [
+              "none",
+              "pending",
+              "ready",
+              "failed"
+            ]
+          },
+          "words": {
+            "anyOf": [
+              {
+                "additionalProperties": false,
+                "properties": {
+                  "bytes": {
+                    "type": "integer"
+                  },
+                  "count": {
+                    "description": "Words in the file.",
+                    "type": "integer"
+                  },
+                  "expires_at": {
+                    "description": "Unix seconds.",
+                    "type": "integer"
+                  },
+                  "hash": {
+                    "description": "The stored file.",
+                    "type": "string"
+                  },
+                  "url": {
+                    "description": "A fresh one-day link on every read.",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "hash",
+                  "url",
+                  "expires_at",
+                  "count",
+                  "bytes"
+                ],
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "hash",
+          "state"
+        ],
+        "type": "object"
+      },
+      "TranscriptWord": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "end": {
+            "additionalProperties": false,
+            "description": "Exact seconds: ticks / rate.",
+            "properties": {
+              "rate": {
+                "type": "integer"
+              },
+              "ticks": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ticks",
+              "rate"
+            ],
+            "type": "object"
+          },
+          "speaker": {
+            "type": "string"
+          },
+          "start": {
+            "additionalProperties": false,
+            "description": "Exact seconds: ticks / rate.",
+            "properties": {
+              "rate": {
+                "type": "integer"
+              },
+              "ticks": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "ticks",
+              "rate"
+            ],
+            "type": "object"
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "start",
+          "end"
+        ],
+        "type": "object"
+      },
+      "UndoProject": {
+        "additionalProperties": false,
+        "description": "`undo` / `POST /v3/projects/{project}/undo`: undo one change of a\nrevision (`change`, its index in `history`), or all of it, as a new\nrevision. Undoing the head as a whole restores its parent; anything else\napplies the changes' inverses to the current head, so later edits stay.",
+        "properties": {
+          "author": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "branch": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "change": {
+            "default": null,
+            "description": "Which change (its `index` in `history`); absent: the whole revision.",
+            "format": "uint",
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "expected_head": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "idempotency_key": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "repo": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "description": "The revision that made the change.",
+            "type": "string"
+          },
+          "summary": {
+            "default": null,
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "revision"
         ],
         "type": "object"
       },
@@ -1151,6 +2803,50 @@
           }
         },
         "summary": "Whether the server's accounts are usable"
+      }
+    },
+    "/v3/imports": {
+      "post": {
+        "description": "FCPXML (picture and sound, layer by layer) or EDL (sound only). Ingest every file the export names first and pass the results in `files`. Anything that would change the picture or timing is refused (400) rather than approximated.",
+        "operationId": "import_timeline",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportTimeline"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Imported"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Open a Descript timeline export as a new project"
       }
     },
     "/v3/jobs/{job_id}": {
@@ -1406,6 +3102,190 @@
         "summary": "Redirect to a one-hour link"
       }
     },
+    "/v3/media/{hash}/preview": {
+      "get": {
+        "operationId": "media_preview",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Preview"
+                }
+              }
+            },
+            "description": "The preview"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A media preview and its links"
+      },
+      "post": {
+        "operationId": "make_preview",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job that has made or is making it"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "This request started the job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start making a media preview (a background job)"
+      }
+    },
+    "/v3/media/{hash}/transcript": {
+      "get": {
+        "operationId": "media_transcript",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transcript"
+                }
+              }
+            },
+            "description": "The transcript"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "A media transcript: its words and their times"
+      },
+      "post": {
+        "operationId": "make_transcript",
+        "parameters": [
+          {
+            "description": "A stored media hash (64 hex digits).",
+            "in": "path",
+            "name": "hash",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job that has made or is making it"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "This request started the job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start transcribing media (a background job)"
+      }
+    },
     "/v3/media/{hash}/url": {
       "get": {
         "operationId": "media_url",
@@ -1505,6 +3385,7 @@
     },
     "/v3/projects/{project}": {
       "get": {
+        "description": "Answers with an `ETag` (the revision). Send it back as `If-None-Match` to get 304 with no body while nothing changed.",
         "operationId": "show",
         "parameters": [
           {
@@ -1550,6 +3431,15 @@
             }
           },
           {
+            "description": "An `ETag` from an earlier answer: 304 while the revision is the same.",
+            "in": "header",
+            "name": "If-None-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "$ref": "#/components/parameters/Repo"
           }
         ],
@@ -1562,7 +3452,18 @@
                 }
               }
             },
-            "description": "The project"
+            "description": "The project",
+            "headers": {
+              "ETag": {
+                "description": "The revision, quoted.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Unchanged since the `If-None-Match` tag; no body."
           },
           "default": {
             "content": {
@@ -1576,6 +3477,59 @@
           }
         },
         "summary": "A branch head or revision, with its manifest"
+      }
+    },
+    "/v3/projects/{project}/checks": {
+      "post": {
+        "description": "Checks the sections and pins the revision, then answers 202 with a job. Poll `GET /v3/jobs/{job_id}`: once it succeeded, `output` holds the measured values.",
+        "operationId": "check",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start measuring gaps, black frames, silence and loudness"
       }
     },
     "/v3/projects/{project}/edits": {
@@ -1639,6 +3593,242 @@
           }
         },
         "summary": "Apply edit operations as one commit"
+      }
+    },
+    "/v3/projects/{project}/frames": {
+      "post": {
+        "description": "Checks the times and pins the revision, then answers 202 with a job. Poll `GET /v3/jobs/{job_id}`: once it succeeded, `output.frames` holds one JPEG link per asked-for time.",
+        "operationId": "frame",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FrameProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Start drawing stills at timeline times"
+      }
+    },
+    "/v3/projects/{project}/head": {
+      "get": {
+        "description": "No manifest: cheap to poll. `ETag` and `If-None-Match` as on `show`.",
+        "operationId": "head",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "An `ETag` from an earlier answer: 304 while the revision is the same.",
+            "in": "header",
+            "name": "If-None-Match",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Head"
+                }
+              }
+            },
+            "description": "The head",
+            "headers": {
+              "ETag": {
+                "description": "The revision, quoted.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Unchanged since the `If-None-Match` tag; no body."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "The branch head and who made it"
+      }
+    },
+    "/v3/projects/{project}/history": {
+      "get": {
+        "operationId": "history",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Start below this revision (the previous page's `next`).",
+            "in": "query",
+            "name": "before",
+            "required": false,
+            "schema": {
+              "default": null,
+              "description": "Start below this revision (the previous page's `next`).",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "Entries per page: 1 to 100, default 20.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": null,
+              "description": "Entries per page: 1 to 100, default 20.",
+              "format": "uint32",
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/History"
+                }
+              }
+            },
+            "description": "A page of history"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Revisions, newest first, with author, summary and changes"
       }
     },
     "/v3/projects/{project}/level": {
@@ -1754,6 +3944,267 @@
           }
         },
         "summary": "Start a render job"
+      }
+    },
+    "/v3/projects/{project}/restore": {
+      "post": {
+        "operationId": "restore",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Restored"
+                }
+              }
+            },
+            "description": "Committed"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Bring back an earlier revision's timeline as a new revision"
+      }
+    },
+    "/v3/projects/{project}/studio-sound": {
+      "post": {
+        "description": "Cleans every voice the audio tracks play through Auphonic and commits one edit that swaps the cleaned copies onto their clips. Poll `GET /v3/jobs/{job_id}`; its `report.revision` is the edit. `usage.source_seconds` is the voice sent to Auphonic (copies made before are reused and not counted).",
+        "operationId": "studio_sound",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudioSound"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "The job already doing it"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            },
+            "description": "This request started the job"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Turn on Studio Sound (a background job)"
+      }
+    },
+    "/v3/projects/{project}/timeline-words": {
+      "get": {
+        "operationId": "timeline_words",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "branch",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "description": "Shortest silence listed as a pause, in seconds (default 0.5).",
+            "in": "query",
+            "name": "pause",
+            "required": false,
+            "schema": {
+              "default": null,
+              "description": "Shortest silence listed as a pause, in seconds (default 0.5).",
+              "format": "double",
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "revision",
+            "required": false,
+            "schema": {
+              "default": null,
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimelineWords"
+                }
+              }
+            },
+            "description": "Words and pauses"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Words and pauses on the edited timeline"
+      }
+    },
+    "/v3/projects/{project}/undo": {
+      "post": {
+        "description": "Undoing the head as a whole restores its parent. Otherwise each change's inverse is applied to the current head, so later edits stay; 409 `changed_since` when the clips around a change have changed since.",
+        "operationId": "undo",
+        "parameters": [
+          {
+            "description": "Project name (letters, digits, '-', '_').",
+            "in": "path",
+            "name": "project",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Repo"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UndoProject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Restored"
+                }
+              }
+            },
+            "description": "Committed"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "An error: 400 invalid, 401/403 refused, 404 not found, 409 conflict, 413 too large, 503 unconfigured or busy, 500 failed."
+          }
+        },
+        "summary": "Undo one change of a revision, or all of it, as a new revision"
       }
     },
     "/v3/storage": {

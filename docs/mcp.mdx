@@ -51,24 +51,44 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 
 | Tool | What it does |
 | --- | --- |
-| `ingest` | Add media from an https link (`{url, name}`). |
+| `ingest` | Add media from an https link (`{url, name, source?, project?}`). |
 | `create_upload`, `complete_upload`, `abort_upload` | [Direct upload](/guides/uploads#direct-uploads) of a large file by presigned links. |
 | `media_url` | A time-limited download link for a media item or render (`{hash, ttl}`). |
+| `make_preview`, `media_preview` | Make and read a file's [preview](/guides/uploads#previews-and-transcripts): proxy, filmstrip, waveform. |
+| `make_transcript`, `media_transcript` | Make and read a file's transcript. |
+| `list_projects` | Your projects, most recently changed first. |
 | `init` | Create a project (`{project}`). |
-| `show` | A project's current timeline (`{project}`). |
-| `edit` | Apply [edit operations](/guides/editing#edit-operations) (`{project, operations, expected_head}`). |
+| `import_timeline` | Open a Descript FCPXML or EDL export as a new project ([import from Descript](/guides/import-descript)). Free. |
+| `show` | A project's timeline, and who is in it right now (`{project}`). |
+| `head` | The head revision without the timeline: a cheap check for changes. |
+| `edit` | Apply [edit operations](/guides/editing#edit-operations) (`{project, operations, expected_head, summary}`). |
+| `timeline_words` | The words and pauses on the edited timeline, ready for cuts ([cut by the script](/guides/agents#cut-by-the-script)). |
+| `history`, `undo`, `restore` | Every revision and shot list change; undo one change or a whole revision; bring back an earlier one ([undo and history](/guides/agents#undo-and-history)). |
+| `shot_list`, `shot_list_edit` | Read and change the [shot list](/guides/shot-list): scenes, shots and the files filed under them. |
+| `shot_list_import` | Bring an episode plan in as the shot list ([episode plans](/guides/import-descript#bring-in-an-episode-plan)). |
+| `files` | Every file in the project, where it is used and where it came from. |
+| `search_words` | Find spoken words in every file of the project. |
+| `layouts`, `save_layout`, `delete_layout`, `apply_layout` | [Screen and camera layouts](/guides/layouts): list, save and delete presets, and apply one over a range. |
+| `studio_sound` | Clean every voice in the project ([Studio Sound](/guides/studio-sound)). |
 | `level` | Level audio clips to a target loudness (`{project, tracks, target}`). |
-| `clean_audio` | Studio sound for voice tracks (`{voice, music}`). |
+| `frame` | Stills of the cut at timeline times, exactly as the render draws them ([look at a cut](/guides/look-and-check)). |
+| `check` | Measure the cut: gaps, black, silence, loudness and gains ([check a cut](/guides/look-and-check#check-the-cut)). |
+| `working_on`, `set_presence` | Say what you're about to do, and where you are, so the person sees it in the editor. |
+| `events` | The project's change notices since a sequence number ([live updates](/guides/live-updates)). |
+| `comments`, `add_comment`, `resolve_comment`, `delete_comment` | Comments on moments and ranges of the timeline, with replies. |
+| `quote` | What a render or Studio Sound would cost, before you spend. Free. |
 | `render` | Start a render job (`{project, height}`). |
-| `render_status` | A render job; once succeeded, a download link (`{job_id}`). |
+| `render_status` | Any job (render, preview, transcript, Studio Sound, frame, check); once a render has succeeded, a download link, and a frame or check job's output (`{job_id}`). |
 | `cancel_render` | Stop a render job (`{job_id}`). |
-| `account`, `usage`, `entitlements` | Your account, your wallet balance and this month's usage, your limits. |
+| `account`, `usage`, `wallet`, `entitlements` | Your account, your usage, your wallet, your limits. |
 | `create_key`, `list_keys`, `revoke_key` | Manage API keys. |
 | `billing_checkout`, `billing_top_up`, `billing_portal` | Stripe links to sign up and make your first payment, to add credits (`{amount_usd}`), or to update your card and see receipts. |
 | `billing_auto_top_up` | Turn [auto top-up](/pricing#auto-top-up) on or off (`{enabled, threshold_usd, amount_usd}`). |
 | `create_account` | Create your account after an OAuth sign-in. Safe to call again. |
 
-Path parameters (`project`, `job_id`, `hash`, `upload_id`, `key_id`) are tool arguments. The other arguments are the REST body, so the [API reference](/api-reference/introduction) documents every field.
+Path parameters (`project`, `job_id`, `hash`, `upload_id`, `key_id`, `comment_id`, `layout_id`) are tool arguments. The other arguments are the REST body (or, for reads, the query), so the [API reference](/api-reference/introduction) documents every field.
+
+History and the editor's Activity name your agent by its client name, or by its API key's name. Tell people what you're doing with `working_on` before a big change; see [Edit with agents](/guides/agents).
 
 Every tool that changes something takes an optional `idempotency_key`: reuse it when retrying so the work happens once. Read-only tools are marked as such, so clients can run them without asking.
 
@@ -81,4 +101,6 @@ Ask your agent something like "cut take1 and take2 back to back with the music u
 1. `ingest` or `create_upload` each file, keeping the returned `media` and `audio` objects.
 2. `init {"project": "cut"}`.
 3. `edit` with `add_media` for each item, `add_track` for the music, and `insert_clip` for each clip.
-4. `render {"project": "cut", "height": 2160, "idempotency_key": "cut-1"}`, then `render_status` until `succeeded`, and give you `output.url`.
+4. `quote {"project": "cut"}` to check the price, then `render {"project": "cut", "height": 2160, "idempotency_key": "cut-1"}`, then `render_status` until `succeeded`, and give you `output.url`.
+
+With the editor open on the same project, you see each step land in Activity as it happens, and can undo any of them.

@@ -86,4 +86,4 @@ console.log(done.output); // {hash, bytes, url, expires_at}
 
 ## Cost and limits
 
-Renders are paid from your wallet by the length of the output: $0.10 a minute at up to 1080p, $0.20 above 1080p. A render your balance doesn't cover is refused with a `top_up_url`. A render that fails on our side is never charged. You can run up to 10 renders at once (more get a 429 with `retry_after_seconds`), and each job renders up to 3 hours of output. See [Pricing](/pricing).
+Renders are paid from your wallet by the box time they use, at $0.03 per vCPU-minute, billed by the second: about $0.18 per minute of 1080p output and $0.33 per 4K minute. `GET /projects/{project}/quote` estimates a render before you start it. A render your balance doesn't cover is refused with a `top_up_url`. A render that fails on our side is never charged. You can run up to 10 renders at once (more get a 429 with `retry_after_seconds`), and each job renders up to 3 hours of output. See [Pricing](/pricing).

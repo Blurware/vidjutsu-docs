@@ -1,0 +1,52 @@
+---
+title: "Import from Descript"
+description: "Open a Descript timeline export (FCPXML or EDL) as a VidJutsu project, exactly, or bring in an episode plan as the shot list."
+---
+
+## Open a Descript timeline
+
+Export the timeline from Descript as **Final Cut Pro XML** or **EDL**, then open it as a new project. An export names files, not media, so upload every file it names first:
+
+```sh
+vidjutsu upload take1.mov      # prints an ingest result: {name, media, audio, ...}
+vidjutsu upload music.wav
+```
+
+Then send the export's text and one ingest result per file:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/imports \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d @- <<JSON
+{"project": "launch-film", "timeline": $(jq -Rs . < launch-film.fcpxml),
+ "files": [{"name": "take1.mov", "media": "<hash>", "audio": "<hash>"},
+           {"name": "music.wav", "media": "<hash>", "audio": "<hash>"}]}
+JSON
+```
+
+It answers at once with the new project plus `format`, `duration_seconds`, `clips`, `tracks`, `skipped` and `trimmed`. Clips are matched to files by name. `format` (`fcpxml` or `edl`) is told from the text unless you send it, and the request can be up to 4 MB.
+
+| Export | What comes over |
+| --- | --- |
+| FCPXML | Picture and sound, layer by layer. Each picture comes in full frame; place it with a [layout](/guides/layouts) after. |
+| EDL | Sound only, at exact sample times, with volumes and fades. |
+
+Captions and markers are skipped and counted in `skipped`. Anything that would change the picture or the timing, such as transforms, effects, retiming, titles or transitions, is refused with a 400 that names it. An import is exact or it doesn't happen; nothing is approximated.
+
+The CLI: `vidjutsu import launch-film launch-film.fcpxml --files ingested.json`, where `ingested.json` is a list of the ingest results. The SDK: `importTimeline({project, timeline, files})`. MCP: `import_timeline`. Importing is free.
+
+## Bring in an episode plan
+
+If you plan episodes as an `episode.json` file (`schemaVersion` 2), bring the plan in as a project's [shot list](/guides/shot-list):
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/shot-list/import \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d "{\"expected_revision\": 0, \"episode\": $(cat episode.json)}"
+```
+
+Each group becomes a scene and each beat a shot, in order: talking points from the beat's talking notes (the first led by its label), its script, and a visual named after its first matched clip, with the visual notes as its note. Scene and shot ids come from the episode, so they are easy to find again. New scenes go after the last one; send `replace: true` to remove every scene first (their files stay in the project).
+
+Nothing is shortened: a beat past the shot list's limits is refused by name (a script holds up to 5,000 letters, and a shot up to 40 talking points of 500 letters each). The timeline isn't touched. A stale `expected_revision` answers 409 `stale_revision` with the current shot list. The answer is the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).
+
+MCP: `shot_list_import`.

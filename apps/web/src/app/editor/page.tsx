@@ -3,15 +3,17 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VidJutsu Editor for Mac",
   description:
-    "A Mac app for VidJutsu Cloud, for working with your agent on a cut: read the transcript, watch the timeline, leave comments and chat. macOS 15 or later.",
+    "A Mac app for VidJutsu Cloud: plan with a shot list, record screen and camera, cut by the script with your agent, lay out screen and camera, and turn on Studio Sound. macOS 15 or later.",
 };
 
 const features = [
-  ["Review by transcript", "Read the cut as a script next to the video, and mark what to cut or keep."],
-  ["Watch the timeline", "Scrub and play the current cut with thumbnails and waveforms."],
-  ["Comment on moments", "Pin a comment to a stretch of the cut, then mark it approved or needing changes."],
-  ["Chat with an agent", "Ask for changes in plain words. The agent edits and renders through the same API as the CLI and MCP."],
-  ["Record takes", "Record your screen, camera and microphone and send the take straight into a project."],
+  ["Plan with the shot list", "Lay out the video as scenes and shots, with talking points, a script line and a key visual for each."],
+  ["Record a scene or a shot", "Record screen, camera and microphone. Screen and camera are saved as two files, filed under their scene."],
+  ["Cut by the script", "Read the cut as a script next to the video. Select words and press Delete to cut them."],
+  ["Lay out screen and camera", "Pick a layout, then drag and resize the camera on the video. Save your own presets."],
+  ["Studio Sound", "One switch cleans every voice in the project, with the price shown before you turn it on."],
+  ["Watch your agent work", "Every change lands in Activity as it happens, with Undo on each one. Works with your own agents over MCP."],
+  ["Comment on moments", "Pin a comment to a stretch of the cut, reply and resolve it."],
   ["Runs on VidJutsu Cloud", "Uploads, storage and renders run on your VidJutsu Cloud account and are paid from your prepaid wallet."],
 ] as const;
 
@@ -28,12 +30,12 @@ export default function EditorPage() {
             Mac app &middot; macOS 15 or later
           </p>
           <h1 className="text-[clamp(1.9rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] mb-5">
-            See the cut your agent made
+            Plan, record and cut with your agent
           </h1>
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
-            VidJutsu Editor is a native Mac app for VidJutsu Cloud. Your agent does the
-            cutting; you read the script, watch the timeline, say what to
-            change and approve it.
+            VidJutsu Editor is a native Mac app for VidJutsu Cloud. Plan the
+            video as a shot list, record it, and cut it by the script with your
+            agent. Every change lands as it happens, with Undo on each one.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3">
             <a
@@ -52,7 +54,7 @@ export default function EditorPage() {
           <p className="text-xs text-ink-light mt-4">Needs a VidJutsu Cloud account &middot; Apple silicon and Intel</p>
         </div>
 
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-16" aria-label="Features">
+        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-16" aria-label="Features">
           {features.map(([title, body]) => (
             <article key={title} className="rounded-lg border border-ink/10 p-6">
               <h2 className="text-base font-semibold text-ink mb-2">{title}</h2>
