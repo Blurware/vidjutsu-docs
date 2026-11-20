@@ -57,14 +57,16 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 | `make_preview`, `media_preview` | Make and read a file's [preview](/guides/uploads#previews-and-transcripts): proxy, filmstrip, waveform. |
 | `make_transcript`, `media_transcript` | Make and read a file's transcript. |
 | `list_projects` | Your projects, most recently changed first. |
-| `init` | Create a project (`{project}`). |
+| `init` | Create a project (`{project, template?}`; `template` picks its [shot list columns](/guides/shot-list-templates), default `talking_head`). |
 | `import_timeline` | Open a Descript FCPXML or EDL export as a new project ([import from Descript](/guides/import-descript)). Free. |
 | `show` | A project's timeline, and who is in it right now (`{project}`). |
 | `head` | The head revision without the timeline: a cheap check for changes. |
 | `edit` | Apply [edit operations](/guides/editing#edit-operations) (`{project, operations, expected_head, summary}`). |
 | `timeline_words` | The words and pauses on the edited timeline, ready for cuts ([cut by the script](/guides/agents#cut-by-the-script)). |
 | `history`, `undo`, `restore` | Every revision and shot list change; undo one change or a whole revision; bring back an earlier one ([undo and history](/guides/agents#undo-and-history)). |
-| `shot_list`, `shot_list_edit` | Read and change the [shot list](/guides/shot-list): scenes, shots and the files filed under them. |
+| `shot_list`, `shot_list_edit` | Read and change the [shot list](/guides/shot-list): columns, scenes, shots and the files filed under them. |
+| `get_shot` | [One shot](/guides/shot-list-templates#read-one-shot) ready to work from: every column's value, with fresh file links. |
+| `templates`, `save_template`, `delete_template` | List, save and delete [shot list templates](/guides/shot-list-templates). |
 | `shot_list_import` | Bring an episode plan in as the shot list ([episode plans](/guides/import-descript#bring-in-an-episode-plan)). |
 | `files` | Every file in the project, where it is used and where it came from. |
 | `search_words` | Find spoken words in every file of the project. |

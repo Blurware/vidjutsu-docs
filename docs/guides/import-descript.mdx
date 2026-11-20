@@ -45,8 +45,8 @@ curl -s -X POST https://api.vidjutsu.ai/projects/launch-film/shot-list/import \
   -d "{\"expected_revision\": 0, \"episode\": $(cat episode.json)}"
 ```
 
-Each group becomes a scene and each beat a shot, in order: talking points from the beat's talking notes (the first led by its label), its script, and a visual named after its first matched clip, with the visual notes as its note. Scene and shot ids come from the episode, so they are easy to find again. New scenes go after the last one; send `replace: true` to remove every scene first (their files stay in the project).
+Each group becomes a scene and each beat a shot, in order, filling the [Talking head](/guides/shot-list-templates#templates) columns (`talking`, `script`, `visual`, `sources`), so the project needs them: talking points from the beat's talking notes (the first led by its label), its script, its sources (the episode's links for the beat's `sourceRefs`), and a visual named after its first matched clip, with the visual notes as its note. Scene and shot ids come from the episode, so they are easy to find again. New scenes go after the last one; send `replace: true` to remove every scene first (their files stay in the project).
 
-Nothing is shortened: a beat past the shot list's limits is refused by name (a script holds up to 5,000 letters, and a shot up to 40 talking points of 500 letters each). The timeline isn't touched. A stale `expected_revision` answers 409 `stale_revision` with the current shot list. The answer is the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).
+Nothing is shortened: a beat past the shot list's limits is refused by name (a script holds up to 20,000 letters, and a shot up to 40 talking points of 500 letters each). The timeline isn't touched. A stale `expected_revision` answers 409 `stale_revision` with the current shot list. The answer is the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).
 
 MCP: `shot_list_import`.

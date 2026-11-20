@@ -26,7 +26,7 @@ const forbidden = [
   [/\/v3\b/, "versioned path (the API is versioned by date, with no version in paths)"],
   [/\bclon(e|es|ing)\b/i, "old clone product"],
   [/\bscrap(e|es|ing)\b/i, "old scrape product"],
-  [/\bcharacters?\b/i, "old characters product"],
+  [/(?<![`"])\bcharacters?\b(?![`"])/i, "old characters product (the `character` reference role in code is fine)"],
   [/\$99\b/, "old $99 plan"],
   [/\$25 ?(a|\/) ?mo/i, "old $25 monthly plan (billing is a prepaid wallet)"],
   [/(?<!no )\bsubscri(be|bes|bed|bing|ption|ptions)\b/i, "old subscription billing (billing is a prepaid wallet)"],
