@@ -32,6 +32,8 @@ const forbidden = [
   [/(?<!no )\bsubscri(be|bes|bed|bing|ption|ptions)\b/i, "old subscription billing (billing is a prepaid wallet)"],
   [/portal_url|included each month|60 minutes/i, "old Pro plan details"],
   [/free,? (native )?mac (app|editor)|app itself is free|editor, free|\["free"/i, "the editor isn't free: it needs a VidJutsu Cloud account"],
+  [/mac (app|editor)|download\.vidjutsu\.ai|\.dmg\b|\/editor\/index|href="\/editor"/i, "the Mac editor is retired: VidJutsu is fully hosted at app.vidjutsu.ai"],
+  [/your own (openai|anthropic)|sign in with chatgpt/i, "no bring-your-own model or vendor keys: bring your agent over MCP"],
   [/credits-and-billing|get-api-key/, "removed page"],
 ];
 

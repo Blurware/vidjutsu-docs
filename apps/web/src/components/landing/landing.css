@@ -1,0 +1,114 @@
+/* Landing page (vidjutsu.ai). White cyc colors, Space Grotesk headings, Inter body. */
+.vl {
+  --ink: #15171a;
+  --muted: #5f6470;
+  --line: #e7e4de;
+  --blue: #2e65d2;
+  --blue-soft: #eef3fc;
+  --lift: 0 4px 0 #e2dfd8, 0 24px 40px rgba(20, 24, 32, 0.1);
+  min-height: 100vh;
+  overflow: hidden;
+  background: #f7f6f3;
+  color: var(--ink);
+  font-family: Inter, system-ui, sans-serif;
+}
+.vl a { color: inherit; text-decoration: none; }
+.vl a:hover { opacity: 0.8; }
+.vl h1, .vl h2 { font-family: "Space Grotesk", sans-serif; font-weight: 700; margin: 0; }
+.vl h2 { font-size: clamp(34px, 4.4vw, 52px); line-height: 1.02; letter-spacing: -0.035em; }
+
+/* Hero */
+.vl-hero { padding: 0 16px 120px; background: linear-gradient(180deg, #e9e7e2 0%, #f3f1ed 55%, #fbfaf8 100%); }
+.vl-nav { max-width: 1280px; margin: 0 auto; height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 14px; }
+.vl-nav div { display: flex; gap: 30px; color: var(--muted); }
+.vl-nav .vl-signin { color: var(--ink); font-weight: 600; }
+.vl-logo { display: flex; align-items: center; gap: 10px; font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 19px; }
+.vl-logo b { width: 30px; height: 30px; border-radius: 7px; background: var(--ink); color: #fff; display: grid; place-items: center; font: 700 10px Inter, sans-serif; }
+.vl-hero-copy { text-align: center; padding-top: 70px; }
+.vl-hero-copy h1 { font-size: clamp(46px, 6.2vw, 88px); line-height: 0.98; letter-spacing: -0.045em; }
+.vl-hero-copy p { margin: 24px auto 0; max-width: 520px; font-size: 20px; line-height: 1.5; color: var(--muted); }
+.vl-cta { margin-top: 34px; display: inline-flex; padding: 17px 30px; border-radius: 12px; background: var(--blue); color: #fff !important; font-weight: 600; font-size: 17px; box-shadow: 0 4px 0 #1f4ba3, 0 18px 30px rgba(46, 101, 210, 0.25); }
+
+/* Connect block */
+.vl-connect { max-width: 1120px; margin: 64px auto 0; border-radius: 14px; background: #fff; border: 1px solid var(--line); box-shadow: var(--lift); overflow: hidden; }
+.vl-connect button { font: inherit; cursor: pointer; background: none; color: inherit; }
+.vl-connect-tabs { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); }
+.vl-connect-tabs button { padding: 12px 30px; border-radius: 8px; border: 1px solid transparent; font-size: 13px; font-weight: 600; color: var(--muted); }
+.vl-connect-tabs button.active { border-color: var(--blue); background: var(--blue-soft); color: var(--ink); font-weight: 700; }
+.vl-connect-agents { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: #f7f6f3; }
+.vl-connect-agents button { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 8px; border: 1px solid transparent; font-size: 13px; font-weight: 600; color: var(--muted); }
+.vl-connect-agents button.active { border-color: var(--blue); background: var(--blue-soft); color: var(--ink); }
+.vl-connect-agents img { width: 16px; height: 16px; }
+.vl-connect-body { padding: 34px 34px 26px; }
+.vl-connect-body header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.vl-connect-body header span { font: 10.5px ui-monospace, Menlo, monospace; letter-spacing: 0.14em; color: var(--muted); }
+.vl-connect-body header h2 { margin-top: 12px; font-size: clamp(26px, 3vw, 36px); font-weight: 600; letter-spacing: -0.03em; }
+.vl-connect-body header p { margin: 10px 0 0; max-width: 540px; font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+.vl-connect-body header a, .vl-connect-body footer a { font-size: 13px; font-weight: 600; color: var(--blue); white-space: nowrap; }
+.vl-connect-body ol { margin: 26px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 10px; background: #fbfaf8; }
+.vl-connect-body li { padding: 20px; display: flex; flex-direction: column; gap: 14px; font-size: 14.5px; line-height: 1.5; }
+.vl-connect-body li + li { border-left: 1px solid var(--line); }
+.vl-connect-body li i { width: 24px; height: 24px; border-radius: 50%; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; font: normal 700 11px Inter, sans-serif; }
+.vl-command { margin-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 18px; border-radius: 10px; background: var(--ink); }
+.vl-command code { font: 14px ui-monospace, Menlo, monospace; color: #f2f2f2; overflow-x: auto; white-space: nowrap; }
+.vl-command button { flex: none; padding: 9px 14px; border-radius: 7px; border: 0; background: #fff !important; color: var(--ink) !important; font: 700 11px ui-monospace, Menlo, monospace !important; letter-spacing: 0.08em; }
+.vl-connect-body footer { margin-top: 14px; display: flex; justify-content: space-between; gap: 16px; font-size: 12.5px; color: var(--muted); }
+
+/* Features */
+.vl-fit { width: 100%; overflow: hidden; }
+.vl-agent { max-width: 1280px; margin: 0 auto; padding: 120px 16px 100px; }
+.vl-agent h2 { padding: 0 20px; }
+.vl-agent-window { margin-top: 44px; border-radius: 12px; overflow: hidden; border: 1px solid #d6d2ca; box-shadow: 0 4px 0 #e2dfd8, 0 40px 70px -20px rgba(20, 24, 32, 0.3); }
+.vl-agent-window .vl-fit { max-width: none !important; }
+.vl-feature { max-width: 1296px; margin: 0 auto; min-height: 780px; padding: 0 16px; box-sizing: border-box; display: flex; align-items: center; gap: 70px; }
+.vl-feature.flip { flex-direction: row-reverse; }
+.vl-feature h2 { width: 420px; flex: none; }
+.vl-card { position: relative; flex: 1; max-width: 806px; }
+.vl-card::before { content: ""; position: absolute; inset: -14px; border-radius: 14px; background: #fff; border: 1px solid var(--line); box-shadow: var(--lift); }
+.vl-card-shot { position: relative; border-radius: 9px; overflow: hidden; }
+.vl-tape { position: absolute; top: -30px; width: 120px; height: 30px; background: rgba(226, 214, 186, 0.75); z-index: 3; }
+.vl-note { position: absolute; bottom: -66px; z-index: 3; font: 700 28px "Caveat", cursive; white-space: nowrap; }
+.vl-note.right { right: -30px; }
+.vl-note.left { left: -34px; }
+
+/* Use cases, price, footer */
+.vl-uses { max-width: 1280px; margin: 0 auto; padding: 120px 16px 60px; text-align: center; }
+.vl-uses h2 { font-size: 40px; letter-spacing: -0.03em; }
+.vl-uses > div { margin-top: 40px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; text-align: left; }
+.vl-uses article { padding: 22px; border-radius: 12px; background: #fff; border: 1px solid var(--line); box-shadow: 0 4px 0 #e2dfd8, 0 14px 24px rgba(20, 24, 32, 0.06); }
+.vl-uses article b { font-size: 17px; }
+.vl-uses article span { display: block; margin-top: 6px; color: var(--muted); font-size: 14px; }
+.vl-uses p { margin: 28px 0 0; color: var(--muted); font-size: 15px; }
+.vl-price { padding: 80px 16px 110px; text-align: center; }
+.vl-price div { font: 700 56px "Space Grotesk", sans-serif; letter-spacing: -0.035em; }
+.vl-price div span { font-size: 22px; color: var(--muted); font-weight: 500; letter-spacing: 0; }
+.vl-price p { margin: 10px 0 0; color: var(--muted); font-size: 17px; }
+.vl-footer { max-width: 1280px; margin: 0 auto; padding: 50px 16px 70px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; font-size: 14px; }
+.vl-footer p { margin: 12px 0 0; color: var(--muted); }
+.vl-footer nav { display: flex; flex-direction: column; gap: 10px; }
+.vl-footer nav a { color: var(--muted); }
+
+@media (max-width: 1100px) {
+  .vl-feature, .vl-feature.flip { flex-direction: column; align-items: stretch; gap: 50px; min-height: 0; padding: 70px 30px 110px; }
+  .vl-feature h2 { width: auto; }
+  .vl-card { max-width: 806px; width: 100%; margin: 0 auto; }
+  .vl-uses > div { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .vl-nav div a:not(.vl-signin) { display: none; }
+  .vl-connect-tabs button { padding: 10px 18px; }
+  .vl-connect-agents { justify-content: flex-start; }
+  .vl-connect-body { padding: 24px 18px 20px; }
+  .vl-connect-body header { flex-direction: column; }
+  .vl-connect-body ol { grid-template-columns: 1fr; }
+  .vl-connect-body li + li { border-left: 0; border-top: 1px solid var(--line); }
+  .vl-connect-body footer { flex-direction: column; }
+  .vl-agent { padding-top: 80px; }
+  .vl-feature, .vl-feature.flip { padding: 50px 16px 100px; }
+  .vl-note { font-size: 22px; bottom: -54px; }
+  .vl-note.right { right: 0; }
+  .vl-note.left { left: 0; }
+  .vl-uses > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vl-price div { font-size: 44px; }
+  .vl-footer { grid-template-columns: 1fr 1fr; }
+}
