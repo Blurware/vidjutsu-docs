@@ -57,11 +57,12 @@ Every request carries the `VidJutsu-Version` header. See [Versioning](/api-refer
 | `createUpload(name, bytes, sha256)`, `completeUpload(uploadId, parts, {source?, project?})`, `abortUpload(uploadId)` | Direct upload steps, if you want to send parts yourself (in parallel, or from a stream). |
 | `mediaInfo(hash)`, `mediaUrl(hash, ttlSeconds?)` | A media item, and a download link for it. |
 | `makePreview(hash, {project?})`, `mediaPreview(hash)`, `makeTranscript(hash, {project?})`, `mediaTranscript(hash)` | [Previews and transcripts](/guides/uploads#previews-and-transcripts). |
-| `listProjects({cursor?, limit?})`, `init(project, idempotencyKey?)`, `show(project, {revision?})`, `head(project)` | List, create and read projects. |
+| `listProjects({cursor?, limit?})`, `init(project, {template?, idempotencyKey?})`, `show(project, {revision?})`, `head(project)` | List, create and read projects. |
 | `edit(project, operations, {expected_head?, summary?, branch?, idempotency_key?})` | [Edit](/guides/editing) a timeline. |
 | `timelineWords(project, {revision?, pause?})` | The words and pauses on the edited timeline. |
 | `history(project, {limit?, before?})`, `undo(project, revision, {change?, expected_head?})`, `restore(project, revision, {expected_head?})` | [Undo and history](/guides/agents#undo-and-history). |
-| `shotList(project)`, `shotListEdit(project, expectedRevision, operations)`, `shotListImport(project, expectedRevision, episode, {replace?})`, `files(project)`, `searchWords(project, words, {limit?})` | The [shot list](/guides/shot-list), [episode plans](/guides/import-descript#bring-in-an-episode-plan), the project's files and word search. |
+| `shotList(project, {scene?, resolve?})`, `getShot(project, shot)`, `shotListEdit(project, expectedRevision, operations)`, `shotListImport(project, expectedRevision, episode, {replace?})`, `files(project)`, `searchWords(project, words, {limit?})` | The [shot list](/guides/shot-list), [episode plans](/guides/import-descript#bring-in-an-episode-plan), the project's files and word search. |
+| `templates()`, `saveTemplate({name, columns, id?} or {name, project, id?})`, `deleteTemplate(template)` | [Shot list templates](/guides/shot-list-templates). |
 | `layouts()`, `saveLayout({name, screen, camera})`, `deleteLayout(layoutId)`, `applyLayout(project, preset, {from?, to?})` | [Screen and camera layouts](/guides/layouts). |
 | `studioSound(project, {media?})`, `level(project, body)` | [Studio Sound](/guides/studio-sound) and [leveling](/guides/audio). |
 | `frame(project, times, {height?, revision?})`, `check(project, {sections?, revision?})` | [Look at and check a cut](/guides/look-and-check). Both start jobs; read `output` when they succeed. |

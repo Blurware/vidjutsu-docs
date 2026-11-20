@@ -45,7 +45,7 @@ const ENGINE_ROUTES = [
   ["delete", "/v3/uploads/{upload_id}", "abort_upload", "Abort an upload", "Uploads",
     "Abandon a direct upload and the parts sent so far."],
   ["post", "/v3/projects", "init", "Create a project", "Projects",
-    "Create a project: an edit timeline with history. Without a manifest it starts empty, with one video track (`v1`) and one audio track (`a1`)."],
+    "Create a project: an edit timeline with history. Without a manifest it starts empty, with one video track (`v1`) and one audio track (`a1`). `template` picks the shot list columns it starts with (default `talking_head`); see [Shot list templates](" + DOCS + "/guides/shot-list-templates)."],
   ["get", "/v3/projects/{project}", "show", "Get a project", "Projects",
     "A project's timeline at a branch head (default `main`) or at a given revision, with its manifest and length, the author, summary and time (`at`) of the revision, and who is in the project right now: `presence` (where people are in the editor: selection and playhead, so \"cut what I selected\" works from any agent) and `working_on` (what agents said they are about to do). It has an ETag: send it back as `If-None-Match` and an unchanged project answers 304 with no body."],
   ["get", "/v3/projects/{project}/head", "head", "Get the head revision", "Projects",
@@ -128,6 +128,9 @@ const ADDED_FIELDS = {
   IngestUrl: { source: SOURCE_FIELD, project: PROJECT_HINT },
   CompleteUpload: { source: SOURCE_FIELD, project: PROJECT_HINT },
   StartUpload: { project: PROJECT_HINT },
+  InitProject: {
+    template: { type: "string", default: "talking_head", description: "The shot list template whose columns the project starts with: `talking_head` (default), `ai_drama`, or one of yours from GET /shot-list/templates. Columns can still be added later. See [Shot list templates](" + DOCS + "/guides/shot-list-templates)." },
+  },
   Project: {
     presence: { type: "array", items: { type: "object", additionalProperties: true }, description: "People in the project in the editor right now: who, their `selection` (`{start, end, clips?}`) and `playhead`. Set with POST /projects/{project}/presence." },
     working_on: { type: "array", items: { type: "object", additionalProperties: true }, description: "What agents said they are doing right now: who, `text`, and the `clips`, `range` or `scene` they will touch. Set with POST /projects/{project}/working_on." },
@@ -374,6 +377,8 @@ const pathParam = (name, description) => ({ name, in: "path", required: true, sc
 const queryParam = (name, schema, description) => ({ name, in: "query", required: false, schema, description });
 const CONFLICT = (text) => ({ "409": errorResponse(text) });
 
+const COLUMN_TYPES = ["text", "long_text", "dialogue", "media", "references", "takes", "select", "number", "links"];
+
 const EDITOR_SCHEMAS = {
   Time: TIME,
   Range: obj({ start: ref("Time"), end: ref("Time") }, { required: ["start", "end"], description: "A stretch of the timeline. Ends are exclusive." }),
@@ -449,20 +454,56 @@ const EDITOR_SCHEMAS = {
     source: { ...SOURCE_FIELD, type: ["object", "null"] },
     on_timeline: { type: "array", items: obj({ clip: str(""), track: str(""), start_seconds: { type: "number" }, end_seconds: { type: "number" } }), description: "Where it is used on the timeline." },
   }),
+  Column: obj({
+    id: str("Its key in each shot's `values`."), name: str("What people see."),
+    type: { type: "string", enum: COLUMN_TYPES, description: "What its values hold. A column's type never changes." },
+    options: obj({ choices: { type: "array", items: { type: "string" } } }, { description: "`select` columns only: the choices." }),
+    hidden: { type: "boolean", description: "Hidden in the editor. Its values are kept." },
+  }, { required: ["id", "name", "type"], description: "A shot list column. See [Column types](" + DOCS + "/guides/shot-list-templates#column-types)." }),
+  Template: obj({
+    id: str("`talking_head`, `ai_drama`, or yours."), name: str(""),
+    builtin: { type: "boolean", description: "Built-in templates can't be replaced or deleted." },
+    columns: { type: "array", items: ref("Column") },
+  }),
+  TemplateList: obj({ templates: { type: "array", items: ref("Template") } }),
+  SaveTemplate: {
+    oneOf: [
+      obj({ name: str(""), id: str("Send an existing id to replace that template."), columns: { type: "array", items: ref("Column"), minItems: 1 } }, { required: ["name", "columns"], title: "From columns" }),
+      obj({ name: str(""), id: str("Send an existing id to replace that template."), project: str("Copy this project's current columns.") }, { required: ["name", "project"], title: "From a project" }),
+    ],
+  },
+  TimelineUse: obj({ media: str("The file's hash."), clip: str(""), track: str(""), start_seconds: { type: "number" }, end_seconds: { type: "number" } }, { description: "A clip on the timeline made from a file tagged with the shot." }),
   Shot: obj({
-    id: str(""), talking: { type: "array", items: { type: "string" }, description: "Talking points." },
-    script: str("A rough line."), visual: { type: ["object", "null"], additionalProperties: true, description: "The key visual: `{media?, name?, note?}`." },
-    layout: str("The layout preset to use."),
+    id: str(""),
+    seconds: { type: ["number", "null"], description: "The planned length." },
+    values: { type: "object", additionalProperties: true, description: "Each column's value, by column id. A missing column is empty. See [Values](" + DOCS + "/guides/shot-list-templates#values)." },
+    timeline: { type: "array", items: ref("TimelineUse"), description: "Read only: where the shot's files are used on the timeline." },
+    fields: { type: "array", items: ref("ShotField"), description: "With `resolve=true` only." },
+  }, { description: "A shot. Its scene and order are its place in `scenes[].shots`." }),
+  ShotFileLink: obj({ media: str("The file's hash."), name: str(""), kind: str(""), role: str("References only: what it is for."), url: str("A fresh, time-limited download link.") }),
+  ShotField: obj({
+    column: str("The column id."), name: str(""), type: { type: "string", enum: COLUMN_TYPES },
+    value: { description: "The column's value, or null. Every file in it comes back as `{media, name, kind, role?, url}`." },
+  }),
+  ShotDetail: obj({
+    revision: { type: "integer", description: "The shot list's revision." },
+    scene: obj({ id: str(""), title: str("") }), index: { type: "integer", description: "Its place in the scene, from 0." },
+    previous: { type: ["string", "null"], description: "The shot before it in the scene." }, next: { type: ["string", "null"], description: "The shot after it." },
+    id: str(""), seconds: { type: ["number", "null"] },
+    timeline: { type: "array", items: ref("TimelineUse") },
+    fields: { type: "array", items: ref("ShotField"), description: "Every column, in order, with its value." },
   }),
   ShotList: obj({
     revision: { type: "integer", description: "The shot list's own revision. Send it back as `expected_revision`." },
     timeline_revision: { type: ["string", "null"] },
+    template: obj({ id: str(""), name: str("") }, { description: "The template the project started from." }),
+    columns: { type: "array", items: ref("Column"), description: "The project's columns, in order." },
     scenes: { type: "array", items: obj({ id: str(""), title: str(""), shots: { type: "array", items: ref("Shot") }, media: { type: "array", items: ref("ShotFile") } }) },
     created: { type: "array", items: { type: "string" }, description: "After an edit: the new scene and shot ids, in order." },
   }),
   ShotListEdit: obj({
     expected_revision: { type: "integer", description: "The revision you read (0 for a new shot list)." },
-    operations: { type: "array", minItems: 1, items: obj({ op: { type: "string", enum: ["add_scene", "rename_scene", "move_scene", "remove_scene", "add_shot", "set_shot", "move_shot", "remove_shot", "attach_media", "detach_media"] } }, { required: ["op"] }), description: "Applied in order, all or none. See [Plan with the shot list](" + DOCS + "/guides/shot-list#operations)." },
+    operations: { type: "array", minItems: 1, items: obj({ op: { type: "string", enum: ["add_scene", "rename_scene", "move_scene", "remove_scene", "add_shot", "set_shot", "move_shot", "remove_shot", "add_column", "rename_column", "move_column", "hide_column", "set_column_options", "remove_column", "attach_media", "detach_media"] } }, { required: ["op"] }), description: "Applied in order, all or none. See [Plan with the shot list](" + DOCS + "/guides/shot-list#operations)." },
   }, { required: ["expected_revision", "operations"] }),
   FileList: obj({ files: { type: "array", items: { allOf: [ref("ShotFile"), obj({ scene: { type: ["string", "null"], description: "Its scene, or null if it isn't filed under one." }, scene_title: str("") })] } } }),
   WordSearch: obj({
@@ -531,8 +572,8 @@ const EDITOR_PATHS = {
   "/projects/{project}/shot-list": {
     get: {
       operationId: "shot_list", tags: ["Shot list"], summary: "Get the shot list",
-      description: "The project's plan: scenes in order, each with its shots (talking points, script, key visual, layout) and the files filed under it (takes and anything attached), with each file's name, kind, length, the shot it is tagged with, and where it is on the timeline. A project with no shot list answers revision 0 and no scenes. See [Plan with the shot list](" + DOCS + "/guides/shot-list).",
-      parameters: [PROJECT_PARAM],
+      description: "The project's plan: its template and columns, then scenes in order, each with its shots (planned `seconds`, `values` by column id, and the `timeline` clips made from their files) and the files filed under it (takes and anything attached), with each file's name, kind, length, the shot it is tagged with, and where it is on the timeline. `scene` returns only that scene; `resolve=true` adds each shot's `fields` as GET /projects/{project}/shot-list/shots/{shot} has them. A project with no scenes answers revision 0. See [Plan with the shot list](" + DOCS + "/guides/shot-list).",
+      parameters: [PROJECT_PARAM, queryParam("scene", { type: "string" }, "Only this scene."), queryParam("resolve", { type: "boolean" }, "Add each shot's `fields`, with fresh file links.")],
       responses: { "200": json(ref("ShotList"), "The shot list"), ...AUTH_ERRORS },
     },
   },
@@ -543,6 +584,35 @@ const EDITOR_PATHS = {
       parameters: [PROJECT_PARAM],
       requestBody: { required: true, content: { "application/json": { schema: ref("ShotListEdit") } } },
       responses: { "200": json(ref("ShotList"), "The edited shot list"), ...AUTH_ERRORS, ...CONFLICT("Someone changed the shot list first (`stale_revision`): read it again and redo your edit.") },
+    },
+  },
+  "/projects/{project}/shot-list/shots/{shot}": {
+    get: {
+      operationId: "get_shot", tags: ["Shot list"], summary: "Get a shot",
+      description: "One shot, ready to work from: its scene, place and neighbours, planned length, where it is on the timeline, and `fields`: every column in order with its value. Every file in a value (media, references, takes, and the scene's files tagged with the shot) comes back as `{media, name, kind, role?, url}` with a fresh download link. See [Shot list templates](" + DOCS + "/guides/shot-list-templates#read-one-shot).",
+      parameters: [PROJECT_PARAM, pathParam("shot", "The shot id.")],
+      responses: { "200": json(ref("ShotDetail"), "The shot"), ...AUTH_ERRORS },
+    },
+  },
+  "/shot-list/templates": {
+    get: {
+      operationId: "templates", tags: ["Shot list"], summary: "List shot list templates",
+      description: "The templates a project's shot list can start from: the built-ins (`talking_head`, `ai_drama`) and the ones saved to your account, each with its columns. Pass one as `template` when you create a project. See [Shot list templates](" + DOCS + "/guides/shot-list-templates).",
+      responses: { "200": json(ref("TemplateList"), "Templates"), ...AUTH_ERRORS },
+    },
+    post: {
+      operationId: "save_template", tags: ["Shot list"], summary: "Save a shot list template",
+      description: "Save a template to your account, from a list of columns or from a project's current columns (`project`). Saving the same `id` again replaces it; built-in templates can't be replaced. Projects already made from a template keep their own columns.",
+      requestBody: { required: true, content: { "application/json": { schema: ref("SaveTemplate") } } },
+      responses: { "200": json(ref("Template"), "The saved template"), ...AUTH_ERRORS },
+    },
+  },
+  "/shot-list/templates/{template}": {
+    delete: {
+      operationId: "delete_template", tags: ["Shot list"], summary: "Delete a shot list template",
+      description: "Delete one of your templates. Built-ins can't be deleted. Projects made from it keep their columns.",
+      parameters: [pathParam("template", "The template id.")],
+      responses: { "200": json(obj({ deleted: { type: "boolean" } }), "Deleted"), ...AUTH_ERRORS },
     },
   },
   "/projects/{project}/files": {

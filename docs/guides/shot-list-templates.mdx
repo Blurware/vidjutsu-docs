@@ -1,0 +1,205 @@
+---
+title: "Shot list templates and columns"
+description: "Pick the columns a shot list starts with, add your own, and fill each shot with typed values: dialogue, references, takes and more."
+---
+
+A [shot list](/guides/shot-list) works like a database table: each **shot** is a row and each **column** is a typed property. Every shot also keeps a fixed core: its scene, its order, its planned length (`seconds`) and where its files are on the timeline.
+
+A **template** is a saved, ordered list of columns. A project picks one when it is created, and its shot list starts with those columns. You can add, rename, move and hide columns later, so the template is only the starting point.
+
+## Templates
+
+Two templates are built in:
+
+| Template | Columns (`id`: name, type) |
+| --- | --- |
+| `talking_head` (default) | `talking`: Talking points, `long_text` · `script`: Script, `long_text` · `visual`: Key visual, `media` · `sources`: Sources, `links` · `takes`: Takes, `takes` |
+| `ai_drama` | `shot_type`: Shot type, `select` · `prompt`: Prompt, `long_text` · `dialogue`: Dialogue, `dialogue` · `references`: References, `references` · `takes`: Takes, `takes` |
+
+List them, with the ones saved to your account:
+
+```sh
+curl -s https://api.vidjutsu.ai/shot-list/templates -H "Authorization: Bearer $KEY"
+```
+
+```json
+{"templates": [
+  {"id": "ai_drama", "name": "AI drama", "builtin": true, "columns": [
+    {"id": "shot_type", "name": "Shot type", "type": "select", "options": {"choices": ["Wide", "Medium", "Close-up"]}},
+    {"id": "prompt", "name": "Prompt", "type": "long_text"},
+    {"id": "dialogue", "name": "Dialogue", "type": "dialogue"},
+    {"id": "references", "name": "References", "type": "references"},
+    {"id": "takes", "name": "Takes", "type": "takes"}]},
+  ...
+]}
+```
+
+### Start a project from a template
+
+Pass `template` when you create the project. Leave it out for `talking_head`.
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/projects \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"project": "rooftop-short", "template": "ai_drama"}'
+```
+
+The template's columns are copied into the project. Changing or deleting the template later doesn't change projects already made from it.
+
+### Save your own
+
+Save a template from a list of columns, or copy a project's current columns with `project`:
+
+```sh
+curl -s -X POST https://api.vidjutsu.ai/shot-list/templates \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"name": "Product demo", "columns": [
+        {"id": "script", "name": "Script", "type": "long_text"},
+        {"id": "screen", "name": "Screen to show", "type": "media"},
+        {"id": "takes", "name": "Takes", "type": "takes"}]}'
+
+curl -s -X POST https://api.vidjutsu.ai/shot-list/templates \
+  -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
+  -d '{"name": "My drama", "project": "rooftop-short"}'
+```
+
+The answer is the saved template with its `id`. Send the same `id` again to replace it. Built-in templates can't be replaced or deleted. Delete one of yours with `DELETE /shot-list/templates/{template}`.
+
+## Column types
+
+The types are a fixed set. A column's type never changes once it exists.
+
+| Type | Holds |
+| --- | --- |
+| `text` | A short line, up to 500 letters. |
+| `long_text` | Longer writing, up to 5,000 letters: a script, a prompt, talking points. |
+| `dialogue` | One spoken line and who says it. |
+| `media` | One file, or a description of one still to be made. |
+| `references` | Files that a shot is made from, each with what it is for. |
+| `takes` | The files made for this shot, and which one is picked. |
+| `select` | One of the column's choices. |
+| `number` | A number. |
+| `links` | Web links. |
+
+## Values
+
+A shot keeps its values in `values`, by column id. A column with no value is simply missing.
+
+| Type | Value |
+| --- | --- |
+| `text`, `long_text` | A string. |
+| `dialogue` | `{"speaker": "Mara", "line": "You came back."}` |
+| `media` | `{"media": "<hash>", "name": "...", "note": "..."}`: any of the three, at least one. `media` is a stored file's hash. |
+| `references` | `[{"media": "<hash>", "role": "character", "name": "Mara"}]`. `role` is one of `character`, `location`, `style`, `prop`, `voice`, `input_clip` or `first_frame`. |
+| `takes` | Written as `{"picked": "<hash>"}` (or `null`). Read as `{"items": [{"media": "<hash>", "name": "..."}], "picked": "<hash>"}`. |
+| `select` | One of the column's `options.choices`. |
+| `number` | A finite number. |
+| `links` | `[{"url": "https://...", "title": "..."}]`, http or https. |
+
+**Takes** are the files filed under the shot's scene and tagged with the shot. You don't list them yourself: file a take under the shot with `attach_media`, or pick a stored file that isn't filed yet with `set_shot {"values": {"takes": {"picked": "<hash>"}}}` and it is filed under the shot for you.
+
+VidJutsu doesn't make takes or references itself. They are files you or your agent bring in: [upload or ingest](/guides/uploads) them, then point the shot at their hashes.
+
+## Change columns
+
+Column operations go in the same [shot list edits](/guides/shot-list#edit-it) batch as scene and shot operations, all or none:
+
+| `op` | Fields | What it does |
+| --- | --- | --- |
+| `add_column` | `name`, `type`, `id`, `options`, `after` | Add a column after another one (`after` a column id), at the end if left out. Its id is in `created`. |
+| `rename_column` | `column`, `name` | Rename a column. |
+| `move_column` | `column`, `after` | Move a column after another one, or to the front with `after: null`. |
+| `hide_column` | `column`, `hidden` | Hide a column in the editor (`hidden: false` shows it again). Its values are kept. |
+| `set_column_options` | `column`, `options` | Change a `select` column's choices: `{"choices": [...]}`. |
+| `remove_column` | `column` | Remove a column and every shot's value in it. Meant for undoing `add_column`: to put a column away, hide it. |
+
+```json
+{"expected_revision": 7, "operations": [
+  {"op": "add_column", "id": "camera", "name": "Camera move", "type": "select",
+   "options": {"choices": ["Static", "Dolly in", "Pan"]}, "after": "shot_type"},
+  {"op": "hide_column", "column": "dialogue"}
+]}
+```
+
+## Set a shot's values
+
+`add_shot` and `set_shot` take `seconds` and `values`. `set_shot` changes only the columns you send, and `null` clears one. Each value is checked against its column's type, and a wrong one refuses the whole batch with the column named.
+
+```json
+{"expected_revision": 8, "operations": [
+  {"op": "set_shot", "shot": "sh_door", "seconds": 4,
+   "values": {"prompt": "Mara pushes the rooftop door open into the rain", "dialogue": null}}
+]}
+```
+
+## Read one shot
+
+`GET /projects/{project}/shot-list/shots/{shot}` (MCP `get_shot`) gives one shot ready to work from: its scene, its place and neighbours, its planned length, where it is on the timeline, and `fields`, every column in order with its value. Every file in a value comes back with a fresh download link, so an agent can open a reference straight away.
+
+```json
+{"revision": 9, "scene": {"id": "sc_roof", "title": "Rooftop"}, "index": 0, "previous": null, "next": "sh_face",
+ "id": "sh_door", "seconds": 4, "timeline": [],
+ "fields": [
+   {"column": "shot_type", "name": "Shot type", "type": "select", "value": "Wide"},
+   {"column": "prompt", "name": "Prompt", "type": "long_text", "value": "Mara pushes the rooftop door open into the rain"},
+   {"column": "references", "name": "References", "type": "references", "value": [
+     {"media": "<hash>", "name": "mara.png", "kind": "image", "role": "character", "url": "https://..."},
+     {"media": "<hash>", "name": "roof.png", "kind": "image", "role": "location", "url": "https://..."}]},
+   {"column": "takes", "name": "Takes", "type": "takes", "value": {"items": [], "picked": null}}
+ ]}
+```
+
+To read every shot this way at once, call `GET /projects/{project}/shot-list?resolve=true`. Add `scene=<id>` for one scene only.
+
+## Example: an agent plans an AI drama from references
+
+An agent has four images from the person: two people, a rooftop and a look to match. It plans a short, makes each shot with whatever video tool it uses, and brings the takes back.
+
+```ts
+import { VidJutsu } from "vidjutsu";
+
+const client = new VidJutsu({ apiKey: process.env.VIDJUTSU_API_KEY });
+const bringIn = async (url: string, name: string) => (await client.ingestUrl(url, name)).media.asset_hash;
+
+// 1. Bring in the references.
+const mara = await bringIn("https://example.com/mara.png", "mara.png");
+const jun = await bringIn("https://example.com/jun.png", "jun.png");
+const roof = await bringIn("https://example.com/roof.png", "roof.png");
+const look = await bringIn("https://example.com/look.png", "look.png");
+
+// 2. A project with the AI drama columns.
+await client.init("rooftop-short", { template: "ai_drama" });
+
+// 3. One scene, two shots, each with its prompt, line and references.
+const cast = [
+  { media: roof, role: "location", name: "Rooftop" },
+  { media: look, role: "style", name: "Look" },
+];
+await client.shotListEdit("rooftop-short", 0, [
+  { op: "add_scene", id: "sc_roof", title: "Rooftop" },
+  { op: "add_shot", scene: "sc_roof", id: "sh_door", seconds: 4, values: {
+    shot_type: "Wide",
+    prompt: "Mara pushes the rooftop door open into the rain",
+    references: [{ media: mara, role: "character", name: "Mara" }, ...cast],
+  } },
+  { op: "add_shot", scene: "sc_roof", id: "sh_face", seconds: 3, values: {
+    shot_type: "Close-up",
+    prompt: "Jun turns, surprised, rain on his face",
+    dialogue: { speaker: "Jun", line: "You came back." },
+    references: [{ media: jun, role: "character", name: "Jun" }, ...cast],
+  } },
+]);
+
+// 4. For each shot: read it, make a take elsewhere, bring it in and pick it.
+for (const id of ["sh_door", "sh_face"]) {
+  const shot = await client.getShot("rooftop-short", id);
+  const take = await makeVideoWithYourTool(shot.fields); // prompt, line and reference links
+  const picked = await bringIn(take.url, `${id}-take1.mp4`);
+  const { revision } = await client.shotList("rooftop-short");
+  await client.shotListEdit("rooftop-short", revision, [
+    { op: "set_shot", shot: id, values: { takes: { picked } } },
+  ]);
+}
+```
+
+Picking a take files it under the shot, so it shows in the editor's Takes column and in `files`. Putting it in the cut is a [timeline edit](/guides/editing) (`add_media`, `insert_clip`), the same as for any file.
