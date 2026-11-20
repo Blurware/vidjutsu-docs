@@ -214,12 +214,12 @@
         ]
       },
       {
-        "tab": "Editor, CLI and SDK",
+        "tab": "Web app, CLI and SDK",
         "groups": [
           {
-            "group": "Mac editor",
+            "group": "Web app",
             "pages": [
-              "editor/index"
+              "web-app"
             ]
           },
           {
@@ -275,6 +275,14 @@
     }
   },
   "redirects": [
+    {
+      "source": "/editor/index",
+      "destination": "/web-app"
+    },
+    {
+      "source": "/editor",
+      "destination": "/web-app"
+    },
     {
       "source": "/api-reference/accounts/create",
       "destination": "/api-reference/introduction"

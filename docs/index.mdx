@@ -3,7 +3,7 @@ title: "VidJutsu"
 description: "Video editing built for agents. Upload takes, edit a timeline with history, and render it on cloud machines through one API, a CLI or MCP."
 ---
 
-VidJutsu Cloud is a video editor your agent drives. Every step is a call, so an agent can do the whole job; when you want to watch the cut and say what to change, there's a [Mac editor](/editor/index) that works with your VidJutsu Cloud account.
+VidJutsu Cloud is a video editor your agent drives. It's fully hosted: bring your agent, and VidJutsu runs everything else. Every step is a call, so an agent can do the whole job; when you want to watch the cut and say what to change, open the [web app](/web-app) at [app.vidjutsu.ai](https://app.vidjutsu.ai). Nothing to install.
 
 1. **Upload** your takes, music and stills. Files go straight to storage, up to 50 GB each.
 2. **Edit** a project's timeline with plain JSON operations: place clips, trim, cut pauses, set fades and levels. Every edit is a new revision, so nothing is lost and retries are safe.
@@ -34,11 +34,11 @@ All of them use the same operations with the same names, and the same JSON in an
 | **CLI** | The terminal and shell scripts: `npm i -g vidjutsu` | [CLI](/cli/index) |
 | **MCP** | Agents: `https://api.vidjutsu.ai/mcp` | [MCP](/mcp) |
 | **TypeScript SDK** | Node, Bun and the browser | [SDK](/sdk/index) |
-| **Mac editor** | Planning and recording with the shot list, cutting by the script, watching what your agent does, and chatting with it | [VidJutsu Editor](/editor/index) |
+| **Web app** | Planning and recording with the shot list, cutting by the script, watching what your agent does, and commenting on the cut: `https://app.vidjutsu.ai` | [Web app](/web-app) |
 
 ## What it does and doesn't do
 
-VidJutsu edits and renders footage you bring. It doesn't generate video, and it doesn't post to social networks.
+VidJutsu edits and renders footage you bring. It doesn't generate video, and it doesn't post to social networks. Transcripts, Studio Sound, storage and renders all run on VidJutsu Cloud and are paid from one [wallet](/pricing): you don't need your own accounts or keys with any other vendor.
 
 - **Inputs:** video (phone footage, screen recordings, ProRes, anything common), audio and still images. Footage is stored as you uploaded it and converted at render time, only the parts a render uses.
 - **Timeline:** video tracks drawn bottom to top (a screen, a camera over it, graphics over both), any number of audio tracks mixed together, clip gain, linear fades, screen and camera [layouts](/guides/layouts) with shapes and smooth moves, and cutting pauses across every track at once.

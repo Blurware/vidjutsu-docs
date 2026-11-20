@@ -13,8 +13,9 @@ export function Hero() {
 
           <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
             Upload your takes. Your agent cuts them on a timeline that keeps
-            every revision, then renders 1080p or 4K on cloud machines. One
-            API, a CLI and MCP, and a Mac editor when you want to see the cut.
+            every revision, then renders 1080p or 4K on cloud machines. Bring
+            your agent over MCP and watch the cut in your browser. Nothing to
+            install.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3">
@@ -25,10 +26,10 @@ export function Hero() {
               Get started
             </a>
             <a
-              href="https://docs.vidjutsu.ai"
+              href="https://app.vidjutsu.ai"
               className="inline-flex items-center justify-center px-6 py-3 text-ink-muted text-sm font-medium hover:text-ink transition-colors"
             >
-              Read Docs
+              Open the app
             </a>
           </div>
         </div>
