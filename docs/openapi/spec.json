@@ -2011,7 +2011,7 @@
           "Projects"
         ],
         "summary": "Create a project",
-        "description": "Create a project: an edit timeline with history. Without a manifest it starts empty, with one video track (`v1`) and one audio track (`a1`).",
+        "description": "Create a project: an edit timeline with history. Without a manifest it starts empty, with one video track (`v1`) and one audio track (`a1`). `template` picks the shot list columns it starts with (default `talking_head`); see [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates).",
         "parameters": [
           {
             "name": "VidJutsu-Version",
@@ -3910,7 +3910,7 @@
           "Shot list"
         ],
         "summary": "Get the shot list",
-        "description": "The project's plan: scenes in order, each with its shots (talking points, script, key visual, layout) and the files filed under it (takes and anything attached), with each file's name, kind, length, the shot it is tagged with, and where it is on the timeline. A project with no shot list answers revision 0 and no scenes. See [Plan with the shot list](https://docs.vidjutsu.ai/guides/shot-list).",
+        "description": "The project's plan: its template and columns, then scenes in order, each with its shots (planned `seconds`, `values` by column id, and the `timeline` clips made from their files) and the files filed under it (takes and anything attached), with each file's name, kind, length, the shot it is tagged with, and where it is on the timeline. `scene` returns only that scene; `resolve=true` adds each shot's `fields` as GET /projects/{project}/shot-list/shots/{shot} has them. A project with no scenes answers revision 0. See [Plan with the shot list](https://docs.vidjutsu.ai/guides/shot-list).",
         "parameters": [
           {
             "name": "project",
@@ -3920,6 +3920,24 @@
               "type": "string"
             },
             "description": "The project name."
+          },
+          {
+            "name": "scene",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Only this scene."
+          },
+          {
+            "name": "resolve",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Add each shot's `fields`, with fresh file links."
           },
           {
             "name": "VidJutsu-Version",
@@ -4038,7 +4056,7 @@
           "Shot list"
         ],
         "summary": "Import an episode plan",
-        "description": "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order: talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
+        "description": "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order, filling the Talking head columns (`talking`, `script`, `visual`, `sources`; the project must have them): talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
         "parameters": [
           {
             "name": "project",
@@ -4094,6 +4112,69 @@
           },
           "409": {
             "description": "Someone changed the shot list first (`stale_revision`): read it again and import again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{project}/shot-list/shots/{shot}": {
+      "get": {
+        "operationId": "get_shot",
+        "tags": [
+          "Shot list"
+        ],
+        "summary": "Get a shot",
+        "description": "One shot, ready to work from: its scene, place and neighbours, planned length, where it is on the timeline, and `fields`: every column in order with its value. `files` is every file tagged with the shot. Every file comes with a download link that lasts a day; call again for fresh ones. To bring a finished take back, ingest the file, then `set_shot` with `{<takes column>: {picked: <its hash>}}`. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates#read-one-shot).",
+        "parameters": [
+          {
+            "name": "project",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The project name."
+          },
+          {
+            "name": "shot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The shot id."
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The shot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShotDetail"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4598,6 +4679,174 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Live"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shot-list-templates": {
+      "get": {
+        "operationId": "templates",
+        "tags": [
+          "Shot list"
+        ],
+        "summary": "List shot list templates",
+        "description": "The templates a project's shot list can start from: the built-ins (`talking_head`, the default; `ai_drama`; `blank`, with no columns) and the ones saved to your account, each with its columns. Pass one as `template` when you create a project. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates).",
+        "responses": {
+          "200": {
+            "description": "Templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "save_template",
+        "tags": [
+          "Shot list"
+        ],
+        "summary": "Save a shot list template",
+        "description": "Save a template to your account, from a list of columns or from a project's current columns (`project`). Saving the same `id` again replaces it; built-in templates can't be replaced. Projects already made from a template keep their own columns.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveTemplate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The saved template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "template": {
+                      "$ref": "#/components/schemas/Template"
+                    },
+                    "replaced": {
+                      "type": "boolean",
+                      "description": "Whether it replaced a template with the same id."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ]
+      }
+    },
+    "/shot-list-templates/{template_id}": {
+      "delete": {
+        "operationId": "delete_template",
+        "tags": [
+          "Shot list"
+        ],
+        "summary": "Delete a shot list template",
+        "description": "Delete one of your templates. Built-ins can't be deleted. Projects made from it keep their columns.",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The template id."
+          },
+          {
+            "name": "VidJutsu-Version",
+            "in": "header",
+            "required": false,
+            "description": "The API version you wrote your integration against, a date. Without it you get the latest version. The current version is `2026-11-03`. See https://docs.vidjutsu.ai/api-reference/introduction#versioning.",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-11-03"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    }
+                  }
                 }
               }
             }
@@ -5886,6 +6135,58 @@
           }
         }
       },
+      "Column": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Its key in each shot's `values`."
+          },
+          "name": {
+            "type": "string",
+            "description": "What people see."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "long_text",
+              "dialogue",
+              "media",
+              "references",
+              "takes",
+              "select",
+              "number",
+              "links"
+            ],
+            "description": "What its values hold. A column's type never changes."
+          },
+          "options": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "choices": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "`select` columns only: the choices."
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Hidden in the editor. Its values are kept."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type"
+        ],
+        "description": "A shot list column. See [Column types](https://docs.vidjutsu.ai/guides/shot-list-templates#column-types)."
+      },
       "Comment": {
         "type": "object",
         "additionalProperties": true,
@@ -6788,6 +7089,11 @@
           },
           "project": {
             "type": "string"
+          },
+          "template": {
+            "type": "string",
+            "default": "talking_head",
+            "description": "The shot list template whose columns the project starts with: `talking_head` (default), `ai_drama`, `blank`, or one of yours from GET /shot-list-templates. The answer's `shot_list` (`{revision, template, columns}`) says which. Columns can still be added later. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates)."
           }
         },
         "required": [
@@ -8121,6 +8427,100 @@
           "camera"
         ]
       },
+      "SaveTemplate": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": ""
+              },
+              "id": {
+                "type": "string",
+                "description": "Send an existing id to replace that template."
+              },
+              "columns": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": ""
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "long_text",
+                        "dialogue",
+                        "media",
+                        "references",
+                        "takes",
+                        "select",
+                        "number",
+                        "links"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Made from the name if left out."
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "properties": {
+                        "choices": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "description": "Required for `select`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "type"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name",
+              "columns"
+            ],
+            "title": "From columns"
+          },
+          {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": ""
+              },
+              "id": {
+                "type": "string",
+                "description": "Send an existing id to replace that template."
+              },
+              "project": {
+                "type": "string",
+                "description": "Copy this project's current columns."
+              }
+            },
+            "required": [
+              "name",
+              "project"
+            ],
+            "title": "From a project"
+          }
+        ]
+      },
       "SavedLayout": {
         "type": "object",
         "additionalProperties": true,
@@ -8182,28 +8582,163 @@
             "type": "string",
             "description": ""
           },
-          "talking": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Talking points."
-          },
-          "script": {
-            "type": "string",
-            "description": "A rough line."
-          },
-          "visual": {
+          "seconds": {
             "type": [
-              "object",
+              "number",
               "null"
             ],
-            "additionalProperties": true,
-            "description": "The key visual: `{media?, name?, note?}`."
+            "description": "The planned length."
           },
-          "layout": {
+          "values": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Each column's value, by column id. A missing column is empty. See [Values](https://docs.vidjutsu.ai/guides/shot-list-templates#values)."
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelineUse"
+            },
+            "description": "Read only: where the shot's files are used on the timeline."
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShotField"
+            },
+            "description": "With `resolve=true` only."
+          }
+        },
+        "description": "A shot. Its scene and order are its place in `scenes[].shots`."
+      },
+      "ShotDetail": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "project": {
             "type": "string",
-            "description": "The layout preset to use."
+            "description": ""
+          },
+          "revision": {
+            "type": "integer",
+            "description": "The shot list's revision."
+          },
+          "timeline_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "template": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": ""
+              },
+              "name": {
+                "type": "string",
+                "description": ""
+              }
+            }
+          },
+          "scene": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": ""
+              },
+              "title": {
+                "type": "string",
+                "description": ""
+              }
+            }
+          },
+          "index": {
+            "type": "integer",
+            "description": "Its place in the scene, from 0."
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The shot before it, across the whole list."
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The shot after it, across the whole list."
+          },
+          "id": {
+            "type": "string",
+            "description": ""
+          },
+          "seconds": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "timeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TimelineUse"
+            }
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShotField"
+            },
+            "description": "Every column, in order, with its value."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Every file tagged with the shot, with download links."
+          }
+        }
+      },
+      "ShotField": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "column": {
+            "type": "string",
+            "description": "The column id."
+          },
+          "name": {
+            "type": "string",
+            "description": ""
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "long_text",
+              "dialogue",
+              "media",
+              "references",
+              "takes",
+              "select",
+              "number",
+              "links"
+            ]
+          },
+          "value": {
+            "description": "The column's value, or null when empty. Files come with a download link that lasts a day: media `{media, name, kind, note?, url}`, references `[{role, media, name, kind, url}]`, takes `{picked, items: [{media, name, kind, url, picked}]}`."
+          },
+          "hidden": {
+            "type": "boolean"
           }
         }
       },
@@ -8293,6 +8828,28 @@
               "null"
             ]
           },
+          "template": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": ""
+              },
+              "name": {
+                "type": "string",
+                "description": ""
+              }
+            },
+            "description": "The template the project started from."
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Column"
+            },
+            "description": "The project's columns, in order."
+          },
           "scenes": {
             "type": "array",
             "items": {
@@ -8357,6 +8914,12 @@
                     "set_shot",
                     "move_shot",
                     "remove_shot",
+                    "add_column",
+                    "rename_column",
+                    "move_column",
+                    "hide_column",
+                    "set_column_options",
+                    "remove_column",
                     "attach_media",
                     "detach_media"
                   ]
@@ -8541,6 +9104,42 @@
         },
         "type": "object"
       },
+      "Template": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "`talking_head`, `ai_drama`, `blank`, or yours."
+          },
+          "name": {
+            "type": "string",
+            "description": ""
+          },
+          "builtin": {
+            "type": "boolean",
+            "description": "Built-in templates can't be replaced or deleted."
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Column"
+            }
+          }
+        }
+      },
+      "TemplateList": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "templates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Template"
+            }
+          }
+        }
+      },
       "Time": {
         "oneOf": [
           {
@@ -8562,6 +9161,31 @@
           }
         ],
         "description": "Seconds (`12`, `\"12.5\"`), a fraction (`\"1001/30000\"`) or `{ticks, rate}`."
+      },
+      "TimelineUse": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "media": {
+            "type": "string",
+            "description": "The file's hash."
+          },
+          "clip": {
+            "type": "string",
+            "description": ""
+          },
+          "track": {
+            "type": "string",
+            "description": ""
+          },
+          "start_seconds": {
+            "type": "number"
+          },
+          "end_seconds": {
+            "type": "number"
+          }
+        },
+        "description": "A clip on the timeline made from a file tagged with the shot."
       },
       "TimelineWords": {
         "additionalProperties": false,

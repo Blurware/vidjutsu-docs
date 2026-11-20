@@ -17,7 +17,7 @@ Or a standalone binary for macOS and Linux (no Node needed), installed to `~/.lo
 curl -fsSL https://vidjutsu.ai/install.sh | sh
 ```
 
-Check it with `vidjutsu --version`. This page covers version 2.2.0, which adds the shot list, history and undo, layouts, Studio Sound, live updates, frame and check, and importing from Descript. Update older installs with `npm i -g vidjutsu@latest`.
+Check it with `vidjutsu --version`. This page covers version 2.4.0, which adds [shot list templates](/guides/shot-list-templates), reading one shot, and `init --template`. Update older installs with `npm i -g vidjutsu@latest`.
 
 ## Sign in
 
@@ -71,7 +71,7 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | Command | |
 | --- | --- |
 | `vidjutsu projects [--limit <n>] [--cursor <next_cursor>]` | Your projects, most recently changed first. |
-| `vidjutsu init <project>` | Create a project. |
+| `vidjutsu init <project> [--template <id>]` | Create a project. Its shot list starts with the template's columns (default `talking_head`). |
 | `vidjutsu show <project> [--revision <revision>]` | Its timeline, and who is in it right now. |
 | `vidjutsu head <project>` | Its head revision, without the timeline. |
 | `vidjutsu edit <project> <ops.json \| -> [--summary <line>]` | Apply edit operations from a file, or `-` for stdin. The JSON is a list of operations, or `{"operations": [...], "expected_head": "..."}`. |
@@ -92,9 +92,11 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 
 | Command | |
 | --- | --- |
-| `vidjutsu shot-list <project>` | The [shot list](/guides/shot-list): scenes, shots and the files filed under each. |
+| `vidjutsu shot-list <project> [--scene <id>] [--resolve]` | The [shot list](/guides/shot-list): columns, scenes, shots and the files filed under each. `--resolve` adds each shot's fields with file links. |
+| `vidjutsu shot-list shot <project> <shot>` | [One shot](/guides/shot-list-templates#read-one-shot) with every column's value and fresh file links. |
 | `vidjutsu shot-list edit <project> <ops.json \| -> [--expected-revision <n>]` | Apply shot list operations. Without `--expected-revision` it uses the current one. |
 | `vidjutsu shot-list import <project> <episode.json \| -> [--replace]` | Bring an [episode plan](/guides/import-descript#bring-in-an-episode-plan) in as the shot list. |
+| `vidjutsu templates [list \| save <file.json> \| delete <template>]` | [Shot list templates](/guides/shot-list-templates). `save` takes `{name, columns}` or `{name, project}`. |
 
 ### Layouts and sound
 
