@@ -4056,7 +4056,7 @@
           "Shot list"
         ],
         "summary": "Import an episode plan",
-        "description": "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order: talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
+        "description": "Bring an episode plan (`episode.json`, `schemaVersion` 2) in as the shot list. Each group becomes a scene and each beat a shot, in order, filling the Talking head columns (`talking`, `script`, `visual`, `sources`; the project must have them): talking points from its talking notes (the first led by the beat's label), its script, and a visual named after the first matched clip with the visual notes as its note. Ids come from the episode, so a scene or shot is easy to find again. Nothing is shortened: a beat past the shot list's limits is refused by name. The timeline is not touched. The request can be up to 4 MB. Answers the shot list plus `created` and `imported` (`title`, `scenes`, `shots`, `replaced`).",
         "parameters": [
           {
             "name": "project",
@@ -4130,7 +4130,7 @@
           "Shot list"
         ],
         "summary": "Get a shot",
-        "description": "One shot, ready to work from: its scene, place and neighbours, planned length, where it is on the timeline, and `fields`: every column in order with its value. Every file in a value (media, references, takes, and the scene's files tagged with the shot) comes back as `{media, name, kind, role?, url}` with a fresh download link. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates#read-one-shot).",
+        "description": "One shot, ready to work from: its scene, place and neighbours, planned length, where it is on the timeline, and `fields`: every column in order with its value. `files` is every file tagged with the shot. Every file comes with a download link that lasts a day; call again for fresh ones. To bring a finished take back, ingest the file, then `set_shot` with `{<takes column>: {picked: <its hash>}}`. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates#read-one-shot).",
         "parameters": [
           {
             "name": "project",
@@ -4696,14 +4696,14 @@
         }
       }
     },
-    "/shot-list/templates": {
+    "/shot-list-templates": {
       "get": {
         "operationId": "templates",
         "tags": [
           "Shot list"
         ],
         "summary": "List shot list templates",
-        "description": "The templates a project's shot list can start from: the built-ins (`talking_head`, `ai_drama`) and the ones saved to your account, each with its columns. Pass one as `template` when you create a project. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates).",
+        "description": "The templates a project's shot list can start from: the built-ins (`talking_head`, the default; `ai_drama`; `blank`, with no columns) and the ones saved to your account, each with its columns. Pass one as `template` when you create a project. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates).",
         "responses": {
           "200": {
             "description": "Templates",
@@ -4763,7 +4763,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Template"
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "template": {
+                      "$ref": "#/components/schemas/Template"
+                    },
+                    "replaced": {
+                      "type": "boolean",
+                      "description": "Whether it replaced a template with the same id."
+                    }
+                  }
                 }
               }
             }
@@ -4794,7 +4804,7 @@
         ]
       }
     },
-    "/shot-list/templates/{template}": {
+    "/shot-list-templates/{template_id}": {
       "delete": {
         "operationId": "delete_template",
         "tags": [
@@ -4804,7 +4814,7 @@
         "description": "Delete one of your templates. Built-ins can't be deleted. Projects made from it keep their columns.",
         "parameters": [
           {
-            "name": "template",
+            "name": "template_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -7083,7 +7093,7 @@
           "template": {
             "type": "string",
             "default": "talking_head",
-            "description": "The shot list template whose columns the project starts with: `talking_head` (default), `ai_drama`, or one of yours from GET /shot-list/templates. Columns can still be added later. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates)."
+            "description": "The shot list template whose columns the project starts with: `talking_head` (default), `ai_drama`, `blank`, or one of yours from GET /shot-list-templates. The answer's `shot_list` (`{revision, template, columns}`) says which. Columns can still be added later. See [Shot list templates](https://docs.vidjutsu.ai/guides/shot-list-templates)."
           }
         },
         "required": [
@@ -8434,9 +8444,50 @@
               "columns": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/Column"
-                },
-                "minItems": 1
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": ""
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "long_text",
+                        "dialogue",
+                        "media",
+                        "references",
+                        "takes",
+                        "select",
+                        "number",
+                        "links"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Made from the name if left out."
+                    },
+                    "options": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "properties": {
+                        "choices": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "description": "Required for `select`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "type"
+                  ]
+                }
               }
             },
             "required": [
@@ -8564,9 +8615,33 @@
         "type": "object",
         "additionalProperties": true,
         "properties": {
+          "project": {
+            "type": "string",
+            "description": ""
+          },
           "revision": {
             "type": "integer",
             "description": "The shot list's revision."
+          },
+          "timeline_revision": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "template": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": ""
+              },
+              "name": {
+                "type": "string",
+                "description": ""
+              }
+            }
           },
           "scene": {
             "type": "object",
@@ -8591,14 +8666,14 @@
               "string",
               "null"
             ],
-            "description": "The shot before it in the scene."
+            "description": "The shot before it, across the whole list."
           },
           "next": {
             "type": [
               "string",
               "null"
             ],
-            "description": "The shot after it."
+            "description": "The shot after it, across the whole list."
           },
           "id": {
             "type": "string",
@@ -8622,6 +8697,14 @@
               "$ref": "#/components/schemas/ShotField"
             },
             "description": "Every column, in order, with its value."
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Every file tagged with the shot, with download links."
           }
         }
       },
@@ -8652,7 +8735,10 @@
             ]
           },
           "value": {
-            "description": "The column's value, or null. Every file in it comes back as `{media, name, kind, role?, url}`."
+            "description": "The column's value, or null when empty. Files come with a download link that lasts a day: media `{media, name, kind, note?, url}`, references `[{role, media, name, kind, url}]`, takes `{picked, items: [{media, name, kind, url, picked}]}`."
+          },
+          "hidden": {
+            "type": "boolean"
           }
         }
       },
@@ -9024,7 +9110,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "`talking_head`, `ai_drama`, or yours."
+            "description": "`talking_head`, `ai_drama`, `blank`, or yours."
           },
           "name": {
             "type": "string",

@@ -156,9 +156,9 @@
               "POST /projects/{project}/shot-list/import",
               "GET /projects/{project}/files",
               "GET /projects/{project}/words",
-              "GET /shot-list/templates",
-              "POST /shot-list/templates",
-              "DELETE /shot-list/templates/{template}"
+              "GET /shot-list-templates",
+              "POST /shot-list-templates",
+              "DELETE /shot-list-templates/{template_id}"
             ]
           },
           {

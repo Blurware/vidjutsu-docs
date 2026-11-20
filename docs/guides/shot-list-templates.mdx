@@ -9,23 +9,24 @@ A **template** is a saved, ordered list of columns. A project picks one when it 
 
 ## Templates
 
-Two templates are built in:
+Three templates are built in:
 
 | Template | Columns (`id`: name, type) |
 | --- | --- |
 | `talking_head` (default) | `talking`: Talking points, `long_text` · `script`: Script, `long_text` · `visual`: Key visual, `media` · `sources`: Sources, `links` · `takes`: Takes, `takes` |
-| `ai_drama` | `shot_type`: Shot type, `select` · `prompt`: Prompt, `long_text` · `dialogue`: Dialogue, `dialogue` · `references`: References, `references` · `takes`: Takes, `takes` |
+| `ai_drama` | `shot_type`: Shot type, `select` (Establishing, Wide, Medium, Close-up, Extreme close-up, Over the shoulder, Insert, POV) · `prompt`: Prompt, `long_text` · `dialogue`: Dialogue, `dialogue` · `references`: References, `references` · `takes`: Takes, `takes` |
+| `blank` | No columns: only the core fields. Add columns as you go. |
 
 List them, with the ones saved to your account:
 
 ```sh
-curl -s https://api.vidjutsu.ai/shot-list/templates -H "Authorization: Bearer $KEY"
+curl -s https://api.vidjutsu.ai/shot-list-templates -H "Authorization: Bearer $KEY"
 ```
 
 ```json
 {"templates": [
   {"id": "ai_drama", "name": "AI drama", "builtin": true, "columns": [
-    {"id": "shot_type", "name": "Shot type", "type": "select", "options": {"choices": ["Wide", "Medium", "Close-up"]}},
+    {"id": "shot_type", "name": "Shot type", "type": "select", "options": {"choices": ["Establishing", "Wide", "Medium", "Close-up", ...]}},
     {"id": "prompt", "name": "Prompt", "type": "long_text"},
     {"id": "dialogue", "name": "Dialogue", "type": "dialogue"},
     {"id": "references", "name": "References", "type": "references"},
@@ -36,7 +37,7 @@ curl -s https://api.vidjutsu.ai/shot-list/templates -H "Authorization: Bearer $K
 
 ### Start a project from a template
 
-Pass `template` when you create the project. Leave it out for `talking_head`.
+Pass `template` when you create the project: a built-in id or one of yours. Leave it out for `talking_head`.
 
 ```sh
 curl -s -X POST https://api.vidjutsu.ai/projects \
@@ -44,26 +45,26 @@ curl -s -X POST https://api.vidjutsu.ai/projects \
   -d '{"project": "rooftop-short", "template": "ai_drama"}'
 ```
 
-The template's columns are copied into the project. Changing or deleting the template later doesn't change projects already made from it.
+The template's columns are copied into the project, and the answer's `shot_list` (`{revision, template, columns}`) says which. The shot list stays at revision 0 until its first edit. Changing or deleting the template later doesn't change projects already made from it.
 
 ### Save your own
 
 Save a template from a list of columns, or copy a project's current columns with `project`:
 
 ```sh
-curl -s -X POST https://api.vidjutsu.ai/shot-list/templates \
+curl -s -X POST https://api.vidjutsu.ai/shot-list-templates \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{"name": "Product demo", "columns": [
         {"id": "script", "name": "Script", "type": "long_text"},
         {"id": "screen", "name": "Screen to show", "type": "media"},
         {"id": "takes", "name": "Takes", "type": "takes"}]}'
 
-curl -s -X POST https://api.vidjutsu.ai/shot-list/templates \
+curl -s -X POST https://api.vidjutsu.ai/shot-list-templates \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
   -d '{"name": "My drama", "project": "rooftop-short"}'
 ```
 
-The answer is the saved template with its `id`. Send the same `id` again to replace it. Built-in templates can't be replaced or deleted. Delete one of yours with `DELETE /shot-list/templates/{template}`.
+Each column needs a `name` and a `type`; `id` is made from the name if you leave it out, and a `select` needs `options: {"choices": [...]}`. The answer is `{template, replaced}`: the saved template with its `id`, and whether it replaced one. Send that `id` again to replace it. Built-in templates can't be replaced or deleted. Delete one of yours with `DELETE /shot-list-templates/{template_id}`. An account can save up to 100 templates, and a shot list has up to 40 columns.
 
 ## Column types
 
@@ -72,7 +73,7 @@ The types are a fixed set. A column's type never changes once it exists.
 | Type | Holds |
 | --- | --- |
 | `text` | A short line, up to 500 letters. |
-| `long_text` | Longer writing, up to 5,000 letters: a script, a prompt, talking points. |
+| `long_text` | Longer writing, up to 20,000 letters: a script, a prompt, talking points. |
 | `dialogue` | One spoken line and who says it. |
 | `media` | One file, or a description of one still to be made. |
 | `references` | Files that a shot is made from, each with what it is for. |
@@ -88,13 +89,13 @@ A shot keeps its values in `values`, by column id. A column with no value is sim
 | Type | Value |
 | --- | --- |
 | `text`, `long_text` | A string. |
-| `dialogue` | `{"speaker": "Mara", "line": "You came back."}` |
+| `dialogue` | `{"speaker": "Mara", "line": "You came back."}`. `speaker` is optional. |
 | `media` | `{"media": "<hash>", "name": "...", "note": "..."}`: any of the three, at least one. `media` is a stored file's hash. |
-| `references` | `[{"media": "<hash>", "role": "character", "name": "Mara"}]`. `role` is one of `character`, `location`, `style`, `prop`, `voice`, `input_clip` or `first_frame`. |
-| `takes` | Written as `{"picked": "<hash>"}` (or `null`). Read as `{"items": [{"media": "<hash>", "name": "..."}], "picked": "<hash>"}`. |
+| `references` | `[{"media": "<hash>", "role": "character", "name": "Mara"}]`, up to 30. `role` is one of `character`, `location`, `style`, `prop`, `voice`, `input_clip` or `first_frame`. |
+| `takes` | Written as `{"picked": "<hash>"}` (or `null`). Read as `{"items": [{"media": "<hash>", "name": "...", "kind": "video", "seconds": 4.2}], "picked": "<hash>"}`. |
 | `select` | One of the column's `options.choices`. |
 | `number` | A finite number. |
-| `links` | `[{"url": "https://...", "title": "..."}]`, http or https. |
+| `links` | `[{"url": "https://...", "title": "..."}]`, http or https, up to 20. |
 
 **Takes** are the files filed under the shot's scene and tagged with the shot. You don't list them yourself: file a take under the shot with `attach_media`, or pick a stored file that isn't filed yet with `set_shot {"values": {"takes": {"picked": "<hash>"}}}` and it is filed under the shot for you.
 
@@ -106,7 +107,7 @@ Column operations go in the same [shot list edits](/guides/shot-list#edit-it) ba
 
 | `op` | Fields | What it does |
 | --- | --- | --- |
-| `add_column` | `name`, `type`, `id`, `options`, `after` | Add a column after another one (`after` a column id), at the end if left out. Its id is in `created`. |
+| `add_column` | `name`, `type`, `id`, `options`, `after` | Add a column after another one (`after` a column id), at the end if left out. A `select` needs `options`. Its id is in `created`. |
 | `rename_column` | `column`, `name` | Rename a column. |
 | `move_column` | `column`, `after` | Move a column after another one, or to the front with `after: null`. |
 | `hide_column` | `column`, `hidden` | Hide a column in the editor (`hidden: false` shows it again). Its values are kept. |
@@ -123,7 +124,7 @@ Column operations go in the same [shot list edits](/guides/shot-list#edit-it) ba
 
 ## Set a shot's values
 
-`add_shot` and `set_shot` take `seconds` and `values`. `set_shot` changes only the columns you send, and `null` clears one. Each value is checked against its column's type, and a wrong one refuses the whole batch with the column named.
+`add_shot` and `set_shot` take `seconds` and `values`. `set_shot` changes only the columns you send, and `null` (or an empty value) clears one. Each value is checked against its column's type, and a wrong one refuses the whole batch with the column named.
 
 ```json
 {"expected_revision": 8, "operations": [
@@ -134,20 +135,23 @@ Column operations go in the same [shot list edits](/guides/shot-list#edit-it) ba
 
 ## Read one shot
 
-`GET /projects/{project}/shot-list/shots/{shot}` (MCP `get_shot`) gives one shot ready to work from: its scene, its place and neighbours, its planned length, where it is on the timeline, and `fields`, every column in order with its value. Every file in a value comes back with a fresh download link, so an agent can open a reference straight away.
+`GET /projects/{project}/shot-list/shots/{shot}` (MCP `get_shot`) gives one shot ready to work from: its scene, its place (`index`), the shots before and after it across the whole list, its planned length, where it is on the timeline, `fields` (every column in order with its value, `null` when empty) and `files` (every file tagged with the shot). Every file comes back with a download link that lasts a day, so an agent can open a reference straight away. Call again for fresh links.
 
 ```json
-{"revision": 9, "scene": {"id": "sc_roof", "title": "Rooftop"}, "index": 0, "previous": null, "next": "sh_face",
- "id": "sh_door", "seconds": 4, "timeline": [],
+{"project": "rooftop-short", "revision": 9, "timeline_revision": "...", "template": {"id": "ai_drama", "name": "AI drama"},
+ "scene": {"id": "sc_roof", "title": "Rooftop"}, "index": 0, "previous": null, "next": "sh_face",
+ "id": "sh_door", "seconds": 4, "timeline": [], "files": [],
  "fields": [
    {"column": "shot_type", "name": "Shot type", "type": "select", "value": "Wide"},
    {"column": "prompt", "name": "Prompt", "type": "long_text", "value": "Mara pushes the rooftop door open into the rain"},
    {"column": "references", "name": "References", "type": "references", "value": [
-     {"media": "<hash>", "name": "mara.png", "kind": "image", "role": "character", "url": "https://..."},
-     {"media": "<hash>", "name": "roof.png", "kind": "image", "role": "location", "url": "https://..."}]},
+     {"role": "character", "media": "<hash>", "name": "mara.png", "kind": "image", "url": "https://..."},
+     {"role": "location", "media": "<hash>", "name": "roof.png", "kind": "image", "url": "https://..."}]},
    {"column": "takes", "name": "Takes", "type": "takes", "value": {"items": [], "picked": null}}
  ]}
 ```
+
+In `fields`, a `media` value is `{media, name, kind, note?, url}`, each reference `{role, media, name, kind, url}`, and takes `{picked, items: [{media, name, kind, url, picked}]}`.
 
 To read every shot this way at once, call `GET /projects/{project}/shot-list?resolve=true`. Add `scene=<id>` for one scene only.
 
