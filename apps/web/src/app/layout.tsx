@@ -4,12 +4,12 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f2ecdf",
+  themeColor: "#f7f6f3",
 };
 
 const HEADLINE = "Simple video editing for agents";
 const DESCRIPTION =
-  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas, AI ads and launch videos. Pay as you go.";
+  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas, AI ads, launch videos and clipping. Pay as you go.";
 
 export const metadata: Metadata = {
   title: {
@@ -52,7 +52,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap"
           rel="stylesheet"
         />
         <link

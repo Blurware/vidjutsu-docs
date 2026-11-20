@@ -36,7 +36,7 @@ function setup(connection: Connection, agent: Agent) {
   const agentLabel = label(agent);
   if (connection === "mcp") {
     const description =
-      "Connect once and your agent can upload media, edit timelines and render through VidJutsu's tools. The server is at api.vidjutsu.ai/mcp and signs in with OAuth or an API key.";
+      "Connect once and your agent can do everything: read the shot list and comments, upload media, edit and render. The server is at api.vidjutsu.ai/mcp and signs in with OAuth or an API key.";
     if (agent === "claude-code") {
       return {
         title: `Connect ${agentLabel} over MCP`,
@@ -59,7 +59,7 @@ function setup(connection: Connection, agent: Agent) {
       steps: [
         connectorHints[agent] || "Add a custom MCP connector in your agent settings.",
         "Paste the server URL below and sign in when the browser opens. There is no command to run.",
-        "Ask your agent to cut your takes together and render them.",
+        "Ask your agent to read the comments on your latest version and fix them.",
       ],
       command: "https://api.vidjutsu.ai/mcp",
       copy: "COPY URL",
@@ -113,49 +113,36 @@ export function SetupConfigurator() {
   }
 
   return (
-    <section className="vj-setup" id="start" aria-labelledby="setup-heading">
-      <div className="vj-frame">
-        <div className="vj-setup-heading">
-          <h2 id="setup-heading">Connect your agent.</h2>
-          <p>
-            Connect with MCP for typed tools, use the CLI in a terminal, or
-            call the API from your own code.
-          </p>
-        </div>
-
-        <div className="vj-setup-panel">
-          <div className="vj-connection-tabs" role="tablist" aria-label="Connection type">
-            {connections.map((item) => (
-              <button key={item.id} type="button" role="tab" aria-selected={connection === item.id} className={connection === item.id ? "active" : ""} onClick={() => setConnection(item.id)}>
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <div className="vj-agent-tabs" role="tablist" aria-label="Agent runtime">
-            {agents.map((item) => (
-              <button key={item.id} type="button" role="tab" aria-selected={agent === item.id} className={agent === item.id ? "active" : ""} onClick={() => setAgent(item.id)}>
-                <span className="vj-agent-icon" aria-hidden="true"><img src={item.icon} alt="" /></span>{item.label}
-              </button>
-            ))}
-          </div>
-          <div className="vj-setup-content" key={`${connection}-${agent}`}>
-            <header>
-              <div>
-                <span>{connection} / {label(agent)}</span>
-                <h2>{current.title}</h2>
-                <p>{current.description}</p>
-              </div>
-              <a href="https://docs.vidjutsu.ai/quickstart">GET STARTED ↗</a>
-            </header>
-            <ol>
-              {current.steps.map((step, index) => <li key={step}><i>{index + 1}</i><p>{step}</p></li>)}
-            </ol>
-            <div className="vj-command"><code>{current.command}</code><button type="button" onClick={copyCommand}>{copied ? "COPIED" : current.copy}</button></div>
-            <footer><span>{current.note}</span><a href={current.href}>{current.guide}</a></footer>
-          </div>
-        </div>
-        <p className="vj-setup-note">Start with <strong>MCP</strong> to connect an agent runtime directly. Use the <strong>CLI</strong> for a terminal workspace, or the <strong>API</strong> from your own code.</p>
+    <div className="vl-connect" id="start">
+      <div className="vl-connect-tabs" role="tablist" aria-label="Connection type">
+        {connections.map((item) => (
+          <button key={item.id} type="button" role="tab" aria-selected={connection === item.id} className={connection === item.id ? "active" : ""} onClick={() => setConnection(item.id)}>
+            {item.label}
+          </button>
+        ))}
       </div>
-    </section>
+      <div className="vl-connect-agents" role="tablist" aria-label="Agent">
+        {agents.map((item) => (
+          <button key={item.id} type="button" role="tab" aria-selected={agent === item.id} className={agent === item.id ? "active" : ""} onClick={() => setAgent(item.id)}>
+            <img src={item.icon} alt="" />{item.label}
+          </button>
+        ))}
+      </div>
+      <div className="vl-connect-body" key={`${connection}-${agent}`}>
+        <header>
+          <div>
+            <span>{connection.toUpperCase()} / {label(agent).toUpperCase()}</span>
+            <h2>{current.title}</h2>
+            <p>{current.description}</p>
+          </div>
+          <a href="https://docs.vidjutsu.ai/quickstart">Quickstart ↗</a>
+        </header>
+        <ol>
+          {current.steps.map((step, index) => <li key={step}><i>{index + 1}</i><span>{step}</span></li>)}
+        </ol>
+        <div className="vl-command"><code>{current.command}</code><button type="button" onClick={copyCommand}>{copied ? "COPIED" : current.copy}</button></div>
+        <footer><span>{current.note}</span><a href={current.href}>{current.guide}</a></footer>
+      </div>
+    </div>
   );
 }
