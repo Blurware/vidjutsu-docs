@@ -104,4 +104,4 @@ Ask your agent something like "cut take1 and take2 back to back with the music u
 3. `edit` with `add_media` for each item, `add_track` for the music, and `insert_clip` for each clip.
 4. `quote {"project": "cut"}` to check the price, then `render {"project": "cut", "height": 2160, "idempotency_key": "cut-1"}`, then `render_status` until `succeeded`, and give you `output.url`.
 
-With the same project open in the [web app](/web-app), you see each step land in Activity as it happens, and can undo any of them. A comment there that starts with `@agent` is the person asking your agent for a change.
+With the same project open in the [web app](/web-app), you see each step land in Activity as it happens, and can undo any of them. Your agent reads every comment left there and can answer and resolve each one.

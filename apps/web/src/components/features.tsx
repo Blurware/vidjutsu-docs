@@ -7,7 +7,7 @@ const FEATURES = [
   },
   {
     title: "Comment for feedback",
-    body: "Pin a comment to a moment and a spot on the picture. Start it with @agent and your agent picks it up, makes the change and answers in the thread.",
+    body: "Pin a comment to a moment and a spot on the picture. Your agent reads every comment, makes the change and answers in the thread.",
   },
   {
     title: "Cloud rendering, not your laptop",
