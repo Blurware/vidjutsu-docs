@@ -148,7 +148,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .vj-back { display: block; width: fit-content; margin-bottom: 28px; color: var(--vj-muted); font-size: 13px; text-decoration: none; }
 .vj-compare-hero h1 { max-width: 860px; margin: 20px 0 22px; font-size: clamp(38px, 5.4vw, 70px); font-weight: 600; line-height: .98; letter-spacing: -.055em; }
 .vj-compare-hero p { max-width: 640px; margin: 0; color: var(--vj-muted); font-size: 17px; line-height: 1.6; }
-.vj-compare-index { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-bottom: 110px; }
+.vj-compare-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding-bottom: 110px; }
 .vj-compare-index a { display: flex; flex-direction: column; padding: 28px; border: 1px solid var(--vj-line); border-radius: 8px; background: var(--vj-panel); text-decoration: none; transition: border-color .16s; }
 .vj-compare-index a:hover { border-color: var(--vj-blue); }
 .vj-compare-index span { color: var(--vj-muted); font: 800 10px/1 var(--vj-mono); letter-spacing: .1em; }
@@ -185,6 +185,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
   .vj-compare-table td:nth-of-type(1)::before { content: "Them"; }
   .vj-compare-table td:nth-of-type(2)::before { content: "VidJutsu"; color: var(--vj-blue); }
 }
+.vj-footer-compare { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 18px; padding-top: 18px; border-top: 1px solid var(--vj-line); }
+.vj-footer-compare span { color: var(--vj-text); font-weight: 700; }
+.vj-footer-compare a { color: var(--vj-muted); font-weight: 650; text-decoration: none; }
 @keyframes vj-enter { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @media (max-width: 760px) { .vj-frame, .vj-nav { width: min(100% - 28px, 1120px); }.vj-nav { grid-template-columns: 1fr auto; padding: 0 10px; }.vj-nav > div { display: none; }.vj-setup { padding: 54px 0 70px; }.vj-setup-heading, .vj-section-heading, .vj-faq { grid-template-columns: 1fr; gap: 22px; }.vj-setup-heading h2 { font-size: clamp(34px, 10vw, 46px); }.vj-agent-tabs { justify-content: flex-start; overflow-x: auto; }.vj-agent-tabs button { flex: none; }.vj-setup-content { padding: 22px; }.vj-setup-content > header { display: block; }.vj-setup-content header > a { display: inline-flex; margin-top: 20px; }.vj-setup-content ol, .vj-comparison-grid { grid-template-columns: 1fr; }.vj-setup-content li + li { border-top: 1px solid var(--vj-line); border-left: 0; }.vj-setup-content li { min-height: auto; }.vj-command code { font-size: 10px; }.vj-setup-content footer { display: grid; }.vj-message-user, .vj-message-agent, .vj-message-result { width: 100%; }.vj-chat-body { padding: 15px; }.vj-message { padding: 16px; }.vj-price-card { align-items: flex-start; flex-direction: column; }.vj-footer { grid-template-columns: 1fr; padding-block: 38px; }.vj-footer > div { justify-self: start; flex-wrap: wrap; }.vj-closing .vj-frame { padding: 32px; }.vj-faq { padding-block: 82px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } html { scroll-behavior: auto; } }

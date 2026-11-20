@@ -70,28 +70,76 @@ export const COMPARISONS: Comparison[] = [
     trademark: "DaVinci Resolve is a trademark of Blackmagic Design Pty. Ltd.",
   },
   {
-    slug: "legacy-editors",
-    name: "Premiere Pro, Final Cut Pro and CapCut",
-    title: "VidJutsu vs legacy video editors",
+    slug: "premiere-pro",
+    name: "Premiere Pro",
+    title: "VidJutsu vs Premiere Pro",
     summary:
-      "Premiere Pro, Final Cut Pro, CapCut and the rest were built for a person dragging clips on a timeline. VidJutsu is built for an agent doing the cutting while you review, with rendering in the cloud.",
+      "Premiere Pro is a professional desktop editor built for an editor's hands on a timeline. VidJutsu is simple video editing for agents: your agent cuts in the cloud, you review and comment in the browser.",
     rows: [
-      { topic: "Who edits", them: "You, by hand. Built-in AI features help you inside the app.", us: "Your own agent, with exact edit operations. You review, comment and approve." },
-      { topic: "Where you work", them: "Mostly desktop apps you install and keep updated, with files on your disk.", us: "The browser at app.vidjutsu.ai. Files, projects and history live in the cloud." },
-      { topic: "Rendering", them: "Usually on your computer, limited by its hardware.", us: "On many cloud machines at once. A small change re-renders only what changed." },
-      { topic: "Agents", them: "Not designed to be driven by an outside agent.", us: "Hosted MCP server, CLI and REST API." },
-      { topic: "History", them: "Undo in the current session, plus saved project versions.", us: "Every edit kept as a revision; undo any single change at any time." },
-      { topic: "Pricing", them: "Monthly plans or a one-time purchase.", us: "Pay as you go from a prepaid wallet. No monthly fee." },
+      { topic: "Who edits", them: "You, on a timeline, with built-in AI features that help you inside the app.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
+      { topic: "Where you work", them: "A desktop app for Windows and Mac, with your media on your disk.", us: "The browser at app.vidjutsu.ai. Files, projects and history live in the cloud." },
+      { topic: "Rendering", them: "On your computer, limited by its hardware.", us: "On many cloud machines at once. A small change re-renders only what changed." },
+      { topic: "Agents", them: "Plugins and scripts that run inside the app. Not designed for an outside agent.", us: "A hosted MCP server, CLI and REST API: the same operations the app uses." },
+      { topic: "Depth", them: "A full professional toolset: effects, color, graphics, audio.", us: "Simple on purpose: cuts, layouts, levels and fades, Studio Sound, captions and styled titles." },
+      { topic: "Pricing", them: "Monthly plans.", us: "Pay as you go from a prepaid wallet. No monthly fee." },
     ],
     chooseThem: [
-      "You enjoy editing by hand and want a full professional toolset.",
-      "You need effects, templates or features VidJutsu doesn't have.",
+      "You edit by hand and want a full professional toolset.",
+      "You need effects, color work or plugins VidJutsu doesn't have.",
     ],
     chooseUs: [
       "You want your agent to do the editing and you to do the deciding.",
       "You make a steady stream of videos and want renders off your computer.",
     ],
-    trademark: "Premiere Pro is a trademark of Adobe Inc. Final Cut Pro is a trademark of Apple Inc. CapCut is a trademark of its owner.",
+    trademark: "Premiere Pro is a trademark of Adobe Inc.",
+  },
+  {
+    slug: "final-cut-pro",
+    name: "Final Cut Pro",
+    title: "VidJutsu vs Final Cut Pro",
+    summary:
+      "Final Cut Pro is a fast Mac editor for people who cut by hand. VidJutsu is simple video editing for agents: it runs in the browser, your agent does the cutting, and renders happen in the cloud.",
+    rows: [
+      { topic: "Who edits", them: "You, on the magnetic timeline.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
+      { topic: "Where you work", them: "A Mac app (and an iPad app), with your media on your device.", us: "The browser at app.vidjutsu.ai, on any computer with Chrome." },
+      { topic: "Rendering", them: "On your Mac, which is busy until the export finishes.", us: "On many cloud machines at once. A small change re-renders only what changed." },
+      { topic: "Agents", them: "Not designed to be driven by an outside agent.", us: "A hosted MCP server, CLI and REST API." },
+      { topic: "Feedback", them: "Share an export and collect notes elsewhere.", us: "Comments pinned to the picture; tag @agent and your agent makes the change." },
+      { topic: "Pricing", them: "A one-time purchase.", us: "Pay as you go from a prepaid wallet. No monthly fee." },
+    ],
+    chooseThem: [
+      "You're on a Mac, love editing by hand and want it fully offline.",
+      "You need its effects, color and motion tools.",
+    ],
+    chooseUs: [
+      "You'd rather tell your agent what to cut than do it yourself.",
+      "You want comments, history and renders in the cloud, on any computer.",
+    ],
+    trademark: "Final Cut Pro is a trademark of Apple Inc.",
+  },
+  {
+    slug: "capcut",
+    name: "CapCut",
+    title: "VidJutsu vs CapCut",
+    summary:
+      "CapCut is an editor with templates and effects for making short videos by hand. VidJutsu is simple video editing for agents: your agent cuts long or short videos in the cloud while you review in the browser.",
+    rows: [
+      { topic: "Who edits", them: "You, with templates, effects and auto tools in the app.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
+      { topic: "Where you work", them: "Mobile, desktop and web apps.", us: "The browser at app.vidjutsu.ai. Your agent works from wherever it runs." },
+      { topic: "Agents", them: "Not designed to be driven by an outside agent.", us: "A hosted MCP server, CLI and REST API." },
+      { topic: "Rendering", them: "Exports from the app.", us: "On many cloud machines at once, in 1080p or 4K. A small change re-renders only what changed." },
+      { topic: "History", them: "Undo while you edit.", us: "Every edit kept as a revision with who made it; undo any single change at any time." },
+      { topic: "Pricing", them: "A free version and paid plans.", us: "Pay as you go from a prepaid wallet. No monthly fee." },
+    ],
+    chooseThem: [
+      "You want trending templates and effects for quick social clips.",
+      "You edit on your phone.",
+    ],
+    chooseUs: [
+      "You want your agent to make the cuts, from talking heads to ads.",
+      "You want renders, files and history in the cloud, not on your device.",
+    ],
+    trademark: "CapCut is a trademark of its owner.",
   },
 ];
 

@@ -1,3 +1,5 @@
+import { COMPARISONS } from "@/lib/compare";
+
 export const APP_URL = "https://app.vidjutsu.ai";
 
 export function SiteNav({ home = false }: { home?: boolean }) {
@@ -25,11 +27,14 @@ export function SiteFooter() {
       <div>
         <a href={APP_URL}>App</a>
         <a href="https://docs.vidjutsu.ai">Docs</a>
-        <a href="/compare">Compare</a>
         <a href="https://docs.vidjutsu.ai/pricing">Pricing</a>
         <a href="/contact">Contact</a>
         <a href="https://docs.vidjutsu.ai/legal/terms">Terms</a>
       </div>
+      <nav className="vj-footer-compare" aria-label="Comparisons">
+        <span>Compare</span>
+        {COMPARISONS.map((c) => <a key={c.slug} href={`/compare/${c.slug}`}>vs {c.name}</a>)}
+      </nav>
     </footer>
   );
 }
