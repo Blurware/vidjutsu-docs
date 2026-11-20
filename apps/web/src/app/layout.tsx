@@ -7,9 +7,9 @@ export const viewport: Viewport = {
   themeColor: "#f2ecdf",
 };
 
-const HEADLINE = "Your agent can edit video now";
+const HEADLINE = "Simple video editing for agents";
 const DESCRIPTION =
-  "Video editing built for agents. Upload takes, edit a timeline with full history, and render 1080p or 4K on cloud machines through one API, a CLI or MCP.";
+  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas and AI ads. Pay as you go.";
 
 export const metadata: Metadata = {
   title: {

@@ -1,38 +1,28 @@
+import { APP_URL } from "@/components/site-nav";
+
 export function Hero() {
   return (
-    <section className="px-5 sm:px-8 pt-24 sm:pt-32 pb-12 sm:pb-16">
-      <div className="max-w-6xl mx-auto">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-[11px] font-medium tracking-[0.15em] uppercase text-ink-muted mb-5">
-            Video editing for agents
-          </p>
-
-          <h1 className="text-[clamp(1.9rem,5vw,3rem)] font-bold leading-[1.1] tracking-[-0.02em] mb-5 max-w-2xl mx-auto">
-            Your agent can edit video now
-          </h1>
-
-          <p className="text-ink-muted text-base sm:text-lg leading-relaxed mb-9 max-w-lg mx-auto">
-            Upload your takes. Your agent cuts them on a timeline that keeps
-            every revision, then renders 1080p or 4K on cloud machines. Bring
-            your agent over MCP and watch the cut in your browser. Nothing to
-            install.
-          </p>
-
-          <div className="flex flex-col sm:flex-row justify-center gap-3">
-            <a
-              href="https://docs.vidjutsu.ai/quickstart"
-              className="vj-hero-primary inline-flex items-center justify-center px-6 py-3 bg-brand text-sm font-semibold rounded hover:bg-brand-hover transition-colors"
-            >
-              Get started
-            </a>
-            <a
-              href="https://app.vidjutsu.ai"
-              className="inline-flex items-center justify-center px-6 py-3 text-ink-muted text-sm font-medium hover:text-ink transition-colors"
-            >
-              Open the app
-            </a>
-          </div>
+    <section className="vj-hero">
+      <div className="vj-frame">
+        <span className="vj-eyebrow">For creators, faceless channels, AI dramas and AI ads</span>
+        <h1>Simple video editing for agents.</h1>
+        <p>
+          Your agent edits the video; you just say what to change. Bring Claude
+          Code, Codex or any agent you already use. It cuts your
+          footage on a timeline in the cloud while you watch in your browser,
+          leave comments, and get the finished render. Nothing to install, and
+          no long renders on your laptop.
+        </p>
+        <div className="vj-hero-actions">
+          <a className="vj-primary" href={APP_URL}>Open the app</a>
+          <a href="#start">Connect your agent →</a>
         </div>
+        <ul className="vj-hero-proof" aria-label="At a glance">
+          <li><b>In the browser</b> app.vidjutsu.ai</li>
+          <li><b>Your agent</b> over MCP, CLI or API</li>
+          <li><b>Cloud renders</b> 1080p or 4K</li>
+          <li><b>Pay as you go</b> no monthly fee</li>
+        </ul>
       </div>
     </section>
   );
