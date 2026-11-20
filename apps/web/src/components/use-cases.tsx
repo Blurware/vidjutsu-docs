@@ -19,6 +19,11 @@ const USE_CASES = [
     title: "Many ad variants from the same footage",
     body: "Ask for ten hooks, three lengths, 16:9 and 9:16. Every variant is a revision of one project, and they all render on cloud machines at the same time.",
   },
+  {
+    tag: "05 / LAUNCH VIDEOS",
+    title: "A launch video that's ready when the product is",
+    body: "Record the demo, drop in screen captures and title cards, and let your agent cut it to time with music and captions. Comment on the cut, get the next revision, and render the 16:9 film and the 9:16 teasers in one go.",
+  },
 ] as const;
 
 export function UseCases() {

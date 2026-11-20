@@ -4,7 +4,7 @@ export function Hero() {
   return (
     <section className="vj-hero">
       <div className="vj-frame">
-        <span className="vj-eyebrow">For creators, faceless channels, AI dramas and AI ads</span>
+        <span className="vj-eyebrow">For creators, faceless channels, AI dramas, AI ads and launch videos</span>
         <h1>Simple video editing for agents.</h1>
         <p>
           Your agent edits the video; you just say what to change. Bring Claude

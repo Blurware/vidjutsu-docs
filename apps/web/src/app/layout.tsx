@@ -9,7 +9,7 @@ export const viewport: Viewport = {
 
 const HEADLINE = "Simple video editing for agents";
 const DESCRIPTION =
-  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas and AI ads. Pay as you go.";
+  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas, AI ads and launch videos. Pay as you go.";
 
 export const metadata: Metadata = {
   title: {
