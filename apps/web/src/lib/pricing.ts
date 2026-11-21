@@ -5,8 +5,10 @@ export const FIRST_LOAD_59 = true;
 
 export const START_AMOUNT = FIRST_LOAD_59 ? "$59" : "$5";
 
+export const MIN_TOP_UP = FIRST_LOAD_59 ? "$10" : "$5";
+
 export const RATES = [
-  { price: "$0.03", unit: "per vCPU-minute, billed by the second" },
+  { price: "$0.03", unit: "per vCPU-minute, by the second" },
   { price: "$0.05", unit: "per GB-month of storage" },
 ] as const;
 
