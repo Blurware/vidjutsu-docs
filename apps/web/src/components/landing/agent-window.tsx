@@ -16,23 +16,25 @@ export function AgentWindow() {
 </div>
 
 
-<div style={{ position: "absolute", left: "0", top: "33px", width: "1397px", height: "43px", background: "#2A2A2A", borderBottom: "1px solid #3C3C3C" }}>
-<span style={{ position: "absolute", left: "22px", top: "11px", fontSize: "18px", lineHeight: "18px", color: "#D8D8D8" }}>‹</span>
-<div style={{ position: "absolute", left: "49px", top: "4px", fontSize: "14px", fontWeight: "650", color: "#F2F2F2" }}>412-ep1</div>
-<div style={{ position: "absolute", left: "49px", top: "22px", fontSize: "12px", color: "#A8A8A8", whiteSpace: "nowrap" }}>Lay in clips 1.1 to 1.4 by Claude Code · 18 hours ago · 1:59 · Revision 181b840d</div>
-<div style={{ position: "absolute", left: "632px", top: "5px", width: "134px", height: "32px", boxSizing: "border-box", border: "1px solid #4A4A4A", borderRadius: "16px", background: "#333333", fontSize: "13px" }}>
-<span style={{ position: "absolute", left: "3px", top: "3px", width: "74px", height: "24px", lineHeight: "24px", textAlign: "center", color: "#9C9C9C" }}>Shot list</span>
-<span style={{ position: "absolute", left: "79px", top: "3px", width: "50px", height: "24px", lineHeight: "24px", textAlign: "center", borderRadius: "12px", background: "#4C4C4C", color: "#F2F2F2" }}>Edit</span>
+<div style={{ position: "absolute", left: "0", top: "33px", width: "1397px", height: "43px", boxSizing: "border-box", display: "flex", alignItems: "center", gap: "10px", padding: "0 10px", background: "#242424", boxShadow: "inset 0 -1px 0 rgba(255,255,255,.1)", fontSize: "14px", lineHeight: "1.3" }}>
+<span style={{ color: "#A8A8A8", fontSize: "18px", width: "22px", textAlign: "center" }}>‹</span>
+<div style={{ display: "flex", flexDirection: "column", gap: "1px", minWidth: "0" }}>
+<div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ fontSize: "15px", fontWeight: "600" }}>412-ep1</span><span style={{ display: "inline-flex", alignItems: "center", gap: "5px", border: "1px solid rgba(255,255,255,.16)", borderRadius: "999px", padding: "1px 8px", fontSize: "12px" }}><span style={{ width: "8px", height: "8px", borderRadius: "50%", border: "1.5px solid #A8A8A8", boxSizing: "border-box" }}></span>Editing ⌄</span></div>
+<span style={{ color: "#A8A8A8", fontSize: "12px", whiteSpace: "nowrap" }}>Edited 18 hours ago by Claude Code · 1:59</span>
 </div>
-<div style={{ position: "absolute", left: "848px", top: "5px", width: "98px", height: "32px", boxSizing: "border-box", border: "1px solid #4A4A4A", borderRadius: "16px", background: "#333333", color: "#C8C8C8", fontSize: "15px" }}>
-<span style={{ position: "absolute", left: "12px", top: "6px" }}>↶</span><span style={{ position: "absolute", left: "42px", top: "6px" }}>↷</span><span style={{ position: "absolute", left: "70px", top: "6px" }}>▥</span>
+<span style={{ flex: "1 1 0" }}></span>
+<div style={{ display: "flex", padding: "2px", borderRadius: "999px", background: "rgba(255,255,255,.09)", border: "1px solid rgba(255,255,255,.1)", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16)" }}><span style={{ padding: "4px 10px", borderRadius: "999px", color: "#A8A8A8", fontSize: "12px" }}>Shot list</span><span style={{ padding: "4px 10px", borderRadius: "999px", background: "rgba(255,255,255,.14)", fontSize: "12px", boxShadow: "inset 0 1px 0 rgba(255,255,255,.16)" }}>Edit</span></div>
+<span style={{ flex: "1 1 0" }}></span>
+<div style={{ display: "flex", alignItems: "center", gap: "2px", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.05)", borderRadius: "999px", padding: "4px 8px" }}>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFCFD3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M9 14L4 9l5-5" /><path d="M4 9h11a5 5 0 0 1 0 10h-3" /></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFCFD3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M15 14l5-5-5-5" /><path d="M20 9H9a5 5 0 0 0 0 10h3" /></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CFCFD3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M9 4v16M15 4v16" /></svg>
 </div>
-<div style={{ position: "absolute", left: "953px", top: "6px", width: "30px", height: "30px", borderRadius: "50%", background: "#3A3A3A", color: "#E0E0E0", fontSize: "14px", lineHeight: "30px", textAlign: "center" }}>▢</div>
-<div style={{ position: "absolute", left: "970px", top: "2px", width: "15px", height: "15px", borderRadius: "50%", background: "#F5C518", color: "#1A1A1A", fontSize: "9.5px", fontWeight: "700", lineHeight: "15px", textAlign: "center" }}>2</div>
-<span style={{ position: "absolute", left: "996px", top: "10px", color: "#C8C8C8", fontSize: "14px", letterSpacing: "1px" }}>···</span>
-<div style={{ position: "absolute", left: "1035px", top: "11px", fontSize: "13px", fontWeight: "500", color: "#EDEDED", display: "flex", alignItems: "center", gap: "7px" }}><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z" /><path d="M3 13l9 5 9-5" /></svg>Versions</div>
-<div style={{ position: "absolute", left: "1258px", top: "5px", width: "92px", height: "32px", borderRadius: "16px", background: "#F4F5F7", color: "#111214", fontSize: "13.5px", fontWeight: "650", lineHeight: "32px", textAlign: "center" }}>⇪ Render</div>
-<span style={{ position: "absolute", left: "1362px", top: "9px", fontSize: "16px", color: "#C8C8C8" }}>⚙</span>
+<span style={{ position: "relative", display: "inline-flex" }}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFCFD3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" /></svg><span style={{ position: "absolute", top: "-6px", right: "-6px", background: "#F2F3F5", color: "#111214", borderRadius: "999px", fontSize: "9px", fontWeight: "700", padding: "0 4px", lineHeight: "14px" }}>2</span></span>
+<span style={{ color: "#A8A8A8", fontSize: "15px", letterSpacing: "1px" }}>···</span>
+<span style={{ display: "inline-flex", alignItems: "center", gap: "6px", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.05)", borderRadius: "999px", padding: "4px 12px", fontSize: "12.5px", fontWeight: "500" }}><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#CFCFD3" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z" /><path d="M3 13l9 5 9-5" /></svg>Versions</span>
+<span style={{ border: "1px solid rgba(255,255,255,.16)", background: "rgba(255,255,255,.05)", borderRadius: "999px", padding: "4px 12px", fontSize: "12.5px", fontWeight: "500" }}>Render</span>
+<span style={{ background: "#F2F3F5", color: "#111214", borderRadius: "999px", padding: "4px 14px", fontSize: "12.5px", fontWeight: "600" }}>Share</span>
 </div>
 
 
@@ -111,7 +113,7 @@ export function AgentWindow() {
 <div style={{ position: "absolute", left: "0", right: "0", top: "0", height: "32px", borderBottom: "1px solid #F0F0F0" }}>
 <span style={{ position: "absolute", left: "12px", top: "8px", fontSize: "12px", color: "#444" }}>▭</span>
 <span style={{ position: "absolute", left: "18px", top: "6px", width: "5px", height: "5px", borderRadius: "50%", background: "#2FA36B" }}></span>
-<span style={{ position: "absolute", left: "32px", top: "8px", fontSize: "11px", fontWeight: "500", color: "#222" }}>Launch video ⌄</span>
+<span style={{ position: "absolute", left: "32px", top: "8px", fontSize: "11px", fontWeight: "500", color: "#222" }}>412-ep1 edits ⌄</span>
 <span style={{ position: "absolute", right: "74px", top: "8px", fontSize: "12px", color: "#444" }}>◎</span>
 <span style={{ position: "absolute", right: "52px", top: "8px", fontSize: "12px", color: "#B0B0B0" }}>◍</span>
 <span style={{ position: "absolute", right: "30px", top: "8px", fontSize: "12px", color: "#444" }}>···</span>
@@ -123,7 +125,7 @@ export function AgentWindow() {
 <div style={{ color: "#9A9A9A", fontSize: "9.5px" }}>Used VidJutsu · comments, shot_list</div>
 <div>Read the 2 open comments and the shot list.</div>
 <div style={{ color: "#9A9A9A", fontSize: "9.5px" }}>Used VidJutsu · edit, add_comment, resolve_comment</div>
-<div>Held the shot at 0:04 for 0.6 s longer and cut the breath before "every old weapon in the". I replied to both comments and resolved them. The new revision is open on the left.</div>
+<div>Held the shot at 0:04 for 0.6 s longer and cut the breath before "every old weapon in the". I replied to both comments and resolved them. The new revision is ready.</div>
 <div style={{ color: "#9A9A9A", fontSize: "9.5px" }}>Used VidJutsu · render</div>
 <div>Version 5 is rendering in the cloud. I'll send you the watch link when it's done.</div>
 </div>

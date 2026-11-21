@@ -4,34 +4,31 @@ import { COMPARISONS } from "@/lib/compare";
 
 export const metadata: Metadata = {
   title: "Compare",
-  description: "How VidJutsu, simple video editing for agents, compares with Descript, DaVinci Resolve and other video editors that weren't built for AI.",
+  description: "How VidJutsu compares with Descript, DaVinci Resolve, Premiere Pro, Final Cut Pro and CapCut: other editors sell AI as plugins or per-action credits, VidJutsu works with the agent you already pay for.",
   alternates: { canonical: "/compare" },
 };
 
 export default function ComparePage() {
   return (
-    <main className="vj-landing" id="main">
-      <SiteNav />
-      <section className="vj-compare-hero vj-frame">
-        <span className="vj-eyebrow">Compare</span>
-        <h1>Video editors were built for hands. VidJutsu is built for agents.</h1>
-        <p>
-          Traditional editors expect a person on the timeline and a computer
-          that does the rendering. VidJutsu lets your agent do the cutting while
-          you review in the browser, and renders in the cloud.
-        </p>
-      </section>
-      <section className="vj-frame vj-compare-index">
-        {COMPARISONS.map((c) => (
-          <a key={c.slug} href={`/compare/${c.slug}`}>
-            <span>VIDJUTSU VS</span>
-            <h2>{c.name}</h2>
-            <p>{c.summary}</p>
-            <i>Read the comparison →</i>
-          </a>
-        ))}
-      </section>
-      <SiteFooter />
+    <main className="vl" id="main">
+      <div className="vl-wrap">
+        <SiteNav />
+        <header className="vl-page-hero">
+          <span className="vl-eyebrow">Compare</span>
+          <h1>Other editors sell you AI. VidJutsu works with yours.</h1>
+          <p>Most editors sell AI as plugins or credits per action. VidJutsu uses the AI plan you already pay for. You pay only for rendering and storage.</p>
+        </header>
+        <section className="vl-compare-index">
+          {COMPARISONS.map((c) => (
+            <a key={c.slug} className="vl-card" href={`/compare/${c.slug}`}>
+              <h2>vs {c.name}</h2>
+              <p>{c.what}</p>
+              <span>{c.ai}</span>
+            </a>
+          ))}
+        </section>
+        <SiteFooter />
+      </div>
     </main>
   );
 }

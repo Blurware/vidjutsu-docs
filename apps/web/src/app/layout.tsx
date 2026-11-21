@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "@/components/landing/landing.css";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f7f6f3",
+  themeColor: "#f6f5f1",
 };
 
-const HEADLINE = "Simple video editing for agents";
+const HEADLINE = "Give your agent a video editor";
 const DESCRIPTION =
-  "Bring your agent and it edits your video in the cloud while you review and comment in the browser. Cloud rendering in 1080p or 4K, for creators, faceless channels, AI dramas, AI ads, launch videos and clipping. Pay as you go.";
+  "From raw footage to finished video, with the agent you already use. Your agent cuts in the cloud while you comment in the browser. Use the AI plan you already pay for; pay only for rendering and storage.";
 
 export const metadata: Metadata = {
   title: {
@@ -63,7 +64,7 @@ export default function RootLayout({
       <body className="min-h-screen overflow-x-hidden">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand focus:text-white focus:rounded"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-ink focus:text-white focus:rounded"
         >
           Skip to content
         </a>
