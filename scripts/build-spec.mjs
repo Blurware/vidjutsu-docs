@@ -239,6 +239,7 @@ const CLOUD_SCHEMAS = {
       attempt: { type: "string", description: "From POST /auth/email." },
       code: { type: "string", description: "The code from the email." },
       name: { type: "string", maxLength: 64, description: "A name for the API key this creates." },
+      scopes: ref("KeyScopes"),
     },
   },
   SignedIn: {
@@ -248,6 +249,7 @@ const CLOUD_SCHEMAS = {
       api_key: { type: "string", description: "`vj_live_...`. Shown once: keep it. Send it as `Authorization: Bearer <api_key>`." },
       key_id: { type: "string" },
       account_id: { type: "string" },
+      scopes: { type: "array", items: ref("KeyScope"), description: "The new key's optional rights." },
       status: ref("AccountStatus"),
       checkout_url: { type: "string", description: "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first $59 load." },
       note: { type: "string" },
@@ -278,10 +280,23 @@ const CLOUD_SCHEMAS = {
     additionalProperties: true,
     description: "`{\"state\": \"available\", \"entitlements\": {...}, \"spend_limit_micros\": ...}`: your limits and features. Money is in micro-dollars.",
   },
+  KeyScope: {
+    type: "string",
+    enum: ["billing", "keys"],
+    description: "`billing`: change auto-reload and the spend limit, and open the billing portal. `keys`: create and revoke API keys. Every key can work on projects.",
+  },
+  KeyScopes: {
+    type: "array",
+    items: ref("KeyScope"),
+    description: "Optional rights for the new key. Leave it out for both; `[]` for neither. A key can't make a key with rights it doesn't have.",
+  },
   CreateKey: {
     type: "object",
     required: ["name"],
-    properties: { name: { type: "string", description: "A label to recognize the key by." } },
+    properties: {
+      name: { type: "string", description: "A label to recognize the key by." },
+      scopes: ref("KeyScopes"),
+    },
   },
   ApiKey: {
     type: "object",
@@ -290,6 +305,7 @@ const CLOUD_SCHEMAS = {
       key_id: { type: "string" },
       name: { type: "string" },
       prefix: { type: "string", description: "The key's first characters, to recognize it." },
+      scopes: { type: "array", items: ref("KeyScope"), description: "The key's optional rights." },
       created_at: { type: "number", description: "Unix milliseconds." },
       revoked_at: { type: ["number", "null"] },
     },
@@ -771,7 +787,7 @@ const CLOUD_PATHS = {
   "/auth/verify": {
     post: {
       operationId: "sign_in_verify", tags: ["Sign-up and sign-in"], summary: "Verify the code", security: [],
-      description: "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
+      description: "Check the emailed code. Creates your account on first sign-in and returns a new API key, with full rights unless `scopes` says otherwise. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
       requestBody: { required: true, content: { "application/json": { schema: ref("SignInVerify") } } },
       responses: { "201": json(ref("SignedIn"), "Signed in, with a new API key"), default: errorResponse("400 invalid_request (wrong or expired code), 429 rate_limited") },
     },
@@ -810,17 +826,17 @@ const CLOUD_PATHS = {
     },
     post: {
       operationId: "create_key", tags: ["API keys"], summary: "Create an API key",
-      description: "Create another API key. The secret is shown only once.",
+      description: "Create another API key, optionally with fewer rights (`scopes`). The secret is shown only once. Needs a key with the `keys` scope.",
       requestBody: { required: true, content: { "application/json": { schema: ref("CreateKey") } } },
-      responses: { "201": json(ref("CreatedKey"), "The new key, with its secret"), ...AUTH_ERRORS },
+      responses: { "201": json(ref("CreatedKey"), "The new key, with its secret"), ...AUTH_ERRORS, "403": errorResponse("forbidden missing_scope: this key lacks the keys scope, or asked for a scope it doesn't have.") },
     },
   },
   "/keys/{key_id}": {
     delete: {
       operationId: "revoke_key", tags: ["API keys"], summary: "Revoke an API key",
-      description: "The key stops working right away.",
+      description: "The key stops working right away. Needs a key with the `keys` scope.",
       parameters: [{ name: "key_id", in: "path", required: true, schema: { type: "string" } }],
-      responses: { "200": json(ref("RevokedKey"), "Revoked"), ...AUTH_ERRORS },
+      responses: { "200": json(ref("RevokedKey"), "Revoked"), ...AUTH_ERRORS, "403": errorResponse("forbidden missing_scope: this key lacks the keys scope.") },
     },
   },
   "/billing/checkout": {
@@ -842,17 +858,17 @@ const CLOUD_PATHS = {
   "/billing/auto-top-up": {
     post: {
       operationId: "billing_auto_top_up", tags: ["Billing"], summary: "Set auto top-up",
-      description: "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
+      description: "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment. Needs a key with the `billing` scope.",
       requestBody: { required: true, content: { "application/json": { schema: ref("AutoTopUpRequest") } } },
-      responses: { "200": json(ref("AutoTopUpSetting"), "The setting"), ...AUTH_ERRORS, "409": errorResponse("No saved card yet: use POST /billing/checkout first."), default: errorResponse("400 invalid_request (an amount or threshold out of range, or not whole cents)") },
+      responses: { "200": json(ref("AutoTopUpSetting"), "The setting"), ...AUTH_ERRORS, "403": errorResponse("forbidden missing_scope: this key lacks the billing scope."), "409": errorResponse("No saved card yet: use POST /billing/checkout first."), default: errorResponse("400 invalid_request (an amount or threshold out of range, or not whole cents)") },
     },
   },
   "/billing/portal": {
     post: {
       operationId: "billing_portal", tags: ["Billing"], summary: "Get a billing portal link",
-      description: "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment.",
+      description: "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment. Needs a key with the `billing` scope.",
       requestBody: { required: false, content: { "application/json": { schema: ref("PortalRequest") } } },
-      responses: { "200": json(ref("BillingLink"), "Portal link"), ...AUTH_ERRORS, "409": errorResponse("No payment yet: use POST /billing/checkout first.") },
+      responses: { "200": json(ref("BillingLink"), "Portal link"), ...AUTH_ERRORS, "403": errorResponse("forbidden missing_scope: this key lacks the billing scope."), "409": errorResponse("No payment yet: use POST /billing/checkout first.") },
     },
   },
 };

@@ -77,13 +77,13 @@ You need an email address and a card. There's no monthly fee: you pay as you go 
     V='VidJutsu-Version: 2026-11-03'   # the API version, sent on every call
     curl -s -H "$V" -X POST $API/auth/email -H 'Content-Type: application/json' \
       -d '{"email": "you@example.com"}'
-    # {"attempt": "...", "expires_at": "...", "next": "POST /auth/verify ..."}
+    # {"attempt": "...", "expires_at": "...", "next": "Ask the person for the code ..."}
 
     curl -s -H "$V" -X POST $API/auth/verify -H 'Content-Type: application/json' \
       -d '{"attempt": "...", "code": "123456"}'
     # {"api_key": "vj_live_...", "account_id": "...", "status": "no_plan", "checkout_url": "https://checkout.stripe.com/..."}
     ```
-    Keep the `api_key`: it's shown once.
+    Keep the `api_key`: it's shown once. It has full rights; add `"scopes"` to limit it (see [Key scopes](/authentication#key-scopes)).
   </Step>
   <Step title="Fund your wallet">
     Open `checkout_url` in a browser, add a card and pay $59. Then check:

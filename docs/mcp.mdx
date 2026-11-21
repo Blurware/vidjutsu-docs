@@ -84,7 +84,7 @@ Tools that do work need a funded wallet. Until you've signed up, they fail with 
 | `render_status` | Any job (render, preview, transcript, Studio Sound, frame, check); once a render has succeeded, a download link, and a frame or check job's output (`{job_id}`). |
 | `cancel_render` | Stop a render job (`{job_id}`). |
 | `account`, `usage`, `wallet`, `entitlements` | Your account, your usage, your wallet, your limits. |
-| `create_key`, `list_keys`, `revoke_key` | Manage API keys. |
+| `create_key`, `list_keys`, `revoke_key` | Manage API keys. `create_key` takes optional `scopes` ([key scopes](/authentication#key-scopes)). |
 | `billing_checkout`, `billing_top_up`, `billing_portal` | Stripe links to sign up and make your first payment, to add credits (`{amount_usd}`), or to update your card and see receipts. |
 | `billing_auto_top_up` | Turn [auto top-up](/pricing#auto-top-up) on or off (`{enabled, threshold_usd, amount_usd}`). |
 | `create_account` | Create your account after an OAuth sign-in. Safe to call again. |
