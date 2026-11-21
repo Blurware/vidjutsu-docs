@@ -1,11 +1,13 @@
 ---
 title: "Pricing and billing"
-description: "Pay as you go from a prepaid wallet: box time at $0.03 per vCPU-minute for every job, by the second, plus storage. No monthly fee; a card and $5 to start."
+description: "Pay as you go from a prepaid wallet: box time at $0.03 per vCPU-minute for every job, by the second, plus storage. No monthly fee; a card and a $59 first load to start."
 ---
 
 ## Pay as you go
 
-There is no monthly fee and no subscription. You add credits to a prepaid wallet, and all usage (box time for every job, and storage) is paid from it. To start, add a card and at least $5. Top up any time, $5 minimum. Your card is charged only for the top-ups you choose, or automatically when the wallet runs low if you turn on [auto top-up](#auto-top-up). There is no free plan.
+There is no monthly fee and no subscription. You add credits to a prepaid wallet, and all usage (box time for every job, and storage) is paid from it. To start, add a card and load at least $59. Top up any time, $10 minimum. [Auto-reload](#auto-top-up) is on by default: when your balance drops below $10, your card is charged $59. You can turn it off at sign-up or any time later. There is no free plan.
+
+Unused credit from your first $59 load is refundable for 3 days: email admin@vidjutsu.ai. Later top-ups and auto-reloads are non-refundable. Credits expire 12 months after purchase, and we email you 30 days before. Watching renders and share links is free.
 
 | Usage | Price |
 | --- | --- |
@@ -55,24 +57,24 @@ There is no billing UI of ours: every payment is a Stripe-hosted page you get a 
 
 | Call | CLI | |
 | --- | --- | --- |
-| `POST /billing/checkout` | `vidjutsu billing checkout` | Sign up: add a card and make your first payment (default $5). |
-| `POST /billing/top-up` | `vidjutsu billing top-up` | Add credits any time (default $10). |
-| `POST /billing/auto-top-up` | | Refill automatically when your balance runs low. See [Auto top-up](#auto-top-up). |
+| `POST /billing/checkout` | `vidjutsu billing checkout` | Sign up: add a card and make your first $59 load. Auto-reload is on unless you send `"auto_reload": false`. |
+| `POST /billing/top-up` | `vidjutsu billing top-up` | Add credits any time (default $10, $10 minimum). |
+| `POST /billing/auto-top-up` | | Change or turn off auto-reload. See [Auto top-up](#auto-top-up). |
 | `POST /billing/portal` | `vidjutsu billing portal` | Update your saved card or see your receipts. |
 
-Checkout and top-up take an optional `amount_usd` in whole cents, from $5 to $500 per payment, for example `{"amount_usd": 25}` (`--amount 25` in the CLI). All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
+Checkout and top-up take an optional `amount_usd` in whole cents, up to $500 per payment: checkout from $59, top-up from $10, for example `{"amount_usd": 25}` (`--amount 25` in the CLI). Before you sign up, a top-up counts as your first load, so it needs $59. All three take optional `https` redirect URLs (`success_url` and `cancel_url`, or `return_url` for the portal). Your account turns `active` as soon as the first payment goes through, and credits show up in `GET /usage` as soon as a top-up does.
 
 ### Auto top-up
 
-Turn on auto top-up and your wallet refills itself: when usage takes your balance below a threshold, or a render is refused for credits, the card you saved at sign-up is charged automatically.
+Auto-reload (auto top-up) is on by default from sign-up, and your wallet refills itself: when usage takes your balance below a threshold, or a render is refused for credits, the card you saved at sign-up is charged automatically. Turn it off with `--no-auto-reload` at sign-up, `vidjutsu billing auto-top-up --off`, the web app's Settings, or the call below.
 
 ```sh
 curl -s -X POST https://api.vidjutsu.ai/billing/auto-top-up \
   -H "Authorization: Bearer $KEY" -H 'Content-Type: application/json' \
-  -d '{"enabled": true, "threshold_usd": 5, "amount_usd": 20}'
+  -d '{"enabled": true, "threshold_usd": 10, "amount_usd": 59}'
 ```
 
-`threshold_usd` defaults to $5 and `amount_usd` to $10 ($5 to $500, whole cents). It charges at most 5 times a day. If your card is declined, auto top-up turns off until you save a card again in the portal; `last_failure` says why. Send `{"enabled": false}` to turn it off. `GET /usage` shows the setting under `credits.auto_top_up`. Your agent can do the same with the `billing_auto_top_up` MCP tool.
+`threshold_usd` defaults to $10 and `amount_usd` to $59, unless you saved other values (`amount_usd` from $10 to $500, `threshold_usd` up to $500, whole cents). It charges at most 5 times a day. If your card is declined, auto top-up turns off until you save a card again in the portal; `last_failure` says why. Send `{"enabled": false}` to turn it off. `GET /usage` shows the setting under `credits.auto_top_up`. Your agent can do the same with the `billing_auto_top_up` MCP tool.
 
 There is nothing to cancel. Stop using the service and you stop paying; storage is still charged while you keep media stored.
 

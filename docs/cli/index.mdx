@@ -50,9 +50,9 @@ It emails you a code, asks for it, and saves a new API key to `~/.config/vidjuts
 | `vidjutsu keys` | List your API keys. |
 | `vidjutsu keys create <name>` | Create an API key (its secret is shown once). |
 | `vidjutsu keys revoke <key_id>` | Revoke an API key. |
-| `vidjutsu billing checkout [--amount <usd>]` | A Stripe Checkout link to add a card and make your first payment ($5 by default). |
-| `vidjutsu billing top-up [--amount <usd>]` | A Stripe link to add credits to your wallet ($10 by default, $5 minimum). Plain `vidjutsu billing` does the same. |
-| `vidjutsu billing auto-top-up --on [--threshold <usd>] [--amount <usd>]` | Refill your wallet automatically when it runs low. `--off` turns it off. See [Auto top-up](/pricing#auto-top-up). |
+| `vidjutsu billing checkout [--amount <usd>]` | A Stripe Checkout link to add a card and make your first $59 load. Auto-reload is on unless you add `--no-auto-reload`. |
+| `vidjutsu billing top-up [--amount <usd>]` | A Stripe link to add credits to your wallet ($10 by default and minimum). Plain `vidjutsu billing` does the same. |
+| `vidjutsu billing auto-top-up --on [--threshold <usd>] [--amount <usd>]` | Change auto-reload, which is on by default. `--off` turns it off. See [Auto top-up](/pricing#auto-top-up). |
 | `vidjutsu billing portal` | A Stripe link to update your saved card or see receipts. |
 | `vidjutsu wallet` | Your balance, saved card, auto top-up and this month's spend. |
 

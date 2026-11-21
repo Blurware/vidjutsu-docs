@@ -44,7 +44,7 @@ for (const [file, text] of contents) {
 }
 
 assert.match(contents.get("docs/pricing.mdx"), /no monthly fee/i, "pricing must say there is no monthly fee");
-assert.match(contents.get("docs/pricing.mdx"), /at least \$5/, "pricing must state the $5 first payment");
+assert.match(contents.get("docs/pricing.mdx"), /at least \$59/, "pricing must state the $59 first load");
 assert.match(contents.get("docs/pricing.mdx"), /\$0\.03 per vCPU-minute/, "pricing must state the box-time rate");
 assert.match(contents.get("docs/pricing.mdx"), /no free plan/i, "pricing must say there is no free plan");
 

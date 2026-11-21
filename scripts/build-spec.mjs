@@ -201,9 +201,9 @@ const VERSION_PARAMETER = {
 const json = (schema, description) => ({ description, content: { "application/json": { schema } } });
 const ref = (name) => ({ $ref: `#/components/schemas/${name}` });
 
-const AMOUNT_USD = (fallback) => ({
+const AMOUNT_USD = (min, fallback) => ({
   oneOf: [{ type: "number" }, { type: "string", pattern: "^\\d{1,6}(\\.\\d{1,2})?$" }],
-  description: `Dollars, in whole cents, from 5 to 500 (for example \`25\` or \`"12.50"\`). Default ${fallback}.`,
+  description: `Dollars, in whole cents, from ${min} to 500 (for example \`25\` or \`"12.50"\`). Default ${fallback}.`,
 });
 
 const CLOUD_SCHEMAS = {
@@ -249,7 +249,7 @@ const CLOUD_SCHEMAS = {
       key_id: { type: "string" },
       account_id: { type: "string" },
       status: ref("AccountStatus"),
-      checkout_url: { type: "string", description: "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first payment ($5 or more)." },
+      checkout_url: { type: "string", description: "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first $59 load." },
       note: { type: "string" },
     },
   },
@@ -314,7 +314,8 @@ const CLOUD_SCHEMAS = {
   CheckoutRequest: {
     type: "object",
     properties: {
-      amount_usd: AMOUNT_USD("5"),
+      amount_usd: AMOUNT_USD("59", "59"),
+      auto_reload: { type: "boolean", description: "Turn on auto-reload: when your balance drops below $10, your card is charged $59. Default true." },
       success_url: { type: "string", format: "uri", description: "https URL to return to after paying." },
       cancel_url: { type: "string", format: "uri", description: "https URL to return to if you cancel." },
     },
@@ -324,8 +325,8 @@ const CLOUD_SCHEMAS = {
     required: ["enabled"],
     properties: {
       enabled: { type: "boolean", description: "Turn auto top-up on or off." },
-      threshold_usd: { oneOf: [{ type: "number" }, { type: "string", pattern: "^\\d{1,6}(\\.\\d{1,2})?$" }], description: "Top up when usage takes your balance below this many dollars. Whole cents, above 0 and up to 500. Default 5." },
-      amount_usd: AMOUNT_USD("10"),
+      threshold_usd: { oneOf: [{ type: "number" }, { type: "string", pattern: "^\\d{1,6}(\\.\\d{1,2})?$" }], description: "Top up when usage takes your balance below this many dollars. Whole cents, above 0 and up to 500. Default 10, or your saved value." },
+      amount_usd: AMOUNT_USD("10", "59, or your saved value"),
     },
   },
   AutoTopUpSetting: {
@@ -348,7 +349,7 @@ const CLOUD_SCHEMAS = {
   TopUpRequest: {
     type: "object",
     properties: {
-      amount_usd: AMOUNT_USD("10"),
+      amount_usd: AMOUNT_USD("10", "10"),
       success_url: { type: "string", format: "uri", description: "https URL to return to after paying." },
       cancel_url: { type: "string", format: "uri", description: "https URL to return to if you cancel." },
     },
@@ -825,7 +826,7 @@ const CLOUD_PATHS = {
   "/billing/checkout": {
     post: {
       operationId: "billing_checkout", tags: ["Billing"], summary: "Get a checkout link",
-      description: "Sign up for paid use: a Stripe Checkout link to add a card and make your first payment into your prepaid wallet ($5 by default). There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
+      description: "Sign up for paid use: a Stripe Checkout link to add a card and make your first load into your prepaid wallet ($59 minimum and default). Auto-reload is on unless you send `auto_reload: false`. There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
       requestBody: { required: false, content: { "application/json": { schema: ref("CheckoutRequest") } } },
       responses: { "200": json(ref("BillingLink"), "Checkout link"), ...AUTH_ERRORS, "409": errorResponse("Your wallet is already set up.") },
     },
@@ -833,15 +834,15 @@ const CLOUD_PATHS = {
   "/billing/top-up": {
     post: {
       operationId: "billing_top_up", tags: ["Billing"], summary: "Get a top-up link",
-      description: "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
+      description: "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default and minimum. Before you sign up, a top-up counts as your first load and needs $59. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
       requestBody: { required: false, content: { "application/json": { schema: ref("TopUpRequest") } } },
-      responses: { "200": json(ref("BillingLink"), "Top-up link"), ...AUTH_ERRORS, default: errorResponse("400 invalid_request (an amount outside $5 to $500, or not whole cents)") },
+      responses: { "200": json(ref("BillingLink"), "Top-up link"), ...AUTH_ERRORS, default: errorResponse("400 invalid_request (an amount outside $10 to $500, or not whole cents)") },
     },
   },
   "/billing/auto-top-up": {
     post: {
       operationId: "billing_auto_top_up", tags: ["Billing"], summary: "Set auto top-up",
-      description: "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $5), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $10), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
+      description: "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
       requestBody: { required: true, content: { "application/json": { schema: ref("AutoTopUpRequest") } } },
       responses: { "200": json(ref("AutoTopUpSetting"), "The setting"), ...AUTH_ERRORS, "409": errorResponse("No saved card yet: use POST /billing/checkout first."), default: errorResponse("400 invalid_request (an amount or threshold out of range, or not whole cents)") },
     },

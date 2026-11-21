@@ -3,7 +3,7 @@ title: "Quickstart"
 description: "Sign up, fund your wallet, upload a take and render your first cut."
 ---
 
-You need an email address and a card. There's no monthly fee: you pay as you go from a prepaid wallet, starting with $5 or more. Jobs are billed by the box time they use, $0.03 per vCPU-minute by the second: a minute of 1080p output comes to about $0.18. See [Pricing](/pricing).
+You need an email address and a card. There's no monthly fee: you pay as you go from a prepaid wallet, starting with a $59 first load. Jobs are billed by the box time they use, $0.03 per vCPU-minute by the second: a minute of 1080p output comes to about $0.18. See [Pricing](/pricing).
 
 <Tip>
   Rather start in the browser? Sign up at [app.vidjutsu.ai](https://app.vidjutsu.ai), then connect your agent under **Connect agents**. Everything below works with the same account.
@@ -30,7 +30,7 @@ You need an email address and a card. There's no monthly fee: you pay as you go 
     ```sh
     vidjutsu billing checkout
     ```
-    Open the `url` it prints, add a card and pay $5 with Stripe. Your account turns `active` as soon as the payment goes through (`vidjutsu account` shows it, and `vidjutsu usage` shows your balance).
+    Open the `url` it prints, add a card and pay $59 with Stripe. Your account turns `active` as soon as the payment goes through (`vidjutsu account` shows it, and `vidjutsu usage` shows your balance).
   </Step>
   <Step title="Upload a take">
     ```sh
@@ -86,7 +86,7 @@ You need an email address and a card. There's no monthly fee: you pay as you go 
     Keep the `api_key`: it's shown once.
   </Step>
   <Step title="Fund your wallet">
-    Open `checkout_url` in a browser, add a card and pay $5. Then check:
+    Open `checkout_url` in a browser, add a card and pay $59. Then check:
     ```sh
     KEY=vj_live_...
     curl -s -H "$V" $API/account -H "Authorization: Bearer $KEY"

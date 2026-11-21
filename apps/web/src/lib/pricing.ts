@@ -15,5 +15,5 @@ export const WALLET_FAQ = FIRST_LOAD_59
   : "Add a card and at least $5 to start. Top up whenever you like, $5 minimum, or turn on auto top-up so the wallet refills itself when it runs low.";
 
 export const REFUND_FAQ = FIRST_LOAD_59
-  ? "Unused credit from your first $59 load is refundable for 3 days: email support@vidjutsu.ai. Later top-ups and auto-reloads are non-refundable, and we always refund our own billing errors and failed jobs."
+  ? "Unused credit from your first $59 load is refundable for 3 days: email admin@vidjutsu.ai. Later top-ups and auto-reloads are non-refundable, and we always refund our own billing errors and failed jobs."
   : "A job that fails on our side is never charged, and we always refund our own billing errors. Write to support@vidjutsu.ai about anything else.";
