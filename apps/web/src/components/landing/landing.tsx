@@ -5,7 +5,7 @@ import { MIN_TOP_UP, RATES, REFUND_FAQ, START_AMOUNT, WALLET_FAQ } from "@/lib/p
 import { AgentWindow } from "./agent-window";
 import { Faq } from "./faq";
 import { Fit } from "./fit";
-import { CommentPicture, FilesPicture, RenderPicture, ShotListPicture, TranscriptPicture } from "./pictures";
+import { CommentPicture, FilesPicture, SharePicture, ShotListPicture, TranscriptPicture } from "./pictures";
 
 const VS = [
   ["Write a script, then edit it by hand.", "Your agent cuts the timeline."],
@@ -92,8 +92,8 @@ export function Landing() {
         <Step id="comment-h" n="04" label="YOUR NOTES" title="Comment right on the video." flip body="You don't edit, you comment. The agent fixes that frame and sends the next version.">
           <CommentPicture />
         </Step>
-        <Step id="render-h" n="05" label="NEXT VERSION" title="Render in the cloud." body="See the price before you render. A small change re-renders only what changed.">
-          <RenderPicture />
+        <Step id="share-h" n="05" label="SHARE" title="Share links anyone can comment on." body="Send a link. People watch and comment without signing in or making an account. Your agent picks up their notes for the next version.">
+          <SharePicture />
         </Step>
 
         <section className="vl-vs" aria-labelledby="vs-h">
