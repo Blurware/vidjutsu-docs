@@ -66,7 +66,18 @@ export function Landing() {
         <section className="vl-demo" aria-labelledby="demo-h">
           <h2 id="demo-h">Your agent cuts. You comment.</h2>
           <div className="vl-demo-window vl-desk"><Fit width={1865} height={988}><AgentWindow /></Fit></div>
-          <div className="vl-demo-window vl-phone"><Fit width={467} height={300}><div className="vl-demo-chat"><AgentWindow /></div></Fit></div>
+          <div className="vl-demo-window vl-phone vl-chat" aria-hidden="true">
+            <header><i />412-ep1 edits</header>
+            <div>
+              <span className="me">Do what my comments on 412-ep1 say, then render it.</span>
+              <small>Used VidJutsu · comments, shot_list</small>
+              <p>Read the 2 open comments and the shot list.</p>
+              <small>Used VidJutsu · edit, add_comment, resolve_comment</small>
+              <p>Held the shot at 0:04 for 0.6 s longer and cut the breath before &quot;every old weapon in the&quot;. I replied to both comments and resolved them.</p>
+              <small>Used VidJutsu · render</small>
+              <p>Version 5 is rendering in the cloud. I&apos;ll send you the watch link when it&apos;s done.</p>
+            </div>
+          </div>
         </section>
 
         <Step id="files-h" n="01" label="RAW FOOTAGE" title="Every raw take, in one place." body="Upload takes, screen recordings, music and stills. Files up to 50 GB.">

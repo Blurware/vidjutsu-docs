@@ -116,7 +116,7 @@ export function FilesPicture() {
         </div>
       </div>
       <span style={{ fontFamily: "Caveat, cursive", fontSize: "26px", color: "#2a2d33", paddingRight: "10px" }}>
-        {"raw assets live here, not on your laptop ↑"}
+        {"raw assets live here, not on your laptop ↑"}
       </span>
     </div>
   );

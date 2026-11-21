@@ -82,8 +82,13 @@
 .vl-demo-window { border-radius: 12px; overflow: hidden; border: 1px solid #d6d2ca; box-shadow: 0 4px 0 #e2dfd8, 0 40px 70px -20px rgba(20, 24, 32, 0.3); }
 .vl-demo-window .vl-fit { max-width: none !important; }
 .vl-phone { display: none; }
-.vl-demo-chat { width: 467px; height: 300px; overflow: hidden; }
-.vl-demo-chat > div { margin-left: -1398px; }
+.vl-chat { background: #fff; color: #2b2b2b; font: 14px/1.5 -apple-system, BlinkMacSystemFont, Inter, sans-serif; }
+.vl-chat header { padding: 10px 14px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.vl-chat header i { width: 7px; height: 7px; border-radius: 50%; background: #2fa36b; }
+.vl-chat > div { padding: 14px 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.vl-chat .me { align-self: flex-end; max-width: 85%; padding: 9px 12px; border-radius: 12px; background: #f8ede9; color: #333; }
+.vl-chat small { color: #9a9a9a; font-size: 12px; }
+.vl-chat p { margin: 0; color: #454545; }
 .vl-fit { width: 100%; overflow: hidden; }
 
 /* Numbered steps */
@@ -158,13 +163,14 @@
 .vl .vl-button:hover { color: #fff; opacity: 0.9; }
 .vl .vl-actions a:not(.vl-button) { font-weight: 600; }
 .vl-card { background: #fff; border: 1px solid var(--edge); border-radius: 16px; box-shadow: var(--lift); }
-.vl-compare-index { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 22px; padding-bottom: 40px; }
-.vl .vl-compare-index a { padding: 26px; color: var(--ink); display: flex; flex-direction: column; gap: 10px; transition: transform 0.15s; }
+.vl-compare-index { display: flex; flex-direction: column; gap: 14px; padding-bottom: 40px; }
+.vl .vl-compare-index a { padding: 22px 26px; color: var(--ink); display: grid; grid-template-columns: minmax(200px, 1fr) 2fr auto; align-items: center; gap: 8px 24px; transition: transform 0.15s; }
 .vl .vl-compare-index a:hover { transform: translateY(-2px); color: var(--ink); }
-.vl-compare-index h2 { font-size: 30px; }
-.vl-compare-index p { margin: 0; color: var(--muted); font-size: 16px; }
-.vl-compare-index a > span { color: var(--muted); font-size: 14px; }
-.vl-compare-index i { font-style: normal; font-weight: 600; color: var(--blue); }
+.vl-compare-index h2 { font-size: 28px; }
+.vl-compare-index div { display: flex; flex-direction: column; gap: 2px; }
+.vl-compare-index p { margin: 0; font-size: 16px; }
+.vl-compare-index div span { color: var(--muted); font-size: 15px; }
+.vl-compare-index i { font-style: normal; font-size: 20px; color: var(--faint); }
 .vl-compare-table { width: 100%; border-collapse: collapse; overflow: hidden; }
 .vl-compare-table th, .vl-compare-table td { padding: 16px 22px; text-align: left; vertical-align: top; border-bottom: 1px solid #efece6; font-size: 15.5px; }
 .vl-compare-table tr:last-child th, .vl-compare-table tr:last-child td { border-bottom: 0; }
@@ -209,6 +215,8 @@
   .vl-compare-table tbody th { padding-top: 18px; }
   .vl-compare-table td::before { display: block; margin-bottom: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); content: attr(data-label); }
   .vl-choose { grid-template-columns: 1fr; }
+  .vl .vl-compare-index a { grid-template-columns: 1fr auto; }
+  .vl-compare-index div { grid-column: 1 / -1; grid-row: 2; }
   .vl-simple .vl-card { padding: 26px 22px; }
   .ed-tip { left: 20% !important; top: 73% !important; }
   .f-proj { display: none; }

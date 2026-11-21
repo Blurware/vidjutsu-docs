@@ -21,7 +21,7 @@ export type Comparison = {
 export const COMPARISONS: Comparison[] = [
   {
     slug: "descript",
-    what: "An editor for hands, with its own AI assistant.",
+    what: "An editor for cutting by hand, with its own AI assistant.",
     ai: "AI tools spend Descript AI credits.",
     name: "Descript",
     title: "VidJutsu vs Descript",
@@ -41,8 +41,7 @@ export const COMPARISONS: Comparison[] = [
       "You want built-in AI voices, avatars or other generated media.",
     ],
     chooseUs: [
-      "You already use an agent like Claude Code or Codex and want it to do the cutting.",
-      "You want to review and comment instead of dragging clips.",
+      "You want your agent editing, not clicking through menus.",
       "You make a lot of video and don't want a monthly plan or local exports.",
       "You already pay for an AI plan and don't want to buy AI credits too.",
     ],
@@ -59,11 +58,10 @@ export const COMPARISONS: Comparison[] = [
     rows: [
       { topic: "Who edits", them: "You, on a timeline, with deep control over every frame.", us: "Your own agent, with exact edit operations, while you watch and comment. You can edit by hand too." },
       { topic: "AI features", them: "AI tools, mostly in the paid Studio version. Other AI comes through plugins and scripts.", us: "Your agent is the AI. It runs on the plan you already pay for. VidJutsu charges only for rendering and storage." },
-      { topic: "Setup", them: "A deep app to install and configure, on a computer strong enough to run it.", us: "Nothing to install. Connect your agent once over MCP." },
-      { topic: "Install and hardware", them: "A desktop app for Windows, Mac and Linux. Performance depends on your computer's GPU, memory and disk.", us: "Runs in Chrome at app.vidjutsu.ai. Your files and the work live in the cloud." },
+      { topic: "Setup", them: "A deep desktop app. Speed depends on your GPU, memory and disk.", us: "Nothing to install. Connect your agent once over MCP." },
       { topic: "Rendering", them: "On your own computer, which is busy until the export finishes.", us: "On many cloud machines at once, in 1080p or 4K. A small change re-renders only what changed." },
       { topic: "Agents", them: "A scripting API on the machine it runs on. Otherwise an agent clicks through the app with computer use, and a simple edit can take hours.", us: "Built for agents: hosted MCP server, CLI and REST API, the same operations the app uses." },
-      { topic: "Feedback", them: "Collaboration built around editors and colorists working in the app.", us: "Comments pinned to the picture; your agent reads them and makes the change." },
+      { topic: "Feedback", them: "Collaboration built around editors and colorists working in the app.", us: "Comments pinned to the picture. Your agent reads them and makes the change." },
       { topic: "Depth", them: "Color grading, visual effects, motion graphics and pro audio mixing.", us: "Simple on purpose: cuts, layouts, levels and fades, Studio Sound, captions and styled titles." },
       { topic: "Pricing", them: "A free version and a paid Studio version.", us: "Pay as you go from a prepaid wallet: $0.03 per vCPU-minute and $0.05 per GB-month. No monthly fee." },
     ],
@@ -74,15 +72,13 @@ export const COMPARISONS: Comparison[] = [
     chooseUs: [
       "You already pay for an AI plan.",
       "You want your agent editing, not clicking through menus.",
-      "You want your agent to make the edits, and to review rather than operate a timeline.",
       "You don't want renders tying up your machine or running into its limits.",
-      "Your videos are talking heads, screen recordings, faceless videos, AI clips or ads.",
     ],
     trademark: "DaVinci Resolve is a trademark of Blackmagic Design Pty. Ltd.",
   },
   {
     slug: "premiere-pro",
-    what: "A pro desktop editor for hands on a timeline.",
+    what: "A pro desktop editor for cutting by hand.",
     ai: "Generative AI spends Adobe credits.",
     name: "Premiere Pro",
     title: "VidJutsu vs Premiere Pro",
@@ -91,7 +87,7 @@ export const COMPARISONS: Comparison[] = [
     rows: [
       { topic: "Who edits", them: "You, on a timeline, with built-in AI features that help you inside the app.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
       { topic: "AI features", them: "Generative features spend Adobe generative credits. Other AI comes through third-party plugins.", us: "Your agent is the AI. It runs on the plan you already pay for. VidJutsu charges only for rendering and storage." },
-      { topic: "Setup", them: "A complex app to install and configure, with your media on your disk.", us: "Nothing to install. Connect your agent once over MCP." },
+      { topic: "Setup", them: "A complex app to install and configure.", us: "Nothing to install. Connect your agent once over MCP." },
       { topic: "Where you work", them: "A desktop app for Windows and Mac, with your media on your disk.", us: "The browser at app.vidjutsu.ai. Files, projects and history live in the cloud." },
       { topic: "Rendering", them: "On your computer, limited by its hardware.", us: "On many cloud machines at once. A small change re-renders only what changed." },
       { topic: "Agents", them: "Plugins and scripts inside the app. An outside agent clicks through it with computer use, and a simple edit can take hours.", us: "A hosted MCP server, CLI and REST API: the same operations the app uses." },
@@ -105,7 +101,6 @@ export const COMPARISONS: Comparison[] = [
     chooseUs: [
       "You already pay for an AI plan.",
       "You want your agent editing, not clicking through menus.",
-      "You want your agent to do the editing and you to do the deciding.",
       "You make a steady stream of videos and want renders off your computer.",
     ],
     trademark: "Premiere Pro is a trademark of Adobe Inc.",
@@ -121,11 +116,11 @@ export const COMPARISONS: Comparison[] = [
     rows: [
       { topic: "Who edits", them: "You, on the magnetic timeline.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
       { topic: "AI features", them: "A few built-in smart tools. Other AI comes through third-party plugins.", us: "Your agent is the AI. It runs on the plan you already pay for. VidJutsu charges only for rendering and storage." },
-      { topic: "Setup", them: "Built for hands, with settings and libraries to set up first.", us: "Nothing to install. Connect your agent once over MCP." },
+      { topic: "Setup", them: "Built for editing by hand, with settings and libraries to set up first.", us: "Nothing to install. Connect your agent once over MCP." },
       { topic: "Where you work", them: "A Mac app (and an iPad app), with your media on your device.", us: "The browser at app.vidjutsu.ai, on any computer with Chrome." },
       { topic: "Rendering", them: "On your Mac, which is busy until the export finishes.", us: "On many cloud machines at once. A small change re-renders only what changed." },
-      { topic: "Agents", them: "Not built for an outside agent. It clicks through the app with computer use, and a simple edit can take hours.", us: "A hosted MCP server, CLI and REST API." },
-      { topic: "Feedback", them: "Share an export and collect notes elsewhere.", us: "Comments pinned to the picture; your agent reads them and makes the change." },
+      { topic: "Agents", them: "Not built for an outside agent. An agent has to click through it with computer use, and a simple edit can take hours.", us: "A hosted MCP server, CLI and REST API." },
+      { topic: "Feedback", them: "Share an export and collect notes elsewhere.", us: "Comments pinned to the picture. Your agent reads them and makes the change." },
       { topic: "Pricing", them: "A one-time purchase.", us: "Pay as you go from a prepaid wallet: $0.03 per vCPU-minute and $0.05 per GB-month. No monthly fee." },
     ],
     chooseThem: [
@@ -135,7 +130,6 @@ export const COMPARISONS: Comparison[] = [
     chooseUs: [
       "You already pay for an AI plan.",
       "You want your agent editing, not clicking through menus.",
-      "You'd rather tell your agent what to cut than do it yourself.",
       "You want comments, history and renders in the cloud, on any computer.",
     ],
     trademark: "Final Cut Pro is a trademark of Apple Inc.",
@@ -151,11 +145,11 @@ export const COMPARISONS: Comparison[] = [
     rows: [
       { topic: "Who edits", them: "You, with templates, effects and auto tools in the app.", us: "Your own agent, with exact edit operations. You review, comment and approve, or edit by hand." },
       { topic: "AI features", them: "AI tools in the app, many behind a paid plan or credits.", us: "Your agent is the AI. It runs on the plan you already pay for. VidJutsu charges only for rendering and storage." },
-      { topic: "Setup", them: "Built for hands, with templates and settings to learn first.", us: "Nothing to install. Connect your agent once over MCP." },
+      { topic: "Setup", them: "Built for editing by hand, with templates and settings to learn first.", us: "Nothing to install. Connect your agent once over MCP." },
       { topic: "Where you work", them: "Mobile, desktop and web apps.", us: "The browser at app.vidjutsu.ai. Your agent works from wherever it runs." },
-      { topic: "Agents", them: "Not built for an outside agent. It clicks through the app with computer use, and a simple edit can take hours.", us: "A hosted MCP server, CLI and REST API." },
+      { topic: "Agents", them: "Not built for an outside agent. An agent has to click through it with computer use, and a simple edit can take hours.", us: "A hosted MCP server, CLI and REST API." },
       { topic: "Rendering", them: "Exports from the app.", us: "On many cloud machines at once, in 1080p or 4K. A small change re-renders only what changed." },
-      { topic: "History", them: "Undo while you edit.", us: "Every edit kept as a revision with who made it; undo any single change at any time." },
+      { topic: "History", them: "Undo while you edit.", us: "Every edit kept as a revision with who made it. Undo any single change." },
       { topic: "Pricing", them: "A free version and paid plans.", us: "Pay as you go from a prepaid wallet: $0.03 per vCPU-minute and $0.05 per GB-month. No monthly fee." },
     ],
     chooseThem: [
@@ -165,7 +159,6 @@ export const COMPARISONS: Comparison[] = [
     chooseUs: [
       "You already pay for an AI plan.",
       "You want your agent editing, not clicking through menus.",
-      "You want your agent to make the cuts, from talking heads to ads.",
       "You want renders, files and history in the cloud, not on your device.",
     ],
     trademark: "CapCut is a trademark of its owner.",

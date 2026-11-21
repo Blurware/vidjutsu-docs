@@ -15,15 +15,15 @@ export default function ComparePage() {
         <SiteNav />
         <header className="vl-page-hero">
           <span className="vl-eyebrow">Compare</span>
-          <h1>Other editors sell you AI. VidJutsu works with yours.</h1>
+          <h1>Other editors sell you AI.<br />VidJutsu works with yours.</h1>
           <p>Most editors sell AI as plugins or credits per action. VidJutsu uses the AI plan you already pay for. You pay only for rendering and storage.</p>
         </header>
         <section className="vl-compare-index">
           {COMPARISONS.map((c) => (
             <a key={c.slug} className="vl-card" href={`/compare/${c.slug}`}>
               <h2>vs {c.name}</h2>
-              <p>{c.what}</p>
-              <span>{c.ai}</span>
+              <div><p>{c.what}</p><span>{c.ai}</span></div>
+              <i aria-hidden="true">→</i>
             </a>
           ))}
         </section>
