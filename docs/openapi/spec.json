@@ -283,7 +283,7 @@
           "Billing"
         ],
         "summary": "Set auto top-up",
-        "description": "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $5), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $10), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
+        "description": "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
         "requestBody": {
           "required": true,
           "content": {
@@ -358,7 +358,7 @@
           "Billing"
         ],
         "summary": "Get a checkout link",
-        "description": "Sign up for paid use: a Stripe Checkout link to add a card and make your first payment into your prepaid wallet ($5 by default). There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
+        "description": "Sign up for paid use: a Stripe Checkout link to add a card and make your first load into your prepaid wallet ($59 minimum and default). Auto-reload is on unless you send `auto_reload: false`. There is no monthly fee; usage is paid from the wallet. Open it in a browser. 409 once your wallet is set up: use POST /billing/top-up.",
         "requestBody": {
           "required": false,
           "content": {
@@ -488,7 +488,7 @@
           "Billing"
         ],
         "summary": "Get a top-up link",
-        "description": "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
+        "description": "A Stripe payment link to add credits to your wallet, which pays for all usage. Any time; $10 by default and minimum. Before you sign up, a top-up counts as your first load and needs $59. Open it in a browser. `GET /usage` shows the new balance once the payment goes through.",
         "requestBody": {
           "required": false,
           "content": {
@@ -521,7 +521,7 @@
             }
           },
           "default": {
-            "description": "400 invalid_request (an amount outside $5 to $500, or not whole cents)",
+            "description": "400 invalid_request (an amount outside $10 to $500, or not whole cents)",
             "content": {
               "application/json": {
                 "schema": {
@@ -5491,7 +5491,7 @@
                 "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
               }
             ],
-            "description": "Top up when usage takes your balance below this many dollars. Whole cents, above 0 and up to 500. Default 5."
+            "description": "Top up when usage takes your balance below this many dollars. Whole cents, above 0 and up to 500. Default 10, or your saved value."
           },
           "amount_usd": {
             "oneOf": [
@@ -5503,7 +5503,7 @@
                 "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
               }
             ],
-            "description": "Dollars, in whole cents, from 5 to 500 (for example `25` or `\"12.50\"`). Default 10."
+            "description": "Dollars, in whole cents, from 10 to 500 (for example `25` or `\"12.50\"`). Default 59, or your saved value."
           }
         }
       },
@@ -6121,7 +6121,11 @@
                 "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
               }
             ],
-            "description": "Dollars, in whole cents, from 5 to 500 (for example `25` or `\"12.50\"`). Default 5."
+            "description": "Dollars, in whole cents, from 59 to 500 (for example `25` or `\"12.50\"`). Default 59."
+          },
+          "auto_reload": {
+            "type": "boolean",
+            "description": "Turn on auto-reload: when your balance drops below $10, your card is charged $59. Default true."
           },
           "success_url": {
             "type": "string",
@@ -9039,7 +9043,7 @@
           },
           "checkout_url": {
             "type": "string",
-            "description": "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first payment ($5 or more)."
+            "description": "When `status` is `no_plan`: a Stripe Checkout link to add a card and make your first $59 load."
           },
           "note": {
             "type": "string"
@@ -9312,7 +9316,7 @@
                 "pattern": "^\\d{1,6}(\\.\\d{1,2})?$"
               }
             ],
-            "description": "Dollars, in whole cents, from 5 to 500 (for example `25` or `\"12.50\"`). Default 10."
+            "description": "Dollars, in whole cents, from 10 to 500 (for example `25` or `\"12.50\"`). Default 10."
           },
           "success_url": {
             "type": "string",
