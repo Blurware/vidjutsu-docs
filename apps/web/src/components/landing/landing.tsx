@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { SetupConfigurator } from "@/components/setup-configurator";
 import { SiteFooter, SiteNav } from "@/components/site-nav";
-import { RATES, REFUND_FAQ, START_AMOUNT, WALLET_FAQ } from "@/lib/pricing";
+import { MIN_TOP_UP, RATES, REFUND_FAQ, START_AMOUNT, WALLET_FAQ } from "@/lib/pricing";
 import { AgentWindow } from "./agent-window";
 import { Faq } from "./faq";
 import { Fit } from "./fit";
@@ -115,20 +115,21 @@ export function Landing() {
             <h2 id="price-h">No subscription.</h2>
             <p>Load your wallet once. Pay for what you render, by the second.</p>
           </div>
-          <div className="vl-rates">
-            {RATES.map((r) => <div key={r.price}><b>{r.price}</b><span>{r.unit}</span></div>)}
-          </div>
-          <div className="vl-start">
-            <div>
-              <span>TO GET STARTED</span>
-              <b>{START_AMOUNT}</b>
-              <span>loaded into your wallet once</span>
+          <div className="vl-price-card">
+            <span className="vl-price-label">PAY AS YOU GO</span>
+            <div className="vl-price-main">
+              <b>{START_AMOUNT}<small>to start</small></b>
+              <span>To get started, load at least {START_AMOUNT} into your wallet. It&rsquo;s credit for your renders and storage.</span>
             </div>
-            <ul>
-              <li><i>✓</i>No seats, no monthly fee.</li>
-              <li><i>✓</i>Pay only for what you render and store.</li>
-              <li><i>✓</i>Top up whenever you need more.</li>
+            <ul className="vl-price-rates">
+              {RATES.map((r) => <li key={r.price}><b>{r.price}</b><span>{r.unit}</span></li>)}
             </ul>
+            <ul className="vl-price-checks">
+              <li><i>✓</i>After that, top up from {MIN_TOP_UP} anytime.</li>
+              <li><i>✓</i>No seats, no monthly fee.</li>
+              <li><i>✓</i>Review links included, no paid seat.</li>
+            </ul>
+            <a className="vl-button" href="#start">Connect your agent</a>
           </div>
         </section>
 

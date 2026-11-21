@@ -120,18 +120,23 @@
 .vl-pricing-head { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
 .vl-pricing-head h2 { font-size: clamp(34px, 4vw, 56px); line-height: 1.04; }
 .vl-pricing-head p { margin: 0; color: var(--muted); font-size: 17px; }
-.vl-rates { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); background: #fff; border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; }
-.vl-rates div { padding: 22px 26px; display: flex; flex-direction: column; gap: 2px; box-shadow: 1px 0 0 #efece6; }
-.vl-rates b { font: 700 38px "Space Grotesk", Inter, sans-serif; letter-spacing: -0.02em; }
-.vl-rates span { color: var(--muted); font-size: 15px; }
-.vl-start { width: 100%; box-sizing: border-box; background: #fff; border: 2px solid var(--ink); border-radius: 16px; box-shadow: 0 4px 0 var(--ink); padding: 28px 30px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 40px; }
-.vl-start > div { display: flex; flex-direction: column; gap: 4px; }
-.vl-start > div span { color: var(--muted); font-size: 16px; }
-.vl-start > div span:first-child { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; }
-.vl-start > div b { font: 700 clamp(48px, 6vw, 72px)/1 "Space Grotesk", Inter, sans-serif; letter-spacing: -0.03em; }
-.vl-start ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 17px; flex: 0 1 420px; }
-.vl-start li { display: flex; gap: 10px; }
-.vl-start li i { font-style: normal; font-weight: 700; }
+.vl-price-card { width: 100%; max-width: 460px; box-sizing: border-box; background: #fff; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 4px 0 var(--ink); padding: 30px 30px 28px; display: flex; flex-direction: column; gap: 22px; }
+.vl-price-label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); }
+.vl-price-main { display: flex; flex-direction: column; gap: 6px; margin-top: -10px; }
+.vl-price-main b { font: 700 clamp(56px, 7vw, 72px)/1 "Space Grotesk", Inter, sans-serif; letter-spacing: -0.03em; }
+.vl-price-main b small { font: 600 17px Inter, sans-serif; letter-spacing: 0; color: var(--muted); margin-left: 8px; }
+.vl-price-main span { color: var(--muted); font-size: 15px; line-height: 1.45; text-wrap: pretty; }
+.vl-price-card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; }
+.vl-price-rates { border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); }
+.vl-price-rates li { display: grid; grid-template-columns: 72px 1fr; align-items: baseline; gap: 12px; padding: 12px 0; }
+.vl-price-rates li + li { border-top: 1px solid #efece6; }
+.vl-price-rates b { font: 700 24px "Space Grotesk", Inter, sans-serif; letter-spacing: -0.02em; min-width: 68px; }
+.vl-price-rates span { color: var(--muted); font-size: 15px; }
+@media (max-width: 480px) { .vl-price-card { padding: 26px 22px 24px; } .vl-price-rates li { grid-template-columns: 64px 1fr; } .vl-price-rates span { font-size: 14px; } }
+.vl-price-checks { gap: 10px; font-size: 16px; }
+.vl-price-checks li { display: flex; gap: 10px; }
+.vl-price-checks li i { font-style: normal; font-weight: 700; }
+.vl-price-card .vl-button { justify-content: center; }
 
 /* FAQ */
 .vl-faq { padding: 110px 0 60px; display: flex; flex-direction: column; align-items: center; gap: 28px; }
