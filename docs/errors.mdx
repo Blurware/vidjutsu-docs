@@ -23,7 +23,7 @@ Branch on `code` (and `reason` for detail), not on `message`. `request_id` is yo
 | 401 | `unauthenticated` | No API key or token, or it isn't valid. | |
 | 402 | `payment_required` | Not signed up yet, your wallet doesn't cover the job, or it's below zero. See [Pricing](/pricing#when-something-needs-fixing). | `reason` (`no_plan`, `insufficient_credits` or `payment_failed`), `checkout_url` or `top_up_url`, `media_deletes_at` |
 | 403 | `plan_limit` | A plan limit was reached. | `reason` (`spend_limit`, `cap_render_minutes`, `cap_storage`, `job_too_large`, `feature_not_in_plan`), `contact_url` |
-| 403 | `forbidden` | Not allowed with this credential, for example creating an account with an API key. | |
+| 403 | `forbidden` | Not allowed with this credential, for example creating an account with an API key, or an API key without the [scope](/authentication#key-scopes) a call needs. | `reason` (for example `missing_scope`) |
 | 404 | `not_found` | An unknown route, project, revision, media hash, upload or job. | |
 | 409 | `conflict` | The timeline moved since `expected_head`, an `Idempotency-Key` was reused for a different request, or a billing step doesn't apply (checkout when you're already signed up, or the portal before your first payment). | `reason` |
 | 413 | `payload_too_large` | A JSON body over 1 MB, or inline bytes over 4 MB. Use a [direct upload](/guides/uploads#direct-uploads). | |

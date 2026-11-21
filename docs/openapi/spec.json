@@ -228,7 +228,7 @@
         ],
         "summary": "Verify the code",
         "security": [],
-        "description": "Check the emailed code. Creates your account on first sign-in and returns a new API key. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
+        "description": "Check the emailed code. Creates your account on first sign-in and returns a new API key, with full rights unless `scopes` says otherwise. A new account has no credits yet: open `checkout_url` to add a card and make your first payment.",
         "requestBody": {
           "required": true,
           "content": {
@@ -283,7 +283,7 @@
           "Billing"
         ],
         "summary": "Set auto top-up",
-        "description": "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment.",
+        "description": "Turn auto top-up on or off. When usage takes your wallet below `threshold_usd` (default $10), or a render is refused for credits, the card you saved at sign-up is charged `amount_usd` (default $59), at most 5 times a day. A declined card turns it off until you save a card again. `GET /usage` shows the setting. 409 before your first payment. Needs a key with the `billing` scope.",
         "requestBody": {
           "required": true,
           "content": {
@@ -307,6 +307,16 @@
           },
           "401": {
             "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "forbidden missing_scope: this key lacks the billing scope.",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,7 +433,7 @@
           "Billing"
         ],
         "summary": "Get a billing portal link",
-        "description": "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment.",
+        "description": "A Stripe billing portal link to update your saved card or see payment receipts. 409 before your first payment. Needs a key with the `billing` scope.",
         "requestBody": {
           "required": false,
           "content": {
@@ -447,6 +457,16 @@
           },
           "401": {
             "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "forbidden missing_scope: this key lacks the billing scope.",
             "content": {
               "application/json": {
                 "schema": {
@@ -980,7 +1000,7 @@
           "API keys"
         ],
         "summary": "Create an API key",
-        "description": "Create another API key. The secret is shown only once.",
+        "description": "Create another API key, optionally with fewer rights (`scopes`). The secret is shown only once. Needs a key with the `keys` scope.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1004,6 +1024,16 @@
           },
           "401": {
             "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "forbidden missing_scope: this key lacks the keys scope, or asked for a scope it doesn't have.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1035,7 +1065,7 @@
           "API keys"
         ],
         "summary": "Revoke an API key",
-        "description": "The key stops working right away.",
+        "description": "The key stops working right away. Needs a key with the `keys` scope.",
         "parameters": [
           {
             "name": "key_id",
@@ -1070,6 +1100,16 @@
           },
           "401": {
             "description": "No API key or token, or it isn't valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "forbidden missing_scope: this key lacks the keys scope.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5381,6 +5421,13 @@
             "type": "string",
             "description": "The key's first characters, to recognize it."
           },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyScope"
+            },
+            "description": "The key's optional rights."
+          },
           "created_at": {
             "type": "number",
             "description": "Unix milliseconds."
@@ -6293,6 +6340,9 @@
           "name": {
             "type": "string",
             "description": "A label to recognize the key by."
+          },
+          "scopes": {
+            "$ref": "#/components/schemas/KeyScopes"
           }
         }
       },
@@ -7343,6 +7393,21 @@
             }
           }
         }
+      },
+      "KeyScope": {
+        "type": "string",
+        "enum": [
+          "billing",
+          "keys"
+        ],
+        "description": "`billing`: change auto-reload and the spend limit, and open the billing portal. `keys`: create and revoke API keys. Every key can work on projects."
+      },
+      "KeyScopes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/KeyScope"
+        },
+        "description": "Optional rights for the new key. Leave it out for both; `[]` for neither. A key can't make a key with rights it doesn't have."
       },
       "Layout": {
         "type": "object",
@@ -9016,6 +9081,9 @@
             "type": "string",
             "maxLength": 64,
             "description": "A name for the API key this creates."
+          },
+          "scopes": {
+            "$ref": "#/components/schemas/KeyScopes"
           }
         }
       },
@@ -9037,6 +9105,13 @@
           },
           "account_id": {
             "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KeyScope"
+            },
+            "description": "The new key's optional rights."
           },
           "status": {
             "$ref": "#/components/schemas/AccountStatus"
