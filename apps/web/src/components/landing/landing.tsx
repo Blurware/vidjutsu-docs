@@ -99,7 +99,7 @@ export function Landing() {
         <section className="vl-vs" aria-labelledby="vs-h">
           <h2 id="vs-h">With an agent, and without.</h2>
           <div className="vl-vs-table">
-            <div className="vl-vs-head"><span>WITHOUT</span><span>WITH VIDJUTSU</span></div>
+            <div className="vl-vs-head"><span>OTHER EDITORS</span><span>WITH VIDJUTSU</span></div>
             {VS.map(([without, withUs]) => (
               <div className="vl-vs-row" key={without}>
                 <span><Cross />{without}</span>
