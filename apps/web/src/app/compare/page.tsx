@@ -4,7 +4,7 @@ import { COMPARISONS } from "@/lib/compare";
 
 export const metadata: Metadata = {
   title: "Compare",
-  description: "How VidJutsu compares with Descript, DaVinci Resolve, Premiere Pro, Final Cut Pro and CapCut: other editors sell AI as plugins or per-action credits, VidJutsu works with the agent you already pay for.",
+  description: "How VidJutsu compares with Kino, Tesseract, Palmier Pro, HyperFrames, Descript, DaVinci Resolve, Premiere Pro, Final Cut Pro and CapCut: other editors sell AI as plugins or per-action credits, VidJutsu works with the agent you already pay for.",
   alternates: { canonical: "/compare" },
 };
 
