@@ -370,7 +370,7 @@ export function ShotListPicture() {
                     {"Who has the ember"}
                   </span>
                   <span style={{ color: "#cfcfd3" }}>
-                    {"A minor girl has it. She got away."}
+                    {"A stranger has it. She got away."}
                   </span>
                   <span className="sl-vis">
                     <span style={{ display: "block", height: "30px", width: "17px", borderRadius: "3px", backgroundSize: "cover", backgroundPosition: "center", color: "#6a6a6a" }}>
@@ -566,7 +566,7 @@ export function TranscriptPicture() {
                     </span>
                     <span>
                       <span style={{ background: "rgba(255,255,255,.22)", borderRadius: "3px", padding: "1px 0" }}>
-                        {"A minor girl has it."}
+                        {"A stranger has it."}
                       </span>
                       {" "}
                       <span style={{ color: "#8a8a8a" }}>
@@ -581,7 +581,7 @@ export function TranscriptPicture() {
                       <span style={{ color: "#9a9a9a", fontSize: "11px", padding: "5px 9px 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {"1:46 to 1:47 · "}
                         <i>
-                          {"A minor girl has it."}
+                          {"A stranger has it."}
                         </i>
                       </span>
                       <span style={{ display: "flex", justifyContent: "space-between", padding: "5px 9px", borderRadius: "6px", background: "rgba(255,255,255,.08)" }}>
@@ -837,7 +837,7 @@ export function CommentPicture() {
   );
 }
 
-export function RenderPicture() {
+export function SharePicture() {
   return (
     <div style={{ flex: "999 1 560px", minWidth: "0", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "14px" }}>
       <div style={{ position: "relative", width: "100%", background: "#ffffff", border: "1px solid #e2dfd8", borderRadius: "16px", padding: "12px", boxSizing: "border-box", boxShadow: "0 4px 0 #e2dfd8, 0 24px 40px rgba(20,24,32,.1)", transform: "rotate(0.5deg)" }}>
@@ -938,7 +938,7 @@ export function RenderPicture() {
                         {"Speaker 1"}
                       </span>
                       <span>
-                        {"A minor girl has it. … She got away. ……"}
+                        {"A stranger has it. … She got away. ……"}
                       </span>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -1067,50 +1067,36 @@ export function RenderPicture() {
               </div>
             </div>
             <div style={{ position: "absolute", left: "0", right: "0", top: "0", bottom: "0", background: "rgba(0,0,0,.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: "14px", boxSizing: "border-box" }}>
-              <div style={{ width: "100%", maxWidth: "300px", background: "#1f1f1f", border: "1px solid rgba(255,255,255,.12)", borderRadius: "12px", boxShadow: "0 24px 60px rgba(0,0,0,.6)", padding: "14px", display: "flex", flexDirection: "column", gap: "8px", fontSize: "12px" }}>
+              <div style={{ width: "100%", maxWidth: "330px", background: "#1f1f1f", border: "1px solid rgba(255,255,255,.12)", borderRadius: "12px", boxShadow: "0 24px 60px rgba(0,0,0,.6)", padding: "14px", display: "flex", flexDirection: "column", gap: "9px", fontSize: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
                   <span style={{ fontWeight: "700", fontSize: "13.5px" }}>
-                    {"Render 412-ep1"}
+                    {"Share 412-ep1"}
                   </span>
-                  <span style={{ color: "#a8a8a8", fontSize: "11px" }}>
-                    {"Close"}
+                  <span style={{ color: "#a8a8a8", fontSize: "13px" }}>
+                    {"×"}
                   </span>
                 </div>
                 <span style={{ color: "#a8a8a8", fontSize: "11px", marginTop: "-4px" }}>
-                  {"1:59 long. Wallet $149.00."}
+                  {"Anyone with a link can watch without signing in. To comment they add a name and email."}
                 </span>
-                <span style={{ fontWeight: "600", fontSize: "11px", marginTop: "2px" }}>
-                  {"Quality"}
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.05)", borderRadius: "7px", padding: "5px 8px", fontSize: "11px", whiteSpace: "nowrap" }}>{"Can comment ⌄"}</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: "6px", border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.05)", borderRadius: "7px", padding: "5px 8px", fontSize: "11px", whiteSpace: "nowrap" }}>{"Latest version ⌄"}</span>
+                  <span style={{ background: "#f2f3f5", color: "#111214", borderRadius: "7px", padding: "5px 11px", fontWeight: "600", fontSize: "11px", marginLeft: "auto" }}>{"Make link"}</span>
+                </div>
+                <span style={{ fontWeight: "600", fontSize: "11.5px", marginTop: "4px" }}>
+                  {"Active links"}
                 </span>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", borderRadius: "8px", padding: "7px 10px" }}>
-                  <span style={{ width: "11px", height: "11px", borderRadius: "50%", border: "3px solid #7aa2ff", boxSizing: "border-box", background: "#ffffff" }} />
-                  <span style={{ flex: "1 1 auto" }}>
-                    {"1080p"}
-                  </span>
-                  <span>
-                    {"$0.37"}
-                  </span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", border: "1px solid rgba(255,255,255,.08)", borderRadius: "8px", padding: "7px 10px" }}>
-                  <span style={{ width: "11px", height: "11px", borderRadius: "50%", border: "1px solid #6a6a6a", boxSizing: "border-box" }} />
-                  <span style={{ flex: "1 1 auto" }}>
-                    {"4K"}
-                  </span>
-                  <span>
-                    {"$0.67"}
-                  </span>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "7px", fontSize: "11.5px" }}>
-                  <span style={{ width: "11px", height: "11px", borderRadius: "3px", border: "1px solid #6a6a6a" }} />
-                  {"Burn in captions"}
-                </div>
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "6px", marginTop: "4px" }}>
-                  <span style={{ padding: "5px 10px", fontSize: "11.5px" }}>
-                    {"Cancel"}
-                  </span>
-                  <span style={{ background: "#f2f3f5", color: "#111214", borderRadius: "8px", padding: "5px 11px", fontWeight: "600", fontSize: "11.5px" }}>
-                    {"Render for about $0.37"}
-                  </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: "7px", border: "1px solid rgba(255,255,255,.1)", background: "rgba(255,255,255,.03)", borderRadius: "8px", padding: "9px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "6px", border: "1px solid rgba(255,255,255,.14)", background: "rgba(255,255,255,.05)", borderRadius: "7px", padding: "5px 8px", fontSize: "11px", whiteSpace: "nowrap" }}>{"Can comment ⌄"}</span>
+                    <span style={{ color: "#a8a8a8", flex: "1 1 auto" }}>{"Latest version"}</span>
+                    <span style={{ color: "#ff8a8a", fontSize: "11px" }}>{"Turn off"}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: "6px" }}>
+                    <span style={{ flex: "1 1 auto", minWidth: "0", border: "1px solid #7aa2ff", background: "#151515", borderRadius: "7px", padding: "5px 8px", fontSize: "11px", fontFamily: "ui-monospace, Menlo, monospace", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{"app.vidjutsu.ai/s/k7Qm2xW9"}</span>
+                    <span style={{ border: "1px solid rgba(255,255,255,.16)", borderRadius: "7px", padding: "5px 10px", fontSize: "11px", fontWeight: "600" }}>{"Copied"}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1118,7 +1104,7 @@ export function RenderPicture() {
         </div>
       </div>
       <span style={{ fontFamily: "Caveat, cursive", fontSize: "26px", color: "#2a2d33", paddingRight: "10px" }}>
-        {"see the price first ↗"}
+        {"↖ no account needed to comment"}
       </span>
     </div>
   );
