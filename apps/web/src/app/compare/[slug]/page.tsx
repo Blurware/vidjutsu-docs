@@ -20,10 +20,12 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
   const c = bySlug((await params).slug);
   if (!c) notFound();
   return (
-    <main className="vj-landing" id="main">
-      <SiteNav />
-      <CompareView c={c} />
-      <SiteFooter />
+    <main className="vl" id="main">
+      <div className="vl-wrap">
+        <SiteNav />
+        <CompareView c={c} />
+        <SiteFooter />
+      </div>
     </main>
   );
 }
